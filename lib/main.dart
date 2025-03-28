@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:packvision/home.dart';
+import 'package:webpack/home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
       title: 'Empaques Packvisión',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        scaffoldBackgroundColor: const Color.fromARGB(255, 241, 245, 255),
         primaryColor: Color(0xFF004F9E),
         colorScheme: ColorScheme.fromSeed(
           seedColor: Color(0xFF004F9E),

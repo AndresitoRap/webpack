@@ -1,986 +1,464 @@
+import 'dart:math' show min;
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:webpack/class/menu_data.dart';
+import 'package:webpack/class/ourservices.dart';
+import 'package:webpack/class/packwithcon.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<Home> createState() => HomeState();
 }
 
-class _HomeState extends State<Home> {
-  final ScrollController _scrollrecomended = ScrollController();
-  bool isExpanded = false;
-  String hoveredMenu = '';
-  late List<bool> isHover;
-  late List<bool> isHoverIcon;
-  late List<bool> isHoverpackwithconscience;
-  int selectedpackwithconscience = 0;
-  bool isExpandedwithconscience = false;
+class HomeState extends State<Home> {
+  //Empaques con conciencia
+  int? _expandedIndex;
+  List<int> cardIndex = List.generate(cardPWC.length, (index) => index);
 
-  List<Map<String, List<String>>> submenuItems = [];
+  //Nuestros servicios
+  List<bool> isHoverCardList = List.generate(cardOS.length, (_) => false);
+  List<bool> isHoverIconList = List.generate(cardOS.length, (_) => false);
+  final ScrollController _scrollController = ScrollController();
+  bool canScrollLeft = false;
+  bool canScrollRight = true;
 
-  final Map<String, List<Map<String, List<String>>>> submenus = {
-    "SmartBag®": [
-      {
-        "Explora SmartBag®": [
-          "Nuevos Productos",
-          "Más Vendidos",
-          "Tendencia",
-          "Novedades Smart",
-          "Reseñas De Clientes",
-        ],
-        "Compra SmartBag®": [
-          "Bolsas Smart",
-          "Empaques Smart",
-          "Accesorios Smart",
-          "Edición limitada",
-          "Tarjetas de regalo",
-        ],
-        "Más de SmartBag®": [
-          "Acerca de SmartBag®",
-          "Tecnolgía",
-          "Sostenibilidad",
-          "Blog",
-          "Carreras",
-        ],
-      },
-    ],
-    "EcoBag®": [
-      {
-        "Explora EcoBag®": [
-          "Materiales Eco-Friendly",
-          "Bolsas Recicladas",
-          "Producción Sostenible",
-          "Historia De Clientes",
-          "EcoBag® En Acción",
-        ],
-        "Compra EcoBag®": [
-          "Bolas Eco-Friendly",
-          "Empaques reciclables",
-          "Eco Accesorios",
-          "Bolsas De Algodón Orgánico",
-          "Tarjetas De Regalo Eco",
-        ],
-        "Más de EcoBag®": [
-          "Acerca de EcoBag®",
-          "Practicas Sostenibles",
-          "Certificaciones",
-          "Blog",
-          "Asociación",
-        ],
-      },
-    ],
-    "Inicio": [
-      {
-        "Destacados": ["Bienvenida", "Nuevos productos", "Más vendidos"],
-        "Explorar": ["Categorías", "Ofertas especiales", "Recomendados"],
-      },
-    ],
-    "Nosotros": [
-      {
-        "Nuestra historia": [
-          "Quiénes somos",
-          "Misión y visión",
-          "Nuestros valores",
-        ],
-        "Conéctate": ["Únete al equipo", "Prensa", "Eventos"],
-      },
-    ],
-    "Catálogo": [
-      {
-        "Explora el catálogo": ["Café", "Alimentos", "Farmacéuticos", "Otros"],
-        "Más información": ["Novedades", "Materiales", "Personalización"],
-      },
-    ],
-    "Visitanos": [
-      {
-        "Ubicaciones": ["Mapa de tiendas", "Horarios", "Citas"],
-        "Servicios": ["Asesoría", "Atención al cliente", "Soporte"],
-      },
-    ],
-    "Políticas": [
-      {
-        "Normativas": ["Términos y condiciones", "Privacidad", "Garantía"],
-        "Legal": ["Derechos de autor", "Devoluciones", "Reembolsos"],
-      },
-    ],
-    "Pago en línea": [
-      {
-        "Métodos de pago": [
-          "Tarjeta de crédito",
-          "PayPal",
-          "Transferencia bancaria",
-        ],
-        "Seguridad": [
-          "Protección de datos",
-          "Políticas de reembolso",
-          "Facturación",
-        ],
-      },
-    ],
-  };
+  void _updateScrollButtons() {
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
 
-  void _scrollLeft() {
-    _scrollrecomended.animateTo(
-      _scrollrecomended.offset - 450,
-      duration: Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
-    );
+    setState(() {
+      canScrollLeft = currentScroll > 0;
+      canScrollRight = currentScroll < maxScroll;
+    });
   }
 
-  void _scrollRight() {
-    _scrollrecomended.animateTo(
-      _scrollrecomended.offset + 450,
-      duration: Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
-    );
-  }
-
-  final List<Map<String, String>> recommendedItems = [
-    {
-      "image": "lib/src/img/recommended1.jpg",
-      "title": "Rosa de Sharon",
-      "description": "Shohana",
-    },
-    {
-      "image": "lib/src/img/recommended2.jpg",
-      "title": "Rosa de Sharon",
-      "description": "Lobelina",
-    },
-    {
-      "image": "lib/src/img/recommended3.jpg",
-      "title": "Rosa de Sharon",
-      "description": "Clavelina",
-    },
-    {
-      "image": "lib/src/img/recommended1.jpg",
-      "title": "Rosa de Sharon",
-      "description": "Shohana",
-    },
-    {
-      "image": "lib/src/img/recommended2.jpg",
-      "title": "Rosa de Sharon",
-      "description": "Lobelina",
-    },
-    {
-      "image": "lib/src/img/recommended3.jpg",
-      "title": "Rosa de Sharon",
-      "description": "Clavelina",
-    },
-    {
-      "image": "lib/src/img/recommended1.jpg",
-      "title": "Rosa de Sharon",
-      "description": "Shohana",
-    },
-    {
-      "image": "lib/src/img/recommended2.jpg",
-      "title": "Rosa de Sharon",
-      "description": "Lobelina",
-    },
-    {
-      "image": "lib/src/img/recommended3.jpg",
-      "title": "Rosa de Sharon",
-      "description": "Clavelina",
-    },
-  ];
-
-  final List<Map<String, String>> packwithconscience = [
-    {
-      "image": "lib/src/img/Asesoria.jpg",
-      "title": "Asesoría",
-      "description":
-          "No estarás solo, cuentas con nosotros para las dudas que te surjan, tanto en nuestros productos, como en los procesos relacionados con este.",
-    },
-    {
-      "image": "lib/src/img/Calidad.jpg",
-      "title": "Empaques de Calidad",
-      "description":
-          "Nuestros empaques flexibles están comprometidos con la calidad de nuestros clientes orientados al mercado internacional.",
-    },
-    {
-      "image": "lib/src/img/Cumplimiento.jpg",
-      "title": "Cumplimiento",
-      "description":
-          "Es importante que tus productos lleguen el día y la hora pactada, siempre buscamos superar la barrera de la distancia, no tendrás que esperarnos en la puerta, nosotros llamaremos a ella a tiempo.",
-    },
-    {
-      "image": "lib/src/img/Servicios.jpg",
-      "title": "Servicios",
-      "description":
-          "Nuestro enfoque es el servicio, siempre de la mano de nuestros clientes, proporcionando seguridad basada en respaldo y solidez.",
-    },
-  ];
   @override
   void initState() {
     super.initState();
-    isHover = List.generate(recommendedItems.length, (index) => false);
-    isHoverIcon = List.generate(recommendedItems.length, (index) => false);
-    isHoverpackwithconscience = List.generate(
-      packwithconscience.length,
-      (index) => false,
-    );
+    _scrollController.addListener(_updateScrollButtons);
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Stack(
         children: [
           SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 50),
-              child: Column(
-                children: [
-                  Center(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 50),
-                      height: MediaQuery.of(context).size.height / 1.2,
-                      width: 1024,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Image.asset(
-                              'lib/src/img/Packvision.png',
-                              fit: BoxFit.fitHeight,
-                            ),
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.05,
-                          ),
-                          Expanded(
-                            child: Image.asset(
-                              'lib/src/img/Bag&paint.png',
-                              fit: BoxFit.fitHeight,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.06,
-                      vertical: MediaQuery.of(context).size.height * 0.1,
-                    ),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Theme.of(context).primaryColor,
-                          Theme.of(context).colorScheme.tertiary,
-                        ],
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Empaques con conciencia",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 50,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.1,
-                        ),
-                        SizedBox(
-                          height:
-                              (MediaQuery.of(context).size.width * 0.3) + 40,
-                          child: Stack(
-                            children: [
-                              for (
-                                int i = 0;
-                                i < packwithconscience.length;
-                                i++
-                              )
-                                AnimatedPositioned(
-                                  duration: Duration(milliseconds: 500),
-                                  curve: Curves.easeInOut,
-                                  left:
-                                      isExpandedwithconscience
-                                          ? (i == selectedpackwithconscience
-                                              ? 0
-                                              : MediaQuery.of(
-                                                        context,
-                                                      ).size.width *
-                                                      0.45 +
-                                                  (i - 1) * 60)
-                                          : i *
-                                              (MediaQuery.of(
-                                                        context,
-                                                      ).size.width *
-                                                      0.20 +
-                                                  40),
-                                  top: 0,
-                                  child: AnimatedContainer(
-                                    duration: Duration(milliseconds: 400),
-                                    curve: Curves.easeInOut,
-                                    width:
-                                        isExpandedwithconscience &&
-                                                selectedpackwithconscience == i
-                                            ? MediaQuery.of(
-                                                  context,
-                                                ).size.width *
-                                                0.45
-                                            : MediaQuery.of(
-                                                  context,
-                                                ).size.width *
-                                                0.2,
-                                    height:
-                                        MediaQuery.of(context).size.width * 0.3,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black26,
-                                          blurRadius: 10,
-                                          offset: Offset(1, 1),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Stack(
-                                      fit: StackFit.expand,
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            16,
-                                          ),
-                                          child: Image.asset(
-                                            packwithconscience[i]['image']!,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        Positioned(
-                                          top: 30,
-                                          left: 0,
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 10,
-                                              vertical: 5,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: Theme.of(
-                                                context,
-                                              ).primaryColor.withAlpha(100),
-                                              borderRadius: BorderRadius.only(
-                                                topRight: Radius.circular(12),
-                                                bottomRight: Radius.circular(
-                                                  12,
-                                                ),
-                                              ),
-                                            ),
-                                            child: Text(
-                                              packwithconscience[i]['title']!,
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        if (isExpandedwithconscience &&
-                                            selectedpackwithconscience == i)
-                                          Positioned(
-                                            bottom: 0,
-                                            left: 0,
-                                            right: 0,
-                                            child: AnimatedOpacity(
-                                              duration: Duration(
-                                                milliseconds: 200,
-                                              ),
-                                              opacity:
-                                                  isExpandedwithconscience
-                                                      ? 1.0
-                                                      : 0.0,
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                        bottomLeft:
-                                                            Radius.circular(16),
-                                                        bottomRight:
-                                                            Radius.circular(16),
-                                                      ),
-                                                  gradient: LinearGradient(
-                                                    begin: Alignment.topCenter,
-                                                    end: Alignment.bottomCenter,
-                                                    colors: [
-                                                      Colors.white.withAlpha(0),
-                                                      Colors.white,
-                                                    ],
-                                                  ),
-                                                ),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        vertical: 100,
-                                                        horizontal: 20,
-                                                      ),
-                                                  child: Text(
-                                                    packwithconscience[i]['description']!,
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        Positioned(
-                                          bottom: 16,
-                                          right: 16,
-                                          child: MouseRegion(
-                                            cursor: SystemMouseCursors.click,
-                                            onEnter: (_) {
-                                              setState(() {
-                                                isHoverpackwithconscience[i] =
-                                                    true;
-                                              });
-                                            },
-                                            onExit: (_) {
-                                              setState(() {
-                                                isHoverpackwithconscience[i] =
-                                                    false;
-                                              });
-                                            },
-                                            child: AnimatedSwitcher(
-                                              duration: Duration(
-                                                milliseconds: 300,
-                                              ),
-                                              child:
-                                                  isExpandedwithconscience &&
-                                                          selectedpackwithconscience ==
-                                                              i
-                                                      ? GestureDetector(
-                                                        onTap: () {
-                                                          setState(() {
-                                                            isExpandedwithconscience =
-                                                                false;
-                                                          });
-                                                        },
-                                                        child: CircleAvatar(
-                                                          backgroundColor:
-                                                              isHoverpackwithconscience[i]
-                                                                  ? Theme.of(
-                                                                        context,
-                                                                      )
-                                                                      .colorScheme
-                                                                      .tertiary
-                                                                  : Theme.of(
-                                                                    context,
-                                                                  ).primaryColor,
-                                                          child: Icon(
-                                                            Icons.close,
-                                                            color:
-                                                                isHoverpackwithconscience[i]
-                                                                    ? Colors
-                                                                        .white
-                                                                    : Colors
-                                                                        .white70,
-                                                          ),
-                                                        ),
-                                                      )
-                                                      : GestureDetector(
-                                                        onTap: () {
-                                                          setState(() {
-                                                            selectedpackwithconscience =
-                                                                i;
-                                                            isExpandedwithconscience =
-                                                                true;
-                                                          });
-                                                        },
-                                                        child: CircleAvatar(
-                                                          backgroundColor:
-                                                              isHoverpackwithconscience[i]
-                                                                  ? Theme.of(
-                                                                        context,
-                                                                      )
-                                                                      .colorScheme
-                                                                      .tertiary
-                                                                  : Theme.of(
-                                                                    context,
-                                                                  ).primaryColor,
-                                                          child: Icon(
-                                                            Icons.add,
-                                                            color:
-                                                                isHoverpackwithconscience[i]
-                                                                    ? Colors
-                                                                        .white
-                                                                    : Colors
-                                                                        .white70,
-                                                          ),
-                                                        ),
-                                                      ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.06,
-                      vertical: MediaQuery.of(context).size.height * 0.1,
-                    ),
-                    width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: "Nuestros \n",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 60,
-                                  fontFamily: "D-DINExp",
-                                ),
-                              ),
-                              TextSpan(
-                                text: "recomendados",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 30,
-                                  fontFamily: "D-DINExp",
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SingleChildScrollView(
-                    controller: _scrollrecomended,
-                    scrollDirection: Axis.horizontal,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 46),
-                      child: Row(
-                        children: [
-                          SizedBox(width: 35),
-                          ...List.generate(recommendedItems.length, (index) {
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                right: 50,
-                                top: 10,
-                                bottom: 30,
-                              ),
-                              child: MouseRegion(
-                                onEnter:
-                                    (_) =>
-                                        setState(() => isHover[index] = true),
-                                onExit:
-                                    (_) =>
-                                        setState(() => isHover[index] = false),
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    AnimatedContainer(
-                                      duration: Duration(milliseconds: 200),
-                                      curve: Curves.easeInOut,
-                                      transform:
-                                          isHover[index]
-                                              ? (Matrix4.identity()
-                                                ..scale(1.02))
-                                              : Matrix4.identity(),
-                                      width: 400,
-                                      height: 700,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(26),
-                                        boxShadow:
-                                            isHover[index]
-                                                ? [
-                                                  BoxShadow(
-                                                    color: Colors.black54,
-                                                    blurRadius: 10,
-                                                    offset: Offset(1, 1),
-                                                  ),
-                                                ]
-                                                : [],
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(26),
-                                        child: GestureDetector(
-                                          onTap:
-                                              () => _showCustomDialog(
-                                                context,
-                                                recommendedItems[index]["title"]!,
-                                                recommendedItems[index]["description"]!,
-                                              ),
-
-                                          child: MouseRegion(
-                                            cursor: SystemMouseCursors.click,
-                                            child: Stack(
-                                              fit: StackFit.expand,
-                                              children: [
-                                                Image.asset(
-                                                  recommendedItems[index]["image"]!,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                                Positioned(
-                                                  top: 30,
-                                                  left: 30,
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        recommendedItems[index]['title']!,
-                                                        style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 25,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        recommendedItems[index]['description']!,
-                                                        style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 35,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Positioned(
-                                                  bottom: 16,
-                                                  right: 16,
-                                                  child: MouseRegion(
-                                                    onEnter:
-                                                        (_) => setState(
-                                                          () =>
-                                                              isHoverIcon[index] =
-                                                                  true,
-                                                        ),
-                                                    onExit:
-                                                        (_) => setState(
-                                                          () =>
-                                                              isHoverIcon[index] =
-                                                                  false,
-                                                        ),
-                                                    cursor:
-                                                        SystemMouseCursors
-                                                            .click,
-                                                    child: AnimatedContainer(
-                                                      duration: Duration(
-                                                        milliseconds: 200,
-                                                      ),
-                                                      curve: Curves.easeInOut,
-                                                      width: 40,
-                                                      height: 40,
-                                                      decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        color:
-                                                            isHoverIcon[index]
-                                                                ? Theme.of(
-                                                                  context,
-                                                                ).primaryColor
-                                                                : Theme.of(
-                                                                      context,
-                                                                    )
-                                                                    .primaryColor
-                                                                    .withAlpha(
-                                                                      100,
-                                                                    ),
-                                                      ),
-                                                      child: Icon(
-                                                        Icons.add,
-                                                        size: 24,
-                                                        color:
-                                                            isHoverIcon[index]
-                                                                ? Colors.white
-                                                                : Colors
-                                                                    .white60,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          }),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.06,
-                      vertical: MediaQuery.of(context).size.height * 0.1,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.black.withAlpha(30),
-                          ),
-                          child: IconButton(
-                            onPressed: _scrollLeft,
-                            icon: Icon(CupertinoIcons.chevron_back),
-                          ),
-                        ),
-                        SizedBox(width: 15),
-                        Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.black.withAlpha(30),
-                          ),
-                          child: IconButton(
-                            onPressed: _scrollRight,
-                            icon: Icon(CupertinoIcons.chevron_forward),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.06,
-                      vertical: MediaQuery.of(context).size.height * 0.2,
-                    ),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor.withAlpha(20),
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "Sedes de Packvision S.A",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 50,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                vertical:
-                                    MediaQuery.of(context).size.height * 0.1,
-                              ),
-                              width: MediaQuery.of(context).size.width / 3,
-                              color: Colors.transparent,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(32),
-                                child: Image.asset(
-                                  "lib/src/img/Carvajal.jpg",
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          isExpanded
-              ? Positioned(
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 100),
-                  curve: Curves.easeInOut,
-                  opacity: isExpanded ? 1 : 0,
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                    child: Container(color: Colors.black12),
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: screenHeight,
+                  width: screenWidth,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset("lib/src/img/Packvision.png"),
+                      Image.asset("lib/src/img/Bag&paint.png"),
+                    ],
                   ),
                 ),
-              )
-              : Container(),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: ClipRRect(
-              child: MouseRegion(
-                onExit: (_) {
-                  Future.delayed(const Duration(milliseconds: 50), () {
-                    setState(() {
-                      isExpanded = false;
-                      hoveredMenu = '';
-                      submenuItems = [];
-                    });
-                  });
-                },
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.easeInOutCirc,
-                  height: isExpanded ? 350 : 50,
-                  constraints: BoxConstraints(minHeight: 50),
-                  width: double.infinity,
+                Container(
+                  width: screenWidth,
                   decoration: BoxDecoration(
-                    color: Colors.white.withAlpha(50),
-                    border: Border(
-                      bottom: BorderSide(
-                        color: Colors.white.withAlpha(150),
-                        width: 0.5,
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Theme.of(context).colorScheme.tertiary,
+                        Theme.of(context).primaryColor,
+                      ],
+                    ),
+                  ),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.065,
+                      vertical: 200,
+                    ),
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(maxWidth: 1200),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                bottom: screenWidth * 0.05,
+                              ),
+                              child: Text(
+                                "Empaques con conciencia.",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: min(screenWidth * 0.06, 60),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: screenWidth * 0.3,
+                              child: Stack(
+                                children:
+                                    cardIndex.map((index) {
+                                      bool isExpanded = _expandedIndex == index;
+                                      double leftPosition;
+                                      if (_expandedIndex == null) {
+                                        leftPosition =
+                                            index *
+                                            (screenWidth * 0.21 +
+                                                screenWidth * 0.012);
+                                      } else {
+                                        if (isExpanded) {
+                                          leftPosition = 0;
+                                        } else {
+                                          int stackIndex =
+                                              cardIndex.indexOf(index) - 1;
+                                          leftPosition =
+                                              screenWidth * 0.5 +
+                                              screenWidth * 0.02 +
+                                              stackIndex * 20.0;
+                                        }
+                                      }
+                                      return AnimatedPositioned(
+                                        duration: Duration(milliseconds: 300),
+                                        left: leftPosition,
+                                        child: AnimatedPositionedCard(
+                                          index: index,
+                                          isExpanded: isExpanded,
+                                          screenWidth: screenWidth,
+                                          card: cardPWC[index],
+                                          onExpand: () {
+                                            setState(() {
+                                              _expandedIndex = index;
+                                            });
+                                          },
+                                          onCollapse: () {
+                                            setState(() {
+                                              _expandedIndex = null;
+                                            });
+                                          },
+                                        ),
+                                      );
+                                    }).toList(),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                  child: Stack(
-                    children: [
-                      BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Theme.of(context).primaryColor.withAlpha(200),
-                                Theme.of(context).primaryColor.withAlpha(150),
-                              ],
-                            ),
-                          ),
+                ),
+
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.1,
+                        vertical: screenWidth * 0.04,
+                      ),
+                      child: Text(
+                        "Nuestros servicios.",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: min(screenWidth * 0.06, 55),
                         ),
                       ),
-                      SingleChildScrollView(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 13,
-                              ),
-                              child: Center(
-                                child: SizedBox(
-                                  width: 1024,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      controller: _scrollController,
+                      child: Row(
+                        children: List.generate(cardOS.length, (int index) {
+                          final card = cardOS[index];
+                          final double horizontalPadding = screenWidth * 0.1;
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              left: index == 0 ? horizontalPadding : 0,
+                              right:
+                                  index == cardOS.length - 1
+                                      ? horizontalPadding
+                                      : 20,
+                            ),
+                            child: AnimatedScale(
+                              scale: isHoverCardList[index] ? 1.02 : 1.0,
+                              duration: Duration(milliseconds: 300),
+                              curve: Curves.easeInOut,
+                              child: MouseRegion(
+                                onEnter:
+                                    (_) => setState(
+                                      () => isHoverCardList[index] = true,
+                                    ),
+                                onExit:
+                                    (_) => setState(
+                                      () => isHoverCardList[index] = false,
+                                    ),
+                                child: Container(
+                                  width: min(screenWidth * 0.52, 380),
+                                  height: min(screenWidth * 0.93, 700),
+                                  padding: EdgeInsets.only(top: 22, left: 22),
+                                  margin: EdgeInsets.only(
+                                    top: 20,
+                                    bottom: 20,
+                                    right: 20,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(26),
+
+                                    image: DecorationImage(
+                                      image: AssetImage(card.image),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  child: Stack(
                                     children: [
-                                      GestureDetector(
+                                      Positioned(
+                                        bottom: 10,
+                                        right: 10,
                                         child: MouseRegion(
-                                          onEnter: (_) {
-                                            setState(() {
-                                              isExpanded = false;
-                                              hoveredMenu = "logo";
-                                            });
-                                          },
-                                          onExit: (_) {
-                                            setState(() {
-                                              hoveredMenu = '';
-                                            });
-                                          },
-                                          cursor: SystemMouseCursors.click,
-                                          child: Opacity(
-                                            opacity:
-                                                hoveredMenu == "logo" ? 1 : 0.8,
-                                            child: Image.asset(
-                                              "lib/src/img/WIsotipo.png",
-                                              height: 20,
+                                          onEnter:
+                                              (_) => setState(
+                                                () =>
+                                                    isHoverIconList[index] =
+                                                        true,
+                                              ),
+                                          onExit:
+                                              (_) => setState(
+                                                () =>
+                                                    isHoverIconList[index] =
+                                                        false,
+                                              ),
+                                          child: AnimatedContainer(
+                                            duration: Duration(
+                                              milliseconds: 200,
                                             ),
-                                          ),
-                                        ),
-                                      ),
-                                      ...submenus.keys.map(
-                                        (menu) => _headerItem(menu),
-                                      ),
-
-                                      GestureDetector(
-                                        onTap: () {},
-                                        child: MouseRegion(
-                                          cursor: SystemMouseCursors.click,
-                                          onEnter: (_) {
-                                            setState(() {
-                                              isExpanded = false;
-                                              hoveredMenu = "search";
-                                            });
-                                          },
-                                          onExit: (_) {
-                                            setState(() {
-                                              hoveredMenu = '';
-                                            });
-                                          },
-                                          child: Opacity(
-                                            opacity:
-                                                hoveredMenu == "search"
-                                                    ? 1
-                                                    : 0.7,
+                                            curve: Curves.easeInBack,
+                                            width: 40,
+                                            height: 40,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color:
+                                                  isHoverIconList[index]
+                                                      ? Theme.of(
+                                                        context,
+                                                      ).primaryColor
+                                                      : Theme.of(context)
+                                                          .primaryColor
+                                                          .withAlpha(200),
+                                            ),
                                             child: Icon(
-                                              CupertinoIcons.search,
-                                              size: 21,
-                                              color: Colors.white,
+                                              Icons.add_rounded,
+                                              color:
+                                                  isHoverIconList[index]
+                                                      ? Colors.white
+                                                      : Colors.white.withAlpha(
+                                                        200,
+                                                      ),
                                             ),
                                           ),
                                         ),
                                       ),
-
-                                      GestureDetector(
-                                        onTap: () {},
-                                        child: MouseRegion(
-                                          cursor: SystemMouseCursors.click,
-                                          onEnter: (_) {
-                                            setState(() {
-                                              isExpanded = false;
-                                              hoveredMenu = "bag";
-                                            });
-                                          },
-                                          onExit: (_) {
-                                            setState(() {
-                                              hoveredMenu = '';
-                                            });
-                                          },
-                                          child: Opacity(
-                                            opacity:
-                                                hoveredMenu == "bag" ? 1 : 0.7,
-                                            child: Icon(
-                                              CupertinoIcons.bag,
-                                              size: 21,
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            card.title,
+                                            style: TextStyle(
                                               color: Colors.white,
+                                              fontSize: min(
+                                                screenWidth * 0.03,
+                                                25,
+                                              ),
                                             ),
                                           ),
-                                        ),
+                                          Text(
+                                            card.body,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: min(
+                                                screenWidth * 0.04,
+                                                30,
+                                              ),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
                                 ),
                               ),
                             ),
+                          );
+                        }),
+                      ),
+                    ),
 
-                            // SUBMENÚ
-                            if (isExpanded && submenuItems.isNotEmpty)
-                              _buildSubMenu(),
-                          ],
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: screenWidth * 0.03,
+                        horizontal: screenWidth * 0.1,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            style: ButtonStyle(
+                              backgroundColor: WidgetStateProperty.all(
+                                canScrollLeft
+                                    ? Colors.grey.withAlpha(100)
+                                    : Colors.grey.withAlpha(80),
+                              ),
+                            ),
+                            onPressed:
+                                canScrollLeft
+                                    ? () {
+                                      _scrollController.animateTo(
+                                        _scrollController.offset - 500,
+                                        duration: Duration(milliseconds: 200),
+                                        curve: Curves.easeInOut,
+                                      );
+                                    }
+                                    : null,
+                            icon: Icon(Icons.arrow_back_ios_new_rounded),
+                          ),
+
+                          SizedBox(width: 20),
+                          IconButton(
+                            style: ButtonStyle(
+                              backgroundColor: WidgetStateProperty.all(
+                                canScrollLeft
+                                    ? Colors.grey.withAlpha(100)
+                                    : Colors.grey.withAlpha(80),
+                              ),
+                            ),
+                            onPressed:
+                                canScrollRight
+                                    ? () {
+                                      _scrollController.animateTo(
+                                        _scrollController.offset + 500,
+                                        duration: Duration(milliseconds: 200),
+                                        curve: Curves.easeInOut,
+                                      );
+                                    }
+                                    : null,
+                            icon: Icon(Icons.arrow_forward_ios_rounded),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Header(),
+        ],
+      ),
+    );
+  }
+}
+
+class AnimatedPositionedCard extends StatelessWidget {
+  final int index;
+  final bool isExpanded;
+  final double screenWidth;
+  final CardPackWithConscience card;
+  final VoidCallback onExpand;
+  final VoidCallback onCollapse;
+
+  const AnimatedPositionedCard({
+    super.key,
+    required this.index,
+    required this.isExpanded,
+    required this.screenWidth,
+    required this.card,
+    required this.onExpand,
+    required this.onCollapse,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      clipBehavior: Clip.antiAlias,
+      duration: Duration(milliseconds: 300),
+      width: isExpanded ? screenWidth * 0.5 : screenWidth * 0.21,
+      height: screenWidth * 0.3,
+      margin: EdgeInsets.only(right: 120),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        image: DecorationImage(
+          image: AssetImage(card.image),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            top: 20,
+            left: 0,
+            child: Container(
+              height: screenWidth * 0.03,
+              width: screenWidth * 0.10,
+              padding: EdgeInsets.only(left: screenWidth * 0.01),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor.withAlpha(200),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(screenWidth * 0.01),
+                  bottomRight: Radius.circular(screenWidth * 0.01),
+                ),
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  card.title,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: screenWidth * 0.012,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          if (isExpanded)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                padding: EdgeInsets.only(top: screenWidth * 0.13),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.transparent, Colors.white, Colors.white],
+                  ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    bottom: screenWidth * 0.01,
+                    left: screenWidth * 0.01,
+                    right: screenWidth * 0.04,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        card.description,
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: screenWidth * 0.013,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
@@ -988,192 +466,523 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _headerItem(String label) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) {
-        setState(() {
-          isExpanded = true;
-          hoveredMenu = label;
-          submenuItems = submenus[label] ?? [];
-        });
-      },
-      child: Column(
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              color: hoveredMenu == label ? Colors.white : Colors.white70,
-              fontWeight:
-                  hoveredMenu == label ? FontWeight.bold : FontWeight.normal,
+          Positioned(
+            bottom: 10,
+            right: 10,
+            child: IconButton(
+              onPressed: isExpanded ? onCollapse : onExpand,
+              icon: Icon(
+                isExpanded
+                    ? CupertinoIcons.xmark_circle_fill
+                    : CupertinoIcons.add_circled_solid,
+                color:
+                    isExpanded ? Theme.of(context).primaryColor : Colors.white,
+                size: screenWidth * 0.03,
+              ),
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildSubMenu() {
-    return Container(
-      width: 1024,
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 50),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children:
-            submenuItems.first.entries.map((entry) {
-              return Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      entry.key,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    ...entry.value.map(
-                      (item) => Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: Text(
-                          item,
-                          style: const TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
-                ),
-              );
-            }).toList(),
-      ),
-    );
-  }
+class Header extends StatefulWidget {
+  const Header({super.key});
 
-  void _showCustomDialog(
-    BuildContext context,
-    String name,
-    String description,
-  ) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return Dialog(
-              shadowColor: Colors.black,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              insetPadding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.056,
-                vertical: MediaQuery.of(context).size.height * 0.035,
-              ),
-              child: Stack(
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.056,
-                      vertical: MediaQuery.of(context).size.height * 0.07,
-                    ),
-                    width: 1300,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          name,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        ),
-                        Text(
-                          description,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 60,
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        // Container(
-                        //   decoration: BoxDecoration(
-                        //     color: Theme.of(context).primaryColor.withAlpha(50),
-                        //     borderRadius: BorderRadius.circular(16),
-                        //   ),
-                        //   width: double.infinity,
-                        //   height: 500,
-                        //   child: Row(
-                        //     children: [
-                        //       Expanded(child: Text("lorem")),
-                        //       Expanded(
-                        //         child: Container(
-                        //           height: 300,
-                        //           child: Image.asset(
-                        //             "lib/src/img/RosaSharon_Shoshana.png",
-                        //             fit: BoxFit.contain,
-                        //           ),
-                        //         ),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    top: 16,
-                    right: 16,
-                    child: AnimatedContainer(
-                      duration: Duration(milliseconds: 1000),
-                      curve: Curves.easeInOut,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.black54,
-                      ),
-                      child: MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        onEnter: (_) {
-                          setState(() {
-                            hoveredMenu = "close";
-                          });
-                        },
-                        onExit: (_) {
-                          setState(() {
-                            hoveredMenu = "";
-                          });
-                        },
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.close,
-                            color:
-                                hoveredMenu == "close"
-                                    ? Colors.white
-                                    : Colors.white54,
-                            size: 22,
-                          ),
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+  @override
+  State<Header> createState() => _HeaderState();
+}
+
+class _HeaderState extends State<Header> {
+  bool isHover = false;
+  int? hoveredIndex;
+  String? ishoverother = "";
+  bool showMobileMenu = false;
+  int? selectedMobileIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    if (showMobileMenu && screenWidth >= 850) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          showMobileMenu = false;
+          selectedMobileIndex = null;
+        });
+      });
+    }
+
+    return Stack(
+      children: [
+        TweenAnimationBuilder<double>(
+          tween: Tween<double>(begin: 0.0, end: isHover ? 10.0 : 0.0),
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          builder: (context, value, child) {
+            return SizedBox(
+              width: double.infinity,
+              height: double.infinity,
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: value, sigmaY: value),
+                child: Container(),
               ),
             );
           },
-        );
-      },
+        ),
+
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: MouseRegion(
+            onExit: (_) {
+              setState(() {
+                isHover = false;
+                hoveredIndex = null;
+                ishoverother = "";
+              });
+            },
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              width: double.infinity,
+              height: isHover ? 300 : 44,
+              child: ClipRRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Container(
+                      color: Theme.of(context).primaryColor.withAlpha(200),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: screenWidth * 0.02,
+                          vertical: 10,
+                        ),
+                        child: Center(
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: 1024),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    MouseRegion(
+                                      onEnter: (_) {
+                                        setState(() {
+                                          isHover = false;
+                                          ishoverother = "logo";
+                                        });
+                                      },
+                                      onExit: (_) {
+                                        setState(() {
+                                          ishoverother = "";
+                                        });
+                                      },
+                                      child: TweenAnimationBuilder<double>(
+                                        tween: Tween<double>(
+                                          begin: 210,
+                                          end:
+                                              ishoverother == "logo"
+                                                  ? 255
+                                                  : 210,
+                                        ),
+                                        duration: Duration(milliseconds: 200),
+                                        curve: Curves.easeInOut,
+                                        builder: (context, value, child) {
+                                          return Image.asset(
+                                            "lib/src/img/WIsotipo.png",
+                                            height: 20,
+                                            color: Colors.white.withAlpha(
+                                              value.toInt(),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    if (screenWidth > 850)
+                                      ...List.generate(
+                                        MenuData.navbarItems.length,
+                                        (index) {
+                                          return MouseRegion(
+                                            cursor: SystemMouseCursors.click,
+                                            onEnter: (_) {
+                                              setState(() {
+                                                isHover = true;
+                                                hoveredIndex = index;
+                                              });
+                                            },
+                                            child: TweenAnimationBuilder<
+                                              double
+                                            >(
+                                              tween: Tween<double>(
+                                                begin: 200,
+                                                end:
+                                                    hoveredIndex == index
+                                                        ? 255
+                                                        : 200,
+                                              ),
+                                              duration: Duration(
+                                                milliseconds: 200,
+                                              ),
+                                              curve: Curves.easeInOut,
+                                              builder: (context, value, child) {
+                                                return GestureDetector(
+                                                  onTap: () {},
+                                                  child: Text(
+                                                    MenuData.navbarItems[index],
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.white
+                                                          .withAlpha(
+                                                            value.toInt(),
+                                                          ),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    Row(
+                                      children: [
+                                        MouseRegion(
+                                          onEnter: (_) {
+                                            setState(() {
+                                              isHover = false;
+                                              ishoverother = "search";
+                                            });
+                                          },
+                                          onExit: (_) {
+                                            setState(() {
+                                              ishoverother = "";
+                                            });
+                                          },
+                                          child: TweenAnimationBuilder<double>(
+                                            tween: Tween<double>(
+                                              begin: 200,
+                                              end:
+                                                  ishoverother == "search"
+                                                      ? 255
+                                                      : 200,
+                                            ),
+                                            duration: Duration(
+                                              milliseconds: 200,
+                                            ),
+                                            curve: Curves.easeInOut,
+                                            builder: (context, value, child) {
+                                              return Icon(
+                                                CupertinoIcons.search,
+                                                color: Colors.white.withAlpha(
+                                                  value.toInt(),
+                                                ),
+                                                size: 18,
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        SizedBox(width: screenWidth * 0.03),
+                                        MouseRegion(
+                                          onEnter: (_) {
+                                            setState(() {
+                                              isHover = false;
+                                              ishoverother = "bag";
+                                            });
+                                          },
+                                          onExit: (_) {
+                                            setState(() {
+                                              ishoverother = "";
+                                            });
+                                          },
+                                          child: TweenAnimationBuilder<double>(
+                                            tween: Tween<double>(
+                                              begin: 200,
+                                              end:
+                                                  ishoverother == "bag"
+                                                      ? 255
+                                                      : 200,
+                                            ),
+                                            duration: Duration(
+                                              milliseconds: 200,
+                                            ),
+                                            curve: Curves.easeInOut,
+                                            builder: (context, value, child) {
+                                              return Icon(
+                                                CupertinoIcons.bag,
+                                                color: Colors.white.withAlpha(
+                                                  value.toInt(),
+                                                ),
+                                                size: 18,
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        if (screenWidth < 850)
+                                          Row(
+                                            children: [
+                                              SizedBox(
+                                                width: screenWidth * 0.03,
+                                              ),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    showMobileMenu = true;
+                                                    selectedMobileIndex = null;
+                                                  });
+                                                },
+                                                child: MouseRegion(
+                                                  onEnter: (_) {
+                                                    setState(() {
+                                                      isHover = false;
+                                                      ishoverother = "line";
+                                                    });
+                                                  },
+                                                  onExit: (_) {
+                                                    setState(() {
+                                                      ishoverother = "";
+                                                    });
+                                                  },
+                                                  child: TweenAnimationBuilder<
+                                                    double
+                                                  >(
+                                                    tween: Tween<double>(
+                                                      begin: 200,
+                                                      end:
+                                                          ishoverother == "line"
+                                                              ? 255
+                                                              : 200,
+                                                    ),
+                                                    duration: Duration(
+                                                      milliseconds: 200,
+                                                    ),
+                                                    curve: Curves.easeInOut,
+                                                    builder: (
+                                                      context,
+                                                      value,
+                                                      child,
+                                                    ) {
+                                                      return Icon(
+                                                        CupertinoIcons
+                                                            .line_horizontal_3,
+                                                        color: Colors.white
+                                                            .withAlpha(
+                                                              value.toInt(),
+                                                            ),
+                                                        size: 18,
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                if (isHover && hoveredIndex != null)
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      top: 50,
+                                      bottom: 50,
+                                    ),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children:
+                                          MenuData.submenus[hoveredIndex!]
+                                              .asMap()
+                                              .entries
+                                              .map((entry) {
+                                                int idx = entry.key;
+                                                Map<String, dynamic> section =
+                                                    entry.value;
+                                                bool isFirstColumn = idx == 0;
+                                                return Padding(
+                                                  padding: EdgeInsets.only(
+                                                    right:
+                                                        isFirstColumn
+                                                            ? 100
+                                                            : 50,
+                                                  ),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        section["title"],
+                                                        style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: Colors.white
+                                                              .withAlpha(200),
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 25),
+                                                      ...section["items"].asMap().entries.map<
+                                                        Widget
+                                                      >((entry) {
+                                                        String item =
+                                                            entry.value;
+                                                        return Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                bottom: 3,
+                                                              ),
+                                                          child: MouseRegion(
+                                                            cursor:
+                                                                SystemMouseCursors
+                                                                    .click,
+                                                            child: Text(
+                                                              item,
+                                                              style: TextStyle(
+                                                                fontSize:
+                                                                    isFirstColumn
+                                                                        ? 22
+                                                                        : 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color: Colors
+                                                                    .white
+                                                                    .withAlpha(
+                                                                      isFirstColumn
+                                                                          ? 255
+                                                                          : 250,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }).toList(),
+                                                    ],
+                                                  ),
+                                                );
+                                              })
+                                              .toList(),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        if (showMobileMenu && screenWidth < 850)
+          Positioned.fill(
+            child: Container(
+              color: Colors.black,
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      if (selectedMobileIndex != null)
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedMobileIndex = null;
+                            });
+                          },
+                          child: Icon(CupertinoIcons.back, color: Colors.white),
+                        ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            showMobileMenu = false;
+                            selectedMobileIndex = null;
+                          });
+                        },
+                        child: Icon(CupertinoIcons.clear, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 24),
+                  Expanded(
+                    child:
+                        selectedMobileIndex == null
+                            ? ListView.builder(
+                              itemCount: MenuData.navbarItems.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      selectedMobileIndex = index;
+                                    });
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 12,
+                                    ),
+                                    child: Text(
+                                      MenuData.navbarItems[index],
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                            : ListView(
+                              children: [
+                                ...MenuData.submenus[selectedMobileIndex!].map((
+                                  section,
+                                ) {
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        section['title'],
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(height: 12),
+                                      ...List.generate(
+                                        (section['items'] as List).length,
+                                        (i) => Padding(
+                                          padding: const EdgeInsets.only(
+                                            bottom: 10,
+                                          ),
+                                          child: Text(
+                                            section['items'][i],
+                                            style: TextStyle(
+                                              color: Colors.white70,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 24),
+                                    ],
+                                  );
+                                }),
+                              ],
+                            ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

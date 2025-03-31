@@ -2,9 +2,9 @@ import 'dart:math' show min;
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:webpack/class/menu_data.dart';
 import 'package:webpack/class/ourservices.dart';
 import 'package:webpack/class/packwithcon.dart';
+import 'package:webpack/widgets/header.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -58,10 +58,7 @@ class HomeState extends State<Home> {
                   width: screenWidth,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset("lib/src/img/Packvision.png"),
-                      Image.asset("lib/src/img/Bag&paint.png"),
-                    ],
+                    children: [Image.asset("lib/src/img/Packvision.png"), Image.asset("lib/src/img/Bag&paint.png")],
                   ),
                 ),
                 Container(
@@ -70,17 +67,11 @@ class HomeState extends State<Home> {
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [
-                        Theme.of(context).colorScheme.tertiary,
-                        Theme.of(context).primaryColor,
-                      ],
+                      colors: [Theme.of(context).colorScheme.tertiary, Theme.of(context).primaryColor],
                     ),
                   ),
                   child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: screenWidth * 0.065,
-                      vertical: 200,
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.065, vertical: 200),
                     child: Center(
                       child: ConstrainedBox(
                         constraints: BoxConstraints(maxWidth: 1200),
@@ -88,9 +79,7 @@ class HomeState extends State<Home> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: EdgeInsets.only(
-                                bottom: screenWidth * 0.05,
-                              ),
+                              padding: EdgeInsets.only(bottom: screenWidth * 0.05),
                               child: Text(
                                 "Empaques con conciencia.",
                                 style: TextStyle(
@@ -108,20 +97,13 @@ class HomeState extends State<Home> {
                                       bool isExpanded = _expandedIndex == index;
                                       double leftPosition;
                                       if (_expandedIndex == null) {
-                                        leftPosition =
-                                            index *
-                                            (screenWidth * 0.21 +
-                                                screenWidth * 0.012);
+                                        leftPosition = index * (screenWidth * 0.21 + screenWidth * 0.012);
                                       } else {
                                         if (isExpanded) {
                                           leftPosition = 0;
                                         } else {
-                                          int stackIndex =
-                                              cardIndex.indexOf(index) - 1;
-                                          leftPosition =
-                                              screenWidth * 0.5 +
-                                              screenWidth * 0.02 +
-                                              stackIndex * 20.0;
+                                          int stackIndex = cardIndex.indexOf(index) - 1;
+                                          leftPosition = screenWidth * 0.5 + screenWidth * 0.02 + stackIndex * 20.0;
                                         }
                                       }
                                       return AnimatedPositioned(
@@ -153,21 +135,14 @@ class HomeState extends State<Home> {
                     ),
                   ),
                 ),
-
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: screenWidth * 0.1,
-                        vertical: screenWidth * 0.04,
-                      ),
+                      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1, vertical: screenWidth * 0.04),
                       child: Text(
                         "Nuestros servicios.",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: min(screenWidth * 0.06, 55),
-                        ),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenWidth * 0.06, 55)),
                       ),
                     ),
                     SingleChildScrollView(
@@ -180,119 +155,81 @@ class HomeState extends State<Home> {
                           return Padding(
                             padding: EdgeInsets.only(
                               left: index == 0 ? horizontalPadding : 0,
-                              right:
-                                  index == cardOS.length - 1
-                                      ? horizontalPadding
-                                      : 20,
+                              right: index == cardOS.length - 1 ? horizontalPadding : 20,
                             ),
                             child: AnimatedScale(
                               scale: isHoverCardList[index] ? 1.02 : 1.0,
                               duration: Duration(milliseconds: 300),
                               curve: Curves.easeInOut,
                               child: MouseRegion(
-                                onEnter:
-                                    (_) => setState(
-                                      () => isHoverCardList[index] = true,
+                                cursor: SystemMouseCursors.click,
+                                onEnter: (_) => setState(() => isHoverCardList[index] = true),
+                                onExit: (_) => setState(() => isHoverCardList[index] = false),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    ourservicesdialog(context, index);
+                                  },
+                                  child: Container(
+                                    width: min(screenWidth * 0.52, 380),
+                                    height: min(screenWidth * 0.93, 700),
+                                    padding: EdgeInsets.only(top: 22, left: 22),
+                                    margin: EdgeInsets.only(top: 20, bottom: 20, right: 20),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(26),
+                                      image: DecorationImage(image: AssetImage(card.image), fit: BoxFit.cover),
                                     ),
-                                onExit:
-                                    (_) => setState(
-                                      () => isHoverCardList[index] = false,
-                                    ),
-                                child: Container(
-                                  width: min(screenWidth * 0.52, 380),
-                                  height: min(screenWidth * 0.93, 700),
-                                  padding: EdgeInsets.only(top: 22, left: 22),
-                                  margin: EdgeInsets.only(
-                                    top: 20,
-                                    bottom: 20,
-                                    right: 20,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(26),
-
-                                    image: DecorationImage(
-                                      image: AssetImage(card.image),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        bottom: 10,
-                                        right: 10,
-                                        child: MouseRegion(
-                                          onEnter:
-                                              (_) => setState(
-                                                () =>
-                                                    isHoverIconList[index] =
-                                                        true,
+                                    child: Stack(
+                                      children: [
+                                        Positioned(
+                                          bottom: 10,
+                                          right: 10,
+                                          child: MouseRegion(
+                                            onEnter: (_) => setState(() => isHoverIconList[index] = true),
+                                            onExit: (_) => setState(() => isHoverIconList[index] = false),
+                                            child: AnimatedContainer(
+                                              duration: Duration(milliseconds: 200),
+                                              curve: Curves.easeInBack,
+                                              width: 40,
+                                              height: 40,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:
+                                                    isHoverIconList[index]
+                                                        ? Theme.of(context).primaryColor
+                                                        : Theme.of(context).primaryColor.withAlpha(200),
                                               ),
-                                          onExit:
-                                              (_) => setState(
-                                                () =>
-                                                    isHoverIconList[index] =
-                                                        false,
+                                              child: AnimatedOpacity(
+                                                opacity: isHoverIconList[index] ? 1 : 0.5,
+                                                duration: Duration(milliseconds: 300),
+                                                child: Icon(Icons.add_rounded, color: Colors.white),
                                               ),
-                                          child: AnimatedContainer(
-                                            duration: Duration(
-                                              milliseconds: 200,
-                                            ),
-                                            curve: Curves.easeInBack,
-                                            width: 40,
-                                            height: 40,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color:
-                                                  isHoverIconList[index]
-                                                      ? Theme.of(
-                                                        context,
-                                                      ).primaryColor
-                                                      : Theme.of(context)
-                                                          .primaryColor
-                                                          .withAlpha(200),
-                                            ),
-                                            child: Icon(
-                                              Icons.add_rounded,
-                                              color:
-                                                  isHoverIconList[index]
-                                                      ? Colors.white
-                                                      : Colors.white.withAlpha(
-                                                        200,
-                                                      ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            card.title,
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: min(
-                                                screenWidth * 0.03,
-                                                25,
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              card.title,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: min(screenWidth * 0.03, 25),
                                               ),
                                             ),
-                                          ),
-                                          Text(
-                                            card.body,
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: min(
-                                                screenWidth * 0.04,
-                                                30,
+                                            Text(
+                                              card.body,
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: min(screenWidth * 0.04, 30),
+                                                fontWeight: FontWeight.bold,
                                               ),
-                                              fontWeight: FontWeight.bold,
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -301,21 +238,15 @@ class HomeState extends State<Home> {
                         }),
                       ),
                     ),
-
                     Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: screenWidth * 0.03,
-                        horizontal: screenWidth * 0.1,
-                      ),
+                      padding: EdgeInsets.symmetric(vertical: screenWidth * 0.03, horizontal: screenWidth * 0.1),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           IconButton(
                             style: ButtonStyle(
                               backgroundColor: WidgetStateProperty.all(
-                                canScrollLeft
-                                    ? Colors.grey.withAlpha(100)
-                                    : Colors.grey.withAlpha(80),
+                                canScrollLeft ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80),
                               ),
                             ),
                             onPressed:
@@ -330,14 +261,11 @@ class HomeState extends State<Home> {
                                     : null,
                             icon: Icon(Icons.arrow_back_ios_new_rounded),
                           ),
-
                           SizedBox(width: 20),
                           IconButton(
                             style: ButtonStyle(
                               backgroundColor: WidgetStateProperty.all(
-                                canScrollLeft
-                                    ? Colors.grey.withAlpha(100)
-                                    : Colors.grey.withAlpha(80),
+                                canScrollLeft ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80),
                               ),
                             ),
                             onPressed:
@@ -357,6 +285,80 @@ class HomeState extends State<Home> {
                     ),
                   ],
                 ),
+
+                Container(
+                  width: screenWidth,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Theme.of(context).colorScheme.tertiary, Theme.of(context).primaryColor],
+                    ),
+                  ),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1, vertical: 100),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Sedes.",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: min(screenWidth * 0.06, 55),
+                          ),
+                        ),
+                        SizedBox(height: 50),
+                        MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: Container(
+                            clipBehavior: Clip.hardEdge,
+                            height: min(screenWidth * 0.4, 300),
+                            width: min(screenWidth * 0.5, 400),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              image: DecorationImage(image: AssetImage("lib/src/img/Carvajal.jpg"), fit: BoxFit.cover),
+                            ),
+                            child: Stack(
+                              children: [
+                                Positioned(
+                                  bottom: 0,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        Icon(CupertinoIcons.location_fill, color: Theme.of(context).primaryColor),
+                                        SizedBox(width: screenWidth * 0.01),
+                                        Text("Encuentranos!"),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1, vertical: screenWidth * 0.02),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Copyright © 2025 Packvision S.A.S Todos los derechos reservados",
+                            style: TextStyle(color: Colors.black38),
+                          ),
+                          Text("Colombia", style: TextStyle(color: Colors.black38)),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -364,6 +366,311 @@ class HomeState extends State<Home> {
         ],
       ),
     );
+  }
+
+  void ourservicesdialog(BuildContext context, int index) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        final screenWidth = MediaQuery.of(context).size.width;
+        final card = cardOS[index];
+        final ScrollController scrollController = ScrollController();
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            return Material(
+              color: Colors.transparent,
+              child: Stack(
+                children: [
+                  BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                    child: GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(color: Colors.transparent),
+                    ),
+                  ),
+                  Center(
+                    child: Stack(
+                      children: [
+                        SingleChildScrollView(
+                          controller: scrollController,
+                          child: Container(
+                            margin: EdgeInsets.symmetric(vertical: 50),
+                            width: min(screenWidth * 0.9, 1260),
+                            padding: EdgeInsets.only(bottom: 50),
+                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: min(76, screenWidth * 0.09)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: 60),
+                                  Text(
+                                    card.title,
+                                    style: TextStyle(fontSize: 20, color: Theme.of(context).primaryColor),
+                                  ),
+                                  Text(
+                                    card.body,
+                                    style: TextStyle(
+                                      fontSize: min(50, screenWidth * 0.06),
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  ),
+                                  SizedBox(height: 50),
+                                  buildDialogContent(context, index),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          top: 60,
+                          right: 10,
+                          child: IconButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            icon: Icon(
+                              CupertinoIcons.xmark_circle_fill,
+                              size: 40,
+                              color: const Color.fromARGB(255, 71, 71, 71),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget buildDialogContent(BuildContext context, int index) {
+    final card = cardOS[index];
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    switch (index) {
+      case 0:
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(color: const Color(0xFFF2F2F2), borderRadius: BorderRadius.circular(16)),
+              child: Column(
+                children: [
+                  SizedBox(height: 50),
+                  screenWidth < 1070
+                      //Celular
+                      ? Column(
+                        children: [
+                          SizedBox(height: 20),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: min(100, screenWidth * 0.07)),
+                            child: Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: "La Bolsa Rosa de Sharon ",
+                                    style: TextStyle(
+                                      color: Color.fromARGB(255, 0, 0, 0),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: min(22, screenWidth * 0.05),
+                                      height: 1.2,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        "es un empaque de alta calidad y diseño elegante, ideal para resaltar tus productos. Disponible en presentaciones de 500 gramos, esta bolsa mate combina funcionalidad y estética para ofrecer una solución de empaque sofisticada.",
+                                    style: TextStyle(
+                                      color: Color.fromARGB(255, 106, 107, 109),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: min(22, screenWidth * 0.05),
+                                      height: 1.2,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          AspectRatio(
+                            aspectRatio: 3 / 4,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.asset("lib/src/img/RosaSharon_Shoshana.webp", fit: BoxFit.cover),
+                            ),
+                          ),
+                        ],
+                      )
+                      //PC
+                      : Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: AspectRatio(
+                              aspectRatio: 3 / 4,
+                              child: Image.asset("lib/src/img/RosaSharon_Shoshana.webp", fit: BoxFit.cover),
+                            ),
+                          ),
+                          SizedBox(width: 30),
+                          Expanded(
+                            flex: 1,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 50),
+                              child: Column(
+                                children: [
+                                  Text.rich(
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: "La Bolsa Rosa de Sharon ",
+                                          style: TextStyle(
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: min(28, screenWidth * 0.05),
+                                            height: 1,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              "es un empaque de alta calidad y diseño elegante, ideal para resaltar tus productos. Disponible en presentaciones de 500 gramos, esta bolsa mate combina funcionalidad y estética para ofrecer una solución de empaque sofisticada.",
+                                          style: TextStyle(
+                                            color: Color.fromARGB(255, 125, 126, 129),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: min(28, screenWidth * 0.05),
+                                            height: 1,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                ],
+              ),
+            ),
+            SizedBox(height: 20),
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(color: const Color(0xFFF2F2F2), borderRadius: BorderRadius.circular(16)),
+              child: Column(
+                children: [
+                  SizedBox(height: 50),
+                  screenWidth < 1070
+                      //Celular
+                      ? Column(
+                        children: [
+                          SizedBox(height: 20),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: min(100, screenWidth * 0.07)),
+                            child: Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: "La Bolsa Rosa de Sharon ",
+                                    style: TextStyle(
+                                      color: Color.fromARGB(255, 0, 0, 0),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: min(22, screenWidth * 0.05),
+                                      height: 1.2,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        "es un empaque de alta calidad y diseño elegante, ideal para resaltar tus productos. Disponible en presentaciones de 500 gramos, esta bolsa mate combina funcionalidad y estética para ofrecer una solución de empaque sofisticada.",
+                                    style: TextStyle(
+                                      color: Color.fromARGB(255, 106, 107, 109),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: min(22, screenWidth * 0.05),
+                                      height: 1.2,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          AspectRatio(
+                            aspectRatio: 3 / 4,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.asset("lib/src/img/RosaSharon_Shoshana.webp", fit: BoxFit.cover),
+                            ),
+                          ),
+                        ],
+                      )
+                      //PC
+                      : Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: AspectRatio(
+                              aspectRatio: 3 / 4,
+                              child: Image.asset("lib/src/img/RosaSharon_Shoshana.webp", fit: BoxFit.cover),
+                            ),
+                          ),
+                          SizedBox(width: 30),
+                          Expanded(
+                            flex: 1,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 50),
+                              child: Column(
+                                children: [
+                                  Text.rich(
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: "La Bolsa Rosa de Sharon ",
+                                          style: TextStyle(
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: min(28, screenWidth * 0.05),
+                                            height: 1,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              "es un empaque de alta calidad y diseño elegante, ideal para resaltar tus productos. Disponible en presentaciones de 500 gramos, esta bolsa mate combina funcionalidad y estética para ofrecer una solución de empaque sofisticada.",
+                                          style: TextStyle(
+                                            color: Color.fromARGB(255, 125, 126, 129),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: min(28, screenWidth * 0.05),
+                                            height: 1,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                ],
+              ),
+            ),
+          ],
+        );
+
+      default:
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [Text(card.title, style: TextStyle(fontSize: 20)), Text(card.body, style: TextStyle(fontSize: 30))],
+        );
+    }
   }
 }
 
@@ -395,10 +702,7 @@ class AnimatedPositionedCard extends StatelessWidget {
       margin: EdgeInsets.only(right: 120),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        image: DecorationImage(
-          image: AssetImage(card.image),
-          fit: BoxFit.cover,
-        ),
+        image: DecorationImage(image: AssetImage(card.image), fit: BoxFit.cover),
       ),
       child: Stack(
         children: [
@@ -420,11 +724,7 @@ class AnimatedPositionedCard extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   card.title,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontSize: screenWidth * 0.012,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: screenWidth * 0.012),
                 ),
               ),
             ),
@@ -472,517 +772,14 @@ class AnimatedPositionedCard extends StatelessWidget {
             child: IconButton(
               onPressed: isExpanded ? onCollapse : onExpand,
               icon: Icon(
-                isExpanded
-                    ? CupertinoIcons.xmark_circle_fill
-                    : CupertinoIcons.add_circled_solid,
-                color:
-                    isExpanded ? Theme.of(context).primaryColor : Colors.white,
+                isExpanded ? CupertinoIcons.xmark_circle_fill : CupertinoIcons.add_circled_solid,
+                color: isExpanded ? Theme.of(context).primaryColor : Colors.white,
                 size: screenWidth * 0.03,
               ),
             ),
           ),
         ],
       ),
-    );
-  }
-}
-
-class Header extends StatefulWidget {
-  const Header({super.key});
-
-  @override
-  State<Header> createState() => _HeaderState();
-}
-
-class _HeaderState extends State<Header> {
-  bool isHover = false;
-  int? hoveredIndex;
-  String? ishoverother = "";
-  bool showMobileMenu = false;
-  int? selectedMobileIndex;
-
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
-    if (showMobileMenu && screenWidth >= 850) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        setState(() {
-          showMobileMenu = false;
-          selectedMobileIndex = null;
-        });
-      });
-    }
-
-    return Stack(
-      children: [
-        TweenAnimationBuilder<double>(
-          tween: Tween<double>(begin: 0.0, end: isHover ? 10.0 : 0.0),
-          duration: Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          builder: (context, value, child) {
-            return SizedBox(
-              width: double.infinity,
-              height: double.infinity,
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: value, sigmaY: value),
-                child: Container(),
-              ),
-            );
-          },
-        ),
-
-        Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          child: MouseRegion(
-            onExit: (_) {
-              setState(() {
-                isHover = false;
-                hoveredIndex = null;
-                ishoverother = "";
-              });
-            },
-            child: AnimatedContainer(
-              duration: Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-              width: double.infinity,
-              height: isHover ? 300 : 44,
-              child: ClipRRect(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Container(
-                      color: Theme.of(context).primaryColor.withAlpha(200),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth * 0.02,
-                          vertical: 10,
-                        ),
-                        child: Center(
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: 1024),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    MouseRegion(
-                                      onEnter: (_) {
-                                        setState(() {
-                                          isHover = false;
-                                          ishoverother = "logo";
-                                        });
-                                      },
-                                      onExit: (_) {
-                                        setState(() {
-                                          ishoverother = "";
-                                        });
-                                      },
-                                      child: TweenAnimationBuilder<double>(
-                                        tween: Tween<double>(
-                                          begin: 210,
-                                          end:
-                                              ishoverother == "logo"
-                                                  ? 255
-                                                  : 210,
-                                        ),
-                                        duration: Duration(milliseconds: 200),
-                                        curve: Curves.easeInOut,
-                                        builder: (context, value, child) {
-                                          return Image.asset(
-                                            "lib/src/img/WIsotipo.png",
-                                            height: 20,
-                                            color: Colors.white.withAlpha(
-                                              value.toInt(),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    if (screenWidth > 850)
-                                      ...List.generate(
-                                        MenuData.navbarItems.length,
-                                        (index) {
-                                          return MouseRegion(
-                                            cursor: SystemMouseCursors.click,
-                                            onEnter: (_) {
-                                              setState(() {
-                                                isHover = true;
-                                                hoveredIndex = index;
-                                              });
-                                            },
-                                            child: TweenAnimationBuilder<
-                                              double
-                                            >(
-                                              tween: Tween<double>(
-                                                begin: 200,
-                                                end:
-                                                    hoveredIndex == index
-                                                        ? 255
-                                                        : 200,
-                                              ),
-                                              duration: Duration(
-                                                milliseconds: 200,
-                                              ),
-                                              curve: Curves.easeInOut,
-                                              builder: (context, value, child) {
-                                                return GestureDetector(
-                                                  onTap: () {},
-                                                  child: Text(
-                                                    MenuData.navbarItems[index],
-                                                    style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: Colors.white
-                                                          .withAlpha(
-                                                            value.toInt(),
-                                                          ),
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    Row(
-                                      children: [
-                                        MouseRegion(
-                                          onEnter: (_) {
-                                            setState(() {
-                                              isHover = false;
-                                              ishoverother = "search";
-                                            });
-                                          },
-                                          onExit: (_) {
-                                            setState(() {
-                                              ishoverother = "";
-                                            });
-                                          },
-                                          child: TweenAnimationBuilder<double>(
-                                            tween: Tween<double>(
-                                              begin: 200,
-                                              end:
-                                                  ishoverother == "search"
-                                                      ? 255
-                                                      : 200,
-                                            ),
-                                            duration: Duration(
-                                              milliseconds: 200,
-                                            ),
-                                            curve: Curves.easeInOut,
-                                            builder: (context, value, child) {
-                                              return Icon(
-                                                CupertinoIcons.search,
-                                                color: Colors.white.withAlpha(
-                                                  value.toInt(),
-                                                ),
-                                                size: 18,
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        SizedBox(width: screenWidth * 0.03),
-                                        MouseRegion(
-                                          onEnter: (_) {
-                                            setState(() {
-                                              isHover = false;
-                                              ishoverother = "bag";
-                                            });
-                                          },
-                                          onExit: (_) {
-                                            setState(() {
-                                              ishoverother = "";
-                                            });
-                                          },
-                                          child: TweenAnimationBuilder<double>(
-                                            tween: Tween<double>(
-                                              begin: 200,
-                                              end:
-                                                  ishoverother == "bag"
-                                                      ? 255
-                                                      : 200,
-                                            ),
-                                            duration: Duration(
-                                              milliseconds: 200,
-                                            ),
-                                            curve: Curves.easeInOut,
-                                            builder: (context, value, child) {
-                                              return Icon(
-                                                CupertinoIcons.bag,
-                                                color: Colors.white.withAlpha(
-                                                  value.toInt(),
-                                                ),
-                                                size: 18,
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        if (screenWidth < 850)
-                                          Row(
-                                            children: [
-                                              SizedBox(
-                                                width: screenWidth * 0.03,
-                                              ),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    showMobileMenu = true;
-                                                    selectedMobileIndex = null;
-                                                  });
-                                                },
-                                                child: MouseRegion(
-                                                  onEnter: (_) {
-                                                    setState(() {
-                                                      isHover = false;
-                                                      ishoverother = "line";
-                                                    });
-                                                  },
-                                                  onExit: (_) {
-                                                    setState(() {
-                                                      ishoverother = "";
-                                                    });
-                                                  },
-                                                  child: TweenAnimationBuilder<
-                                                    double
-                                                  >(
-                                                    tween: Tween<double>(
-                                                      begin: 200,
-                                                      end:
-                                                          ishoverother == "line"
-                                                              ? 255
-                                                              : 200,
-                                                    ),
-                                                    duration: Duration(
-                                                      milliseconds: 200,
-                                                    ),
-                                                    curve: Curves.easeInOut,
-                                                    builder: (
-                                                      context,
-                                                      value,
-                                                      child,
-                                                    ) {
-                                                      return Icon(
-                                                        CupertinoIcons
-                                                            .line_horizontal_3,
-                                                        color: Colors.white
-                                                            .withAlpha(
-                                                              value.toInt(),
-                                                            ),
-                                                        size: 18,
-                                                      );
-                                                    },
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                if (isHover && hoveredIndex != null)
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      top: 50,
-                                      bottom: 50,
-                                    ),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children:
-                                          MenuData.submenus[hoveredIndex!]
-                                              .asMap()
-                                              .entries
-                                              .map((entry) {
-                                                int idx = entry.key;
-                                                Map<String, dynamic> section =
-                                                    entry.value;
-                                                bool isFirstColumn = idx == 0;
-                                                return Padding(
-                                                  padding: EdgeInsets.only(
-                                                    right:
-                                                        isFirstColumn
-                                                            ? 100
-                                                            : 50,
-                                                  ),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        section["title"],
-                                                        style: TextStyle(
-                                                          fontSize: 12,
-                                                          color: Colors.white
-                                                              .withAlpha(200),
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 25),
-                                                      ...section["items"].asMap().entries.map<
-                                                        Widget
-                                                      >((entry) {
-                                                        String item =
-                                                            entry.value;
-                                                        return Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                bottom: 3,
-                                                              ),
-                                                          child: MouseRegion(
-                                                            cursor:
-                                                                SystemMouseCursors
-                                                                    .click,
-                                                            child: Text(
-                                                              item,
-                                                              style: TextStyle(
-                                                                fontSize:
-                                                                    isFirstColumn
-                                                                        ? 22
-                                                                        : 12,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Colors
-                                                                    .white
-                                                                    .withAlpha(
-                                                                      isFirstColumn
-                                                                          ? 255
-                                                                          : 250,
-                                                                    ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        );
-                                                      }).toList(),
-                                                    ],
-                                                  ),
-                                                );
-                                              })
-                                              .toList(),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-        if (showMobileMenu && screenWidth < 850)
-          Positioned.fill(
-            child: Container(
-              color: Colors.black,
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      if (selectedMobileIndex != null)
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedMobileIndex = null;
-                            });
-                          },
-                          child: Icon(CupertinoIcons.back, color: Colors.white),
-                        ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            showMobileMenu = false;
-                            selectedMobileIndex = null;
-                          });
-                        },
-                        child: Icon(CupertinoIcons.clear, color: Colors.white),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 24),
-                  Expanded(
-                    child:
-                        selectedMobileIndex == null
-                            ? ListView.builder(
-                              itemCount: MenuData.navbarItems.length,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      selectedMobileIndex = index;
-                                    });
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 12,
-                                    ),
-                                    child: Text(
-                                      MenuData.navbarItems[index],
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            )
-                            : ListView(
-                              children: [
-                                ...MenuData.submenus[selectedMobileIndex!].map((
-                                  section,
-                                ) {
-                                  return Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        section['title'],
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      SizedBox(height: 12),
-                                      ...List.generate(
-                                        (section['items'] as List).length,
-                                        (i) => Padding(
-                                          padding: const EdgeInsets.only(
-                                            bottom: 10,
-                                          ),
-                                          child: Text(
-                                            section['items'][i],
-                                            style: TextStyle(
-                                              color: Colors.white70,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 24),
-                                    ],
-                                  );
-                                }),
-                              ],
-                            ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-      ],
     );
   }
 }

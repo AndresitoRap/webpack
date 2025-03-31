@@ -87,11 +87,7 @@ class MenuData {
       },
       {
         "title": "Compras",
-        "items": [
-          "Politicas legales y reglamentarias",
-          "Encuesta de satisfacciónn",
-          "PQRS",
-        ],
+        "items": ["Politicas legales y reglamentarias", "Encuesta de satisfacciónn", "PQRS"],
       },
     ],
     [

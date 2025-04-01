@@ -2,9 +2,12 @@ import 'dart:math' show min;
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:webpack/class/ourservices.dart';
+import 'package:webpack/class/ourrecommended.dart';
 import 'package:webpack/class/packwithcon.dart';
+import 'package:webpack/widgets/build_recommended.dart';
+import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
+import 'package:webpack/widgets/heardquarters.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -18,9 +21,9 @@ class HomeState extends State<Home> {
   int? _expandedIndex;
   List<int> cardIndex = List.generate(cardPWC.length, (index) => index);
 
-  //Nuestros servicios
-  List<bool> isHoverCardList = List.generate(cardOS.length, (_) => false);
-  List<bool> isHoverIconList = List.generate(cardOS.length, (_) => false);
+  //Nuestros recomendados
+  List<bool> isHoverCardList = List.generate(cardOR.length, (_) => false);
+  List<bool> isHoverIconList = List.generate(cardOR.length, (_) => false);
   final ScrollController _scrollController = ScrollController();
   bool canScrollLeft = false;
   bool canScrollRight = true;
@@ -45,6 +48,7 @@ class HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    final bool isMobile = screenWidth < 720;
 
     return Scaffold(
       body: Stack(
@@ -56,10 +60,28 @@ class HomeState extends State<Home> {
                 SizedBox(
                   height: screenHeight,
                   width: screenWidth,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [Image.asset("lib/src/img/Packvision.png"), Image.asset("lib/src/img/Bag&paint.png")],
-                  ),
+                  child:
+                      screenWidth > 800
+                          ? Padding(
+                            padding: EdgeInsets.all(screenWidth * 0.05),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(child: Image.asset("lib/src/img/Packvision.png", fit: BoxFit.contain)),
+                                Expanded(child: Image.asset("lib/src/img/Bag&paint.png", fit: BoxFit.contain)),
+                              ],
+                            ),
+                          )
+                          : Padding(
+                            padding: EdgeInsets.all(screenWidth * 0.05),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(child: Image.asset("lib/src/img/Packvision.png", fit: BoxFit.contain)),
+                                Expanded(child: Image.asset("lib/src/img/Bag&paint.png", fit: BoxFit.contain)),
+                              ],
+                            ),
+                          ),
                 ),
                 Container(
                   width: screenWidth,
@@ -70,67 +92,185 @@ class HomeState extends State<Home> {
                       colors: [Theme.of(context).colorScheme.tertiary, Theme.of(context).primaryColor],
                     ),
                   ),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.065, vertical: 200),
-                    child: Center(
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: 1200),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(bottom: screenWidth * 0.05),
-                              child: Text(
-                                "Empaques con conciencia.",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: min(screenWidth * 0.06, 60),
-                                ),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: screenWidth),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                              bottom: screenWidth * 0.05,
+                              top: isMobile ? screenWidth * 0.1 : screenWidth * 0.05,
+                              left: screenWidth * 0.1,
+                            ),
+                            child: Text(
+                              "Empaques con conciencia.",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: min(screenWidth * 0.03, 60),
                               ),
                             ),
-                            SizedBox(
-                              height: screenWidth * 0.3,
-                              child: Stack(
+                          ),
+                          isMobile
+                              ? Column(
                                 children:
                                     cardIndex.map((index) {
-                                      bool isExpanded = _expandedIndex == index;
-                                      double leftPosition;
-                                      if (_expandedIndex == null) {
-                                        leftPosition = index * (screenWidth * 0.21 + screenWidth * 0.012);
-                                      } else {
-                                        if (isExpanded) {
-                                          leftPosition = 0;
-                                        } else {
-                                          int stackIndex = cardIndex.indexOf(index) - 1;
-                                          leftPosition = screenWidth * 0.5 + screenWidth * 0.02 + stackIndex * 20.0;
-                                        }
-                                      }
-                                      return AnimatedPositioned(
-                                        duration: Duration(milliseconds: 300),
-                                        left: leftPosition,
-                                        child: AnimatedPositionedCard(
-                                          index: index,
-                                          isExpanded: isExpanded,
-                                          screenWidth: screenWidth,
-                                          card: cardPWC[index],
-                                          onExpand: () {
-                                            setState(() {
-                                              _expandedIndex = index;
-                                            });
-                                          },
-                                          onCollapse: () {
-                                            setState(() {
-                                              _expandedIndex = null;
-                                            });
-                                          },
+                                      final card = cardPWC[index];
+                                      final bool isExpanded = _expandedIndex == index;
+                                      return AnimatedContainer(
+                                        duration: const Duration(milliseconds: 300),
+                                        width: double.infinity,
+                                        height: isExpanded ? screenWidth * 0.95 : screenWidth * 0.6,
+                                        margin: const EdgeInsets.only(bottom: 12),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.zero,
+                                          image: DecorationImage(image: AssetImage(card.image), fit: BoxFit.cover),
+                                        ),
+                                        child: Stack(
+                                          children: [
+                                            // Título
+                                            Positioned(
+                                              top: 16,
+                                              left: 0,
+                                              child: Container(
+                                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                                                decoration: BoxDecoration(
+                                                  color: Theme.of(context).primaryColor.withAlpha(230),
+                                                  borderRadius: BorderRadius.only(
+                                                    topRight: Radius.circular(8),
+                                                    bottomRight: Radius.circular(8),
+                                                  ),
+                                                ),
+                                                child: Text(
+                                                  card.title,
+                                                  style: TextStyle(
+                                                    fontSize: screenWidth * 0.03,
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            if (isExpanded)
+                                              Positioned(
+                                                bottom: 0,
+                                                left: 0,
+                                                right: 0,
+                                                child: Container(
+                                                  height: 400,
+                                                  padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
+                                                  decoration: const BoxDecoration(
+                                                    gradient: LinearGradient(
+                                                      begin: Alignment.topCenter,
+                                                      end: Alignment.bottomCenter,
+                                                      colors: [Colors.transparent, Colors.white, Colors.white],
+                                                    ),
+                                                  ),
+                                                  child: Stack(
+                                                    children: [
+                                                      Positioned(
+                                                        bottom: 0,
+                                                        left: 0,
+                                                        right: 0,
+                                                        child: Text(
+                                                          card.description,
+                                                          style: TextStyle(
+                                                            color: Theme.of(context).primaryColor,
+                                                            fontWeight: FontWeight.w600,
+                                                            fontSize: screenWidth * 0.03,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            Positioned(
+                                              bottom: 12,
+                                              right: 12,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    _expandedIndex = isExpanded ? null : index;
+                                                  });
+                                                },
+                                                child: MouseRegion(
+                                                  cursor: SystemMouseCursors.click,
+                                                  child: Container(
+                                                    width: 36,
+                                                    height: 36,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color:
+                                                          isExpanded
+                                                              ? const Color(0xff004f9f)
+                                                              : Theme.of(context).primaryColor,
+                                                    ),
+                                                    child: Icon(
+                                                      isExpanded ? CupertinoIcons.xmark : CupertinoIcons.add,
+                                                      color: Colors.white,
+                                                      size: 24,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       );
                                     }).toList(),
+                              )
+                              //PC
+                              : Padding(
+                                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
+                                child: Padding(
+                                  padding: EdgeInsets.only(bottom: screenWidth * 0.05),
+                                  child: SizedBox(
+                                    height: screenWidth * 0.3,
+                                    child: Stack(
+                                      children:
+                                          cardIndex.map((index) {
+                                            bool isExpanded = _expandedIndex == index;
+                                            double leftPosition;
+                                            if (_expandedIndex == null) {
+                                              leftPosition = index * (screenWidth * 0.21 + screenWidth * 0.012);
+                                            } else {
+                                              if (isExpanded) {
+                                                leftPosition = 0;
+                                              } else {
+                                                int stackIndex = cardIndex.indexOf(index) - 1;
+                                                leftPosition =
+                                                    screenWidth * 0.5 + screenWidth * 0.02 + stackIndex * 20.0;
+                                              }
+                                            }
+                                            return AnimatedPositioned(
+                                              duration: Duration(milliseconds: 300),
+                                              left: leftPosition,
+                                              child: AnimatedPositionedCard(
+                                                index: index,
+                                                isExpanded: isExpanded,
+                                                screenWidth: screenWidth,
+                                                card: cardPWC[index],
+                                                onExpand: () {
+                                                  setState(() {
+                                                    _expandedIndex = index;
+                                                  });
+                                                },
+                                                onCollapse: () {
+                                                  setState(() {
+                                                    _expandedIndex = null;
+                                                  });
+                                                },
+                                              ),
+                                            );
+                                          }).toList(),
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
+                        ],
                       ),
                     ),
                   ),
@@ -141,7 +281,7 @@ class HomeState extends State<Home> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1, vertical: screenWidth * 0.04),
                       child: Text(
-                        "Nuestros servicios.",
+                        "Nuestros recomendados.",
                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenWidth * 0.06, 55)),
                       ),
                     ),
@@ -149,13 +289,13 @@ class HomeState extends State<Home> {
                       scrollDirection: Axis.horizontal,
                       controller: _scrollController,
                       child: Row(
-                        children: List.generate(cardOS.length, (int index) {
-                          final card = cardOS[index];
+                        children: List.generate(cardOR.length, (int index) {
+                          final card = cardOR[index];
                           final double horizontalPadding = screenWidth * 0.1;
                           return Padding(
                             padding: EdgeInsets.only(
                               left: index == 0 ? horizontalPadding : 0,
-                              right: index == cardOS.length - 1 ? horizontalPadding : 20,
+                              right: index == cardOR.length - 1 ? horizontalPadding : 20,
                             ),
                             child: AnimatedScale(
                               scale: isHoverCardList[index] ? 1.02 : 1.0,
@@ -265,7 +405,7 @@ class HomeState extends State<Home> {
                           IconButton(
                             style: ButtonStyle(
                               backgroundColor: WidgetStateProperty.all(
-                                canScrollLeft ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80),
+                                canScrollRight ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80),
                               ),
                             ),
                             onPressed:
@@ -285,80 +425,8 @@ class HomeState extends State<Home> {
                     ),
                   ],
                 ),
-
-                Container(
-                  width: screenWidth,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [Theme.of(context).colorScheme.tertiary, Theme.of(context).primaryColor],
-                    ),
-                  ),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1, vertical: 100),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Sedes.",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: min(screenWidth * 0.06, 55),
-                          ),
-                        ),
-                        SizedBox(height: 50),
-                        MouseRegion(
-                          cursor: SystemMouseCursors.click,
-                          child: Container(
-                            clipBehavior: Clip.hardEdge,
-                            height: min(screenWidth * 0.4, 300),
-                            width: min(screenWidth * 0.5, 400),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                              image: DecorationImage(image: AssetImage("lib/src/img/Carvajal.jpg"), fit: BoxFit.cover),
-                            ),
-                            child: Stack(
-                              children: [
-                                Positioned(
-                                  bottom: 0,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        Icon(CupertinoIcons.location_fill, color: Theme.of(context).primaryColor),
-                                        SizedBox(width: screenWidth * 0.01),
-                                        Text("Encuentranos!"),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1, vertical: screenWidth * 0.02),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Copyright © 2025 Packvision S.A.S Todos los derechos reservados",
-                            style: TextStyle(color: Colors.black38),
-                          ),
-                          Text("Colombia", style: TextStyle(color: Colors.black38)),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                Headquarters(),
+                Footer(),
               ],
             ),
           ),
@@ -374,7 +442,7 @@ class HomeState extends State<Home> {
       barrierDismissible: true,
       builder: (BuildContext context) {
         final screenWidth = MediaQuery.of(context).size.width;
-        final card = cardOS[index];
+        final card = cardOR[index];
         final ScrollController scrollController = ScrollController();
         return LayoutBuilder(
           builder: (context, constraints) {
@@ -446,231 +514,6 @@ class HomeState extends State<Home> {
         );
       },
     );
-  }
-
-  Widget buildDialogContent(BuildContext context, int index) {
-    final card = cardOS[index];
-    final screenWidth = MediaQuery.of(context).size.width;
-
-    switch (index) {
-      case 0:
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(color: const Color(0xFFF2F2F2), borderRadius: BorderRadius.circular(16)),
-              child: Column(
-                children: [
-                  SizedBox(height: 50),
-                  screenWidth < 1070
-                      //Celular
-                      ? Column(
-                        children: [
-                          SizedBox(height: 20),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: min(100, screenWidth * 0.07)),
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "La Bolsa Rosa de Sharon ",
-                                    style: TextStyle(
-                                      color: Color.fromARGB(255, 0, 0, 0),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: min(22, screenWidth * 0.05),
-                                      height: 1.2,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        "es un empaque de alta calidad y diseño elegante, ideal para resaltar tus productos. Disponible en presentaciones de 500 gramos, esta bolsa mate combina funcionalidad y estética para ofrecer una solución de empaque sofisticada.",
-                                    style: TextStyle(
-                                      color: Color.fromARGB(255, 106, 107, 109),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: min(22, screenWidth * 0.05),
-                                      height: 1.2,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          AspectRatio(
-                            aspectRatio: 3 / 4,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: Image.asset("lib/src/img/RosaSharon_Shoshana.webp", fit: BoxFit.cover),
-                            ),
-                          ),
-                        ],
-                      )
-                      //PC
-                      : Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: AspectRatio(
-                              aspectRatio: 3 / 4,
-                              child: Image.asset("lib/src/img/RosaSharon_Shoshana.webp", fit: BoxFit.cover),
-                            ),
-                          ),
-                          SizedBox(width: 30),
-                          Expanded(
-                            flex: 1,
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 50),
-                              child: Column(
-                                children: [
-                                  Text.rich(
-                                    TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: "La Bolsa Rosa de Sharon ",
-                                          style: TextStyle(
-                                            color: Color.fromARGB(255, 0, 0, 0),
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: min(28, screenWidth * 0.05),
-                                            height: 1,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text:
-                                              "es un empaque de alta calidad y diseño elegante, ideal para resaltar tus productos. Disponible en presentaciones de 500 gramos, esta bolsa mate combina funcionalidad y estética para ofrecer una solución de empaque sofisticada.",
-                                          style: TextStyle(
-                                            color: Color.fromARGB(255, 125, 126, 129),
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: min(28, screenWidth * 0.05),
-                                            height: 1,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20),
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(color: const Color(0xFFF2F2F2), borderRadius: BorderRadius.circular(16)),
-              child: Column(
-                children: [
-                  SizedBox(height: 50),
-                  screenWidth < 1070
-                      //Celular
-                      ? Column(
-                        children: [
-                          SizedBox(height: 20),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: min(100, screenWidth * 0.07)),
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "La Bolsa Rosa de Sharon ",
-                                    style: TextStyle(
-                                      color: Color.fromARGB(255, 0, 0, 0),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: min(22, screenWidth * 0.05),
-                                      height: 1.2,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        "es un empaque de alta calidad y diseño elegante, ideal para resaltar tus productos. Disponible en presentaciones de 500 gramos, esta bolsa mate combina funcionalidad y estética para ofrecer una solución de empaque sofisticada.",
-                                    style: TextStyle(
-                                      color: Color.fromARGB(255, 106, 107, 109),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: min(22, screenWidth * 0.05),
-                                      height: 1.2,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          AspectRatio(
-                            aspectRatio: 3 / 4,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: Image.asset("lib/src/img/RosaSharon_Shoshana.webp", fit: BoxFit.cover),
-                            ),
-                          ),
-                        ],
-                      )
-                      //PC
-                      : Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: AspectRatio(
-                              aspectRatio: 3 / 4,
-                              child: Image.asset("lib/src/img/RosaSharon_Shoshana.webp", fit: BoxFit.cover),
-                            ),
-                          ),
-                          SizedBox(width: 30),
-                          Expanded(
-                            flex: 1,
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 50),
-                              child: Column(
-                                children: [
-                                  Text.rich(
-                                    TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: "La Bolsa Rosa de Sharon ",
-                                          style: TextStyle(
-                                            color: Color.fromARGB(255, 0, 0, 0),
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: min(28, screenWidth * 0.05),
-                                            height: 1,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text:
-                                              "es un empaque de alta calidad y diseño elegante, ideal para resaltar tus productos. Disponible en presentaciones de 500 gramos, esta bolsa mate combina funcionalidad y estética para ofrecer una solución de empaque sofisticada.",
-                                          style: TextStyle(
-                                            color: Color.fromARGB(255, 125, 126, 129),
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: min(28, screenWidth * 0.05),
-                                            height: 1,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                ],
-              ),
-            ),
-          ],
-        );
-
-      default:
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [Text(card.title, style: TextStyle(fontSize: 20)), Text(card.body, style: TextStyle(fontSize: 30))],
-        );
-    }
   }
 }
 

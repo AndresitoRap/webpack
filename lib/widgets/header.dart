@@ -68,7 +68,8 @@ class _HeaderState extends State<Header> {
                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
-                    child: Container(
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 300),
                       color: Theme.of(context).primaryColor.withAlpha(200),
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02, vertical: 10),

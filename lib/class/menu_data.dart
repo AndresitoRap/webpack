@@ -1,13 +1,5 @@
 class MenuData {
-  static const List<String> navbarItems = [
-    "SmartBag®",
-    "Ecobag®",
-    "Nosotros",
-    "Catálogo",
-    "Visitanos",
-    "Políticas",
-    "Soporte",
-  ];
+  static const List<String> navbarItems = ["SmartBag®", "Ecobag®", "Nosotros", "Catálogo", "Visitanos", "Soporte"];
 
   static const List<List<Map<String, dynamic>>> submenus = [
     [
@@ -82,26 +74,16 @@ class MenuData {
     ],
     [
       {
-        "title": "Políticas Generales",
-        "items": ["Términos", "Privacidad", "Cookies"],
+        "title": "Ayuda Rápida",
+        "items": ["Chat", "Teléfono"],
       },
       {
         "title": "Compras",
-        "items": ["Politicas legales y reglamentarias", "Encuesta de satisfacciónn", "PQRS"],
-      },
-    ],
-    [
-      {
-        "title": "Ayuda Rápida",
-        "items": ["FAQ", "Chat", "Teléfono"],
+        "items": ["Politicas legales y reglamentarias", "Encuesta de satisfacción", "PQRS"],
       },
       {
-        "title": "Soporte Técnico",
-        "items": ["Guías", "Reparaciones", "Actualizaciones"],
-      },
-      {
-        "title": "Comunidad",
-        "items": ["Foros", "Eventos", "Sugerencias"],
+        "title": "Políticas",
+        "items": ["Términos y privacidad", "Cookies"],
       },
     ],
   ];

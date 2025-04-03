@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:webpack/home.dart';
+import 'package:webpack/pages/home.dart';
+import 'package:webpack/pages/support/fast_help.dart';
+import 'package:webpack/pages/support/support.dart';
+import 'package:webpack/widgets/page_not_found.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,7 +27,20 @@ class MyApp extends StatelessWidget {
         ),
         fontFamily: 'D-DINExp',
       ),
-      home: Home(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => Home(),
+        '/Soporte': (context) => SupportHome(),
+        '/Soporte/Ayuda-Rápida/Chat': (context) => FastHelp(),
+        '/Soporte/Ayuda-Rápida/Teléfono': (context) => FastHelp(),
+        '/Soporte/Compras/Politicas-legales-y-reglamentarias': (context) => SupportHome(),
+        '/Soporte/Compras/PQRS': (context) => SupportHome(),
+        '/Soporte/Políticas/Terminos-y-privacidad': (context) => SupportHome(),
+        '/Soporte/Políticas/Cookies': (context) => SupportHome(),
+      },
+      onUnknownRoute: (setting) {
+        return MaterialPageRoute(builder: (context) => PageNotFound());
+      },
     );
   }
 }

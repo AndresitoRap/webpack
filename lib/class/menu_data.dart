@@ -75,15 +75,15 @@ class MenuData {
     [
       {
         "title": "Ayuda Rápida",
-        "items": ["Chat", "Teléfono"],
+        "items": ["Whatsapp", "Teléfono"],
       },
       {
-        "title": "Compras",
-        "items": ["Politicas legales y reglamentarias", "Encuesta de satisfacción", "PQRS"],
+        "title": "Politicas",
+        "items": ["Politicas legales y reglamentarias", "Tratamiento de datos"],
       },
       {
-        "title": "Políticas",
-        "items": ["Términos y privacidad", "Cookies"],
+        "title": "Tú opinion",
+        "items": ["Encuesta de satisfacción", "PQRS"],
       },
     ],
   ];

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:webpack/pages/home.dart';
-import 'package:webpack/pages/support/fast_help.dart';
+import 'package:webpack/pages/support/legalpolicies.dart';
+import 'package:webpack/pages/support/whatsapppage.dart';
 import 'package:webpack/pages/support/support.dart';
 import 'package:webpack/widgets/page_not_found.dart';
 
@@ -31,12 +32,9 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => Home(),
         '/Soporte': (context) => SupportHome(),
-        '/Soporte/Ayuda-Rápida/Chat': (context) => FastHelp(),
-        '/Soporte/Ayuda-Rápida/Teléfono': (context) => FastHelp(),
-        '/Soporte/Compras/Politicas-legales-y-reglamentarias': (context) => SupportHome(),
-        '/Soporte/Compras/PQRS': (context) => SupportHome(),
-        '/Soporte/Políticas/Terminos-y-privacidad': (context) => SupportHome(),
-        '/Soporte/Políticas/Cookies': (context) => SupportHome(),
+        '/Soporte/Ayuda-Rápida/Whatsapp': (context) => WhatsappPage(),
+        '/Soporte/Ayuda-Rápida/Teléfono': (context) => WhatsappPage(),
+        '/Soporte/Politicas/Politicas-legales-y-reglamentarias': (context) => LegalPolicies(),
       },
       onUnknownRoute: (setting) {
         return MaterialPageRoute(builder: (context) => PageNotFound());

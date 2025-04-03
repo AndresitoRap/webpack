@@ -16,13 +16,6 @@ class Footer extends StatelessWidget {
     {'day': 'Sábado y domingo', 'time': 'No tenemos atención'},
   ];
 
-  // Datos de contacto
-  static const List<Map<String, String>> contacts = [
-    {'label': 'Teléfono', 'value': '+57 (601) 746 05 33'},
-    {'label': 'Whatsapp', 'value': '+57 317 868 9152'},
-    {'label': 'Email', 'value': 'info@empaquespackvision.com'},
-  ];
-
   // Datos de redes sociales
   static const List<Map<String, dynamic>> socialMedia = [
     {'icon': Boxicons.bxl_tiktok, 'url': 'https://www.tiktok.com/@packvision_sas?lang=es'},
@@ -57,17 +50,11 @@ class Footer extends StatelessWidget {
                   ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [_buildScheduleSection(), _buildContactSection(), _buildSocialMediaSection(context)],
+                    children: [_buildScheduleSection(), _buildSocialMediaSection(context)],
                   )
                   : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildScheduleSection(),
-                      const SizedBox(height: 20),
-                      _buildContactSection(),
-                      const SizedBox(height: 20),
-                      _buildSocialMediaSection(context),
-                    ],
+                    children: [_buildScheduleSection(), const SizedBox(height: 20), _buildSocialMediaSection(context)],
                   ),
               const SizedBox(height: 20),
               Row(
@@ -106,27 +93,6 @@ class Footer extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  // Widget para la sección de contactos
-  Widget _buildContactSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children:
-          contacts
-              .map(
-                (contact) => Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(text: "${contact['label']}: ", style: const TextStyle(fontWeight: FontWeight.bold)),
-                      TextSpan(text: contact['value']),
-                    ],
-                  ),
-                ),
-              )
-              .toList(),
     );
   }
 

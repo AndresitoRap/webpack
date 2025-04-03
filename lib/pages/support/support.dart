@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
 
 class SupportHome extends StatelessWidget {
@@ -129,6 +130,8 @@ class SupportHome extends StatelessWidget {
                       );
                     },
                   ),
+                  SizedBox(height: 40),
+                  Footer(),
                 ],
               ),
             ),
@@ -165,7 +168,7 @@ final List<SupportCardData> _supportCards = [
     description:
         "¿Tienes una pregunta rápida o necesitas asistencia inmediata? Aquí puedes encontrar respuestas al instante.",
     linkText: "Contactarme con un asesor",
-    route: "/Soporte/Ayuda-Rápida/Chat",
+    route: "/Soporte/Ayuda-Rápida/Whatsapp",
   ),
   SupportCardData(
     icon: CupertinoIcons.cart,

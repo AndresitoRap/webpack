@@ -36,7 +36,7 @@ Widget buildDialogContent(BuildContext context, int index) {
                             child: Image.asset("lib/src/img/RosaSharon_Shoshana.webp", fit: BoxFit.cover),
                           ),
                         ),
-                        SizedBox(width: 30),
+                        const SizedBox(width: 30),
                         Expanded(
                           flex: 1,
                           child: Padding(
@@ -68,7 +68,7 @@ Widget buildDialogContent(BuildContext context, int index) {
                                     ],
                                   ),
                                 ),
-                                SizedBox(height: 10),
+                                const SizedBox(height: 10),
                               ],
                             ),
                           ),
@@ -78,13 +78,13 @@ Widget buildDialogContent(BuildContext context, int index) {
               ],
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Container(
             width: double.infinity,
             decoration: BoxDecoration(color: const Color(0xFFF2F2F2), borderRadius: BorderRadius.circular(16)),
             child: Column(
               children: [
-                SizedBox(height: 50),
+                const SizedBox(height: 50),
                 screenWidth < 1070
                     //Celular
                     ? MobileStyle(
@@ -128,12 +128,12 @@ Widget buildDialogContent(BuildContext context, int index) {
                                     ],
                                   ),
                                 ),
-                                SizedBox(height: 10),
+                                const SizedBox(height: 10),
                               ],
                             ),
                           ),
                         ),
-                        SizedBox(width: 30),
+                        const SizedBox(width: 30),
                         Expanded(
                           flex: 1,
                           child: AspectRatio(
@@ -157,7 +157,7 @@ Widget buildDialogContent(BuildContext context, int index) {
             decoration: BoxDecoration(color: const Color(0xFFF2F2F2), borderRadius: BorderRadius.circular(16)),
             child: Column(
               children: [
-                SizedBox(height: 50),
+                const SizedBox(height: 50),
                 screenWidth < 1070
                     //Celular
                     ? MobileStyle(
@@ -177,7 +177,7 @@ Widget buildDialogContent(BuildContext context, int index) {
                             child: Image.asset("lib/src/img/RosaSharon_Jade.webp", fit: BoxFit.cover),
                           ),
                         ),
-                        SizedBox(width: 30),
+                        const SizedBox(width: 30),
                         Expanded(
                           flex: 1,
                           child: Padding(
@@ -209,7 +209,7 @@ Widget buildDialogContent(BuildContext context, int index) {
                                     ],
                                   ),
                                 ),
-                                SizedBox(height: 10),
+                                const SizedBox(height: 10),
                               ],
                             ),
                           ),
@@ -219,13 +219,13 @@ Widget buildDialogContent(BuildContext context, int index) {
               ],
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Container(
             width: double.infinity,
             decoration: BoxDecoration(color: const Color(0xFFF2F2F2), borderRadius: BorderRadius.circular(16)),
             child: Column(
               children: [
-                SizedBox(height: 50),
+                const SizedBox(height: 50),
                 screenWidth < 1070
                     //Celular
                     ? MobileStyle(
@@ -269,12 +269,12 @@ Widget buildDialogContent(BuildContext context, int index) {
                                     ],
                                   ),
                                 ),
-                                SizedBox(height: 10),
+                                const SizedBox(height: 10),
                               ],
                             ),
                           ),
                         ),
-                        SizedBox(width: 30),
+                        const SizedBox(width: 30),
                         Expanded(
                           flex: 1,
                           child: AspectRatio(
@@ -309,7 +309,7 @@ class MobileStyle extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     return Column(
       children: [
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: min(100, screenWidth * 0.07)),
           child: Text.rich(
@@ -337,7 +337,7 @@ class MobileStyle extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         AspectRatio(
           aspectRatio: 3 / 4,
           child: ClipRRect(borderRadius: BorderRadius.circular(20), child: Image.asset(img, fit: BoxFit.cover)),

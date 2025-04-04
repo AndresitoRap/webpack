@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:webpack/pages/home.dart';
+import 'package:webpack/pages/support/dataproccessing.dart';
 import 'package:webpack/pages/support/legalpolicies.dart';
+import 'package:webpack/pages/support/pqrs.dart';
 import 'package:webpack/pages/support/whatsapppage.dart';
 import 'package:webpack/pages/support/support.dart';
 import 'package:webpack/widgets/page_not_found.dart';
@@ -35,6 +37,8 @@ class MyApp extends StatelessWidget {
         '/Soporte/Ayuda-Rápida/Whatsapp': (context) => WhatsappPage(),
         '/Soporte/Ayuda-Rápida/Teléfono': (context) => WhatsappPage(),
         '/Soporte/Politicas/Politicas-legales-y-reglamentarias': (context) => LegalPolicies(),
+        '/Soporte/Politicas/Tratamiento-de-datos': (context) => DataProccessing(),
+        '/Soporte/Tú-opinion/Encuesta-de-satisfacción-y-PQRS': (context) => PQRS(),
       },
       onUnknownRoute: (setting) {
         return MaterialPageRoute(builder: (context) => PageNotFound());

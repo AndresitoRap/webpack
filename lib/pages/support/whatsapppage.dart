@@ -43,7 +43,7 @@ class _WhatsappPageState extends State<WhatsappPage> {
                               ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  SizedBox(height: 100),
+                                  const SizedBox(height: 100),
                                   // Texto
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 20),
@@ -299,7 +299,7 @@ class _WhatsappPageState extends State<WhatsappPage> {
                                           Icon(CupertinoIcons.phone_fill, color: Theme.of(context).primaryColor),
                                         ],
                                       ),
-                                      SizedBox(width: 10),
+                                      const SizedBox(width: 10),
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [Text(card.name), Text("(601) 746 05 33 ${card.ext}")],
@@ -320,7 +320,7 @@ class _WhatsappPageState extends State<WhatsappPage> {
                     );
                   },
                 ),
-                SizedBox(height: 100),
+                const SizedBox(height: 100),
                 Footer(),
               ],
             ),

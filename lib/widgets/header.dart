@@ -110,6 +110,7 @@ class _HeaderState extends State<Header> {
                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
                                                             MouseRegion(
+                                                              cursor: SystemMouseCursors.click,
                                                               onEnter: (_) {
                                                                 setState(() {
                                                                   isHover = false;
@@ -128,13 +129,18 @@ class _HeaderState extends State<Header> {
                                                                 ),
                                                                 duration: Duration(milliseconds: 200),
                                                                 builder: (context, value, child) {
-                                                                  return AnimatedOpacity(
-                                                                    opacity: isHover ? 0.0 : 1.0,
-                                                                    duration: Duration(milliseconds: 300),
-                                                                    child: Image.asset(
-                                                                      "lib/src/img/WIsotipo.png",
-                                                                      height: 20,
-                                                                      color: Colors.white.withAlpha(value.toInt()),
+                                                                  return GestureDetector(
+                                                                    onTap: () {
+                                                                      Navigator.pushNamed(context, '/');
+                                                                    },
+                                                                    child: AnimatedOpacity(
+                                                                      opacity: isHover ? 0.0 : 1.0,
+                                                                      duration: Duration(milliseconds: 300),
+                                                                      child: Image.asset(
+                                                                        "lib/src/img/WIsotipo.png",
+                                                                        height: 20,
+                                                                        color: Colors.white.withAlpha(value.toInt()),
+                                                                      ),
                                                                     ),
                                                                   );
                                                                 },
@@ -380,6 +386,7 @@ class _HeaderState extends State<Header> {
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
                                             MouseRegion(
+                                              cursor: SystemMouseCursors.click,
                                               onEnter: (_) {
                                                 setState(() {
                                                   isHover = false;
@@ -391,20 +398,25 @@ class _HeaderState extends State<Header> {
                                                   ishoverother = "";
                                                 });
                                               },
-                                              child: TweenAnimationBuilder<double>(
-                                                tween: Tween<double>(
-                                                  begin: 210,
-                                                  end: ishoverother == "logo" ? 255 : 210,
-                                                ),
-                                                duration: Duration(milliseconds: 200),
-                                                curve: Curves.easeInOut,
-                                                builder: (context, value, child) {
-                                                  return Image.asset(
-                                                    "lib/src/img/WIsotipo.png",
-                                                    height: 20,
-                                                    color: Colors.white.withAlpha(value.toInt()),
-                                                  );
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.pushNamed(context, '/');
                                                 },
+                                                child: TweenAnimationBuilder<double>(
+                                                  tween: Tween<double>(
+                                                    begin: 210,
+                                                    end: ishoverother == "logo" ? 255 : 210,
+                                                  ),
+                                                  duration: Duration(milliseconds: 200),
+                                                  curve: Curves.easeInOut,
+                                                  builder: (context, value, child) {
+                                                    return Image.asset(
+                                                      "lib/src/img/WIsotipo.png",
+                                                      height: 20,
+                                                      color: Colors.white.withAlpha(value.toInt()),
+                                                    );
+                                                  },
+                                                ),
                                               ),
                                             ),
                                             ...List.generate(MenuData.navbarItems.length, (index) {

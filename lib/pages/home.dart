@@ -401,7 +401,7 @@ class HomeState extends State<Home> {
                                     : null,
                             icon: Icon(Icons.arrow_back_ios_new_rounded),
                           ),
-                          SizedBox(width: 20),
+                          const SizedBox(width: 20),
                           IconButton(
                             style: ButtonStyle(
                               backgroundColor: WidgetStateProperty.all(
@@ -472,7 +472,7 @@ class HomeState extends State<Home> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  SizedBox(height: 60),
+                                  const SizedBox(height: 60),
                                   Text(
                                     card.title,
                                     style: TextStyle(fontSize: 20, color: Theme.of(context).primaryColor),
@@ -485,7 +485,7 @@ class HomeState extends State<Home> {
                                       color: Theme.of(context).primaryColor,
                                     ),
                                   ),
-                                  SizedBox(height: 50),
+                                  const SizedBox(height: 50),
                                   buildDialogContent(context, index),
                                 ],
                               ),

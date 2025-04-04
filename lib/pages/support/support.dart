@@ -130,7 +130,7 @@ class SupportHome extends StatelessWidget {
                       );
                     },
                   ),
-                  SizedBox(height: 40),
+                  const SizedBox(height: 40),
                   Footer(),
                 ],
               ),
@@ -171,17 +171,18 @@ final List<SupportCardData> _supportCards = [
     route: "/Soporte/Ayuda-Rápida/Whatsapp",
   ),
   SupportCardData(
-    icon: CupertinoIcons.cart,
-    title: "Compras",
-    description: "Consulta las políticas legales, garantías, encuestas de satisfacción o registra tu PQRS fácilmente.",
-    linkText: "Explorar opciones de compra",
-    route: "/Soporte/Compras/Politicas-legales-y-reglamentarias",
-  ),
-  SupportCardData(
     icon: CupertinoIcons.doc_text,
     title: "Políticas",
     description: "Infórmate sobre nuestros términos de uso, tratamiento de datos, cookies y más detalles legales.",
     linkText: "Ver nuestras políticas",
-    route: "/Soporte/Políticas/Términos-y-privacidad",
+    route: "/Soporte/Politicas/Politicas-legales-y-reglamentarias",
+  ),
+  SupportCardData(
+    icon: CupertinoIcons.heart_circle,
+    title: "Tu Opinión",
+    description:
+        "Tu experiencia es fundamental para seguir mejorando. Déjanos tus comentarios, responde la encuesta o registra una PQRS fácilmente.",
+    linkText: "Compartir mi experiencia",
+    route: "/Soporte/Tú-opinion/Encuesta-de-satisfacción-y-PQRS",
   ),
 ];

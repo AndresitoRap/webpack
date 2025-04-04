@@ -1,5 +1,5 @@
 class MenuData {
-  static const List<String> navbarItems = ["SmartBag®", "Ecobag®", "Nosotros", "Catálogo", "Visitanos", "Soporte"];
+  static const List<String> navbarItems = ["SmartBag®", "Ecobag®", "Nosotros", "Catálogo", "Soporte"];
 
   static const List<List<Map<String, dynamic>>> submenus = [
     [
@@ -30,20 +30,7 @@ class MenuData {
         "items": ["Cuidado", "Reciclaje", "Comunidad"],
       },
     ],
-    [
-      {
-        "title": "Conócenos",
-        "items": ["Quienes somos?", "Misión", "Visión"],
-      },
-      {
-        "title": "Valores corporativos",
-        "items": ["Verdad", "Liderazgo", "Unidad", "Responsabilidad social"],
-      },
-      {
-        "title": "Enfoque estrategico",
-        "items": ["Nuestro enfoque"],
-      },
-    ],
+
     [
       {
         "title": "Explora el Catálogo",
@@ -60,16 +47,16 @@ class MenuData {
     ],
     [
       {
-        "title": "Encuéntranos",
-        "items": ["Tiendas", "Horarios", "Eventos"],
+        "title": "Conócenos",
+        "items": ["Quienes somos?", "Misión", "Visión"],
       },
       {
-        "title": "Visita Virtual",
-        "items": ["Tour 360", "Galería", "Experiencias"],
+        "title": "Valores corporativos",
+        "items": ["Verdad", "Liderazgo", "Unidad", "Responsabilidad social"],
       },
       {
-        "title": "Contáctanos",
-        "items": ["Formulario", "Teléfono", "Redes Sociales"],
+        "title": "Enfoque estrategico",
+        "items": ["Nuestro enfoque"],
       },
     ],
     [
@@ -83,7 +70,7 @@ class MenuData {
       },
       {
         "title": "Tú opinion",
-        "items": ["Encuesta de satisfacción", "PQRS"],
+        "items": ["Encuesta de satisfacción y PQRS"],
       },
     ],
   ];

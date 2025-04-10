@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:webpack/widgets/build_recommended.dart';
 
+// ignore: must_be_immutable
 class Discover extends StatefulWidget {
   final String title;
   final ScrollController scrollController;
@@ -32,14 +33,38 @@ class _DiscoverState extends State<Discover> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+
+    Color getPrimaryColor(BuildContext context) {
+      final route = ModalRoute.of(context)?.settings.name ?? '';
+
+      if (route.toLowerCase().contains('ecobag')) {
+        return const Color.fromARGB(255, 75, 141, 44);
+      }
+
+      return Theme.of(context).primaryColor;
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: screenWidth * 0.04),
-          child: Text(
-            widget.title,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenWidth * 0.06, 55)),
+          child: Stack(
+            children: [
+              Text(
+                widget.title,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: min(screenWidth * 0.07, 55),
+                  foreground:
+                      Paint()
+                        ..style = PaintingStyle.stroke
+                        ..strokeWidth = 4
+                        ..color = Theme.of(context).scaffoldBackgroundColor,
+                ),
+              ),
+              Text(widget.title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenWidth * 0.07, 55))),
+            ],
           ),
         ),
         SingleChildScrollView(
@@ -92,8 +117,8 @@ class _DiscoverState extends State<Discover> {
                                     shape: BoxShape.circle,
                                     color:
                                         widget.ishovericonlist[index]
-                                            ? Theme.of(context).primaryColor
-                                            : Theme.of(context).primaryColor.withAlpha(200),
+                                            ? getPrimaryColor(context)
+                                            : getPrimaryColor(context).withAlpha(200),
                                   ),
                                   child: AnimatedOpacity(
                                     opacity: widget.ishovericonlist[index] ? 1 : 0.5,
@@ -103,24 +128,33 @@ class _DiscoverState extends State<Discover> {
                                 ),
                               ),
                             ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  card.title,
-                                  style: TextStyle(color: Colors.white, fontSize: min(screenWidth * 0.03, 25)),
-                                ),
-                                Text(
-                                  card.body,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: min(screenWidth * 0.04, 30),
-                                    fontWeight: FontWeight.bold,
+                            Padding(
+                              padding: const EdgeInsets.only(right: 40),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    card.title,
+                                    style: TextStyle(
+                                      height: 0,
+                                      color: card.isblack ? Colors.black : Colors.white,
+                                      fontSize: min(screenWidth * 0.02, 20),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  SizedBox(height: 10),
+                                  Text(
+                                    card.body,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      height: 0,
+                                      color: card.isblack ? Colors.black : Colors.white,
+                                      fontSize: min(screenWidth * 0.03, 25),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),

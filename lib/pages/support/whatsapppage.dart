@@ -139,7 +139,7 @@ class _WhatsappPageState extends State<WhatsappPage> {
                                     offset: Offset(screenWidth * 0.4, screenWidth * 0.3),
                                     child: Transform.scale(
                                       scale: 1.6,
-                                      child: Image.asset("lib/src/img/support/support_chat.png"),
+                                      child: Image.asset("lib/src/img/support/support_chat.webp"),
                                     ),
                                   ),
                                 ],
@@ -240,7 +240,7 @@ class _WhatsappPageState extends State<WhatsappPage> {
                                   Expanded(
                                     child: Transform.translate(
                                       offset: const Offset(0, 50),
-                                      child: Image.asset("lib/src/img/support/support_chat.png"),
+                                      child: Image.asset("lib/src/img/support/support_chat.webp"),
                                     ),
                                   ),
                                 ],
@@ -318,17 +318,10 @@ class _WhatsappPageState extends State<WhatsappPage> {
                                       const SizedBox(width: 10),
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [Text(card.name), Text("(601) 746 05 33 ${card.ext}")],
+                                        children: [Text("(601) 746 05 33 ${card.ext}")],
                                       ),
                                     ],
                                   ),
-                                  // Row(
-                                  //   mainAxisAlignment: MainAxisAlignment.center,
-                                  //   children: [
-                                  //     Icon(CupertinoIcons.phone_fill, color: Theme.of(context).primaryColor),
-                                  //     Text("(601) 746 05 33 ${card.ext}"),
-                                  //   ],
-                                  // ),
                                 ],
                               ),
                             );
@@ -350,44 +343,18 @@ class _WhatsappPageState extends State<WhatsappPage> {
 
 // Modelo de tarjeta
 class SupportCardPerson {
-  final String name;
   final String ext;
   final String zone;
   final String img;
 
-  SupportCardPerson({required this.name, required this.ext, required this.zone, required this.img});
+  SupportCardPerson({required this.ext, required this.zone, required this.img});
 }
 
 // Lista de tarjetas
 final List<SupportCardPerson> _supportCardsPerson = [
-  SupportCardPerson(
-    name: "Laura palacios",
-    ext: "104",
-    zone: "Asesora Comercial",
-    img: "lib/src/img/support/Adviser1.png",
-  ),
-  SupportCardPerson(
-    name: "Yeimi Guaqueta",
-    ext: "103",
-    zone: "Asesora Comercial",
-    img: "lib/src/img/support/Adviser2.png",
-  ),
-  SupportCardPerson(
-    name: "Elena  Cifuentes",
-    ext: "512",
-    zone: "Servicio al cliente",
-    img: "lib/src/img/support/Customer_Service.png",
-  ),
-  SupportCardPerson(
-    name: "Fernanda Téllez",
-    ext: "109",
-    zone: "Asesora Comercial",
-    img: "lib/src/img/support/Adviser3.png",
-  ),
-  SupportCardPerson(
-    name: "Hasem Cifuentes",
-    ext: "508",
-    zone: "Asesora Comercial",
-    img: "lib/src/img/support/Adviser4.png",
-  ),
+  SupportCardPerson(ext: "104", zone: "Asesora Comercial", img: "lib/src/img/support/Adviser1.webp"),
+  SupportCardPerson(ext: "103", zone: "Asesora Comercial", img: "lib/src/img/support/Adviser2.webp"),
+  SupportCardPerson(ext: "512", zone: "Servicio al cliente", img: "lib/src/img/support/Customer_Service.webp"),
+  SupportCardPerson(ext: "109", zone: "Asesora Comercial", img: "lib/src/img/support/Adviser3.webp"),
+  SupportCardPerson(ext: "508", zone: "Asesora Comercial", img: "lib/src/img/support/Adviser4.webp"),
 ];

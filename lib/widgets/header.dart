@@ -84,7 +84,10 @@ class _HeaderState extends State<Header> {
                                     duration: Duration(milliseconds: 300),
                                     curve: Curves.easeInOut,
                                     height: isHover ? MediaQuery.of(context).size.height : 48,
-                                    color: Theme.of(context).primaryColor.withAlpha(200),
+                                    color:
+                                        ModalRoute.of(context)!.settings.name!.contains("EcoBag")
+                                            ? Color.fromARGB(255, 41, 112, 9).withAlpha(170)
+                                            : Theme.of(context).primaryColor.withAlpha(200),
                                     child: Align(
                                       alignment: Alignment.topCenter,
                                       child: ConstrainedBox(
@@ -140,7 +143,7 @@ class _HeaderState extends State<Header> {
                                                                       opacity: isHover ? 0.0 : 1.0,
                                                                       duration: Duration(milliseconds: 300),
                                                                       child: Image.asset(
-                                                                        "lib/src/img/WIsotipo.png",
+                                                                        "lib/src/img/WIsotipo.webp",
                                                                         height: 20,
                                                                         color: Colors.white.withAlpha(value.toInt()),
                                                                       ),
@@ -373,7 +376,10 @@ class _HeaderState extends State<Header> {
                           child: AnimatedContainer(
                             duration: Duration(milliseconds: 300),
                             curve: Curves.easeInOut,
-                            color: Theme.of(context).primaryColor.withAlpha(200),
+                            color:
+                                (ModalRoute.of(context)?.settings.name?.toLowerCase().contains("ecobag") ?? false)
+                                    ? Color.fromARGB(255, 41, 112, 9).withAlpha(170)
+                                    : Theme.of(context).primaryColor.withAlpha(200),
                             child: Padding(
                               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                               child: SingleChildScrollView(
@@ -416,7 +422,7 @@ class _HeaderState extends State<Header> {
                                                   curve: Curves.easeInOut,
                                                   builder: (context, value, child) {
                                                     return Image.asset(
-                                                      "lib/src/img/WIsotipo.png",
+                                                      "lib/src/img/WIsotipo.webp",
                                                       height: 20,
                                                       color: Colors.white.withAlpha(value.toInt()),
                                                     );
@@ -441,30 +447,32 @@ class _HeaderState extends State<Header> {
                                                   duration: Duration(milliseconds: 200),
                                                   curve: Curves.easeInOut,
                                                   builder: (context, value, child) {
-                                                    return InkWell(
+                                                    return GestureDetector(
                                                       onTap: () async {
                                                         final currentPath =
                                                             "/${MenuData.navbarItems[index].replaceAll("®", "")}";
+                                                        final currentRoute = ModalRoute.of(context)?.settings.name;
 
-                                                        if (MediaQuery.of(context).size.width < 1025) {
-                                                          isHover = true;
+                                                        final isMobile = MediaQuery.of(context).size.width < 1025;
+
+                                                        if (isMobile) {
                                                           if (hoveredIndex != index) {
                                                             setState(() {
                                                               hoveredIndex = index;
+                                                              isHover = true;
                                                             });
                                                           } else {
-                                                            if (ModalRoute.of(context)?.settings.name != currentPath) {
+                                                            if (currentRoute != currentPath) {
                                                               setState(() {
                                                                 isHover = false;
                                                                 hoveredIndex = null;
                                                               });
-
                                                               await Future.delayed(Duration(milliseconds: 400));
                                                               Navigator.pushReplacementNamed(context, currentPath);
                                                             }
                                                           }
                                                         } else {
-                                                          if (ModalRoute.of(context)?.settings.name != currentPath) {
+                                                          if (currentRoute != currentPath) {
                                                             Navigator.pushReplacementNamed(context, currentPath);
                                                           }
                                                         }

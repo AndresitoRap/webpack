@@ -32,6 +32,9 @@ flutter:
       - lib/src/img/us/
       - lib/src/pdf/support/
       - lib/src/videos/catalog/
+      - lib/src/img/smartbag/
+      - lib/src/img/ecobag/
+      
   fonts:
     - family: D-DINExp
       fonts:

@@ -38,6 +38,7 @@ class Footer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04, vertical: 20),
       child: Center(
@@ -111,6 +112,16 @@ class Footer extends StatelessWidget {
 
   // Widget para la sección de redes sociales
   Widget _buildSocialMediaSection(BuildContext context) {
+    Color getPrimaryColor(BuildContext context) {
+      final route = ModalRoute.of(context)?.settings.name ?? '';
+
+      if (route.toLowerCase().contains('ecobag')) {
+        return const Color.fromARGB(255, 75, 141, 44);
+      }
+
+      return Theme.of(context).primaryColor;
+    }
+
     return Row(
       children:
           socialMedia.map((social) {
@@ -121,10 +132,7 @@ class Footer extends StatelessWidget {
                 child: Container(
                   margin: const EdgeInsets.only(right: 10),
                   padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  decoration: BoxDecoration(color: getPrimaryColor(context), borderRadius: BorderRadius.circular(8)),
                   child: Icon(social['icon'], color: Colors.white),
                 ),
               ),

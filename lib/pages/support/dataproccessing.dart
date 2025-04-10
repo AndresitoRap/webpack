@@ -113,7 +113,7 @@ class _DataProccessingState extends State<DataProccessing> {
                           flex: 2,
                           child: Padding(
                             padding: const EdgeInsets.all(20.0),
-                            child: Image.asset("lib/src/img/support/dataproccesing.png"),
+                            child: Image.asset("lib/src/img/support/dataproccesing.webp"),
                           ),
                         ),
                     ],

@@ -1015,7 +1015,7 @@ final List<Glossaryitem> glossaryitem = [
                     decoration: BoxDecoration(
                       border: Border.all(width: 1, color: Color(0xff004F9E)),
                       borderRadius: BorderRadius.circular(12),
-                      image: DecorationImage(image: AssetImage("lib/src/img/support/PSE.png")),
+                      image: DecorationImage(image: AssetImage("lib/src/img/support/PSE.webp")),
                     ),
                   ),
                 ),
@@ -1028,7 +1028,7 @@ final List<Glossaryitem> glossaryitem = [
                     decoration: BoxDecoration(
                       border: Border.all(width: 1, color: Color(0xff004F9E)),
                       borderRadius: BorderRadius.circular(12),
-                      image: DecorationImage(image: AssetImage("lib/src/img/support/Nequi.png")),
+                      image: DecorationImage(image: AssetImage("lib/src/img/support/Nequi.webp")),
                     ),
                   ),
                 ),
@@ -1054,7 +1054,7 @@ final List<Glossaryitem> glossaryitem = [
                     decoration: BoxDecoration(
                       border: Border.all(width: 1, color: Color(0xff004F9E)),
                       borderRadius: BorderRadius.circular(12),
-                      image: DecorationImage(image: AssetImage("lib/src/img/support/American_express.png")),
+                      image: DecorationImage(image: AssetImage("lib/src/img/support/American_express.webp")),
                     ),
                   ),
                 ),
@@ -1074,7 +1074,7 @@ final List<Glossaryitem> glossaryitem = [
                     decoration: BoxDecoration(
                       border: Border.all(width: 1, color: Color(0xff004F9E)),
                       borderRadius: BorderRadius.circular(12),
-                      image: DecorationImage(image: AssetImage("lib/src/img/support/Visa.png")),
+                      image: DecorationImage(image: AssetImage("lib/src/img/support/Visa.webp")),
                     ),
                   ),
                 ),
@@ -1100,7 +1100,7 @@ final List<Glossaryitem> glossaryitem = [
                     decoration: BoxDecoration(
                       border: Border.all(width: 1, color: Color(0xff004F9E)),
                       borderRadius: BorderRadius.circular(12),
-                      image: DecorationImage(image: AssetImage("lib/src/img/support/Wompi.png")),
+                      image: DecorationImage(image: AssetImage("lib/src/img/support/Wompi.webp")),
                     ),
                   ),
                 ),

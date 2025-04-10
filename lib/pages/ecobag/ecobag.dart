@@ -1,9 +1,13 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:webpack/class/cardproduct.dart';
+import 'package:webpack/class/categoriescard.dart';
 import 'package:webpack/widgets/discover.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
+import 'package:webpack/widgets/ourlines.dart';
 
 class EcoBag extends StatefulWidget {
   const EcoBag({super.key});
@@ -15,8 +19,8 @@ class EcoBag extends StatefulWidget {
 class _EcoBagState extends State<EcoBag> {
   //Seccion scrolleable
   final ScrollController _scrollController = ScrollController();
-  List<bool> isHoverCardList = List.generate(fivePRO.length, (_) => false);
-  List<bool> isHoverIconList = List.generate(fivePRO.length, (_) => false);
+  List<bool> isHoverCardList = List.generate(cardFindE.length, (_) => false);
+  List<bool> isHoverIconList = List.generate(cardFindE.length, (_) => false);
   bool canScrollLeft = false;
   bool canScrollRight = true;
 
@@ -30,25 +34,54 @@ class _EcoBagState extends State<EcoBag> {
     });
   }
 
+  //Seccion scrolleable 2 (Familias)
+  final ScrollController _scrollControllerfamily = ScrollController();
+  bool canScrollLeftFamily = false;
+  bool canScrollRightFamily = true;
+
+  void _updateScrollButtonsFamily() {
+    final maxScroll = _scrollControllerfamily.position.maxScrollExtent;
+    final currentScroll = _scrollControllerfamily.position.pixels;
+
+    setState(() {
+      canScrollLeftFamily = currentScroll > 0;
+      canScrollRightFamily = currentScroll < maxScroll;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+
+    _scrollControllerfamily.addListener(_updateScrollButtonsFamily);
     _scrollController.addListener(_updateScrollButtons);
   }
 
   @override
   void dispose() {
+    _scrollControllerfamily.dispose();
     _scrollController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    for (final card in cardFindE) {
+      precacheImage(AssetImage(card.image), context);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Stack(
         children: [
+          const LeafAnimation(),
           SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 45),
@@ -65,22 +98,55 @@ class _EcoBagState extends State<EcoBag> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  "EcoBag®",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Theme.of(context).primaryColor,
-                                    fontSize: min(60, screenWidth * 0.1),
-                                  ),
+                                Stack(
+                                  children: [
+                                    Text(
+                                      "EcoBag®",
+                                      style: TextStyle(
+                                        fontSize: min(60, screenWidth * 0.1),
+                                        fontWeight: FontWeight.bold,
+                                        foreground:
+                                            Paint()
+                                              ..style = PaintingStyle.stroke
+                                              ..strokeWidth = 4
+                                              ..color = Theme.of(context).scaffoldBackgroundColor,
+                                      ),
+                                    ),
+                                    Text(
+                                      "EcoBag®",
+                                      style: TextStyle(
+                                        fontSize: min(60, screenWidth * 0.1),
+                                        fontWeight: FontWeight.bold,
+                                        color: Color.fromARGB(255, 75, 141, 44),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  "Diseño que protege.\nTecnología que empaca.",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    height: 0,
-                                    color: Theme.of(context).primaryColor,
-                                    fontSize: min(22, screenWidth * 0.04),
-                                  ),
+                                Stack(
+                                  children: [
+                                    Text(
+                                      "Diseño que protege.\nTecnología que empaca.",
+                                      style: TextStyle(
+                                        fontSize: min(22, screenWidth * 0.04),
+                                        height: 0,
+                                        fontWeight: FontWeight.bold,
+                                        foreground:
+                                            Paint()
+                                              ..style = PaintingStyle.stroke
+                                              ..strokeWidth = 4
+                                              ..color = Theme.of(context).scaffoldBackgroundColor,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Diseño que protege.\nTecnología que empaca.",
+                                      style: TextStyle(
+                                        fontSize: min(22, screenWidth * 0.04),
+                                        height: 0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color.fromARGB(255, 75, 141, 44),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -93,22 +159,55 @@ class _EcoBagState extends State<EcoBag> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(
-                              "EcoBag®",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).primaryColor,
-                                fontSize: min(45, screenWidth * 0.1),
-                              ),
+                            Stack(
+                              children: [
+                                Text(
+                                  "EcoBag®",
+                                  style: TextStyle(
+                                    fontSize: min(60, screenWidth * 0.1),
+                                    fontWeight: FontWeight.bold,
+                                    foreground:
+                                        Paint()
+                                          ..style = PaintingStyle.stroke
+                                          ..strokeWidth = 4
+                                          ..color = Theme.of(context).scaffoldBackgroundColor,
+                                  ),
+                                ),
+                                Text(
+                                  "EcoBag®",
+                                  style: TextStyle(
+                                    fontSize: min(60, screenWidth * 0.1),
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 75, 141, 44),
+                                  ),
+                                ),
+                              ],
                             ),
-                            Text(
-                              "Diseño que protege.\nTecnología que empaca.",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                height: 0,
-                                color: Theme.of(context).primaryColor,
-                                fontSize: min(22, screenWidth * 0.04),
-                              ),
+                            Stack(
+                              children: [
+                                Text(
+                                  "Diseño que protege.\nTecnología que empaca.",
+                                  style: TextStyle(
+                                    fontSize: min(22, screenWidth * 0.04),
+                                    height: 0,
+                                    fontWeight: FontWeight.bold,
+                                    foreground:
+                                        Paint()
+                                          ..style = PaintingStyle.stroke
+                                          ..strokeWidth = 4
+                                          ..color = Theme.of(context).scaffoldBackgroundColor,
+                                  ),
+                                ),
+                                Text(
+                                  "Diseño que protege.\nTecnología que empaca.",
+                                  style: TextStyle(
+                                    fontSize: min(22, screenWidth * 0.04),
+                                    height: 0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 75, 141, 44),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -128,15 +227,23 @@ class _EcoBagState extends State<EcoBag> {
                     ),
                   ),
                   SizedBox(height: 20),
-
                   Discover(
                     title: "Descubre Eco.",
-                    list: fivePRO,
+                    list: cardFindE,
                     scrollController: _scrollController,
                     ishoverlist: isHoverCardList,
                     ishovericonlist: isHoverIconList,
                     scrollControllerLeft: canScrollLeft,
                     scrollControllerRigth: canScrollRight,
+                  ),
+                  SizedBox(height: screenWidth * 0.1),
+                  OurLines(
+                    text: "Nuestas Ecolineas.",
+                    list: categoriesCardEco,
+                    ecoOrSmartColor: Color.fromARGB(255, 75, 141, 44),
+                    scrollControllerfamily: _scrollControllerfamily,
+                    canScrollLeftFamily: canScrollLeftFamily,
+                    canScrollRightFamily: canScrollRightFamily,
                   ),
                   Footer(),
                 ],
@@ -148,4 +255,101 @@ class _EcoBagState extends State<EcoBag> {
       ),
     );
   }
+}
+
+class LeafAnimation extends StatefulWidget {
+  const LeafAnimation({super.key});
+
+  @override
+  State<LeafAnimation> createState() => _LeafAnimationState();
+}
+
+class _LeafAnimationState extends State<LeafAnimation> with SingleTickerProviderStateMixin {
+  late final Ticker _ticker;
+  final List<LeafData> _leaves = [];
+  final Random _random = Random();
+
+  double screenWidth = 0;
+  double screenHeight = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Inicializar las hojas
+    for (int i = 0; i < 10; i++) {
+      _leaves.add(_generateLeaf());
+    }
+
+    // Crear ticker que se actualiza constantemente
+    _ticker = createTicker((Duration elapsed) {
+      setState(() {
+        for (int i = 0; i < _leaves.length; i++) {
+          _leaves[i].y += _leaves[i].speed;
+
+          // Si se fue de la pantalla, reemplazar por una nueva
+          if (_leaves[i].y > screenHeight + _leaves[i].size) {
+            _leaves[i] = _generateLeaf(); // reemplazar hoja
+          }
+        }
+      });
+    });
+
+    _ticker.start();
+  }
+
+  LeafData _generateLeaf() {
+    return LeafData(
+      image: 'lib/src/img/ecobag/hoja${_random.nextInt(3) + 1}.webp',
+      x: _random.nextDouble(),
+      y: -50.0 - _random.nextDouble() * 300,
+      speed: 1.0 + _random.nextDouble() * 2.0,
+      size: 40.0 + _random.nextDouble() * 30,
+      rotation: _random.nextDouble() * pi,
+    );
+  }
+
+  @override
+  void dispose() {
+    _ticker.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    screenWidth = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery.of(context).size.height;
+
+    return Stack(
+      children:
+          _leaves.map((leaf) {
+            return Positioned(
+              left: leaf.x * screenWidth,
+              top: leaf.y,
+              child: Transform.rotate(
+                angle: leaf.rotation + leaf.y * 0.01,
+                child: Image.asset(leaf.image, width: leaf.size),
+              ),
+            );
+          }).toList(),
+    );
+  }
+}
+
+class LeafData {
+  final String image;
+  final double x;
+  double y;
+  final double speed;
+  final double size;
+  final double rotation;
+
+  LeafData({
+    required this.image,
+    required this.x,
+    required this.y,
+    required this.speed,
+    required this.size,
+    required this.rotation,
+  });
 }

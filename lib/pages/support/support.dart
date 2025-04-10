@@ -31,7 +31,7 @@ class SupportHome extends StatelessWidget {
                           bottom: 0,
                           left: 0,
                           right: 0,
-                          child: Image.asset("lib/src/img/support/support_home.png", height: 300),
+                          child: Image.asset("lib/src/img/support/support_home.webp", height: 300),
                         ),
                         Center(
                           child: Padding(

@@ -66,7 +66,7 @@ class _UsState extends State<Us> {
                                   height: 800,
                                   child: Opacity(
                                     opacity: (screenWidth * 0.0003).clamp(0.0, 1.0),
-                                    child: Image.asset("lib/src/img/us/us.png", fit: BoxFit.contain),
+                                    child: Image.asset("lib/src/img/us/us.webp", fit: BoxFit.contain),
                                   ),
                                 ),
                               ],
@@ -81,7 +81,7 @@ class _UsState extends State<Us> {
                                   height: 800,
                                   child: Opacity(
                                     opacity: (screenWidth * 0.0003).clamp(0.0, 1.0),
-                                    child: Image.asset("lib/src/img/us/us.png", fit: BoxFit.contain),
+                                    child: Image.asset("lib/src/img/us/us.webp", fit: BoxFit.contain),
                                   ),
                                 ),
                               ),

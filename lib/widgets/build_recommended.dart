@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:webpack/class/cardproduct.dart';
 
 Widget buildDialogContent(BuildContext context, int index) {
-  final card = cardOR[index];
+  final card = cardFindS[index];
   final screenWidth = MediaQuery.of(context).size.width;
   switch (index) {
     case 0:

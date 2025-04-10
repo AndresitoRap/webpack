@@ -9,6 +9,12 @@ class PageNotFound extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final route = ModalRoute.of(context)?.settings.name?.toLowerCase() ?? '';
+    final isEcoBag = route.contains('ecobag');
+    final isSmartBag = route.contains('smartbag');
+    final ecoColor = const Color.fromARGB(255, 75, 141, 44);
+    final smartColor = const Color(0xFF004F9E);
+    final color = isEcoBag ? ecoColor : (isSmartBag ? smartColor : Theme.of(context).primaryColor);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF4F4F4),
@@ -27,9 +33,9 @@ class PageNotFound extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: ColorFiltered(
-                          colorFilter: ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),
+                          colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
                           child: Image.asset(
-                            'lib/src/img/404.png',
+                            'lib/src/img/404.webp',
                             width: min(screenWidth * 0.2, 400),
                             height: min(screenWidth * 0.2, 400),
                             fit: BoxFit.contain,
@@ -61,10 +67,7 @@ class PageNotFound extends StatelessWidget {
                       onTap: () => Navigator.pushReplacementNamed(context, '/'),
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
+                        decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(30)),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: const [

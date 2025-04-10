@@ -18,8 +18,8 @@ class MenuData {
         "items": ["4PRO", "5PRO", "DoyPack", "FlowPack"],
       },
       {
-        "title": "Especiales Ecobag®",
-        "items": ["StandPack", "Piramidales", "Accesorios"],
+        "title": "Especial de Ecobag®",
+        "items": ["Piramidales"],
       },
     ],
 

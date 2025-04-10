@@ -1,11 +1,8 @@
 import 'dart:math' show min;
-import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:webpack/class/cardproduct.dart';
 import 'package:webpack/class/packwithcon.dart';
-import 'package:webpack/widgets/build_recommended.dart';
-import 'package:webpack/widgets/discover.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
 import 'package:webpack/widgets/heardquarters.dart';
@@ -22,30 +19,14 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
   int? _expandedIndex;
   List<int> cardIndex = List.generate(cardPWC.length, (index) => index);
 
-  //Nuestros recomendados
-  final ScrollController _scrollController = ScrollController();
-  List<bool> isHoverCardList = List.generate(cardOR.length, (_) => false);
-  List<bool> isHoverIconList = List.generate(cardOR.length, (_) => false);
-  bool canScrollLeft = false;
-  bool canScrollRight = true;
   late AnimationController _textAnimationController;
   late Animation<double> _textFadeAnimation;
   late Animation<Offset> _textSlideAnimation;
 
-  void _updateScrollButtons() {
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.position.pixels;
-
-    setState(() {
-      canScrollLeft = currentScroll > 0;
-      canScrollRight = currentScroll < maxScroll;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_updateScrollButtons);
+
     final screenWidth = MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width;
     final isMobile = screenWidth < 720;
 
@@ -68,9 +49,18 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    // _scrollController.dispose();
     _textAnimationController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    for (final card in cardPWC) {
+      precacheImage(AssetImage(card.image), context);
+    }
   }
 
   @override
@@ -96,8 +86,8 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Expanded(child: Image.asset("lib/src/img/home/Packvision.png", fit: BoxFit.contain)),
-                                Expanded(child: Image.asset("lib/src/img/home/Bag&paint.png", fit: BoxFit.contain)),
+                                Expanded(child: Image.asset("lib/src/img/home/Packvision.webp", fit: BoxFit.contain)),
+                                Expanded(child: Image.asset("lib/src/img/home/Bag&paint.webp", fit: BoxFit.contain)),
                               ],
                             ),
                           )
@@ -106,8 +96,8 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Expanded(child: Image.asset("lib/src/img/home/Packvision.png", fit: BoxFit.contain)),
-                                Expanded(child: Image.asset("lib/src/img/home/Bag&paint.png", fit: BoxFit.contain)),
+                                Expanded(child: Image.asset("lib/src/img/home/Packvision.webp", fit: BoxFit.contain)),
+                                Expanded(child: Image.asset("lib/src/img/home/Bag&paint.webp", fit: BoxFit.contain)),
                               ],
                             ),
                           ),
@@ -351,6 +341,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
+
                 Container(width: screenWidth, decoration: BoxDecoration(color: Colors.white), child: Headquarters()),
                 Footer(),
               ],

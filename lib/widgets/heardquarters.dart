@@ -25,7 +25,7 @@ class HeardquartersCards {
 
 final List<HeardquartersCards> cardHQ = [
   HeardquartersCards(
-    img: "lib/src/img/home/Carvajal.png",
+    img: "lib/src/img/home/Carvajal.webp",
     name: "Carvajal",
     latitude: 4.60971,
     longitude: -74.08175,
@@ -33,7 +33,7 @@ final List<HeardquartersCards> cardHQ = [
         "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1988.4503945679396!2d-74.1391054034424!3d4.611774599445512!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3f776877ed45bf%3A0x126f76b8116c49e3!2sPACKVISI%C3%93N%20SAS%20SEDE%20CARVAJAL!5e0!3m2!1ses!2sco!4v1744147530535!5m2!1ses!2sco",
   ),
   HeardquartersCards(
-    img: "lib/src/img/home/Norte.png",
+    img: "lib/src/img/home/Norte.webp",
     name: "Nogal",
     latitude: 4.6610239150862025,
     longitude: -74.05414093434182,
@@ -41,7 +41,7 @@ final List<HeardquartersCards> cardHQ = [
         "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1988.4503945679396!2d-74.1391054034424!3d4.611774599445512!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3f776877ed45bf%3A0x126f76b8116c49e3!2sPACKVISI%C3%93N%20SAS%20SEDE%20CARVAJAL!5e0!3m2!1ses!2sco!4v1744147530535!5m2!1ses!2sco",
   ),
   HeardquartersCards(
-    img: "lib/src/img/home/Mosquera.png",
+    img: "lib/src/img/home/Mosquera.webp",
     name: "Mosquera",
     latitude: 4.695486,
     longitude: -74.190506,
@@ -87,7 +87,7 @@ class _HeadquartersState extends State<Headquarters> {
                     width: screenWidth * 0.25,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
-                      color: Colors.white,
+                      border: Border.all(width: 3, color: Colors.black54),
                       image: DecorationImage(image: AssetImage(cardHQ[index].img)),
                     ),
                     child: Stack(
@@ -215,7 +215,7 @@ class _HeadquartersState extends State<Headquarters> {
                         //   ),
                         //   children: [
                         //     TileLayer(
-                        //       urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                        //       urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.webp",
                         //       subdomains: ['a', 'b', 'c'], // Subdominios de OpenStreetMap
                         //     ),
                         //     MarkerLayer(

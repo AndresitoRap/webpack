@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boxicons/flutter_boxicons.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
 
@@ -34,7 +35,7 @@ class _WhatsappPageState extends State<WhatsappPage> {
                     return Container(
                       height: isTabletOrSmaller ? null : 700,
                       clipBehavior: Clip.antiAlias,
-                      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1, vertical: 20),
+                      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: 20),
                       width: screenWidth,
                       decoration: BoxDecoration(color: const Color.fromARGB(255, 209, 218, 237)),
 
@@ -91,7 +92,15 @@ class _WhatsappPageState extends State<WhatsappPage> {
                                     },
                                     cursor: SystemMouseCursors.click,
                                     child: GestureDetector(
-                                      onTap: () {},
+                                      onTap: () async {
+                                        final url = Uri.parse("https://web.whatsapp.com/send?phone=573178689125");
+                                        if (await canLaunchUrl(url)) {
+                                          await launchUrl(url, mode: LaunchMode.externalApplication);
+                                        } else {
+                                          throw 'No se pudo abrir el enlace: $url';
+                                        }
+                                      },
+
                                       child: AnimatedScale(
                                         duration: Duration(milliseconds: 200),
                                         curve: Curves.easeInOut,
@@ -183,7 +192,14 @@ class _WhatsappPageState extends State<WhatsappPage> {
                                           },
                                           cursor: SystemMouseCursors.click,
                                           child: GestureDetector(
-                                            onTap: () {},
+                                            onTap: () async {
+                                              final url = Uri.parse("https://web.whatsapp.com/send?phone=573178689125");
+                                              if (await canLaunchUrl(url)) {
+                                                await launchUrl(url, mode: LaunchMode.externalApplication);
+                                              } else {
+                                                throw 'No se pudo abrir el enlace: $url';
+                                              }
+                                            },
                                             child: AnimatedScale(
                                               duration: Duration(milliseconds: 200),
                                               curve: Curves.easeInOut,

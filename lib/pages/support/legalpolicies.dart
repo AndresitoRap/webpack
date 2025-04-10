@@ -107,7 +107,10 @@ class _LegalPoliciesState extends State<LegalPolicies> {
                                     cursor: SystemMouseCursors.click,
                                     child: GestureDetector(
                                       onTap: () {
-                                        Navigator.pushNamed(context, '/Soporte/Politicas/Tratamiento-de-datos');
+                                        Navigator.pushReplacementNamed(
+                                          context,
+                                          '/Soporte/Politicas/Tratamiento-de-datos',
+                                        );
                                       },
                                       child: Text(
                                         "Política de Protección de Datos Personales.",

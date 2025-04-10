@@ -1,62 +1,38 @@
 class MenuData {
-  static const List<String> navbarItems = ["SmartBag®", "Ecobag®", "Nosotros", "Catálogo", "Soporte"];
+  static const List<String> navbarItems = ["SmartBag®", "EcoBag®", "Catálogo", "Nosotros", "Soporte"];
 
   static const List<List<Map<String, dynamic>>> submenus = [
     [
       {
         "title": "Explora SmartBag®",
-        "items": ["Características", "Precios", "Opiniones"],
+        "items": ["4PRO", "5PRO", "DoyPack", "FlowPack"],
       },
       {
-        "title": "Compra SmartBag®",
-        "items": ["Tienda Online", "Ofertas", "Personalización"],
-      },
-      {
-        "title": "Más sobre SmartBag®",
-        "items": ["Garantía", "Soporte Técnico", "Accesorios"],
+        "title": "Especiales SmartBag®",
+        "items": ["StandPack", "Piramidales", "Accesorios"],
       },
     ],
     [
       {
         "title": "Explora Ecobag®",
-        "items": ["Materiales", "Diseños", "Sostenibilidad"],
+        "items": ["4PRO", "5PRO", "DoyPack", "FlowPack"],
       },
       {
-        "title": "Compra Ecobag®",
-        "items": ["Tienda Online", "Promociones", "Envíos"],
-      },
-      {
-        "title": "Más sobre Ecobag®",
-        "items": ["Cuidado", "Reciclaje", "Comunidad"],
+        "title": "Especiales Ecobag®",
+        "items": ["StandPack", "Piramidales", "Accesorios"],
       },
     ],
 
     [
       {
-        "title": "Explora el Catálogo",
-        "items": ["Productos", "Colecciones", "Novedades"],
-      },
-      {
-        "title": "Compra Ahora",
-        "items": ["Ofertas", "Ediciones Limitadas", "Accesorios"],
-      },
-      {
-        "title": "Más del Catálogo",
-        "items": ["Guías", "Reseñas", "Favoritos"],
+        "title": "Nuestros Catálogos",
+        "items": ["Catálogo"],
       },
     ],
     [
       {
-        "title": "Conócenos",
-        "items": ["Quienes somos?", "Misión", "Visión"],
-      },
-      {
-        "title": "Valores corporativos",
-        "items": ["Verdad", "Liderazgo", "Unidad", "Responsabilidad social"],
-      },
-      {
-        "title": "Enfoque estrategico",
-        "items": ["Nuestro enfoque"],
+        "title": "Quienes somos?",
+        "items": ["Identidad corporativa", "Nuestros valores"],
       },
     ],
     [

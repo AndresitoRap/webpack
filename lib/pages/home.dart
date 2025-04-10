@@ -2,9 +2,10 @@ import 'dart:math' show min;
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:webpack/class/ourrecommended.dart';
+import 'package:webpack/class/cardproduct.dart';
 import 'package:webpack/class/packwithcon.dart';
 import 'package:webpack/widgets/build_recommended.dart';
+import 'package:webpack/widgets/discover.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
 import 'package:webpack/widgets/heardquarters.dart';
@@ -16,17 +17,20 @@ class Home extends StatefulWidget {
   State<Home> createState() => HomeState();
 }
 
-class HomeState extends State<Home> {
+class HomeState extends State<Home> with TickerProviderStateMixin {
   //Empaques con conciencia
   int? _expandedIndex;
   List<int> cardIndex = List.generate(cardPWC.length, (index) => index);
 
   //Nuestros recomendados
+  final ScrollController _scrollController = ScrollController();
   List<bool> isHoverCardList = List.generate(cardOR.length, (_) => false);
   List<bool> isHoverIconList = List.generate(cardOR.length, (_) => false);
-  final ScrollController _scrollController = ScrollController();
   bool canScrollLeft = false;
   bool canScrollRight = true;
+  late AnimationController _textAnimationController;
+  late Animation<double> _textFadeAnimation;
+  late Animation<Offset> _textSlideAnimation;
 
   void _updateScrollButtons() {
     final maxScroll = _scrollController.position.maxScrollExtent;
@@ -42,6 +46,31 @@ class HomeState extends State<Home> {
   void initState() {
     super.initState();
     _scrollController.addListener(_updateScrollButtons);
+    final screenWidth = MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width;
+    final isMobile = screenWidth < 720;
+
+    _textAnimationController = AnimationController(
+      vsync: this,
+      duration: isMobile ? Duration(milliseconds: 500) : Duration(milliseconds: 420),
+    );
+
+    _textFadeAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(
+        parent: _textAnimationController,
+        curve: isMobile ? Curves.easeInOut : Interval(0.6, 1.0, curve: Curves.easeInOut),
+      ),
+    );
+    _textSlideAnimation = Tween<Offset>(
+      begin: Offset(-0.3, 0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _textAnimationController, curve: Curves.easeOutCubic));
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _textAnimationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -67,8 +96,8 @@ class HomeState extends State<Home> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Expanded(child: Image.asset("lib/src/img/Packvision.png", fit: BoxFit.contain)),
-                                Expanded(child: Image.asset("lib/src/img/Bag&paint.png", fit: BoxFit.contain)),
+                                Expanded(child: Image.asset("lib/src/img/home/Packvision.png", fit: BoxFit.contain)),
+                                Expanded(child: Image.asset("lib/src/img/home/Bag&paint.png", fit: BoxFit.contain)),
                               ],
                             ),
                           )
@@ -77,8 +106,8 @@ class HomeState extends State<Home> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Expanded(child: Image.asset("lib/src/img/Packvision.png", fit: BoxFit.contain)),
-                                Expanded(child: Image.asset("lib/src/img/Bag&paint.png", fit: BoxFit.contain)),
+                                Expanded(child: Image.asset("lib/src/img/home/Packvision.png", fit: BoxFit.contain)),
+                                Expanded(child: Image.asset("lib/src/img/home/Bag&paint.png", fit: BoxFit.contain)),
                               ],
                             ),
                           ),
@@ -102,7 +131,7 @@ class HomeState extends State<Home> {
                             padding: EdgeInsets.only(
                               bottom: screenWidth * 0.05,
                               top: isMobile ? screenWidth * 0.1 : screenWidth * 0.05,
-                              left: screenWidth * 0.1,
+                              left: screenWidth * 0.06,
                             ),
                             child: Text(
                               "Empaques con conciencia.",
@@ -158,43 +187,60 @@ class HomeState extends State<Home> {
                                                 bottom: 0,
                                                 left: 0,
                                                 right: 0,
-                                                child: Container(
-                                                  height: 400,
-                                                  padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
-                                                  decoration: const BoxDecoration(
-                                                    gradient: LinearGradient(
-                                                      begin: Alignment.topCenter,
-                                                      end: Alignment.bottomCenter,
-                                                      colors: [Colors.transparent, Colors.white, Colors.white],
+                                                child: FadeTransition(
+                                                  opacity: _textFadeAnimation,
+                                                  child: Container(
+                                                    height: 400,
+                                                    padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
+                                                    decoration: const BoxDecoration(
+                                                      gradient: LinearGradient(
+                                                        begin: Alignment.topCenter,
+                                                        end: Alignment.bottomCenter,
+                                                        colors: [Colors.transparent, Colors.white, Colors.white],
+                                                      ),
                                                     ),
-                                                  ),
-                                                  child: Stack(
-                                                    children: [
-                                                      Positioned(
-                                                        bottom: 0,
-                                                        left: 0,
-                                                        right: 0,
-                                                        child: Text(
-                                                          card.description,
-                                                          style: TextStyle(
-                                                            color: Theme.of(context).primaryColor,
-                                                            fontWeight: FontWeight.w600,
-                                                            fontSize: screenWidth * 0.03,
+                                                    child: Stack(
+                                                      children: [
+                                                        Positioned(
+                                                          bottom: 0,
+                                                          left: 0,
+                                                          right: 0,
+                                                          child: SlideTransition(
+                                                            position: _textSlideAnimation,
+                                                            child: Text(
+                                                              card.description,
+                                                              style: TextStyle(
+                                                                color: Theme.of(context).primaryColor,
+                                                                fontWeight: FontWeight.w600,
+                                                                fontSize: screenWidth * 0.03,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
                                             Positioned(
-                                              bottom: 12,
-                                              right: 12,
+                                              bottom: 10,
+                                              right: 10,
                                               child: GestureDetector(
                                                 onTap: () {
-                                                  setState(() {
-                                                    _expandedIndex = isExpanded ? null : index;
-                                                  });
+                                                  if (isExpanded) {
+                                                    _textAnimationController.duration = Duration(milliseconds: 200);
+                                                    _textAnimationController.reverse().then((_) {
+                                                      setState(() {
+                                                        _expandedIndex = null;
+                                                      });
+                                                    });
+                                                  } else {
+                                                    setState(() {
+                                                      _expandedIndex = index;
+                                                      _textAnimationController.duration = Duration(milliseconds: 400);
+                                                      _textAnimationController.forward(from: 0);
+                                                    });
+                                                  }
                                                 },
                                                 child: MouseRegion(
                                                   cursor: SystemMouseCursors.click,
@@ -204,14 +250,40 @@ class HomeState extends State<Home> {
                                                     decoration: BoxDecoration(
                                                       shape: BoxShape.circle,
                                                       color:
-                                                          isExpanded
-                                                              ? const Color(0xff004f9f)
+                                                          !isExpanded
+                                                              ? const Color.fromARGB(255, 255, 255, 255)
                                                               : Theme.of(context).primaryColor,
                                                     ),
-                                                    child: Icon(
-                                                      isExpanded ? CupertinoIcons.xmark : CupertinoIcons.add,
-                                                      color: Colors.white,
-                                                      size: 24,
+                                                    child: TweenAnimationBuilder<double>(
+                                                      key: ValueKey<bool>(isExpanded),
+                                                      tween: Tween<double>(begin: 0, end: isExpanded ? 0.785 : 0.0),
+                                                      duration: Duration(milliseconds: 500),
+                                                      curve: Curves.easeInOut,
+                                                      builder: (context, angle, child) {
+                                                        return Transform.rotate(
+                                                          angle: angle,
+                                                          child: TweenAnimationBuilder<Color?>(
+                                                            tween: ColorTween(
+                                                              begin:
+                                                                  isExpanded
+                                                                      ? Theme.of(context).primaryColor
+                                                                      : Colors.white,
+                                                              end:
+                                                                  isExpanded
+                                                                      ? Colors.white
+                                                                      : Theme.of(context).primaryColor,
+                                                            ),
+                                                            duration: Duration(milliseconds: 300),
+                                                            builder: (context, iconColor, _) {
+                                                              return Icon(
+                                                                Icons.add_rounded,
+                                                                size: 24,
+                                                                color: iconColor,
+                                                              );
+                                                            },
+                                                          ),
+                                                        );
+                                                      },
                                                     ),
                                                   ),
                                                 ),
@@ -256,13 +328,17 @@ class HomeState extends State<Home> {
                                                 onExpand: () {
                                                   setState(() {
                                                     _expandedIndex = index;
+                                                    _textAnimationController.forward(from: 0);
                                                   });
                                                 },
                                                 onCollapse: () {
                                                   setState(() {
+                                                    _textAnimationController.reverse();
                                                     _expandedIndex = null;
                                                   });
                                                 },
+                                                textFadeAnimation: _textFadeAnimation,
+                                                textSlideAnimation: _textSlideAnimation,
                                               ),
                                             );
                                           }).toList(),
@@ -275,157 +351,7 @@ class HomeState extends State<Home> {
                     ),
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1, vertical: screenWidth * 0.04),
-                      child: Text(
-                        "Nuestros recomendados.",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenWidth * 0.06, 55)),
-                      ),
-                    ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      controller: _scrollController,
-                      child: Row(
-                        children: List.generate(cardOR.length, (int index) {
-                          final card = cardOR[index];
-                          final double horizontalPadding = screenWidth * 0.1;
-                          return Padding(
-                            padding: EdgeInsets.only(
-                              left: index == 0 ? horizontalPadding : 0,
-                              right: index == cardOR.length - 1 ? horizontalPadding : 20,
-                            ),
-                            child: AnimatedScale(
-                              scale: isHoverCardList[index] ? 1.02 : 1.0,
-                              duration: Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                              child: MouseRegion(
-                                cursor: SystemMouseCursors.click,
-                                onEnter: (_) => setState(() => isHoverCardList[index] = true),
-                                onExit: (_) => setState(() => isHoverCardList[index] = false),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    ourservicesdialog(context, index);
-                                  },
-                                  child: Container(
-                                    width: min(screenWidth * 0.52, 380),
-                                    height: min(screenWidth * 0.93, 700),
-                                    padding: EdgeInsets.only(top: 22, left: 22),
-                                    margin: EdgeInsets.only(top: 20, bottom: 20, right: 20),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(26),
-                                      image: DecorationImage(image: AssetImage(card.image), fit: BoxFit.cover),
-                                    ),
-                                    child: Stack(
-                                      children: [
-                                        Positioned(
-                                          bottom: 10,
-                                          right: 10,
-                                          child: MouseRegion(
-                                            onEnter: (_) => setState(() => isHoverIconList[index] = true),
-                                            onExit: (_) => setState(() => isHoverIconList[index] = false),
-                                            child: AnimatedContainer(
-                                              duration: Duration(milliseconds: 200),
-                                              curve: Curves.easeInBack,
-                                              width: 40,
-                                              height: 40,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color:
-                                                    isHoverIconList[index]
-                                                        ? Theme.of(context).primaryColor
-                                                        : Theme.of(context).primaryColor.withAlpha(200),
-                                              ),
-                                              child: AnimatedOpacity(
-                                                opacity: isHoverIconList[index] ? 1 : 0.5,
-                                                duration: Duration(milliseconds: 300),
-                                                child: Icon(Icons.add_rounded, color: Colors.white),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              card.title,
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: min(screenWidth * 0.03, 25),
-                                              ),
-                                            ),
-                                            Text(
-                                              card.body,
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: min(screenWidth * 0.04, 30),
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        }),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: screenWidth * 0.03, horizontal: screenWidth * 0.1),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
-                            style: ButtonStyle(
-                              backgroundColor: WidgetStateProperty.all(
-                                canScrollLeft ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80),
-                              ),
-                            ),
-                            onPressed:
-                                canScrollLeft
-                                    ? () {
-                                      _scrollController.animateTo(
-                                        _scrollController.offset - 500,
-                                        duration: Duration(milliseconds: 200),
-                                        curve: Curves.easeInOut,
-                                      );
-                                    }
-                                    : null,
-                            icon: Icon(Icons.arrow_back_ios_new_rounded),
-                          ),
-                          const SizedBox(width: 20),
-                          IconButton(
-                            style: ButtonStyle(
-                              backgroundColor: WidgetStateProperty.all(
-                                canScrollRight ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80),
-                              ),
-                            ),
-                            onPressed:
-                                canScrollRight
-                                    ? () {
-                                      _scrollController.animateTo(
-                                        _scrollController.offset + 500,
-                                        duration: Duration(milliseconds: 200),
-                                        curve: Curves.easeInOut,
-                                      );
-                                    }
-                                    : null,
-                            icon: Icon(Icons.arrow_forward_ios_rounded),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                Headquarters(),
+                Container(width: screenWidth, decoration: BoxDecoration(color: Colors.white), child: Headquarters()),
                 Footer(),
               ],
             ),
@@ -433,86 +359,6 @@ class HomeState extends State<Home> {
           Header(),
         ],
       ),
-    );
-  }
-
-  void ourservicesdialog(BuildContext context, int index) {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        final screenWidth = MediaQuery.of(context).size.width;
-        final card = cardOR[index];
-        final ScrollController scrollController = ScrollController();
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            return Material(
-              color: Colors.transparent,
-              child: Stack(
-                children: [
-                  BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                    child: GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Container(color: Colors.transparent),
-                    ),
-                  ),
-                  Center(
-                    child: Stack(
-                      children: [
-                        SingleChildScrollView(
-                          controller: scrollController,
-                          child: Container(
-                            margin: EdgeInsets.symmetric(vertical: 50),
-                            width: min(screenWidth * 0.9, 1260),
-                            padding: EdgeInsets.only(bottom: 50),
-                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: min(76, screenWidth * 0.09)),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(height: 60),
-                                  Text(
-                                    card.title,
-                                    style: TextStyle(fontSize: 20, color: Theme.of(context).primaryColor),
-                                  ),
-                                  Text(
-                                    card.body,
-                                    style: TextStyle(
-                                      fontSize: min(50, screenWidth * 0.06),
-                                      fontWeight: FontWeight.bold,
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 50),
-                                  buildDialogContent(context, index),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          top: 60,
-                          right: 10,
-                          child: IconButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            icon: Icon(
-                              CupertinoIcons.xmark_circle_fill,
-                              size: 40,
-                              color: const Color.fromARGB(255, 71, 71, 71),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
     );
   }
 }
@@ -524,6 +370,8 @@ class AnimatedPositionedCard extends StatelessWidget {
   final CardPackWithConscience card;
   final VoidCallback onExpand;
   final VoidCallback onCollapse;
+  final Animation<double> textFadeAnimation;
+  final Animation<Offset> textSlideAnimation;
 
   const AnimatedPositionedCard({
     super.key,
@@ -533,6 +381,8 @@ class AnimatedPositionedCard extends StatelessWidget {
     required this.card,
     required this.onExpand,
     required this.onCollapse,
+    required this.textFadeAnimation,
+    required this.textSlideAnimation,
   });
 
   @override
@@ -577,48 +427,73 @@ class AnimatedPositionedCard extends StatelessWidget {
               bottom: 0,
               left: 0,
               right: 0,
-              child: Container(
-                padding: EdgeInsets.only(top: screenWidth * 0.13),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.white, Colors.white],
+              child: FadeTransition(
+                opacity: textFadeAnimation,
+                child: Container(
+                  padding: EdgeInsets.only(top: screenWidth * 0.13),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Colors.transparent, Colors.white, Colors.white],
+                    ),
                   ),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    bottom: screenWidth * 0.01,
-                    left: screenWidth * 0.01,
-                    right: screenWidth * 0.04,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        card.description,
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: screenWidth * 0.013,
-                          fontWeight: FontWeight.bold,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      bottom: screenWidth * 0.01,
+                      left: screenWidth * 0.01,
+                      right: screenWidth * 0.04,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        FadeTransition(
+                          opacity: textFadeAnimation,
+                          child: SlideTransition(
+                            position: textSlideAnimation,
+                            child: Text(
+                              card.description,
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                                fontSize: screenWidth * 0.013,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
           Positioned(
-            bottom: 10,
-            right: 10,
-            child: IconButton(
-              onPressed: isExpanded ? onCollapse : onExpand,
-              icon: Icon(
-                isExpanded ? CupertinoIcons.xmark_circle_fill : CupertinoIcons.add_circled_solid,
-                color: isExpanded ? Theme.of(context).primaryColor : Colors.white,
-                size: screenWidth * 0.03,
-              ),
+            bottom: screenWidth * 0.005,
+            right: screenWidth * 0.005,
+            child: TweenAnimationBuilder<double>(
+              key: ValueKey<bool>(isExpanded),
+              tween: Tween<double>(begin: 0, end: isExpanded ? 0.785 : 0.0),
+              duration: Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+              builder: (context, angle, child) {
+                return Transform.rotate(
+                  angle: angle,
+                  child: IconButton(
+                    onPressed: isExpanded ? onCollapse : onExpand,
+                    icon: TweenAnimationBuilder<Color?>(
+                      tween: ColorTween(
+                        begin: isExpanded ? Colors.white : Theme.of(context).primaryColor,
+                        end: isExpanded ? Theme.of(context).primaryColor : Colors.white,
+                      ),
+                      duration: Duration(milliseconds: 300),
+                      builder: (context, color, child) {
+                        return Icon(CupertinoIcons.add_circled_solid, color: color, size: screenWidth * 0.03);
+                      },
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ],

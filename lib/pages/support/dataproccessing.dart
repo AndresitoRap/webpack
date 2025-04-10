@@ -23,7 +23,7 @@ class _DataProccessingState extends State<DataProccessing> {
       body: Stack(
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 80, horizontal: screenWidth * 0.1),
+            padding: EdgeInsets.symmetric(vertical: 80, horizontal: screenWidth * 0.06),
             child: Column(
               children: [
                 Expanded(
@@ -131,7 +131,7 @@ class _DataProccessingState extends State<DataProccessing> {
 }
 
 void downloadPDF() {
-  final url = 'lib/src/img/support/Tratamiento-de-Datos.pdf';
+  final url = 'lib/src/pdf/support/Tratamiento-de-Datos.pdf';
   final anchor =
       html.AnchorElement(href: url)
         ..setAttribute('download', 'tratamiento_de_datos.pdf')

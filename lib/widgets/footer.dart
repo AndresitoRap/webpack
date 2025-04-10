@@ -57,17 +57,30 @@ class Footer extends StatelessWidget {
                     children: [_buildScheduleSection(), const SizedBox(height: 20), _buildSocialMediaSection(context)],
                   ),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    maxLines: 2,
-                    "Copyright © 2025 Packvision S.A.S Todos los derechos reservados",
-                    style: TextStyle(color: Colors.black38, fontSize: 12),
+              screenWidth >= mobileBreakpoint
+                  ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        maxLines: 2,
+                        "Copyright © 2025 Packvision S.A.S Todos los derechos reservados",
+                        style: TextStyle(color: Colors.black38, fontSize: 12),
+                      ),
+                      Text("Colombia", style: TextStyle(color: Colors.black38, fontSize: 12)),
+                    ],
+                  )
+                  : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        maxLines: 2,
+                        "Copyright © 2025 Packvision S.A.S Todos los derechos reservados",
+                        style: TextStyle(color: Colors.black38, fontSize: 12),
+                      ),
+                      SizedBox(height: 10),
+                      Text("Colombia", style: TextStyle(color: Colors.black38, fontSize: 12)),
+                    ],
                   ),
-                  Text("Colombia", style: TextStyle(color: Colors.black38, fontSize: 12)),
-                ],
-              ),
             ],
           ),
         ),

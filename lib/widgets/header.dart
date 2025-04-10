@@ -131,7 +131,10 @@ class _HeaderState extends State<Header> {
                                                                 builder: (context, value, child) {
                                                                   return GestureDetector(
                                                                     onTap: () {
-                                                                      Navigator.pushNamed(context, '/');
+                                                                      if (ModalRoute.of(context)?.settings.name !=
+                                                                          '/') {
+                                                                        Navigator.pushReplacementNamed(context, '/');
+                                                                      }
                                                                     },
                                                                     child: AnimatedOpacity(
                                                                       opacity: isHover ? 0.0 : 1.0,
@@ -400,7 +403,9 @@ class _HeaderState extends State<Header> {
                                               },
                                               child: GestureDetector(
                                                 onTap: () {
-                                                  Navigator.pushNamed(context, '/');
+                                                  if (ModalRoute.of(context)?.settings.name != '/') {
+                                                    Navigator.pushReplacementNamed(context, '/');
+                                                  }
                                                 },
                                                 child: TweenAnimationBuilder<double>(
                                                   tween: Tween<double>(
@@ -436,11 +441,33 @@ class _HeaderState extends State<Header> {
                                                   duration: Duration(milliseconds: 200),
                                                   curve: Curves.easeInOut,
                                                   builder: (context, value, child) {
-                                                    return GestureDetector(
-                                                      onTap: () {
-                                                        String path =
+                                                    return InkWell(
+                                                      onTap: () async {
+                                                        final currentPath =
                                                             "/${MenuData.navbarItems[index].replaceAll("®", "")}";
-                                                        Navigator.pushNamed(context, path);
+
+                                                        if (MediaQuery.of(context).size.width < 1025) {
+                                                          isHover = true;
+                                                          if (hoveredIndex != index) {
+                                                            setState(() {
+                                                              hoveredIndex = index;
+                                                            });
+                                                          } else {
+                                                            if (ModalRoute.of(context)?.settings.name != currentPath) {
+                                                              setState(() {
+                                                                isHover = false;
+                                                                hoveredIndex = null;
+                                                              });
+
+                                                              await Future.delayed(Duration(milliseconds: 400));
+                                                              Navigator.pushReplacementNamed(context, currentPath);
+                                                            }
+                                                          }
+                                                        } else {
+                                                          if (ModalRoute.of(context)?.settings.name != currentPath) {
+                                                            Navigator.pushReplacementNamed(context, currentPath);
+                                                          }
+                                                        }
                                                       },
                                                       child: Text(
                                                         MenuData.navbarItems[index],
@@ -533,7 +560,7 @@ class _HeaderState extends State<Header> {
                                               isHover && hoveredIndex != null
                                                   ? Padding(
                                                     key: ValueKey<int>(hoveredIndex!),
-                                                    padding: EdgeInsets.only(top: 50, bottom: 50),
+                                                    padding: EdgeInsets.only(top: 50, bottom: 50, left: 50),
                                                     child: Row(
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children:
@@ -583,7 +610,15 @@ class _HeaderState extends State<Header> {
                                                                               );
                                                                               String fullRoute =
                                                                                   "/$path/$sectionTitle/$itemPath";
-                                                                              Navigator.pushNamed(context, fullRoute);
+                                                                              if (ModalRoute.of(
+                                                                                    context,
+                                                                                  )?.settings.name !=
+                                                                                  fullRoute) {
+                                                                                Navigator.pushReplacementNamed(
+                                                                                  context,
+                                                                                  fullRoute,
+                                                                                );
+                                                                              }
                                                                             },
                                                                             child: Text(
                                                                               item,

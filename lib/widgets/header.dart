@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:webpack/class/menu_data.dart';
 import 'package:delayed_display/delayed_display.dart';
+import 'package:webpack/main.dart';
 
 class Header extends StatefulWidget {
   const Header({super.key});
@@ -18,10 +19,44 @@ class _HeaderState extends State<Header> {
   int? hoveredIndex;
   String? ishoverother = "";
   bool showMobileMenu = false;
+  int? hoveredMobileIndex;
+  int? selectedMenuIndex;
+  bool showSubmenu = false;
+
+  String normalizeRoute(String input) {
+    final replacements = {
+      'á': 'a',
+      'é': 'e',
+      'í': 'i',
+      'ó': 'o',
+      'ú': 'u',
+      'Á': 'A',
+      'É': 'E',
+      'Í': 'I',
+      'Ó': 'O',
+      'Ú': 'U',
+      'ñ': 'n',
+      'Ñ': 'N',
+      ' ': '-',
+      '¿': '',
+      '?': '',
+      '¡': '',
+      '!': '',
+      '®': '',
+    };
+
+    String result = input;
+    replacements.forEach((key, value) {
+      result = result.replaceAll(key, value);
+    });
+
+    return result;
+  }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final currentRoute = ModalRoute.of(context)?.settings.name ?? '';
 
     if (showMobileMenu && screenWidth >= 850) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -85,9 +120,10 @@ class _HeaderState extends State<Header> {
                                     curve: Curves.easeInOut,
                                     height: isHover ? MediaQuery.of(context).size.height : 48,
                                     color:
-                                        ModalRoute.of(context)!.settings.name!.contains("EcoBag")
+                                        currentRoute.contains("EcoBag")
                                             ? Color.fromARGB(255, 41, 112, 9).withAlpha(170)
                                             : Theme.of(context).primaryColor.withAlpha(200),
+
                                     child: Align(
                                       alignment: Alignment.topCenter,
                                       child: ConstrainedBox(
@@ -116,7 +152,9 @@ class _HeaderState extends State<Header> {
                                                               cursor: SystemMouseCursors.click,
                                                               onEnter: (_) {
                                                                 setState(() {
-                                                                  isHover = false;
+                                                                  if (showMobileMenu) {
+                                                                    isHover = false;
+                                                                  }
                                                                   ishoverother = "logo";
                                                                 });
                                                               },
@@ -136,18 +174,54 @@ class _HeaderState extends State<Header> {
                                                                     onTap: () {
                                                                       if (ModalRoute.of(context)?.settings.name !=
                                                                           '/') {
-                                                                        Navigator.pushReplacementNamed(context, '/');
+                                                                        navigateWithSlide(context, '/');
                                                                       }
                                                                     },
-                                                                    child: AnimatedOpacity(
-                                                                      opacity: isHover ? 0.0 : 1.0,
-                                                                      duration: Duration(milliseconds: 300),
-                                                                      child: Image.asset(
-                                                                        "lib/src/img/WIsotipo.webp",
-                                                                        height: 20,
-                                                                        color: Colors.white.withAlpha(value.toInt()),
-                                                                      ),
-                                                                    ),
+                                                                    child:
+                                                                        showSubmenu
+                                                                            ? GestureDetector(
+                                                                              onTap: () {
+                                                                                setState(() {
+                                                                                  showSubmenu = false;
+                                                                                  selectedMenuIndex = null;
+                                                                                });
+                                                                              },
+                                                                              child: MouseRegion(
+                                                                                cursor: SystemMouseCursors.click,
+
+                                                                                child: TweenAnimationBuilder<double>(
+                                                                                  tween: Tween<double>(
+                                                                                    begin: 200,
+                                                                                    end:
+                                                                                        ishoverother == "back"
+                                                                                            ? 255
+                                                                                            : 200,
+                                                                                  ),
+                                                                                  duration: Duration(milliseconds: 200),
+                                                                                  builder: (context, value, child) {
+                                                                                    return Icon(
+                                                                                      CupertinoIcons.chevron_back,
+                                                                                      key: ValueKey<bool>(showSubmenu),
+                                                                                      color: Colors.white.withAlpha(
+                                                                                        value.toInt(),
+                                                                                      ),
+                                                                                      size: 26,
+                                                                                    );
+                                                                                  },
+                                                                                ),
+                                                                              ),
+                                                                            )
+                                                                            : AnimatedOpacity(
+                                                                              opacity: isHover ? 0.0 : 1.0,
+                                                                              duration: Duration(milliseconds: 300),
+                                                                              child: Image.asset(
+                                                                                "lib/src/img/WIsotipo.webp",
+                                                                                height: 20,
+                                                                                color: Colors.white.withAlpha(
+                                                                                  value.toInt(),
+                                                                                ),
+                                                                              ),
+                                                                            ),
                                                                   );
                                                                 },
                                                               ),
@@ -158,7 +232,9 @@ class _HeaderState extends State<Header> {
                                                                 MouseRegion(
                                                                   onEnter: (_) {
                                                                     setState(() {
-                                                                      isHover = false;
+                                                                      if (showMobileMenu) {
+                                                                        isHover = false;
+                                                                      }
                                                                       ishoverother = "search";
                                                                     });
                                                                   },
@@ -190,7 +266,9 @@ class _HeaderState extends State<Header> {
                                                                 MouseRegion(
                                                                   onEnter: (_) {
                                                                     setState(() {
-                                                                      isHover = false;
+                                                                      if (showMobileMenu) {
+                                                                        isHover = false;
+                                                                      }
                                                                       ishoverother = "bag";
                                                                     });
                                                                   },
@@ -225,27 +303,18 @@ class _HeaderState extends State<Header> {
                                                                       onTap: () {
                                                                         setState(() {
                                                                           if (isHover) {
-                                                                            // Si ya está abierto, cerramos
                                                                             isHover = false;
                                                                             hoveredIndex = null;
+                                                                            showSubmenu = false;
                                                                           } else {
-                                                                            // Si está cerrado, abrimos
                                                                             isHover = true;
                                                                             hoveredIndex = null;
                                                                           }
                                                                         });
                                                                       },
                                                                       child: MouseRegion(
-                                                                        onEnter: (_) {
-                                                                          setState(() {
-                                                                            ishoverother = "line";
-                                                                          });
-                                                                        },
-                                                                        onExit: (_) {
-                                                                          setState(() {
-                                                                            ishoverother = "";
-                                                                          });
-                                                                        },
+                                                                        cursor: SystemMouseCursors.click,
+
                                                                         child: TweenAnimationBuilder<double>(
                                                                           tween: Tween<double>(
                                                                             begin: 200,
@@ -307,41 +376,211 @@ class _HeaderState extends State<Header> {
                                                                         left: 15,
                                                                         right: 15,
                                                                       ),
-                                                                      child: Column(
-                                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                                        children: List.generate(
-                                                                          MenuData.navbarItems.length,
-                                                                          (index) {
-                                                                            return DelayedDisplay(
-                                                                              slidingCurve: Curves.easeInOut,
-                                                                              delay: Duration(milliseconds: 40 * index),
-                                                                              fadingDuration: Duration(
-                                                                                milliseconds: 300,
-                                                                              ),
-                                                                              slidingBeginOffset: const Offset(
-                                                                                0.0,
-                                                                                0.1,
-                                                                              ),
-                                                                              child: Padding(
-                                                                                padding: const EdgeInsets.symmetric(
-                                                                                  vertical: 10.0,
-                                                                                ),
-                                                                                child: GestureDetector(
-                                                                                  onTap: () {},
-                                                                                  child: Text(
-                                                                                    MenuData.navbarItems[index],
-                                                                                    style: TextStyle(
-                                                                                      fontSize: 26,
-                                                                                      fontWeight: FontWeight.w600,
-                                                                                      color: Colors.white,
+                                                                      child:
+                                                                          showSubmenu
+                                                                              ? Column(
+                                                                                crossAxisAlignment:
+                                                                                    CrossAxisAlignment.start,
+                                                                                children: [
+                                                                                  Padding(
+                                                                                    padding: const EdgeInsets.only(
+                                                                                      bottom: 24.0,
+                                                                                    ),
+                                                                                    child: MouseRegion(
+                                                                                      cursor: SystemMouseCursors.click,
+                                                                                      child: GestureDetector(
+                                                                                        onTap: () {
+                                                                                          final path =
+                                                                                              "/${MenuData.navbarItems[selectedMenuIndex!].replaceAll("®", "").replaceAll(" ", "")}";
+                                                                                          if (ModalRoute.of(
+                                                                                                context,
+                                                                                              )?.settings.name !=
+                                                                                              path) {
+                                                                                            navigateWithSlide(
+                                                                                              context,
+                                                                                              path,
+                                                                                            );
+                                                                                          }
+                                                                                        },
+                                                                                        child: Text(
+                                                                                          'Descubre todo de ${MenuData.navbarItems[selectedMenuIndex!]}',
+                                                                                          style: const TextStyle(
+                                                                                            fontSize: 24,
+                                                                                            fontWeight: FontWeight.bold,
+                                                                                            color: Colors.white,
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
                                                                                     ),
                                                                                   ),
+                                                                                  ...MenuData.submenus[selectedMenuIndex!].expand((
+                                                                                    section,
+                                                                                  ) {
+                                                                                    return [
+                                                                                      Padding(
+                                                                                        padding: EdgeInsets.symmetric(
+                                                                                          vertical: 10,
+                                                                                        ),
+                                                                                        child: Text(
+                                                                                          section['title'],
+                                                                                          style: TextStyle(
+                                                                                            color: Colors.white
+                                                                                                .withAlpha(200),
+                                                                                            fontSize: 18,
+                                                                                            fontWeight: FontWeight.bold,
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                      const SizedBox(height: 8),
+                                                                                      ...List<Widget>.from(
+                                                                                        section['items'].map<Widget>((
+                                                                                          item,
+                                                                                        ) {
+                                                                                          return MouseRegion(
+                                                                                            cursor:
+                                                                                                SystemMouseCursors
+                                                                                                    .click,
+                                                                                            child: GestureDetector(
+                                                                                              onTap: () {
+                                                                                                String
+                                                                                                path = normalizeRoute(
+                                                                                                  MenuData
+                                                                                                      .navbarItems[hoveredIndex!],
+                                                                                                );
+                                                                                                String sectionTitle =
+                                                                                                    normalizeRoute(
+                                                                                                      section["title"],
+                                                                                                    );
+                                                                                                String itemPath =
+                                                                                                    normalizeRoute(
+                                                                                                      item,
+                                                                                                    );
+
+                                                                                                String fullRoute =
+                                                                                                    "/$path/$sectionTitle/$itemPath";
+                                                                                                if (ModalRoute.of(
+                                                                                                      context,
+                                                                                                    )?.settings.name !=
+                                                                                                    fullRoute) {
+                                                                                                  navigateWithSlide(
+                                                                                                    context,
+                                                                                                    fullRoute,
+                                                                                                  );
+                                                                                                }
+                                                                                              },
+                                                                                              child: Padding(
+                                                                                                padding:
+                                                                                                    const EdgeInsets.symmetric(
+                                                                                                      vertical: 4,
+                                                                                                    ),
+                                                                                                child: Text(
+                                                                                                  item,
+                                                                                                  style: TextStyle(
+                                                                                                    color: Colors.white,
+                                                                                                    fontWeight:
+                                                                                                        FontWeight.bold,
+                                                                                                    fontSize: 20,
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                          );
+                                                                                        }),
+                                                                                      ),
+                                                                                    ];
+                                                                                  }),
+                                                                                ],
+                                                                              )
+                                                                              : Column(
+                                                                                crossAxisAlignment:
+                                                                                    CrossAxisAlignment.start,
+                                                                                children: List.generate(
+                                                                                  MenuData.navbarItems.length,
+                                                                                  (index) {
+                                                                                    return DelayedDisplay(
+                                                                                      slidingCurve: Curves.easeInOut,
+                                                                                      delay: Duration(
+                                                                                        milliseconds: 40 * index,
+                                                                                      ),
+                                                                                      fadingDuration: Duration(
+                                                                                        milliseconds: 300,
+                                                                                      ),
+                                                                                      slidingBeginOffset: const Offset(
+                                                                                        0.0,
+                                                                                        0.1,
+                                                                                      ),
+                                                                                      child: Padding(
+                                                                                        padding:
+                                                                                            const EdgeInsets.symmetric(
+                                                                                              vertical: 10.0,
+                                                                                            ),
+                                                                                        child: MouseRegion(
+                                                                                          cursor:
+                                                                                              SystemMouseCursors.click,
+                                                                                          onEnter: (_) {
+                                                                                            setState(() {
+                                                                                              hoveredMobileIndex =
+                                                                                                  hoveredMobileIndex ==
+                                                                                                          index
+                                                                                                      ? null
+                                                                                                      : index;
+                                                                                            });
+                                                                                          },
+                                                                                          onExit: (_) {
+                                                                                            setState(() {
+                                                                                              hoveredMobileIndex =
+                                                                                                  hoveredMobileIndex ==
+                                                                                                          index
+                                                                                                      ? null
+                                                                                                      : index;
+                                                                                            });
+                                                                                          },
+                                                                                          child: GestureDetector(
+                                                                                            onTap: () {
+                                                                                              setState(() {
+                                                                                                selectedMenuIndex =
+                                                                                                    index;
+                                                                                                showSubmenu = true;
+                                                                                              });
+                                                                                            },
+
+                                                                                            child: Row(
+                                                                                              children: [
+                                                                                                Text(
+                                                                                                  MenuData
+                                                                                                      .navbarItems[index],
+                                                                                                  style: TextStyle(
+                                                                                                    fontSize: 26,
+                                                                                                    fontWeight:
+                                                                                                        FontWeight.w600,
+                                                                                                    color: Colors.white,
+                                                                                                  ),
+                                                                                                ),
+                                                                                                Spacer(),
+                                                                                                AnimatedOpacity(
+                                                                                                  opacity:
+                                                                                                      hoveredMobileIndex ==
+                                                                                                              index
+                                                                                                          ? 1.0
+                                                                                                          : 0.0,
+                                                                                                  duration: Duration(
+                                                                                                    milliseconds: 300,
+                                                                                                  ),
+                                                                                                  child: Icon(
+                                                                                                    CupertinoIcons
+                                                                                                        .chevron_right,
+                                                                                                    color: Colors.white,
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ],
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    );
+                                                                                  },
                                                                                 ),
                                                                               ),
-                                                                            );
-                                                                          },
-                                                                        ),
-                                                                      ),
                                                                     ),
                                                                   )
                                                                   : SizedBox(key: ValueKey("empty")),
@@ -410,7 +649,7 @@ class _HeaderState extends State<Header> {
                                               child: GestureDetector(
                                                 onTap: () {
                                                   if (ModalRoute.of(context)?.settings.name != '/') {
-                                                    Navigator.pushReplacementNamed(context, '/');
+                                                    navigateWithSlide(context, "/");
                                                   }
                                                 },
                                                 child: TweenAnimationBuilder<double>(
@@ -449,31 +688,24 @@ class _HeaderState extends State<Header> {
                                                   builder: (context, value, child) {
                                                     return GestureDetector(
                                                       onTap: () async {
-                                                        final currentPath =
-                                                            "/${MenuData.navbarItems[index].replaceAll("®", "")}";
+                                                        String currentPath = normalizeRoute(
+                                                          "/${MenuData.navbarItems[index].replaceAll("®", "")}",
+                                                        );
                                                         final currentRoute = ModalRoute.of(context)?.settings.name;
 
-                                                        final isMobile = MediaQuery.of(context).size.width < 1025;
-
-                                                        if (isMobile) {
-                                                          if (hoveredIndex != index) {
-                                                            setState(() {
-                                                              hoveredIndex = index;
-                                                              isHover = true;
-                                                            });
-                                                          } else {
-                                                            if (currentRoute != currentPath) {
-                                                              setState(() {
-                                                                isHover = false;
-                                                                hoveredIndex = null;
-                                                              });
-                                                              await Future.delayed(Duration(milliseconds: 400));
-                                                              Navigator.pushReplacementNamed(context, currentPath);
-                                                            }
-                                                          }
+                                                        if (hoveredIndex != index) {
+                                                          setState(() {
+                                                            hoveredIndex = index;
+                                                            isHover = true;
+                                                          });
                                                         } else {
                                                           if (currentRoute != currentPath) {
-                                                            Navigator.pushReplacementNamed(context, currentPath);
+                                                            setState(() {
+                                                              isHover = false;
+                                                              hoveredIndex = null;
+                                                            });
+                                                            await Future.delayed(Duration(milliseconds: 400));
+                                                            navigateWithSlide(context, currentPath);
                                                           }
                                                         }
                                                       },
@@ -605,27 +837,22 @@ class _HeaderState extends State<Header> {
                                                                           cursor: SystemMouseCursors.click,
                                                                           child: GestureDetector(
                                                                             onTap: () {
-                                                                              String path = MenuData
-                                                                                  .navbarItems[hoveredIndex!]
-                                                                                  .replaceAll("®", "")
-                                                                                  .replaceAll(" ", "");
-                                                                              String sectionTitle = section["title"]
-                                                                                  .toString()
-                                                                                  .replaceAll(" ", "-");
-                                                                              String itemPath = item.replaceAll(
-                                                                                " ",
-                                                                                "-",
+                                                                              String path = normalizeRoute(
+                                                                                MenuData.navbarItems[hoveredIndex!],
                                                                               );
+                                                                              String sectionTitle = normalizeRoute(
+                                                                                section["title"],
+                                                                              );
+                                                                              String itemPath = normalizeRoute(item);
+
                                                                               String fullRoute =
                                                                                   "/$path/$sectionTitle/$itemPath";
+
                                                                               if (ModalRoute.of(
                                                                                     context,
                                                                                   )?.settings.name !=
                                                                                   fullRoute) {
-                                                                                Navigator.pushReplacementNamed(
-                                                                                  context,
-                                                                                  fullRoute,
-                                                                                );
+                                                                                navigateWithSlide(context, fullRoute);
                                                                               }
                                                                             },
                                                                             child: Text(

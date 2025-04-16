@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:webpack/main.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
 
@@ -88,7 +89,7 @@ class SupportHome extends StatelessWidget {
                                 cursor: SystemMouseCursors.click,
                                 child: GestureDetector(
                                   onTap: () {
-                                    Navigator.pushNamed(context, card.route);
+                                    navigateWithSlide(context, card.route);
                                   },
                                   child: Container(
                                     width: itemWidth.clamp(260, 350),
@@ -168,7 +169,7 @@ final List<SupportCardData> _supportCards = [
     description:
         "¿Tienes una pregunta rápida o necesitas asistencia inmediata? Aquí puedes encontrar respuestas al instante.",
     linkText: "Contactarme con un asesor",
-    route: "/Soporte/Ayuda-Rápida/Whatsapp",
+    route: "/Soporte/Ayuda-Rapida/Whatsapp",
   ),
   SupportCardData(
     icon: CupertinoIcons.doc_text,
@@ -183,6 +184,6 @@ final List<SupportCardData> _supportCards = [
     description:
         "Tu experiencia es fundamental para seguir mejorando. Déjanos tus comentarios, responde la encuesta o registra una PQRS fácilmente.",
     linkText: "Compartir mi experiencia",
-    route: "/Soporte/Tú-opinion/Encuesta-de-satisfacción-y-PQRS",
+    route: "/Soporte/Tu-opinion/Encuesta-de-satisfaccion-y-PQRS",
   ),
 ];

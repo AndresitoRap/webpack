@@ -35,7 +35,6 @@ class _AboutUsState extends State<AboutUs> {
       if (mounted) {
         setState(() {
           _scrollY = _scrollController.offset;
-          print(_scrollY);
         });
       }
     });

@@ -1,10 +1,7 @@
 import 'dart:math';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:webpack/class/cardproduct.dart';
-import 'package:webpack/class/categoriescard.dart';
+import 'package:webpack/class/categories.dart';
 import 'package:webpack/widgets/discover.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
@@ -35,7 +32,6 @@ class _SmartBagState extends State<SmartBag> {
     });
   }
 
-  //Seccion scrolleable 2 (Familias)
   final ScrollController _scrollControllerfamily = ScrollController();
   bool canScrollLeftFamily = false;
   bool canScrollRightFamily = true;
@@ -53,7 +49,6 @@ class _SmartBagState extends State<SmartBag> {
   @override
   void initState() {
     super.initState();
-
     _scrollControllerfamily.addListener(_updateScrollButtonsFamily);
     _scrollController.addListener(_updateScrollButtons);
   }
@@ -81,7 +76,6 @@ class _SmartBagState extends State<SmartBag> {
     return Scaffold(
       body: Stack(
         children: [
-          LeafAnimation(),
           SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 45),
@@ -240,7 +234,7 @@ class _SmartBagState extends State<SmartBag> {
                   SizedBox(height: screenWidth * 0.1),
                   OurLines(
                     text: "Nuestras lineas.",
-                    list: categoriesCard,
+                    list: subcategorieSmart,
                     ecoOrSmartColor: Theme.of(context).primaryColor,
                     scrollControllerfamily: _scrollControllerfamily,
                     canScrollLeftFamily: canScrollLeftFamily,
@@ -257,101 +251,4 @@ class _SmartBagState extends State<SmartBag> {
       ),
     );
   }
-}
-
-class LeafAnimation extends StatefulWidget {
-  const LeafAnimation({super.key});
-
-  @override
-  State<LeafAnimation> createState() => _LeafAnimationState();
-}
-
-class _LeafAnimationState extends State<LeafAnimation> with SingleTickerProviderStateMixin {
-  late final Ticker _ticker;
-  final List<LeafData> _leaves = [];
-  final Random _random = Random();
-
-  double screenWidth = 0;
-  double screenHeight = 0;
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Inicializar las hojas
-    for (int i = 0; i < 10; i++) {
-      _leaves.add(_generateLeaf());
-    }
-
-    // Crear ticker que se actualiza constantemente
-    _ticker = createTicker((Duration elapsed) {
-      setState(() {
-        for (int i = 0; i < _leaves.length; i++) {
-          _leaves[i].y += _leaves[i].speed;
-
-          // Si se fue de la pantalla, reemplazar por una nueva
-          if (_leaves[i].y > screenHeight + _leaves[i].size) {
-            _leaves[i] = _generateLeaf(); // reemplazar hoja
-          }
-        }
-      });
-    });
-
-    _ticker.start();
-  }
-
-  LeafData _generateLeaf() {
-    return LeafData(
-      image: 'lib/src/img/smartbag/fall${_random.nextInt(3) + 1}.webp',
-      x: _random.nextDouble(),
-      y: -50.0 - _random.nextDouble() * 300,
-      speed: 1.0 + _random.nextDouble() * 2.0,
-      size: 40.0 + _random.nextDouble() * 30,
-      rotation: _random.nextDouble() * pi,
-    );
-  }
-
-  @override
-  void dispose() {
-    _ticker.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    screenWidth = MediaQuery.of(context).size.width;
-    screenHeight = MediaQuery.of(context).size.height;
-
-    return Stack(
-      children:
-          _leaves.map((leaf) {
-            return Positioned(
-              left: leaf.x * screenWidth,
-              top: leaf.y,
-              child: Transform.rotate(
-                angle: leaf.rotation + leaf.y * 0.01,
-                child: Image.asset(leaf.image, width: leaf.size),
-              ),
-            );
-          }).toList(),
-    );
-  }
-}
-
-class LeafData {
-  final String image;
-  final double x;
-  double y;
-  final double speed;
-  final double size;
-  final double rotation;
-
-  LeafData({
-    required this.image,
-    required this.x,
-    required this.y,
-    required this.speed,
-    required this.size,
-    required this.rotation,
-  });
 }

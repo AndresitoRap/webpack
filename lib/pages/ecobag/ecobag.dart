@@ -1,9 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:webpack/class/cardproduct.dart';
-import 'package:webpack/class/categoriescard.dart';
+import 'package:webpack/class/categories.dart';
 import 'package:webpack/widgets/discover.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
@@ -239,7 +238,7 @@ class _EcoBagState extends State<EcoBag> {
                   SizedBox(height: screenWidth * 0.1),
                   OurLines(
                     text: "Nuestas Ecolineas.",
-                    list: categoriesCardEco,
+                    list: subcategorieEco,
                     ecoOrSmartColor: Color.fromARGB(255, 75, 141, 44),
                     scrollControllerfamily: _scrollControllerfamily,
                     canScrollLeftFamily: canScrollLeftFamily,

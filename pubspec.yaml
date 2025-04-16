@@ -16,6 +16,7 @@ dependencies:
   delayed_display: ^2.0.0
   video_player_web: ^2.3.4
   video_player: ^2.9.5
+  visibility_detector: ^0.4.0+2
 
 dev_dependencies:
   flutter_test:
@@ -32,8 +33,11 @@ flutter:
       - lib/src/img/us/
       - lib/src/pdf/support/
       - lib/src/videos/catalog/
+      - lib/src/videos/
       - lib/src/img/smartbag/
       - lib/src/img/ecobag/
+      - lib/tool/
+      
       
   fonts:
     - family: D-DINExp

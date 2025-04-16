@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:webpack/main.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
 
@@ -107,10 +108,7 @@ class _LegalPoliciesState extends State<LegalPolicies> {
                                     cursor: SystemMouseCursors.click,
                                     child: GestureDetector(
                                       onTap: () {
-                                        Navigator.pushReplacementNamed(
-                                          context,
-                                          '/Soporte/Politicas/Tratamiento-de-datos',
-                                        );
+                                        navigateWithSlide(context, '/Soporte/Politicas/Tratamiento-de-datos');
                                       },
                                       child: Text(
                                         "Política de Protección de Datos Personales.",

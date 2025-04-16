@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:webpack/main.dart';
 import 'package:webpack/widgets/header.dart';
 
 class PageNotFound extends StatelessWidget {
@@ -64,7 +65,7 @@ class PageNotFound extends StatelessWidget {
                   MouseRegion(
                     cursor: SystemMouseCursors.click,
                     child: GestureDetector(
-                      onTap: () => Navigator.pushReplacementNamed(context, '/'),
+                      onTap: () => navigateWithSlide(context, '/'),
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
                         decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(30)),

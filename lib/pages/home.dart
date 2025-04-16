@@ -1,7 +1,7 @@
 import 'dart:math' show min;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:webpack/class/cardproduct.dart';
+import 'package:video_player/video_player.dart';
 import 'package:webpack/class/packwithcon.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
@@ -15,6 +15,12 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> with TickerProviderStateMixin {
+  //Inicio
+  VideoPlayerController? _videoController;
+  ScrollController _scrollController = ScrollController();
+  bool _scrollLocked = true; // Inicialmente está bloqueado
+  bool _videoEnded = false;
+
   //Empaques con conciencia
   int? _expandedIndex;
   List<int> cardIndex = List.generate(cardPWC.length, (index) => index);
@@ -26,8 +32,29 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    _videoController =
+        VideoPlayerController.asset('lib/src/videos/paint.mp4')
+          ..setVolume(0.0)
+          ..initialize().then((_) {
+            if (mounted) {
+              setState(() {});
+              _videoController!.play();
+            }
+          });
 
-    final screenWidth = MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width;
+    _videoController!.addListener(() {
+      if (_videoController!.value.position >= _videoController!.value.duration && !_videoEnded) {
+        setState(() {
+          _scrollLocked = false;
+          _videoEnded = true;
+        });
+        _videoController!.pause();
+      }
+    });
+
+    _scrollController = ScrollController();
+
+    final screenWidth = MediaQueryData.fromView(WidgetsBinding.instance.window).size.width;
     final isMobile = screenWidth < 720;
 
     _textAnimationController = AnimationController(
@@ -49,18 +76,10 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    // _scrollController.dispose();
     _textAnimationController.dispose();
+    _videoController!.dispose();
+    _scrollController.dispose();
     super.dispose();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    for (final card in cardPWC) {
-      precacheImage(AssetImage(card.image), context);
-    }
   }
 
   @override
@@ -73,35 +92,25 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
       body: Stack(
         children: [
           SingleChildScrollView(
-            scrollDirection: Axis.vertical,
+            controller: _scrollController,
+            physics: _scrollLocked ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
             child: Column(
               children: [
-                SizedBox(
-                  height: screenHeight,
+                Container(
                   width: screenWidth,
-                  child:
-                      screenWidth > 800
-                          ? Padding(
-                            padding: EdgeInsets.all(screenWidth * 0.05),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(child: Image.asset("lib/src/img/home/Packvision.webp", fit: BoxFit.contain)),
-                                Expanded(child: Image.asset("lib/src/img/home/Bag&paint.webp", fit: BoxFit.contain)),
-                              ],
-                            ),
-                          )
-                          : Padding(
-                            padding: EdgeInsets.all(screenWidth * 0.05),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(child: Image.asset("lib/src/img/home/Packvision.webp", fit: BoxFit.contain)),
-                                Expanded(child: Image.asset("lib/src/img/home/Bag&paint.webp", fit: BoxFit.contain)),
-                              ],
-                            ),
-                          ),
+                  height: screenHeight,
+                  color: Colors.white,
+                  child: FittedBox(
+                    fit: BoxFit.cover,
+                    alignment: Alignment.bottomCenter,
+                    child: SizedBox(
+                      width: _videoController!.value.size.width,
+                      height: _videoController!.value.size.height,
+                      child: VideoPlayer(_videoController!),
+                    ),
+                  ),
                 ),
+
                 Container(
                   width: screenWidth,
                   decoration: BoxDecoration(

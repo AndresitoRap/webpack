@@ -51,35 +51,97 @@ class Footer extends StatelessWidget {
                   ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [_buildScheduleSection(), _buildSocialMediaSection(context)],
+                    children: [_buildScheduleSection(context), _buildSocialMediaSection(context)],
                   )
                   : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [_buildScheduleSection(), const SizedBox(height: 20), _buildSocialMediaSection(context)],
+                    children: [
+                      _buildScheduleSection(context),
+                      const SizedBox(height: 20),
+                      _buildSocialMediaSection(context),
+                    ],
                   ),
               const SizedBox(height: 20),
               screenWidth >= mobileBreakpoint
                   ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        maxLines: 2,
-                        "Copyright © 2025 Packvision S.A.S Todos los derechos reservados",
-                        style: TextStyle(color: Colors.black38, fontSize: 12),
+                      Stack(
+                        children: [
+                          Text(
+                            "Copyright © 2025 Packvision S.A.S Todos los derechos reservados",
+                            style: TextStyle(
+                              fontSize: 12,
+                              foreground:
+                                  Paint()
+                                    ..style = PaintingStyle.stroke
+                                    ..strokeWidth = 4
+                                    ..color = Theme.of(context).scaffoldBackgroundColor,
+                            ),
+                          ),
+                          Text(
+                            "Copyright © 2025 Packvision S.A.S Todos los derechos reservados",
+                            style: TextStyle(color: Colors.black38, fontSize: 12),
+                          ),
+                        ],
                       ),
-                      Text("Colombia", style: TextStyle(color: Colors.black38, fontSize: 12)),
+                      Stack(
+                        children: [
+                          Text(
+                            "Colombia",
+                            style: TextStyle(
+                              fontSize: 12,
+                              foreground:
+                                  Paint()
+                                    ..style = PaintingStyle.stroke
+                                    ..strokeWidth = 4
+                                    ..color = Theme.of(context).scaffoldBackgroundColor,
+                            ),
+                          ),
+                          Text("Colombia", style: TextStyle(color: Colors.black38, fontSize: 12)),
+                        ],
+                      ),
                     ],
                   )
                   : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        maxLines: 2,
-                        "Copyright © 2025 Packvision S.A.S Todos los derechos reservados",
-                        style: TextStyle(color: Colors.black38, fontSize: 12),
+                      Stack(
+                        children: [
+                          Text(
+                            "Copyright © 2025 Packvision S.A.S Todos los derechos reservados",
+                            style: TextStyle(
+                              fontSize: 12,
+                              foreground:
+                                  Paint()
+                                    ..style = PaintingStyle.stroke
+                                    ..strokeWidth = 4
+                                    ..color = Theme.of(context).scaffoldBackgroundColor,
+                            ),
+                          ),
+                          Text(
+                            "Copyright © 2025 Packvision S.A.S Todos los derechos reservados",
+                            style: TextStyle(color: Colors.black38, fontSize: 12),
+                          ),
+                        ],
                       ),
                       SizedBox(height: 10),
-                      Text("Colombia", style: TextStyle(color: Colors.black38, fontSize: 12)),
+                      Stack(
+                        children: [
+                          Text(
+                            "Colombia",
+                            style: TextStyle(
+                              fontSize: 12,
+                              foreground:
+                                  Paint()
+                                    ..style = PaintingStyle.stroke
+                                    ..strokeWidth = 4
+                                    ..color = Theme.of(context).scaffoldBackgroundColor,
+                            ),
+                          ),
+                          Text("Colombia", style: TextStyle(color: Colors.black38, fontSize: 12)),
+                        ],
+                      ),
                     ],
                   ),
             ],
@@ -90,20 +152,70 @@ class Footer extends StatelessWidget {
   }
 
   // Widget para la sección de horarios
-  Widget _buildScheduleSection() {
+  Widget _buildScheduleSection(context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        const Text("Horarios de atención:", style: TextStyle(fontWeight: FontWeight.bold)),
-        ...schedules.map(
-          (schedule) => Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(text: "${schedule['day']}: ", style: const TextStyle(fontWeight: FontWeight.bold)),
-                TextSpan(text: schedule['time']),
-              ],
+        Stack(
+          children: [
+            Text(
+              "Horarios de atención:",
+              style: TextStyle(
+                foreground:
+                    Paint()
+                      ..style = PaintingStyle.stroke
+                      ..strokeWidth = 4
+                      ..color = Theme.of(context).scaffoldBackgroundColor,
+              ),
             ),
+            Text("Horarios de atención:", style: TextStyle(fontWeight: FontWeight.bold)),
+          ],
+        ),
+        ...schedules.map(
+          (schedule) => Stack(
+            children: [
+              // Texto con trazo (background)
+              Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: "${schedule['day']}: ",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        foreground:
+                            Paint()
+                              ..style = PaintingStyle.stroke
+                              ..strokeWidth = 3
+                              ..color = Theme.of(context).scaffoldBackgroundColor,
+                      ),
+                    ),
+                    TextSpan(
+                      text: schedule['time'],
+                      style: TextStyle(
+                        foreground:
+                            Paint()
+                              ..style = PaintingStyle.stroke
+                              ..strokeWidth = 3
+                              ..color = Theme.of(context).scaffoldBackgroundColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Texto normal (foreground)
+              Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: "${schedule['day']}: ",
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                    ),
+                    TextSpan(text: schedule['time'], style: TextStyle(color: Colors.black)),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ],

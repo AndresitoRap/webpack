@@ -14,15 +14,14 @@ class MenuData {
     ],
     [
       {
-        "title": "Explora Ecobag®",
+        "title": "Explora EcoBag®",
         "items": ["4PRO", "5PRO", "DoyPack", "FlowPack"],
       },
       {
-        "title": "Especial de Ecobag®",
+        "title": "Especial de EcoBag®",
         "items": ["Piramidales"],
       },
     ],
-
     [
       {
         "title": "Nuestros Catálogos",

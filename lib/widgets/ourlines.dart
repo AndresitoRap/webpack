@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_boxicons/flutter_boxicons.dart';
+import 'package:webpack/main.dart';
 
 class OurLines extends StatelessWidget {
   const OurLines({
@@ -93,7 +94,9 @@ class OurLines extends StatelessWidget {
                                 ? MouseRegion(
                                   cursor: SystemMouseCursors.click,
                                   child: GestureDetector(
-                                    onTap: () {},
+                                    onTap: () {
+                                      navigateWithSlide(context, categorie.route);
+                                    },
                                     child: Container(
                                       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
                                       decoration: BoxDecoration(

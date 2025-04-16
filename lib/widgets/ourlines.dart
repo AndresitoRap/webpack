@@ -88,7 +88,6 @@ class OurLines extends StatelessWidget {
                             Spacer(),
                             Icon(Boxicons.bxs_ruler, size: 30, color: ecoOrSmartColor),
                             Text(categorie.dimentions, style: TextStyle(fontSize: min(16, screenWidth * 0.03))),
-
                             SizedBox(height: 10),
                             categorie.enabled
                                 ? MouseRegion(

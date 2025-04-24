@@ -27,6 +27,7 @@ class _DetailsProductState extends State<DetailsProduct> {
 
   //Modelo
   late Flutter3DController controllerModel;
+  late Flutter3DController controllerFinally;
   bool _modelLoaded = false;
   bool _showTutorial = true;
 
@@ -37,6 +38,7 @@ class _DetailsProductState extends State<DetailsProduct> {
   void initState() {
     super.initState();
     controllerModel = Flutter3DController();
+    controllerFinally = Flutter3DController();
     _modelLoaded = true;
     _scrollController =
         ScrollController()..addListener(() {
@@ -338,20 +340,20 @@ class _DetailsProductState extends State<DetailsProduct> {
                                               child: Model(
                                                 product: product,
                                                 controllerModel: controllerModel,
+                                                autoRotate: true,
+                                                gestureDetector: true,
                                                 selectedValve: selectedValve,
-                                                onLoad: (String _) {
+                                                onLoad: (String _) async {
                                                   setState(() {
-                                                    final color = selectedColor;
-                                                    final finish = selectedFinish;
-                                                    if (color == null) {
-                                                      product.colors.first.name;
+                                                    if (selectedColor == null) {
+                                                      selectedColor = product.colors.first;
                                                     } else {
-                                                      selectedColor!.name;
+                                                      selectedColor = selectedColor;
                                                     }
-                                                    if (finish == null) {
+                                                    if (selectedFinish == null) {
                                                       selectedFinish = product.finishes.first;
                                                     } else {
-                                                      selectedFinish;
+                                                      selectedFinish = selectedFinish;
                                                     }
                                                     if (selectedPeelstick == null) {
                                                       selectedPeelstick = peelStickOptions.first;
@@ -360,7 +362,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                     }
                                                     controllerModel.setTexture(
                                                       textureName:
-                                                          "${color!.name}_${_getFinishSuffix(finish, product)}",
+                                                          "${selectedColor!.name}_${_getFinishSuffix(selectedFinish, product)}",
                                                     );
                                                     Future.delayed(Duration(milliseconds: 100), () {
                                                       controllerModel.setTexture(
@@ -368,6 +370,8 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                       );
                                                     });
                                                   });
+                                                  final txt = await controllerModel.getAvailableTextures();
+                                                  print("texturas: $txt");
                                                 },
                                               ),
                                             ),
@@ -636,7 +640,6 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                   onTap: (value) {
                                                     setState(() {
                                                       selectedValve = value;
-                                                      _modelLoaded = false;
                                                     });
                                                   },
                                                 );
@@ -691,18 +694,20 @@ class _DetailsProductState extends State<DetailsProduct> {
                                       child: Model(
                                         product: product,
                                         controllerModel: controllerModel,
+                                        autoRotate: true,
+                                        gestureDetector: true,
                                         selectedValve: selectedValve,
-                                        onLoad: (String _) {
+                                        onLoad: (String _) async {
                                           setState(() {
                                             if (selectedColor == null) {
-                                              product.colors.first.name;
+                                              selectedColor = product.colors.first;
                                             } else {
-                                              selectedColor!.name;
+                                              selectedColor = selectedColor;
                                             }
                                             if (selectedFinish == null) {
                                               selectedFinish = product.finishes.first;
                                             } else {
-                                              selectedFinish;
+                                              selectedFinish = selectedFinish;
                                             }
                                             if (selectedPeelstick == null) {
                                               selectedPeelstick = peelStickOptions.first;
@@ -965,7 +970,6 @@ class _DetailsProductState extends State<DetailsProduct> {
                                           onTap: (value) {
                                             setState(() {
                                               selectedValve = value;
-                                              _modelLoaded = false;
                                             });
                                           },
                                         );
@@ -1031,31 +1035,24 @@ class _DetailsProductState extends State<DetailsProduct> {
                                           opacity: isComplete ? 1.0 : 0.0,
                                           duration: const Duration(milliseconds: 1200),
                                           curve: Curves.easeInOut,
-                                          // child: Model(
-                                          //   valve: selectedValve ?? widget.product.valves.first,
-                                          //   autorotate: false,
-                                          //   active: false,
-                                          //   controllerModel: controllerModel,
-                                          //   product: product,
-                                          //   onLoad: (String _) {
-                                          //     setState(() {
-                                          //       String suffix = _getFinishSuffix(selectedFinish, product);
-                                          //       controllerModel.setTexture(
-                                          //         textureName: "${selectedColor?.name}_$suffix",
-                                          //       );
-
-                                          //       Future.delayed(Duration(milliseconds: 1), () {
-                                          //         controllerModel.setTexture(
-                                          //           textureName: selectedPeelstick!.abbreviation,
-                                          //         );
-                                          //       });
-                                          //       print("${selectedColor?.name}_$suffix");
-                                          //       print(selectedPeelstick!.abbreviation);
-                                          //       print(selectedValve);
-                                          //       print(selectedFinish);
-                                          //     });
-                                          //   },
-                                          // ),
+                                          child: Model(
+                                            product: product,
+                                            controllerModel: controllerFinally,
+                                            autoRotate: false,
+                                            gestureDetector: false,
+                                            selectedValve: selectedValve,
+                                            onLoad: (String _) {
+                                              final suffix = _getFinishSuffix(selectedFinish, product);
+                                              controllerFinally.setTexture(
+                                                textureName: "${selectedColor?.name}_$suffix",
+                                              );
+                                              Future.delayed(Duration(milliseconds: 100), () {
+                                                controllerFinally.setTexture(
+                                                  textureName: selectedPeelstick!.abbreviation,
+                                                );
+                                              });
+                                            },
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -1073,13 +1070,31 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                 opacity: isComplete ? 1.0 : 0.0,
                                                 duration: const Duration(milliseconds: 1200),
                                                 curve: Curves.easeInOut,
+                                                child: Model(
+                                                  product: product,
+                                                  controllerModel: controllerFinally,
+                                                  autoRotate: false,
+                                                  gestureDetector: false,
+                                                  selectedValve: selectedValve,
+                                                  onLoad: (String _) {
+                                                    final suffix = _getFinishSuffix(selectedFinish, product);
+                                                    controllerFinally.setTexture(
+                                                      textureName: "${selectedColor?.name}_$suffix",
+                                                    );
+                                                    Future.delayed(Duration(milliseconds: 100), () {
+                                                      controllerFinally.setTexture(
+                                                        textureName: selectedPeelstick!.abbreviation,
+                                                      );
+                                                    });
+                                                  },
+                                                ),
                                                 // child: Model(
-                                                //   valve: selectedValve ?? widget.product.valves.first,
-                                                //   autorotate: false,
-                                                //   active: false,
-                                                //   controllerModel: controllerModel,
                                                 //   product: product,
-                                                //   onLoad: (String _) {},
+                                                //   controllerModel: controllerModel,
+                                                //   autoRotate: false,
+                                                //   gestureDetector: false,
+                                                //   selectedValve: selectedValve,
+                                                //   // onLoad: (String _) {},
                                                 // ),
                                               ),
                                             ),
@@ -1232,12 +1247,16 @@ class _DetailsProductState extends State<DetailsProduct> {
 class Model extends StatelessWidget {
   final Product product;
   final Flutter3DController controllerModel;
+  final bool autoRotate;
+  final bool gestureDetector;
   final String? selectedValve;
   final dynamic onLoad;
   const Model({
     super.key,
     required this.product,
     required this.controllerModel,
+    required this.autoRotate,
+    required this.gestureDetector,
     required this.selectedValve,
     required this.onLoad,
   });
@@ -1245,14 +1264,24 @@ class Model extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String fixProductName = product.name.replaceAll(" ", "_");
+    String src;
+
+    if (selectedValve == null || selectedValve == "Sin válvula") {
+      src = "lib/src/3Dmodels/4PRO/$fixProductName/$fixProductName.glb";
+    } else if (selectedValve == "Válvula desgasificadora") {
+      src = "lib/src/3Dmodels/4PRO/$fixProductName/${fixProductName}_D.glb";
+    } else if ((selectedValve == "Válvula dosificadora")) {
+      src = "lib/src/3Dmodels/4PRO/$fixProductName/${fixProductName}_V.glb";
+    } else {
+      src = "lib/src/3Dmodels/4PRO/$fixProductName/$fixProductName.glb";
+    }
     return Flutter3DViewer(
-      autorotate: true,
+      progressBarColor: Colors.transparent,
+      autorotate: autoRotate,
+      activeGestureInterceptor: gestureDetector,
       controller: controllerModel,
       onLoad: onLoad,
-      src:
-          selectedValve == null
-              ? "lib/src/3Dmodels/4PRO/$fixProductName/$fixProductName.glb"
-              : "lib/src/3Dmodels/4PRO/$fixProductName/${fixProductName}_D.glb",
+      src: src,
     );
   }
 }

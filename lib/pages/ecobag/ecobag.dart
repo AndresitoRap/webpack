@@ -299,7 +299,7 @@ class _LeafAnimationState extends State<LeafAnimation> with SingleTickerProvider
 
   LeafData _generateLeaf() {
     return LeafData(
-      image: 'lib/src/img/ecobag/hoja${_random.nextInt(3) + 1}.webp',
+      image: 'assets/img/ecobag/hoja${_random.nextInt(3) + 1}.webp',
       x: _random.nextDouble(),
       y: -50.0 - _random.nextDouble() * 300,
       speed: 1.0 + _random.nextDouble() * 2.0,

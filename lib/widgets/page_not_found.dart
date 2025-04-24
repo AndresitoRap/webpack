@@ -36,7 +36,7 @@ class PageNotFound extends StatelessWidget {
                         child: ColorFiltered(
                           colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
                           child: Image.asset(
-                            'lib/src/img/404.webp',
+                            'assets/img/404.webp',
                             width: min(screenWidth * 0.2, 400),
                             height: min(screenWidth * 0.2, 400),
                             fit: BoxFit.contain,

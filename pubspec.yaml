@@ -13,9 +13,8 @@ dependencies:
   url_launcher: ^6.3.1
   latlong2: ^0.9.0
   delayed_display: ^2.0.0
-  video_player_web: ^2.3.4
-  video_player: ^2.9.5
   flutter_3d_controller: ^2.2.0
+  provider: ^6.1.4
 
 
 dev_dependencies:
@@ -27,23 +26,25 @@ flutter:
   uses-material-design: true
 
   assets:
-      - lib/src/img/
-      - lib/src/img/home/
-      - lib/src/img/support/
-      - lib/src/img/us/
-      - lib/src/pdf/support/
-      - lib/src/videos/catalog/
-      - lib/src/videos/
-      - lib/src/img/smartbag/
-      - lib/src/img/ecobag/
-      - lib/tool/
+      - assets/
+      - assets/img/
+      - assets/img/3DM/EcoBag/4PRO/
+      - assets/img/3DM/SmartBag/4PRO/
+      - assets/img/home/
+      - assets/img/ecobag/
+      - assets/img/smartbag/
+      - assets/img/support/
+      - assets/img/us/
+      - assets/fonts/
+      - lib/src/3Dmodels/4PRO/Barroco/
       - lib/src/gifts/
-      - lib/src/3Dmodels/SmartBag/4PRO/Rosa-de-Sharon/models/
+      - lib/src/videos/
+      - lib/src/videos/us/
       
       
   fonts:
     - family: D-DINExp
       fonts:
-        - asset: lib/src/fonts/D-DINExp.ttf
-        - asset: lib/src/fonts/D-DINExp-Bold.ttf
+        - asset: assets/fonts/D-DINExp.ttf
+        - asset: assets/fonts/D-DINExp-Bold.ttf
   

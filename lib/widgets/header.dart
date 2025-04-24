@@ -1,13 +1,19 @@
 import 'dart:ui';
-
+import 'dart:html' as html;
+import 'dart:ui' as ui;
+import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:webpack/class/menu_data.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:webpack/main.dart';
 
+//blur para los videos (HTML incrustado)
+final ValueNotifier<bool> videoBlurNotifier = ValueNotifier(false);
+
 class Header extends StatefulWidget {
-  const Header({super.key});
+  final void Function(bool)? onHoverChange;
+  const Header({super.key, this.onHoverChange});
 
   @override
   State<Header> createState() => _HeaderState();
@@ -90,6 +96,7 @@ class _HeaderState extends State<Header> {
                 isHover = false;
                 hoveredIndex = null;
                 ishoverother = "";
+                videoBlurNotifier.value = false;
               });
             },
             child:
@@ -154,6 +161,7 @@ class _HeaderState extends State<Header> {
                                                                 setState(() {
                                                                   if (showMobileMenu) {
                                                                     isHover = false;
+                                                                    videoBlurNotifier.value = false;
                                                                   }
                                                                   ishoverother = "logo";
                                                                 });
@@ -215,7 +223,7 @@ class _HeaderState extends State<Header> {
                                                                               opacity: isHover ? 0.0 : 1.0,
                                                                               duration: Duration(milliseconds: 300),
                                                                               child: Image.asset(
-                                                                                "lib/src/img/WIsotipo.webp",
+                                                                                "assets/img/WIsotipo.webp",
                                                                                 height: 20,
                                                                                 color: Colors.white.withAlpha(
                                                                                   value.toInt(),
@@ -234,6 +242,7 @@ class _HeaderState extends State<Header> {
                                                                     setState(() {
                                                                       if (showMobileMenu) {
                                                                         isHover = false;
+                                                                        videoBlurNotifier.value = false;
                                                                       }
                                                                       ishoverother = "search";
                                                                     });
@@ -263,37 +272,46 @@ class _HeaderState extends State<Header> {
                                                                   ),
                                                                 ),
                                                                 SizedBox(width: screenWidth * 0.04),
-                                                                MouseRegion(
-                                                                  onEnter: (_) {
-                                                                    setState(() {
-                                                                      if (showMobileMenu) {
-                                                                        isHover = false;
-                                                                      }
-                                                                      ishoverother = "bag";
-                                                                    });
+                                                                GestureDetector(
+                                                                  onTap: () {
+                                                                    navigateWithSlide(context, "/cart");
                                                                   },
-                                                                  onExit: (_) {
-                                                                    setState(() {
-                                                                      ishoverother = "";
-                                                                    });
-                                                                  },
-                                                                  child: TweenAnimationBuilder<double>(
-                                                                    tween: Tween<double>(
-                                                                      begin: 200,
-                                                                      end: ishoverother == "bag" ? 255 : 200,
-                                                                    ),
-                                                                    duration: Duration(milliseconds: 200),
-                                                                    builder: (context, value, child) {
-                                                                      return AnimatedOpacity(
-                                                                        opacity: isHover ? 0.0 : 1.0,
-                                                                        duration: Duration(milliseconds: 300),
-                                                                        child: Icon(
-                                                                          CupertinoIcons.bag,
-                                                                          color: Colors.white.withAlpha(value.toInt()),
-                                                                          size: 20,
-                                                                        ),
-                                                                      );
+                                                                  child: MouseRegion(
+                                                                    onEnter: (_) {
+                                                                      setState(() {
+                                                                        if (showMobileMenu) {
+                                                                          isHover = false;
+                                                                          videoBlurNotifier.value = false;
+                                                                        }
+                                                                        ishoverother = "bag";
+                                                                      });
                                                                     },
+                                                                    onExit: (_) {
+                                                                      setState(() {
+                                                                        ishoverother = "";
+                                                                      });
+                                                                    },
+                                                                    cursor: SystemMouseCursors.click,
+                                                                    child: TweenAnimationBuilder<double>(
+                                                                      tween: Tween<double>(
+                                                                        begin: 200,
+                                                                        end: ishoverother == "bag" ? 255 : 200,
+                                                                      ),
+                                                                      duration: Duration(milliseconds: 200),
+                                                                      builder: (context, value, child) {
+                                                                        return AnimatedOpacity(
+                                                                          opacity: isHover ? 0.0 : 1.0,
+                                                                          duration: Duration(milliseconds: 300),
+                                                                          child: Icon(
+                                                                            CupertinoIcons.bag,
+                                                                            color: Colors.white.withAlpha(
+                                                                              value.toInt(),
+                                                                            ),
+                                                                            size: 20,
+                                                                          ),
+                                                                        );
+                                                                      },
+                                                                    ),
                                                                   ),
                                                                 ),
                                                                 Row(
@@ -306,8 +324,10 @@ class _HeaderState extends State<Header> {
                                                                             isHover = false;
                                                                             hoveredIndex = null;
                                                                             showSubmenu = false;
+                                                                            videoBlurNotifier.value = false;
                                                                           } else {
                                                                             isHover = true;
+                                                                            videoBlurNotifier.value = true;
                                                                             hoveredIndex = null;
                                                                           }
                                                                         });
@@ -445,7 +465,7 @@ class _HeaderState extends State<Header> {
                                                                                                 String
                                                                                                 path = normalizeRoute(
                                                                                                   MenuData
-                                                                                                      .navbarItems[hoveredIndex!],
+                                                                                                      .navbarItems[hoveredMobileIndex!],
                                                                                                 );
                                                                                                 String sectionTitle =
                                                                                                     normalizeRoute(
@@ -458,6 +478,7 @@ class _HeaderState extends State<Header> {
 
                                                                                                 String fullRoute =
                                                                                                     "/$path/$sectionTitle/$itemPath";
+
                                                                                                 if (ModalRoute.of(
                                                                                                       context,
                                                                                                     )?.settings.name !=
@@ -639,6 +660,7 @@ class _HeaderState extends State<Header> {
                                                 setState(() {
                                                   isHover = false;
                                                   ishoverother = "logo";
+                                                  videoBlurNotifier.value = false;
                                                 });
                                               },
                                               onExit: (_) {
@@ -661,7 +683,7 @@ class _HeaderState extends State<Header> {
                                                   curve: Curves.easeInOut,
                                                   builder: (context, value, child) {
                                                     return Image.asset(
-                                                      "lib/src/img/WIsotipo.webp",
+                                                      "assets/img/WIsotipo.webp",
                                                       height: 20,
                                                       color: Colors.white.withAlpha(value.toInt()),
                                                     );
@@ -676,6 +698,7 @@ class _HeaderState extends State<Header> {
                                                   setState(() {
                                                     isHover = true;
                                                     hoveredIndex = index;
+                                                    videoBlurNotifier.value = true;
                                                   });
                                                 },
                                                 child: TweenAnimationBuilder<double>(
@@ -697,11 +720,13 @@ class _HeaderState extends State<Header> {
                                                           setState(() {
                                                             hoveredIndex = index;
                                                             isHover = true;
+                                                            videoBlurNotifier.value = true;
                                                           });
                                                         } else {
                                                           if (currentRoute != currentPath) {
                                                             setState(() {
                                                               isHover = false;
+                                                              videoBlurNotifier.value = false;
                                                               hoveredIndex = null;
                                                             });
                                                             await Future.delayed(Duration(milliseconds: 400));
@@ -728,6 +753,7 @@ class _HeaderState extends State<Header> {
                                                     setState(() {
                                                       isHover = false;
                                                       ishoverother = "search";
+                                                      videoBlurNotifier.value = false;
                                                     });
                                                   },
                                                   onExit: (_) {
@@ -752,32 +778,39 @@ class _HeaderState extends State<Header> {
                                                   ),
                                                 ),
                                                 SizedBox(width: screenWidth * 0.04),
-                                                MouseRegion(
-                                                  onEnter: (_) {
-                                                    setState(() {
-                                                      isHover = false;
-                                                      ishoverother = "bag";
-                                                    });
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    navigateWithSlide(context, "/cart");
                                                   },
-                                                  onExit: (_) {
-                                                    setState(() {
-                                                      ishoverother = "";
-                                                    });
-                                                  },
-                                                  child: TweenAnimationBuilder<double>(
-                                                    tween: Tween<double>(
-                                                      begin: 200,
-                                                      end: ishoverother == "bag" ? 255 : 200,
-                                                    ),
-                                                    duration: Duration(milliseconds: 200),
-                                                    curve: Curves.easeInOut,
-                                                    builder: (context, value, child) {
-                                                      return Icon(
-                                                        CupertinoIcons.bag,
-                                                        color: Colors.white.withAlpha(value.toInt()),
-                                                        size: 20,
-                                                      );
+                                                  child: MouseRegion(
+                                                    onEnter: (_) {
+                                                      setState(() {
+                                                        isHover = false;
+                                                        ishoverother = "bag";
+                                                        videoBlurNotifier.value = false;
+                                                      });
                                                     },
+                                                    onExit: (_) {
+                                                      setState(() {
+                                                        ishoverother = "";
+                                                      });
+                                                    },
+                                                    cursor: SystemMouseCursors.click,
+                                                    child: TweenAnimationBuilder<double>(
+                                                      tween: Tween<double>(
+                                                        begin: 200,
+                                                        end: ishoverother == "bag" ? 255 : 200,
+                                                      ),
+                                                      duration: Duration(milliseconds: 200),
+                                                      curve: Curves.easeInOut,
+                                                      builder: (context, value, child) {
+                                                        return Icon(
+                                                          CupertinoIcons.bag,
+                                                          color: Colors.white.withAlpha(value.toInt()),
+                                                          size: 20,
+                                                        );
+                                                      },
+                                                    ),
                                                   ),
                                                 ),
                                               ],
@@ -892,5 +925,58 @@ class _HeaderState extends State<Header> {
         ),
       ],
     );
+  }
+}
+
+class HtmlBackgroundVideo extends StatefulWidget {
+  final String src;
+  final bool blur;
+  final bool loop;
+
+  const HtmlBackgroundVideo({super.key, required this.src, this.blur = false, required this.loop});
+
+  @override
+  State<HtmlBackgroundVideo> createState() => _HtmlBackgroundVideoState();
+}
+
+class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
+  late final String _viewId;
+  late html.VideoElement _videoElement;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _viewId = 'html-video-${widget.src.hashCode}-${DateTime.now().millisecondsSinceEpoch}';
+
+    _videoElement =
+        html.VideoElement()
+          ..src = widget.src
+          ..autoplay = true
+          ..loop = widget.loop
+          ..muted = true
+          ..style.border = 'none'
+          ..style.width = '100%'
+          ..style.height = '100%'
+          ..style.objectFit = 'cover'
+          ..style.transition = 'filter 0.5s ease-in-out'
+          ..style.filter = widget.blur ? 'blur(30px)' : 'none';
+
+    // ignore: undefined_prefixed_name
+    ui.platformViewRegistry.registerViewFactory(_viewId, (int viewId) => _videoElement);
+  }
+
+  @override
+  void didUpdateWidget(covariant HtmlBackgroundVideo oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Solo cambia el filtro si el blur ha cambiado
+    if (oldWidget.blur != widget.blur) {
+      _videoElement.style.filter = widget.blur ? 'blur(10px)' : 'none';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return HtmlElementView(viewType: _viewId);
   }
 }

@@ -1,7 +1,7 @@
 import 'dart:math' show min;
+import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
 import 'package:webpack/class/packwithcon.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
@@ -15,11 +15,9 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> with TickerProviderStateMixin {
-  //Inicio
-  VideoPlayerController? _videoController;
+  //Inicio\
   ScrollController _scrollController = ScrollController();
-  bool _scrollLocked = true; // Inicialmente está bloqueado
-  bool _videoEnded = false;
+  bool _scrollLocked = true;
 
   //Empaques con conciencia
   int? _expandedIndex;
@@ -32,26 +30,6 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _videoController =
-        VideoPlayerController.asset('lib/src/videos/paint.mp4')
-          ..setVolume(0.0)
-          ..initialize().then((_) {
-            if (mounted) {
-              setState(() {});
-              _videoController!.play();
-            }
-          });
-
-    _videoController!.addListener(() {
-      if (_videoController!.value.position >= _videoController!.value.duration && !_videoEnded) {
-        setState(() {
-          _scrollLocked = false;
-          _videoEnded = true;
-        });
-        _videoController!.pause();
-      }
-    });
-
     _scrollController = ScrollController();
 
     final screenWidth = MediaQueryData.fromView(WidgetsBinding.instance.window).size.width;
@@ -72,12 +50,19 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
       begin: Offset(-0.3, 0),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _textAnimationController, curve: Curves.easeOutCubic));
+
+    Future.delayed(const Duration(milliseconds: 3800), () {
+      if (mounted) {
+        setState(() {
+          _scrollLocked = false;
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
     _textAnimationController.dispose();
-    _videoController!.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -90,24 +75,48 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
 
     return Scaffold(
       body: Stack(
+        fit: StackFit.expand,
         children: [
           SingleChildScrollView(
             controller: _scrollController,
             physics: _scrollLocked ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
             child: Column(
               children: [
-                Container(
-                  width: screenWidth,
+                SizedBox(
                   height: screenHeight,
-                  color: Colors.white,
-                  child: FittedBox(
-                    fit: BoxFit.cover,
-                    alignment: Alignment.bottomCenter,
-                    child: SizedBox(
-                      width: _videoController!.value.size.width,
-                      height: _videoController!.value.size.height,
-                      child: VideoPlayer(_videoController!),
-                    ),
+                  width: screenWidth,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      ValueListenableBuilder<bool>(
+                        valueListenable: videoBlurNotifier,
+                        builder: (context, isBlur, _) {
+                          return Positioned.fill(
+                            child: HtmlBackgroundVideo(src: 'lib/src/videos/paint.mp4', blur: isBlur, loop: false),
+                          );
+                        },
+                      ),
+                      Positioned.fill(
+                        child: IgnorePointer(
+                          ignoring: true,
+                          child: AnimatedOpacity(
+                            duration: const Duration(milliseconds: 800),
+                            curve: Curves.easeInOut,
+                            opacity: _scrollLocked ? 0 : 1,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.zero,
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                                child: Container(
+                                  color: Colors.white70,
+                                  child: Center(child: Image.asset("assets/img/home/Packvision.webp")),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
 

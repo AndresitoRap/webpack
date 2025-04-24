@@ -1,7 +1,7 @@
 import 'dart:math';
-
+import 'dart:html' as html;
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
 
@@ -13,24 +13,12 @@ class AboutUs extends StatefulWidget {
 }
 
 class _AboutUsState extends State<AboutUs> {
-  late VideoPlayerController _controller;
   final ScrollController _scrollController = ScrollController();
   double _scrollY = 0.0;
 
   @override
   void initState() {
     super.initState();
-
-    _controller = VideoPlayerController.asset("lib/src/videos/catalog/backgroundus.mp4")
-      ..initialize().then((_) {
-        if (mounted) {
-          setState(() {});
-          _controller.play();
-          _controller.setLooping(true);
-          _controller.setVolume(1);
-        }
-      });
-
     _scrollController.addListener(() {
       if (mounted) {
         setState(() {
@@ -42,7 +30,6 @@ class _AboutUsState extends State<AboutUs> {
 
   @override
   void dispose() {
-    _controller.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -57,22 +44,18 @@ class _AboutUsState extends State<AboutUs> {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       body: Stack(
         children: [
-          // Video de fondo
-          if (_controller.value.isInitialized)
-            Positioned.fill(
-              child: FittedBox(
-                fit: BoxFit.cover,
-                child: SizedBox(
-                  width: _controller.value.size.width,
-                  height: _controller.value.size.height,
-                  child: VideoPlayer(_controller),
-                ),
-              ),
-            ),
+          ValueListenableBuilder<bool>(
+            valueListenable: videoBlurNotifier,
+            builder: (context, isBlur, _) {
+              return Positioned.fill(
+                child: HtmlBackgroundVideo(src: 'lib/src/videos/us/backgroundus.mp4', blur: isBlur, loop: true),
+              );
+            },
+          ),
+
           Positioned.fill(child: Container(color: Colors.black.withOpacity((_scrollY / 900).clamp(0.1, 0.7)))),
           Positioned.fill(
             child: Column(

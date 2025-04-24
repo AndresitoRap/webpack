@@ -23,7 +23,7 @@ class HeardquartersCards {
 
 final List<HeardquartersCards> cardHQ = [
   HeardquartersCards(
-    img: "lib/src/img/home/Carvajal.webp",
+    img: "assets/img/home/Carvajal.webp",
     name: "Carvajal",
     latitude: 4.60971,
     longitude: -74.08175,
@@ -31,7 +31,7 @@ final List<HeardquartersCards> cardHQ = [
         "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1988.4503945679396!2d-74.1391054034424!3d4.611774599445512!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3f776877ed45bf%3A0x126f76b8116c49e3!2sPACKVISI%C3%93N%20SAS%20SEDE%20CARVAJAL!5e0!3m2!1ses!2sco!4v1744147530535!5m2!1ses!2sco",
   ),
   HeardquartersCards(
-    img: "lib/src/img/home/Norte.webp",
+    img: "assets/img/home/Norte.webp",
     name: "Nogal",
     latitude: 4.6610239150862025,
     longitude: -74.05414093434182,
@@ -39,7 +39,7 @@ final List<HeardquartersCards> cardHQ = [
         "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1988.4503945679396!2d-74.1391054034424!3d4.611774599445512!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3f776877ed45bf%3A0x126f76b8116c49e3!2sPACKVISI%C3%93N%20SAS%20SEDE%20CARVAJAL!5e0!3m2!1ses!2sco!4v1744147530535!5m2!1ses!2sco",
   ),
   HeardquartersCards(
-    img: "lib/src/img/home/Mosquera.webp",
+    img: "assets/img/home/Mosquera.webp",
     name: "Mosquera",
     latitude: 4.695486,
     longitude: -74.190506,

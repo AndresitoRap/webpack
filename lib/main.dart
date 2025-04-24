@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:webpack/pages/cartpage.dart';
 import 'package:webpack/pages/detailsproduct.dart';
 import 'package:webpack/pages/home.dart';
 import 'package:webpack/pages/catalog/catalog.dart';
@@ -11,7 +12,6 @@ import 'package:webpack/pages/support/whatsapppage.dart';
 import 'package:webpack/pages/support/support.dart';
 import 'package:webpack/pages/us/aboutus.dart';
 import 'package:webpack/pages/us/us.dart';
-import 'package:webpack/tool/precache.dart';
 import 'package:webpack/widgets/page_not_found.dart';
 import 'package:webpack/class/categories.dart';
 import 'package:webpack/class/products.dart';
@@ -26,7 +26,6 @@ void main() {
 void navigateWithSlide(BuildContext context, String routeName, {Widget? target}) {
   transitionOverlayKey.currentState?.playTransition(() async {
     if (target == null) {
-      await precacheImagesForRoute(context, routeName);
       Navigator.pushReplacementNamed(context, routeName);
     } else {
       Navigator.pushReplacement(
@@ -71,6 +70,7 @@ class MyApp extends StatelessWidget {
 
         final staticRoutes = {
           '/': const Home(),
+          '/cart': CartPage(),
           '/SmartBag': const SmartBag(),
           '/EcoBag': const EcoBag(),
           '/Catalogo': const Catalog(),

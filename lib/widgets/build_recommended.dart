@@ -23,7 +23,7 @@ Widget buildDialogContent(BuildContext context, int index) {
                       textSpan1: "La Bolsa Rosa de Sharon Shoshana ",
                       textSpan2:
                           "es un empaque de alta calidad y diseño elegante, ideal para resaltar tus productos. Disponible en presentaciones de 500 gramos, esta bolsa mate combina funcionalidad y estética para ofrecer una solución de empaque sofisticada.",
-                      img: "lib/src/img/home/RosaSharon_Shoshana.webp",
+                      img: "assets/img/home/RosaSharon_Shoshana.webp",
                     )
                     //PC
                     : Row(
@@ -33,7 +33,7 @@ Widget buildDialogContent(BuildContext context, int index) {
                           flex: 1,
                           child: AspectRatio(
                             aspectRatio: 3 / 4,
-                            child: Image.asset("lib/src/img/home/RosaSharon_Shoshana.webp", fit: BoxFit.cover),
+                            child: Image.asset("assets/img/home/RosaSharon_Shoshana.webp", fit: BoxFit.cover),
                           ),
                         ),
                         const SizedBox(width: 30),
@@ -91,7 +91,7 @@ Widget buildDialogContent(BuildContext context, int index) {
                       textSpan1: "La Bolsa Rosa de Sharon Shoshana ",
                       textSpan2:
                           "es un empaque de alta calidad y diseño elegante, ideal para resaltar tus productos. Disponible en presentaciones de 500 gramos, esta bolsa mate combina funcionalidad y estética para ofrecer una solución de empaque sofisticada.",
-                      img: "lib/src/img/home/RosaSharon_Shoshana.webp",
+                      img: "assets/img/home/RosaSharon_Shoshana.webp",
                     )
                     //PC
                     : Row(
@@ -138,7 +138,7 @@ Widget buildDialogContent(BuildContext context, int index) {
                           flex: 1,
                           child: AspectRatio(
                             aspectRatio: 3 / 4,
-                            child: Image.asset("lib/src/img/home/RosaSharon_Shoshana.webp", fit: BoxFit.cover),
+                            child: Image.asset("assets/img/home/RosaSharon_Shoshana.webp", fit: BoxFit.cover),
                           ),
                         ),
                       ],
@@ -164,7 +164,7 @@ Widget buildDialogContent(BuildContext context, int index) {
                       textSpan1: "La Bolsa Rosa de Sharon Jade ",
                       textSpan2:
                           "es un empaque de alta calidad y diseño elegante, ideal para realzar la presentación de tus productos. Con una capacidad de 500 gramos, esta bolsa mate combina funcionalidad y estética, ofreciendo una solución de empaque sofisticada. El distintivo color jade aporta un toque de frescura y modernidad, haciendo que tus productos destaquen en el mercado.",
-                      img: "lib/src/img/home/RosaSharon_Jade.webp",
+                      img: "assets/img/home/RosaSharon_Jade.webp",
                     )
                     //PC
                     : Row(
@@ -174,7 +174,7 @@ Widget buildDialogContent(BuildContext context, int index) {
                           flex: 1,
                           child: AspectRatio(
                             aspectRatio: 3 / 4,
-                            child: Image.asset("lib/src/img/home/RosaSharon_Jade.webp", fit: BoxFit.cover),
+                            child: Image.asset("assets/img/home/RosaSharon_Jade.webp", fit: BoxFit.cover),
                           ),
                         ),
                         const SizedBox(width: 30),
@@ -232,7 +232,7 @@ Widget buildDialogContent(BuildContext context, int index) {
                       textSpan1: "La Bolsa Rosa de Sharon Jade ",
                       textSpan2:
                           "es un empaque de alta calidad y diseño elegante, ideal para realzar la presentación de tus productos. Con una capacidad de 500 gramos, esta bolsa mate combina funcionalidad y estética, ofreciendo una solución de empaque sofisticada. El distintivo color jade aporta un toque de frescura y modernidad, haciendo que tus productos destaquen en el mercado.",
-                      img: "lib/src/img/home/RosaSharon_Jade.webp",
+                      img: "assets/img/home/RosaSharon_Jade.webp",
                     )
                     //PC
                     : Row(
@@ -279,7 +279,7 @@ Widget buildDialogContent(BuildContext context, int index) {
                           flex: 1,
                           child: AspectRatio(
                             aspectRatio: 3 / 4,
-                            child: Image.asset("lib/src/img/home/RosaSharon_Jade.webp", fit: BoxFit.cover),
+                            child: Image.asset("assets/img/home/RosaSharon_Jade.webp", fit: BoxFit.cover),
                           ),
                         ),
                       ],

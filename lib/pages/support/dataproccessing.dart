@@ -113,7 +113,7 @@ class _DataProccessingState extends State<DataProccessing> {
                           flex: 2,
                           child: Padding(
                             padding: const EdgeInsets.all(20.0),
-                            child: Image.asset("lib/src/img/support/dataproccesing.webp"),
+                            child: Image.asset("assets/img/support/dataproccesing.webp"),
                           ),
                         ),
                     ],
@@ -131,7 +131,7 @@ class _DataProccessingState extends State<DataProccessing> {
 }
 
 void downloadPDF() {
-  final url = 'lib/src/pdf/support/Tratamiento-de-Datos.pdf';
+  final url = 'assets/pdf/support/Tratamiento-de-Datos.pdf';
   final anchor =
       html.AnchorElement(href: url)
         ..setAttribute('download', 'tratamiento_de_datos.pdf')

@@ -139,7 +139,7 @@ class _WhatsappPageState extends State<WhatsappPage> {
                                     offset: Offset(screenWidth * 0.4, screenWidth * 0.3),
                                     child: Transform.scale(
                                       scale: 1.6,
-                                      child: Image.asset("lib/src/img/support/support_chat.webp"),
+                                      child: Image.asset("assets/img/support/support_chat.webp"),
                                     ),
                                   ),
                                 ],
@@ -240,7 +240,7 @@ class _WhatsappPageState extends State<WhatsappPage> {
                                   Expanded(
                                     child: Transform.translate(
                                       offset: const Offset(0, 50),
-                                      child: Image.asset("lib/src/img/support/support_chat.webp"),
+                                      child: Image.asset("assets/img/support/support_chat.webp"),
                                     ),
                                   ),
                                 ],
@@ -352,9 +352,9 @@ class SupportCardPerson {
 
 // Lista de tarjetas
 final List<SupportCardPerson> _supportCardsPerson = [
-  SupportCardPerson(ext: "104", zone: "Asesora Comercial", img: "lib/src/img/support/Adviser1.webp"),
-  SupportCardPerson(ext: "103", zone: "Asesora Comercial", img: "lib/src/img/support/Adviser2.webp"),
-  SupportCardPerson(ext: "512", zone: "Servicio al cliente", img: "lib/src/img/support/Customer_Service.webp"),
-  SupportCardPerson(ext: "109", zone: "Asesora Comercial", img: "lib/src/img/support/Adviser3.webp"),
-  SupportCardPerson(ext: "508", zone: "Asesora Comercial", img: "lib/src/img/support/Adviser4.webp"),
+  SupportCardPerson(ext: "104", zone: "Asesora Comercial", img: "assets/img/support/Adviser1.webp"),
+  SupportCardPerson(ext: "103", zone: "Asesora Comercial", img: "assets/img/support/Adviser2.webp"),
+  SupportCardPerson(ext: "512", zone: "Servicio al cliente", img: "assets/img/support/Customer_Service.webp"),
+  SupportCardPerson(ext: "109", zone: "Asesora Comercial", img: "assets/img/support/Adviser3.webp"),
+  SupportCardPerson(ext: "508", zone: "Asesora Comercial", img: "assets/img/support/Adviser4.webp"),
 ];

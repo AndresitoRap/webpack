@@ -39,11 +39,15 @@ class _CommerceState extends State<Commerce> with TickerProviderStateMixin {
 
     if (selectedOption == "De menor a mayor precio") {
       sorted.sort(
-        (a, b) => double.parse(a.price.replaceAll('.', '')).compareTo(double.parse(b.price.replaceAll('.', ''))),
+        (a, b) => double.parse(
+          a.price.toString().replaceAll('.', ''),
+        ).compareTo(double.parse(b.price.toString().replaceAll('.', ''))),
       );
     } else if (selectedOption == "De mayor a menor precio") {
       sorted.sort(
-        (a, b) => double.parse(b.price.replaceAll('.', '')).compareTo(double.parse(a.price.replaceAll('.', ''))),
+        (a, b) => double.parse(
+          b.price.toString().replaceAll('.', ''),
+        ).compareTo(double.parse(a.price.toString().replaceAll('.', ''))),
       );
     }
 
@@ -184,13 +188,13 @@ class _CommerceState extends State<Commerce> with TickerProviderStateMixin {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children:
-                                          product.colors.map((color) {
+                                          product.colors.map((c) {
                                             return Container(
                                               margin: EdgeInsets.symmetric(horizontal: 4),
                                               height: 12,
                                               width: 12,
                                               decoration: BoxDecoration(
-                                                color: color,
+                                                color: c.color,
                                                 shape: BoxShape.circle,
                                                 border: Border.all(width: 0.5, color: Colors.grey),
                                               ),
@@ -401,13 +405,13 @@ class _CommerceState extends State<Commerce> with TickerProviderStateMixin {
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children:
-                                              product.colors.map((color) {
+                                              product.colors.map((c) {
                                                 return Container(
                                                   margin: const EdgeInsets.symmetric(horizontal: 3),
                                                   height: 12,
                                                   width: 12,
                                                   decoration: BoxDecoration(
-                                                    color: color,
+                                                    color: c.color,
                                                     shape: BoxShape.circle,
                                                     border: Border.all(width: 0.5, color: Colors.black12),
                                                   ),

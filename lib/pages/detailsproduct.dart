@@ -327,7 +327,10 @@ class _DetailsProductState extends State<DetailsProduct> {
                               product.categoria.name == "EcoBag"
                                   ? AspectRatio(
                                     aspectRatio: 16 / 9,
-                                    child: HtmlBackgroundVideo(src: "lib/src/videos/ecobag/ecobag.mp4", loop: true),
+                                    child: HtmlBackgroundVideo(
+                                      src: "assets/assets/videos/ecobag/ecobag.mp4",
+                                      loop: true,
+                                    ),
                                   )
                                   : Center(),
                         ),
@@ -406,7 +409,7 @@ class _DetailsProductState extends State<DetailsProduct> {
 
                                                   alignment: Alignment.center,
                                                   child: Image.network(
-                                                    "lib/src/gifts/cursor.gif",
+                                                    "assets/assets/gifts/cursor.gif",
                                                     width: 200,
                                                     height: 200,
                                                   ),
@@ -764,7 +767,11 @@ class _DetailsProductState extends State<DetailsProduct> {
                                             color: Colors.black.withAlpha(80),
                                           ),
                                           alignment: Alignment.center,
-                                          child: Image.network("lib/src/gifts/cursor.gif", width: 200, height: 200),
+                                          child: Image.network(
+                                            "assets/assets/gifts/cursor.gif",
+                                            width: 200,
+                                            height: 200,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -1289,14 +1296,15 @@ class Model extends StatelessWidget {
     String src;
 
     if (selectedValve == null || selectedValve == "Sin válvula") {
-      src = "lib/src/3Dmodels/${product.subcategorie.title}/$fixProductName/$fixProductName.glb";
+      src = "assets/assets/3Dmodels/${product.subcategorie.title}/$fixProductName/$fixProductName.glb";
     } else if (selectedValve == "Válvula desgasificadora") {
-      src = "lib/src/3Dmodels/${product.subcategorie.title}/$fixProductName/${fixProductName}_D.glb";
+      src = "assets/assets/3Dmodels/${product.subcategorie.title}/$fixProductName/${fixProductName}_D.glb";
     } else if ((selectedValve == "Válvula dosificadora")) {
-      src = "lib/src/3Dmodels/${product.subcategorie.title}/$fixProductName/${fixProductName}_V.glb";
+      src = "assets/assets/3Dmodels/${product.subcategorie.title}/$fixProductName/${fixProductName}_V.glb";
     } else {
-      src = "lib/src/3Dmodels/${product.subcategorie.title}/$fixProductName/$fixProductName.glb";
+      src = "assets/assets/3Dmodels/${product.subcategorie.title}/$fixProductName/$fixProductName.glb";
     }
+
     return Flutter3DViewer(
       progressBarColor: Colors.transparent,
       autorotate: autoRotate,
@@ -1304,6 +1312,9 @@ class Model extends StatelessWidget {
       controller: controllerModel,
       onLoad: onLoad,
       src: src,
+      onError: (error) {
+        print("Error error error error $error");
+      },
     );
   }
 }

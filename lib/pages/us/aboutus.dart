@@ -51,7 +51,7 @@ class _AboutUsState extends State<AboutUs> {
             valueListenable: videoBlurNotifier,
             builder: (context, isBlur, _) {
               return Positioned.fill(
-                child: HtmlBackgroundVideo(src: 'lib/src/videos/us/backgroundus.mp4', blur: isBlur, loop: true),
+                child: HtmlBackgroundVideo(src: 'assets/assets/videos/us/backgroundus.mp4', blur: isBlur, loop: true),
               );
             },
           ),

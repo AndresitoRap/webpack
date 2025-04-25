@@ -92,7 +92,11 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
                         valueListenable: videoBlurNotifier,
                         builder: (context, isBlur, _) {
                           return Positioned.fill(
-                            child: HtmlBackgroundVideo(src: 'lib/src/videos/paint.mp4', blur: isBlur, loop: false),
+                            child: HtmlBackgroundVideo(
+                              src: 'assets/assets/videos/paint.mp4',
+                              blur: isBlur,
+                              loop: false,
+                            ),
                           );
                         },
                       ),

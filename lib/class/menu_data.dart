@@ -5,17 +5,17 @@ class MenuData {
     [
       {
         "title": "Explora SmartBag®",
-        "items": ["4PRO", "5PRO", "DoyPack", "FlowPack"],
+        "items": ["4PRO", "5PRO", "Doypack", "Flowpack"],
       },
       {
         "title": "Especiales SmartBag®",
-        "items": ["StandPack", "Piramidales", "Accesorios"],
+        "items": ["Standpack", "Piramidales", "Accesorios"],
       },
     ],
     [
       {
         "title": "Explora EcoBag®",
-        "items": ["4PRO", "5PRO", "DoyPack", "FlowPack"],
+        "items": ["4PRO", "5PRO", "Doypack", "Flowpack"],
       },
       {
         "title": "Especial de EcoBag®",

@@ -68,7 +68,6 @@ class _DetailsProductState extends State<DetailsProduct> {
     final screenHeight = MediaQuery.of(context).size.height;
     final product = widget.product;
     final categorie = widget.product.categoria;
-    final subcategorie = widget.product.subcategorie;
 
     //Validación
     bool isComplete =
@@ -122,7 +121,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                   return Opacity(
                                     opacity: opacities[index],
                                     child: Text(
-                                      "${subcategorie.title} " * 10,
+                                      "${product.subcategorie.title} " * 10,
                                       maxLines: 1,
                                       style: TextStyle(color: Colors.white, fontSize: 80, fontWeight: FontWeight.bold),
                                     ),
@@ -162,7 +161,16 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                                                   child: Row(
                                                     children: [
-                                                      SizedBox(width: screenWidth * 0.1),
+                                                      SizedBox(
+                                                        width:
+                                                            product.subcategorie.title == "5PRO"
+                                                                ? screenWidth * 0.13
+                                                                : product.subcategorie.title == "Doypack"
+                                                                ? screenWidth * 0.16
+                                                                : product.subcategorie.title == "Standpack"
+                                                                ? screenWidth * 0.22
+                                                                : screenWidth * 0.1,
+                                                      ),
                                                       Flexible(
                                                         child: Column(
                                                           mainAxisAlignment: MainAxisAlignment.center,
@@ -309,10 +317,19 @@ class _DetailsProductState extends State<DetailsProduct> {
                             style: TextStyle(fontWeight: FontWeight.bold, color: const Color(0xff4b8d2c), fontSize: 20),
                           ),
                         SizedBox(height: 40),
+
                         Container(
                           width: double.infinity,
                           height: 600,
+                          clipBehavior: Clip.antiAlias,
                           decoration: BoxDecoration(borderRadius: BorderRadius.circular(32), color: Colors.grey),
+                          child:
+                              product.categoria.name == "EcoBag"
+                                  ? AspectRatio(
+                                    aspectRatio: 16 / 9,
+                                    child: HtmlBackgroundVideo(src: "lib/src/videos/ecobag/ecobag.mp4", loop: true),
+                                  )
+                                  : Center(),
                         ),
                         SizedBox(height: 40),
                         if (screenWidth >= 900)
@@ -343,7 +360,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                 autoRotate: true,
                                                 gestureDetector: true,
                                                 selectedValve: selectedValve,
-                                                onLoad: (String _) async {
+                                                onLoad: (String _) {
                                                   setState(() {
                                                     if (selectedColor == null) {
                                                       selectedColor = product.colors.first;
@@ -362,7 +379,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                     }
                                                     controllerModel.setTexture(
                                                       textureName:
-                                                          "${selectedColor!.name}_${_getFinishSuffix(selectedFinish, product)}",
+                                                          "${selectedColor!.name.replaceAll(" ", "_")}_${_getFinishSuffix(selectedFinish, product)}",
                                                     );
                                                     Future.delayed(Duration(milliseconds: 100), () {
                                                       controllerModel.setTexture(
@@ -370,8 +387,8 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                       );
                                                     });
                                                   });
-                                                  final txt = await controllerModel.getAvailableTextures();
-                                                  print("texturas: $txt");
+                                                  // final txt = await controllerModel.getAvailableTextures();
+                                                  // print("texturas: $txt");
                                                 },
                                               ),
                                             ),
@@ -457,7 +474,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                           });
                                                           if (_modelLoaded) {
                                                             controllerModel.setTexture(
-                                                              textureName: "${c.name}_$suffix",
+                                                              textureName: "${c.name.replaceAll(" ", "_")}_$suffix",
                                                             );
                                                           }
                                                         },
@@ -538,94 +555,104 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                 });
                                               },
                                             ),
-                                            const SizedBox(height: 30),
-                                            ChooseBagTitle(
-                                              text1: "Peel Stick.",
-                                              text2: "El accesorio perfecto.",
-                                              product: product,
-                                            ),
-                                            const SizedBox(height: 10),
-                                            Text(() {
-                                              if (hoveredPS != null) {
-                                                return hoveredPS == "Sin Peel Stick"
-                                                    ? "Sin Peel Stick"
-                                                    : "Color - $hoveredPS";
-                                              }
-                                              if (selectedPeelstick != null) {
-                                                return selectedPeelstick!.name == "Sin Peel Stick"
-                                                    ? "Sin Peel Stick"
-                                                    : "Color - ${selectedPeelstick!.name}";
-                                              }
-                                              return "Color";
-                                            }(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                                            const SizedBox(height: 10),
-                                            Wrap(
-                                              spacing: 10,
-                                              runSpacing: 10,
-                                              children:
-                                                  peelStickOptions.map((option) {
-                                                    final isSelected = selectedPeelstick == option;
-                                                    return MouseRegion(
-                                                      onEnter: (_) {
-                                                        setState(() {
-                                                          hoveredPS = option.name;
-                                                        });
-                                                      },
-                                                      onExit: (_) {
-                                                        setState(() {
-                                                          hoveredPS = null;
-                                                        });
-                                                      },
-                                                      cursor: SystemMouseCursors.click,
+                                            if (product.subcategorie.enabledPS == true)
+                                              Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: [
+                                                  const SizedBox(height: 30),
+                                                  ChooseBagTitle(
+                                                    text1: "Peel Stick.",
+                                                    text2: "El accesorio perfecto.",
+                                                    product: product,
+                                                  ),
+                                                  const SizedBox(height: 10),
+                                                  Text(
+                                                    () {
+                                                      if (hoveredPS != null) {
+                                                        return hoveredPS == "Sin Peel Stick"
+                                                            ? "Sin Peel Stick"
+                                                            : "Color - $hoveredPS";
+                                                      }
+                                                      if (selectedPeelstick != null) {
+                                                        return selectedPeelstick!.name == "Sin Peel Stick"
+                                                            ? "Sin Peel Stick"
+                                                            : "Color - ${selectedPeelstick!.name}";
+                                                      }
+                                                      return "Color";
+                                                    }(),
+                                                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                                  ),
+                                                  const SizedBox(height: 10),
+                                                  Wrap(
+                                                    spacing: 10,
+                                                    runSpacing: 10,
+                                                    children:
+                                                        peelStickOptions.map((option) {
+                                                          final isSelected = selectedPeelstick == option;
+                                                          return MouseRegion(
+                                                            onEnter: (_) {
+                                                              setState(() {
+                                                                hoveredPS = option.name;
+                                                              });
+                                                            },
+                                                            onExit: (_) {
+                                                              setState(() {
+                                                                hoveredPS = null;
+                                                              });
+                                                            },
+                                                            cursor: SystemMouseCursors.click,
 
-                                                      child: GestureDetector(
-                                                        onTap: () {
-                                                          setState(() {
-                                                            selectedPeelstick = option;
-                                                          });
-                                                          if (_modelLoaded) {
-                                                            controllerModel.setTexture(
-                                                              textureName: option.abbreviation,
-                                                            );
-                                                          }
-                                                        },
-                                                        child: Column(
-                                                          mainAxisSize: MainAxisSize.min,
-                                                          children: [
-                                                            Container(
-                                                              width: 40,
-                                                              height: 40,
-                                                              decoration: BoxDecoration(
-                                                                shape: BoxShape.circle,
-                                                                color:
-                                                                    option.name == "Sin Peel Stick"
-                                                                        ? Colors.transparent
-                                                                        : option.color,
-                                                                border: Border.all(
-                                                                  color:
-                                                                      isSelected
-                                                                          ? Theme.of(context).colorScheme.primary
-                                                                          : Colors.grey.withAlpha(100),
-                                                                  width: isSelected ? 2 : 1,
-                                                                ),
+                                                            child: GestureDetector(
+                                                              onTap: () {
+                                                                setState(() {
+                                                                  selectedPeelstick = option;
+                                                                });
+                                                                if (_modelLoaded) {
+                                                                  controllerModel.setTexture(
+                                                                    textureName: option.abbreviation,
+                                                                  );
+                                                                }
+                                                              },
+                                                              child: Column(
+                                                                mainAxisSize: MainAxisSize.min,
+                                                                children: [
+                                                                  Container(
+                                                                    width: 40,
+                                                                    height: 40,
+                                                                    decoration: BoxDecoration(
+                                                                      shape: BoxShape.circle,
+                                                                      color:
+                                                                          option.name == "Sin Peel Stick"
+                                                                              ? Colors.transparent
+                                                                              : option.color,
+                                                                      border: Border.all(
+                                                                        color:
+                                                                            isSelected
+                                                                                ? Theme.of(context).colorScheme.primary
+                                                                                : Colors.grey.withAlpha(100),
+                                                                        width: isSelected ? 2 : 1,
+                                                                      ),
+                                                                    ),
+                                                                    child:
+                                                                        option.name == "Sin Peel Stick"
+                                                                            ? Center(
+                                                                              child: Icon(
+                                                                                Icons.block,
+                                                                                size: 20,
+                                                                                color: Colors.red,
+                                                                              ),
+                                                                            )
+                                                                            : null,
+                                                                  ),
+                                                                ],
                                                               ),
-                                                              child:
-                                                                  option.name == "Sin Peel Stick"
-                                                                      ? Center(
-                                                                        child: Icon(
-                                                                          Icons.block,
-                                                                          size: 20,
-                                                                          color: Colors.red,
-                                                                        ),
-                                                                      )
-                                                                      : null,
                                                             ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }).toList(),
-                                            ),
+                                                          );
+                                                        }).toList(),
+                                                  ),
+                                                ],
+                                              ),
+
                                             const SizedBox(height: 30),
                                             if (product.valves.isNotEmpty) ...[
                                               ChooseBagTitle(
@@ -716,7 +743,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                             }
                                             controllerModel.setTexture(
                                               textureName:
-                                                  "${selectedColor!.name}_${_getFinishSuffix(selectedFinish, product)}",
+                                                  "${selectedColor!.name.replaceAll(" ", "_")}_${_getFinishSuffix(selectedFinish, product)}",
                                             );
                                             Future.delayed(Duration(milliseconds: 100), () {
                                               controllerModel.setTexture(textureName: selectedPeelstick!.abbreviation);
@@ -796,7 +823,9 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                     selectedColor = c;
                                                   });
                                                   if (_modelLoaded) {
-                                                    controllerModel.setTexture(textureName: "${c.name}_$suffix");
+                                                    controllerModel.setTexture(
+                                                      textureName: "${c.name.replaceAll(" ", "_")}_$suffix",
+                                                    );
                                                   }
                                                 },
                                                 child: Column(
@@ -1014,7 +1043,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                         color:
                             categorie.name == "SmartBag"
                                 ? const Color.fromARGB(255, 219, 230, 255)
-                                : const Color.fromARGB(255, 243, 255, 237).withAlpha(100),
+                                : const Color.fromARGB(255, 243, 255, 237),
                         width: double.infinity,
                         child: Center(
                           child: SizedBox(
@@ -1044,7 +1073,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                             onLoad: (String _) {
                                               final suffix = _getFinishSuffix(selectedFinish, product);
                                               controllerFinally.setTexture(
-                                                textureName: "${selectedColor?.name}_$suffix",
+                                                textureName: "${selectedColor?.name.replaceAll(" ", "_")}_$suffix",
                                               );
                                               Future.delayed(Duration(milliseconds: 100), () {
                                                 controllerFinally.setTexture(
@@ -1079,7 +1108,8 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                   onLoad: (String _) {
                                                     final suffix = _getFinishSuffix(selectedFinish, product);
                                                     controllerFinally.setTexture(
-                                                      textureName: "${selectedColor?.name}_$suffix",
+                                                      textureName:
+                                                          "${selectedColor?.name.replaceAll(" ", "_")}_$suffix",
                                                     );
                                                     Future.delayed(Duration(milliseconds: 100), () {
                                                       controllerFinally.setTexture(
@@ -1088,14 +1118,6 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                     });
                                                   },
                                                 ),
-                                                // child: Model(
-                                                //   product: product,
-                                                //   controllerModel: controllerModel,
-                                                //   autoRotate: false,
-                                                //   gestureDetector: false,
-                                                //   selectedValve: selectedValve,
-                                                //   // onLoad: (String _) {},
-                                                // ),
                                               ),
                                             ),
                                           ),
@@ -1208,7 +1230,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: Colors.white.withAlpha(160),
-                                    border: Border.all(width: 1, color: Colors.blueGrey),
+                                    border: Border.all(width: 1, color: Colors.grey),
                                   ),
                                   alignment: Alignment.center,
                                   child: Text(
@@ -1267,13 +1289,13 @@ class Model extends StatelessWidget {
     String src;
 
     if (selectedValve == null || selectedValve == "Sin válvula") {
-      src = "lib/src/3Dmodels/4PRO/$fixProductName/$fixProductName.glb";
+      src = "lib/src/3Dmodels/${product.subcategorie.title}/$fixProductName/$fixProductName.glb";
     } else if (selectedValve == "Válvula desgasificadora") {
-      src = "lib/src/3Dmodels/4PRO/$fixProductName/${fixProductName}_D.glb";
+      src = "lib/src/3Dmodels/${product.subcategorie.title}/$fixProductName/${fixProductName}_D.glb";
     } else if ((selectedValve == "Válvula dosificadora")) {
-      src = "lib/src/3Dmodels/4PRO/$fixProductName/${fixProductName}_V.glb";
+      src = "lib/src/3Dmodels/${product.subcategorie.title}/$fixProductName/${fixProductName}_V.glb";
     } else {
-      src = "lib/src/3Dmodels/4PRO/$fixProductName/$fixProductName.glb";
+      src = "lib/src/3Dmodels/${product.subcategorie.title}/$fixProductName/$fixProductName.glb";
     }
     return Flutter3DViewer(
       progressBarColor: Colors.transparent,

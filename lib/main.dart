@@ -26,9 +26,9 @@ void main() {
 void navigateWithSlide(BuildContext context, String routeName, {Widget? target}) {
   transitionOverlayKey.currentState?.playTransition(() async {
     if (target == null) {
-      Navigator.pushReplacementNamed(context, routeName);
+      Navigator.pushNamed(context, routeName);
     } else {
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
         PageRouteBuilder(
           pageBuilder: (_, __, ___) => target,
@@ -92,12 +92,11 @@ class MyApp extends StatelessWidget {
 
         if (uri.pathSegments.length == 3 &&
             (uri.pathSegments[0] == 'SmartBag' || uri.pathSegments[0] == 'EcoBag') &&
-            uri.pathSegments[1].startsWith('Explora')) {
+            uri.pathSegments[1].toLowerCase().startsWith('explora-')) {
           final section = uri.pathSegments[2];
           final routeKey = '${uri.pathSegments[0]}/$section';
           final productList = productSections[routeKey];
           final preferidList = productPreferid[routeKey];
-
           final allCards = [...subcategorieSmart, ...subcategorieEco];
           final matchedCard = allCards.firstWhere((card) => card.route == settings.name, orElse: null);
           if (matchedCard == null) {
@@ -198,6 +197,14 @@ class TransitionOverlayState extends State<TransitionOverlay> with TickerProvide
     await _controller.forward(from: 0);
 
     setState(() => _showOverlay = false);
+  }
+
+  void handlePop(BuildContext context) async {
+    setState(() {
+      _isSlidingOut = true;
+    });
+    await _controller.forward(from: 0);
+    Navigator.pop(context);
   }
 
   @override

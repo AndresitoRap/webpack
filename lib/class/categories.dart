@@ -19,6 +19,7 @@ class Subcategorie {
   final String sdescription;
   final String dimentions;
   final String route;
+  final bool enabledPS;
   final bool enabled;
 
   Subcategorie({
@@ -29,6 +30,7 @@ class Subcategorie {
     required this.sdescription,
     required this.dimentions,
     required this.route,
+    this.enabledPS = false,
     this.enabled = true,
   });
 }
@@ -42,6 +44,7 @@ final List<Subcategorie> subcategorieSmart = [
     sdescription: "Ideal para cafés premium o alimentos especiales, la 4Pro ofrece frescura, elegancia y resistencia.",
     route: "/SmartBag/Explora-SmartBag/4PRO",
     dimentions: "7,5 × 0,5 × 32 cm",
+    enabledPS: true,
   ),
   Subcategorie(
     category: categorieSmart,
@@ -51,7 +54,6 @@ final List<Subcategorie> subcategorieSmart = [
     sdescription: "Tecnología de 5 capas para máxima protección, sellado perfecto y presencia inigualable.",
     dimentions: "7,5 × 0,5 × 32 cm",
     route: "/SmartBag/Explora-SmartBag/5PRO",
-    enabled: false,
   ),
   Subcategorie(
     category: categorieSmart,
@@ -61,7 +63,6 @@ final List<Subcategorie> subcategorieSmart = [
     sdescription: "El empaque más versátil para marcas que quieren destacarse y proteger su producto con estilo.",
     dimentions: "7,5 × 0,5 × 32 cm",
     route: "/SmartBag/Explora-SmartBag/Doypack",
-    enabled: false,
   ),
   Subcategorie(
     category: categorieSmart,
@@ -81,7 +82,6 @@ final List<Subcategorie> subcategorieSmart = [
     sdescription: "Diseñada para líneas de producción rápidas y presentaciones visuales atractivas.",
     dimentions: "7,5 × 0,5 × 32 cm",
     route: "/SmartBag/Explora-SmartBag/Flowpack",
-    enabled: false,
   ),
   Subcategorie(
     category: categorieSmart,
@@ -91,7 +91,6 @@ final List<Subcategorie> subcategorieSmart = [
     sdescription: "Diseño estable y vistoso que destaca en estanterías y ferias. Ideal para cafés y snacks gourmet.",
     dimentions: "7,5 × 0,5 × 32 cm",
     route: "/SmartBag/Explora-SmartBag/Standpack",
-    enabled: false,
   ),
   Subcategorie(
     category: categorieSmart,
@@ -114,6 +113,7 @@ final List<Subcategorie> subcategorieEco = [
     sdescription: "Ideal para cafés orgánicos o productos sostenibles. Frescura, elegancia y menor impacto ambiental.",
     dimentions: "7,5 × 0,5 × 32 cm",
     route: "/EcoBag/Explora-EcoBag/4PRO",
+    enabledPS: true,
   ),
   Subcategorie(
     category: categorieEco,
@@ -123,7 +123,6 @@ final List<Subcategorie> subcategorieEco = [
     sdescription:
         "Cinco capas de protección con materiales que respetan el planeta. Sellado perfecto y presencia impactante.",
     dimentions: "7,5 × 0,5 × 32 cm",
-    enabled: false,
     route: "/EcoBag/Explora-EcoBag/5PRO",
   ),
   Subcategorie(
@@ -133,7 +132,6 @@ final List<Subcategorie> subcategorieEco = [
     description: "Versatilidad amigable con el entorno.",
     sdescription: "Diseñado para marcas sostenibles que buscan destacarse con empaques prácticos y biodegradables.",
     dimentions: "7,5 × 0,5 × 32 cm",
-    enabled: false,
     route: "/EcoBag/Explora-EcoBag/Doypack",
   ),
   Subcategorie(
@@ -153,7 +151,6 @@ final List<Subcategorie> subcategorieEco = [
     description: "Producción rápida, mínima huella.",
     sdescription: "Optimizado para líneas ecológicas, con materiales sostenibles de alta calidad.",
     dimentions: "7,5 × 0,5 × 32 cm",
-    enabled: false,
     route: "/EcoBag/Explora-EcoBag/Flowpack",
   ),
 ];

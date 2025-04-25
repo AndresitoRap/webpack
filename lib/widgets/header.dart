@@ -237,41 +237,41 @@ class _HeaderState extends State<Header> {
 
                                                             Row(
                                                               children: [
-                                                                MouseRegion(
-                                                                  onEnter: (_) {
-                                                                    setState(() {
-                                                                      if (showMobileMenu) {
-                                                                        isHover = false;
-                                                                        videoBlurNotifier.value = false;
-                                                                      }
-                                                                      ishoverother = "search";
-                                                                    });
-                                                                  },
-                                                                  onExit: (_) {
-                                                                    setState(() {
-                                                                      ishoverother = "";
-                                                                    });
-                                                                  },
-                                                                  child: TweenAnimationBuilder<double>(
-                                                                    tween: Tween<double>(
-                                                                      begin: 200,
-                                                                      end: ishoverother == "search" ? 255 : 200,
-                                                                    ),
-                                                                    duration: Duration(milliseconds: 200),
-                                                                    builder: (context, value, child) {
-                                                                      return AnimatedOpacity(
-                                                                        opacity: isHover ? 0.0 : 1.0,
-                                                                        duration: Duration(milliseconds: 300),
-                                                                        child: Icon(
-                                                                          CupertinoIcons.search,
-                                                                          color: Colors.white.withAlpha(value.toInt()),
-                                                                          size: 20,
-                                                                        ),
-                                                                      );
-                                                                    },
-                                                                  ),
-                                                                ),
-                                                                SizedBox(width: screenWidth * 0.04),
+                                                                // MouseRegion(
+                                                                //   onEnter: (_) {
+                                                                //     setState(() {
+                                                                //       if (showMobileMenu) {
+                                                                //         isHover = false;
+                                                                //         videoBlurNotifier.value = false;
+                                                                //       }
+                                                                //       ishoverother = "search";
+                                                                //     });
+                                                                //   },
+                                                                //   onExit: (_) {
+                                                                //     setState(() {
+                                                                //       ishoverother = "";
+                                                                //     });
+                                                                //   },
+                                                                //   child: TweenAnimationBuilder<double>(
+                                                                //     tween: Tween<double>(
+                                                                //       begin: 200,
+                                                                //       end: ishoverother == "search" ? 255 : 200,
+                                                                //     ),
+                                                                //     duration: Duration(milliseconds: 200),
+                                                                //     builder: (context, value, child) {
+                                                                //       return AnimatedOpacity(
+                                                                //         opacity: isHover ? 0.0 : 1.0,
+                                                                //         duration: Duration(milliseconds: 300),
+                                                                //         child: Icon(
+                                                                //           CupertinoIcons.search,
+                                                                //           color: Colors.white.withAlpha(value.toInt()),
+                                                                //           size: 20,
+                                                                //         ),
+                                                                //       );
+                                                                //     },
+                                                                //   ),
+                                                                // ),
+                                                                // SizedBox(width: screenWidth * 0.04),
                                                                 GestureDetector(
                                                                   onTap: () {
                                                                     navigateWithSlide(context, "/cart");
@@ -465,7 +465,7 @@ class _HeaderState extends State<Header> {
                                                                                                 String
                                                                                                 path = normalizeRoute(
                                                                                                   MenuData
-                                                                                                      .navbarItems[hoveredMobileIndex!],
+                                                                                                      .navbarItems[selectedMenuIndex!],
                                                                                                 );
                                                                                                 String sectionTitle =
                                                                                                     normalizeRoute(
@@ -748,36 +748,36 @@ class _HeaderState extends State<Header> {
                                             }),
                                             Row(
                                               children: [
-                                                MouseRegion(
-                                                  onEnter: (_) {
-                                                    setState(() {
-                                                      isHover = false;
-                                                      ishoverother = "search";
-                                                      videoBlurNotifier.value = false;
-                                                    });
-                                                  },
-                                                  onExit: (_) {
-                                                    setState(() {
-                                                      ishoverother = "";
-                                                    });
-                                                  },
-                                                  child: TweenAnimationBuilder<double>(
-                                                    tween: Tween<double>(
-                                                      begin: 200,
-                                                      end: ishoverother == "search" ? 255 : 200,
-                                                    ),
-                                                    duration: Duration(milliseconds: 200),
-                                                    curve: Curves.easeInOut,
-                                                    builder: (context, value, child) {
-                                                      return Icon(
-                                                        CupertinoIcons.search,
-                                                        color: Colors.white.withAlpha(value.toInt()),
-                                                        size: 20,
-                                                      );
-                                                    },
-                                                  ),
-                                                ),
-                                                SizedBox(width: screenWidth * 0.04),
+                                                // MouseRegion(
+                                                //   onEnter: (_) {
+                                                //     setState(() {
+                                                //       isHover = false;
+                                                //       ishoverother = "search";
+                                                //       videoBlurNotifier.value = false;
+                                                //     });
+                                                //   },
+                                                //   onExit: (_) {
+                                                //     setState(() {
+                                                //       ishoverother = "";
+                                                //     });
+                                                //   },
+                                                //   child: TweenAnimationBuilder<double>(
+                                                //     tween: Tween<double>(
+                                                //       begin: 200,
+                                                //       end: ishoverother == "search" ? 255 : 200,
+                                                //     ),
+                                                //     duration: Duration(milliseconds: 200),
+                                                //     curve: Curves.easeInOut,
+                                                //     builder: (context, value, child) {
+                                                //       return Icon(
+                                                //         CupertinoIcons.search,
+                                                //         color: Colors.white.withAlpha(value.toInt()),
+                                                //         size: 20,
+                                                //       );
+                                                //     },
+                                                //   ),
+                                                // ),
+                                                // SizedBox(width: screenWidth * 0.04),
                                                 GestureDetector(
                                                   onTap: () {
                                                     navigateWithSlide(context, "/cart");
@@ -958,7 +958,7 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
           ..style.border = 'none'
           ..style.width = '100%'
           ..style.height = '100%'
-          ..style.objectFit = 'cover'
+          ..style.objectFit = 'contain'
           ..style.transition = 'filter 0.5s ease-in-out'
           ..style.filter = widget.blur ? 'blur(30px)' : 'none';
 

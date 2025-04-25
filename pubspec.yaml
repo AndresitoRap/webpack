@@ -29,17 +29,24 @@ flutter:
       - assets/
       - assets/img/
       - assets/img/3DM/EcoBag/4PRO/
+      - assets/img/3DM/EcoBag/5PRO/
+      - assets/img/3DM/EcoBag/Doypack/
+      - assets/img/3DM/EcoBag/Flowpack/
       - assets/img/3DM/SmartBag/4PRO/
+      - assets/img/3DM/SmartBag/5PRO/
+      - assets/img/3DM/SmartBag/Doypack/
+      - assets/img/3DM/SmartBag/Flowpack/
+      - assets/img/3DM/SmartBag/Standpack/
       - assets/img/home/
       - assets/img/ecobag/
       - assets/img/smartbag/
       - assets/img/support/
       - assets/img/us/
       - assets/fonts/
-      - lib/src/3Dmodels/4PRO/Barroco/
       - lib/src/gifts/
       - lib/src/videos/
       - lib/src/videos/us/
+      - lib/src/videos/ecobag/
       
       
   fonts:

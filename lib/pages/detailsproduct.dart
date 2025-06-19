@@ -108,10 +108,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                   colors:
                                       categorie.name == "SmartBag"
                                           ? [Theme.of(context).primaryColor, Theme.of(context).colorScheme.tertiary]
-                                          : [
-                                            Color.fromARGB(255, 41, 112, 9).withAlpha(170),
-                                            Color.fromARGB(255, 41, 112, 9).withAlpha(200),
-                                          ],
+                                          : [Color.fromARGB(255, 41, 112, 9).withAlpha(170), Color.fromARGB(255, 41, 112, 9).withAlpha(200)],
                                 ),
                               ),
                               child: Column(
@@ -178,11 +175,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                           children: [
                                                             Text(
                                                               product.name,
-                                                              style: TextStyle(
-                                                                color: Colors.white,
-                                                                fontSize: 40,
-                                                                fontWeight: FontWeight.bold,
-                                                              ),
+                                                              style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold),
                                                             ),
                                                             const SizedBox(height: 10),
                                                             Row(
@@ -194,10 +187,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                                       width: 20,
                                                                       height: 20,
                                                                       decoration: BoxDecoration(
-                                                                        border: Border.all(
-                                                                          color: Colors.white,
-                                                                          width: 1,
-                                                                        ),
+                                                                        border: Border.all(color: Colors.white, width: 1),
                                                                         color: c.color,
                                                                         shape: BoxShape.circle,
                                                                       ),
@@ -219,11 +209,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                               ),
                                             ),
                                           ),
-                                          Positioned(
-                                            top: -20,
-                                            left: -600,
-                                            child: Image.asset(widget.product.image, width: 1200),
-                                          ),
+                                          Positioned(top: -20, left: -600, child: Image.asset(widget.product.image, width: 1200)),
                                         ],
                                       ),
                                     ],
@@ -252,11 +238,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                               SizedBox(height: 20),
                                               Text(
                                                 widget.product.name,
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 40,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
+                                                style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold),
                                               ),
                                               const SizedBox(height: 10),
                                               Row(
@@ -296,15 +278,8 @@ class _DetailsProductState extends State<DetailsProduct> {
                   Container(
                     height: 50,
                     width: double.infinity,
-                    decoration: BoxDecoration(
-                      border: Border.symmetric(horizontal: BorderSide(color: Colors.black26, width: 2)),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Escoge tu ${product.name}",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                      ),
-                    ),
+                    decoration: BoxDecoration(border: Border.symmetric(horizontal: BorderSide(color: Colors.black26, width: 2))),
+                    child: Center(child: Text("Escoge tu ${product.name}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20))),
                   ),
                   SizedBox(height: 50),
                   Padding(
@@ -312,10 +287,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                     child: Column(
                       children: [
                         if (product.categoria.name == "EcoBag")
-                          Text(
-                            "Materiales sostenibles",
-                            style: TextStyle(fontWeight: FontWeight.bold, color: const Color(0xff4b8d2c), fontSize: 20),
-                          ),
+                          Text("Materiales sostenibles", style: TextStyle(fontWeight: FontWeight.bold, color: const Color(0xff4b8d2c), fontSize: 20)),
                         SizedBox(height: 40),
 
                         Container(
@@ -327,10 +299,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                               product.categoria.name == "EcoBag"
                                   ? AspectRatio(
                                     aspectRatio: 16 / 9,
-                                    child: HtmlBackgroundVideo(
-                                      src: "assets/assets/videos/ecobag/ecobag.mp4",
-                                      loop: true,
-                                    ),
+                                    child: HtmlBackgroundVideo(src: "assets/assets/videos/ecobag/ecobag.mp4", loop: true),
                                   )
                                   : Center(),
                         ),
@@ -385,9 +354,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                           "${selectedColor!.name.replaceAll(" ", "_")}_${_getFinishSuffix(selectedFinish, product)}",
                                                     );
                                                     Future.delayed(Duration(milliseconds: 100), () {
-                                                      controllerModel.setTexture(
-                                                        textureName: selectedPeelstick!.abbreviation,
-                                                      );
+                                                      controllerModel.setTexture(textureName: selectedPeelstick!.abbreviation);
                                                     });
                                                   });
                                                   // final txt = await controllerModel.getAvailableTextures();
@@ -408,11 +375,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                   ),
 
                                                   alignment: Alignment.center,
-                                                  child: Image.network(
-                                                    "assets/assets/gifts/cursor.gif",
-                                                    width: 200,
-                                                    height: 200,
-                                                  ),
+                                                  child: Image.network("assets/assets/gifts/cursor.gif", width: 200, height: 200),
                                                 ),
                                               ),
                                             ),
@@ -426,18 +389,11 @@ class _DetailsProductState extends State<DetailsProduct> {
                                       child: Container(
                                         padding: const EdgeInsets.all(30),
                                         width: screenWidth,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(22),
-                                        ),
+                                        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(22)),
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            ChooseBagTitle(
-                                              text1: "Color.",
-                                              text2: "Empecemos escogiendo tú color.",
-                                              product: product,
-                                            ),
+                                            ChooseBagTitle(text1: "Color.", text2: "Empecemos escogiendo tú color.", product: product),
                                             const SizedBox(height: 10),
                                             Text(() {
                                               if (hoveredColor != null) {
@@ -476,9 +432,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                             selectedColor = c;
                                                           });
                                                           if (_modelLoaded) {
-                                                            controllerModel.setTexture(
-                                                              textureName: "${c.name.replaceAll(" ", "_")}_$suffix",
-                                                            );
+                                                            controllerModel.setTexture(textureName: "${c.name.replaceAll(" ", "_")}_$suffix");
                                                           }
                                                         },
                                                         child: Column(
@@ -492,9 +446,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                                 color: c.color,
                                                                 border: Border.all(
                                                                   color:
-                                                                      isSelected
-                                                                          ? Theme.of(context).colorScheme.primary
-                                                                          : Colors.grey.withAlpha(100),
+                                                                      isSelected ? Theme.of(context).colorScheme.primary : Colors.grey.withAlpha(100),
                                                                   width: isSelected ? 2 : 1,
                                                                 ),
                                                               ),
@@ -508,11 +460,7 @@ class _DetailsProductState extends State<DetailsProduct> {
 
                                             const SizedBox(height: 30),
                                             if (product.structures.isNotEmpty) ...[
-                                              ChooseBagTitle(
-                                                text1: "Estructura.",
-                                                text2: "La resistencia de tú empaque.",
-                                                product: product,
-                                              ),
+                                              ChooseBagTitle(text1: "Estructura.", text2: "La resistencia de tú empaque.", product: product),
                                               ...product.structures.map((structure) {
                                                 return Selected(
                                                   selected: selectedStructure,
@@ -526,11 +474,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                               }),
                                             ],
                                             const SizedBox(height: 30),
-                                            ChooseBagTitle(
-                                              text1: "Gramaje.",
-                                              text2: "Lo grueso de tú empaque.",
-                                              product: product,
-                                            ),
+                                            ChooseBagTitle(text1: "Gramaje.", text2: "Lo grueso de tú empaque.", product: product),
                                             Selected(
                                               selected: selectedGramaje,
                                               label: "500G",
@@ -563,28 +507,19 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: [
                                                   const SizedBox(height: 30),
-                                                  ChooseBagTitle(
-                                                    text1: "Peel Stick.",
-                                                    text2: "El accesorio perfecto.",
-                                                    product: product,
-                                                  ),
+                                                  ChooseBagTitle(text1: "Peel Stick.", text2: "El accesorio perfecto.", product: product),
                                                   const SizedBox(height: 10),
-                                                  Text(
-                                                    () {
-                                                      if (hoveredPS != null) {
-                                                        return hoveredPS == "Sin Peel Stick"
-                                                            ? "Sin Peel Stick"
-                                                            : "Color - $hoveredPS";
-                                                      }
-                                                      if (selectedPeelstick != null) {
-                                                        return selectedPeelstick!.name == "Sin Peel Stick"
-                                                            ? "Sin Peel Stick"
-                                                            : "Color - ${selectedPeelstick!.name}";
-                                                      }
-                                                      return "Color";
-                                                    }(),
-                                                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                                                  ),
+                                                  Text(() {
+                                                    if (hoveredPS != null) {
+                                                      return hoveredPS == "Sin Peel Stick" ? "Sin Peel Stick" : "Color - $hoveredPS";
+                                                    }
+                                                    if (selectedPeelstick != null) {
+                                                      return selectedPeelstick!.name == "Sin Peel Stick"
+                                                          ? "Sin Peel Stick"
+                                                          : "Color - ${selectedPeelstick!.name}";
+                                                    }
+                                                    return "Color";
+                                                  }(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                                                   const SizedBox(height: 10),
                                                   Wrap(
                                                     spacing: 10,
@@ -611,9 +546,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                                   selectedPeelstick = option;
                                                                 });
                                                                 if (_modelLoaded) {
-                                                                  controllerModel.setTexture(
-                                                                    textureName: option.abbreviation,
-                                                                  );
+                                                                  controllerModel.setTexture(textureName: option.abbreviation);
                                                                 }
                                                               },
                                                               child: Column(
@@ -624,10 +557,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                                     height: 40,
                                                                     decoration: BoxDecoration(
                                                                       shape: BoxShape.circle,
-                                                                      color:
-                                                                          option.name == "Sin Peel Stick"
-                                                                              ? Colors.transparent
-                                                                              : option.color,
+                                                                      color: option.name == "Sin Peel Stick" ? Colors.transparent : option.color,
                                                                       border: Border.all(
                                                                         color:
                                                                             isSelected
@@ -638,13 +568,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                                     ),
                                                                     child:
                                                                         option.name == "Sin Peel Stick"
-                                                                            ? Center(
-                                                                              child: Icon(
-                                                                                Icons.block,
-                                                                                size: 20,
-                                                                                color: Colors.red,
-                                                                              ),
-                                                                            )
+                                                                            ? Center(child: Icon(Icons.block, size: 20, color: Colors.red))
                                                                             : null,
                                                                   ),
                                                                 ],
@@ -658,11 +582,7 @@ class _DetailsProductState extends State<DetailsProduct> {
 
                                             const SizedBox(height: 30),
                                             if (product.valves.isNotEmpty) ...[
-                                              ChooseBagTitle(
-                                                text1: "Valvula.",
-                                                text2: "El respiro a tú empaque.",
-                                                product: product,
-                                              ),
+                                              ChooseBagTitle(text1: "Valvula.", text2: "El respiro a tú empaque.", product: product),
                                               ...product.valves.map((valve) {
                                                 return Selected(
                                                   selected: selectedValve,
@@ -678,11 +598,7 @@ class _DetailsProductState extends State<DetailsProduct> {
 
                                             const SizedBox(height: 30),
                                             if (product.finishes.isNotEmpty) ...[
-                                              ChooseBagTitle(
-                                                text1: "Terminación.",
-                                                text2: "El acabado a tú empaque.",
-                                                product: product,
-                                              ),
+                                              ChooseBagTitle(text1: "Terminación.", text2: "El acabado a tú empaque.", product: product),
                                               ...product.finishes.map((finish) {
                                                 return Selected(
                                                   selected: selectedFinish,
@@ -693,9 +609,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                     });
                                                     String suffix = _getFinishSuffix(selectedFinish, product);
                                                     if (_modelLoaded) {
-                                                      controllerModel.setTexture(
-                                                        textureName: "${selectedColor?.name}_$suffix",
-                                                      );
+                                                      controllerModel.setTexture(textureName: "${selectedColor?.name}_$suffix");
                                                     }
                                                   },
                                                 );
@@ -745,8 +659,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                               selectedPeelstick!.abbreviation;
                                             }
                                             controllerModel.setTexture(
-                                              textureName:
-                                                  "${selectedColor!.name.replaceAll(" ", "_")}_${_getFinishSuffix(selectedFinish, product)}",
+                                              textureName: "${selectedColor!.name.replaceAll(" ", "_")}_${_getFinishSuffix(selectedFinish, product)}",
                                             );
                                             Future.delayed(Duration(milliseconds: 100), () {
                                               controllerModel.setTexture(textureName: selectedPeelstick!.abbreviation);
@@ -762,16 +675,9 @@ class _DetailsProductState extends State<DetailsProduct> {
                                       child: IgnorePointer(
                                         ignoring: true,
                                         child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(16),
-                                            color: Colors.black.withAlpha(80),
-                                          ),
+                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.black.withAlpha(80)),
                                           alignment: Alignment.center,
-                                          child: Image.network(
-                                            "assets/assets/gifts/cursor.gif",
-                                            width: 200,
-                                            height: 200,
-                                          ),
+                                          child: Image.network("assets/assets/gifts/cursor.gif", width: 200, height: 200),
                                         ),
                                       ),
                                     ),
@@ -787,11 +693,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    ChooseBagTitle(
-                                      text1: "Color.",
-                                      text2: "Empecemos escogiendo tú color.",
-                                      product: product,
-                                    ),
+                                    ChooseBagTitle(text1: "Color.", text2: "Empecemos escogiendo tú color.", product: product),
                                     const SizedBox(height: 10),
                                     Text(() {
                                       if (hoveredColor != null) {
@@ -830,9 +732,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                     selectedColor = c;
                                                   });
                                                   if (_modelLoaded) {
-                                                    controllerModel.setTexture(
-                                                      textureName: "${c.name.replaceAll(" ", "_")}_$suffix",
-                                                    );
+                                                    controllerModel.setTexture(textureName: "${c.name.replaceAll(" ", "_")}_$suffix");
                                                   }
                                                 },
                                                 child: Column(
@@ -845,10 +745,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                         shape: BoxShape.circle,
                                                         color: c.color,
                                                         border: Border.all(
-                                                          color:
-                                                              isSelected
-                                                                  ? Theme.of(context).colorScheme.primary
-                                                                  : Colors.grey.withAlpha(100),
+                                                          color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey.withAlpha(100),
                                                           width: isSelected ? 2 : 1,
                                                         ),
                                                       ),
@@ -862,11 +759,7 @@ class _DetailsProductState extends State<DetailsProduct> {
 
                                     const SizedBox(height: 30),
                                     if (product.structures.isNotEmpty) ...[
-                                      ChooseBagTitle(
-                                        text1: "Estructura.",
-                                        text2: "La resistencia de tú empaque.",
-                                        product: product,
-                                      ),
+                                      ChooseBagTitle(text1: "Estructura.", text2: "La resistencia de tú empaque.", product: product),
                                       ...product.structures.map((structure) {
                                         return Selected(
                                           selected: selectedStructure,
@@ -880,11 +773,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                       }),
                                     ],
                                     const SizedBox(height: 30),
-                                    ChooseBagTitle(
-                                      text1: "Gramaje.",
-                                      text2: "Lo grueso de tú empaque.",
-                                      product: product,
-                                    ),
+                                    ChooseBagTitle(text1: "Gramaje.", text2: "Lo grueso de tú empaque.", product: product),
                                     Selected(
                                       selected: selectedGramaje,
                                       label: "500G",
@@ -913,20 +802,14 @@ class _DetailsProductState extends State<DetailsProduct> {
                                       },
                                     ),
                                     const SizedBox(height: 30),
-                                    ChooseBagTitle(
-                                      text1: "Peel Stick.",
-                                      text2: "El accesorio perfecto.",
-                                      product: product,
-                                    ),
+                                    ChooseBagTitle(text1: "Peel Stick.", text2: "El accesorio perfecto.", product: product),
                                     const SizedBox(height: 10),
                                     Text(() {
                                       if (hoveredPS != null) {
                                         return hoveredPS == "Sin Peel Stick" ? "Sin Peel Stick" : "Color - $hoveredPS";
                                       }
                                       if (selectedPeelstick != null) {
-                                        return selectedPeelstick!.name == "Sin Peel Stick"
-                                            ? "Sin Peel Stick"
-                                            : "Color - ${selectedPeelstick!.name}";
+                                        return selectedPeelstick!.name == "Sin Peel Stick" ? "Sin Peel Stick" : "Color - ${selectedPeelstick!.name}";
                                       }
                                       return "Color";
                                     }(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
@@ -967,23 +850,15 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                       height: 40,
                                                       decoration: BoxDecoration(
                                                         shape: BoxShape.circle,
-                                                        color:
-                                                            option.name == "Sin Peel Stick"
-                                                                ? Colors.transparent
-                                                                : option.color,
+                                                        color: option.name == "Sin Peel Stick" ? Colors.transparent : option.color,
                                                         border: Border.all(
-                                                          color:
-                                                              isSelected
-                                                                  ? Theme.of(context).colorScheme.primary
-                                                                  : Colors.grey.withAlpha(100),
+                                                          color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey.withAlpha(100),
                                                           width: isSelected ? 2 : 1,
                                                         ),
                                                       ),
                                                       child:
                                                           option.name == "Sin Peel Stick"
-                                                              ? Center(
-                                                                child: Icon(Icons.block, size: 20, color: Colors.red),
-                                                              )
+                                                              ? Center(child: Icon(Icons.block, size: 20, color: Colors.red))
                                                               : null,
                                                     ),
                                                   ],
@@ -994,11 +869,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                     ),
                                     const SizedBox(height: 30),
                                     if (product.valves.isNotEmpty) ...[
-                                      ChooseBagTitle(
-                                        text1: "Valvula.",
-                                        text2: "El respiro a tú empaque.",
-                                        product: product,
-                                      ),
+                                      ChooseBagTitle(text1: "Valvula.", text2: "El respiro a tú empaque.", product: product),
                                       ...product.valves.map((valve) {
                                         return Selected(
                                           selected: selectedValve,
@@ -1014,11 +885,7 @@ class _DetailsProductState extends State<DetailsProduct> {
 
                                     const SizedBox(height: 30),
                                     if (product.finishes.isNotEmpty) ...[
-                                      ChooseBagTitle(
-                                        text1: "Terminación.",
-                                        text2: "El acabado a tú empaque.",
-                                        product: product,
-                                      ),
+                                      ChooseBagTitle(text1: "Terminación.", text2: "El acabado a tú empaque.", product: product),
                                       ...product.finishes.map((finish) {
                                         return Selected(
                                           selected: selectedFinish,
@@ -1047,10 +914,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                   Stack(
                     children: [
                       Container(
-                        color:
-                            categorie.name == "SmartBag"
-                                ? const Color.fromARGB(255, 219, 230, 255)
-                                : const Color.fromARGB(255, 243, 255, 237),
+                        color: categorie.name == "SmartBag" ? const Color.fromARGB(255, 219, 230, 255) : const Color.fromARGB(255, 243, 255, 237),
                         width: double.infinity,
                         child: Center(
                           child: SizedBox(
@@ -1079,13 +943,9 @@ class _DetailsProductState extends State<DetailsProduct> {
                                             selectedValve: selectedValve,
                                             onLoad: (String _) {
                                               final suffix = _getFinishSuffix(selectedFinish, product);
-                                              controllerFinally.setTexture(
-                                                textureName: "${selectedColor?.name.replaceAll(" ", "_")}_$suffix",
-                                              );
+                                              controllerFinally.setTexture(textureName: "${selectedColor?.name.replaceAll(" ", "_")}_$suffix");
                                               Future.delayed(Duration(milliseconds: 100), () {
-                                                controllerFinally.setTexture(
-                                                  textureName: selectedPeelstick!.abbreviation,
-                                                );
+                                                controllerFinally.setTexture(textureName: selectedPeelstick!.abbreviation);
                                               });
                                             },
                                           ),
@@ -1114,14 +974,9 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                   selectedValve: selectedValve,
                                                   onLoad: (String _) {
                                                     final suffix = _getFinishSuffix(selectedFinish, product);
-                                                    controllerFinally.setTexture(
-                                                      textureName:
-                                                          "${selectedColor?.name.replaceAll(" ", "_")}_$suffix",
-                                                    );
+                                                    controllerFinally.setTexture(textureName: "${selectedColor?.name.replaceAll(" ", "_")}_$suffix");
                                                     Future.delayed(Duration(milliseconds: 100), () {
-                                                      controllerFinally.setTexture(
-                                                        textureName: selectedPeelstick!.abbreviation,
-                                                      );
+                                                      controllerFinally.setTexture(textureName: selectedPeelstick!.abbreviation);
                                                     });
                                                   },
                                                 ),
@@ -1133,16 +988,10 @@ class _DetailsProductState extends State<DetailsProduct> {
                                           style: TextStyle(
                                             fontSize: 32,
                                             fontWeight: FontWeight.bold,
-                                            color:
-                                                categorie.name == "SmartBag"
-                                                    ? Theme.of(context).primaryColor
-                                                    : const Color(0xff4b8d2c),
+                                            color: categorie.name == "SmartBag" ? Theme.of(context).primaryColor : const Color(0xff4b8d2c),
                                           ),
                                         ),
-                                        Text(
-                                          "Justo como lo necesitas.",
-                                          style: TextStyle(fontSize: 26, color: Colors.grey[600]),
-                                        ),
+                                        Text("Justo como lo necesitas.", style: TextStyle(fontSize: 26, color: Colors.grey[600])),
                                         Container(
                                           margin: EdgeInsets.symmetric(vertical: 20),
                                           height: 2,
@@ -1156,37 +1005,16 @@ class _DetailsProductState extends State<DetailsProduct> {
                                           "${product.categoria.name} ${product.name} ${selectedColor?.name ?? ''}",
                                           style: TextStyle(
                                             fontSize: 26,
-                                            color:
-                                                categorie.name == "SmartBag"
-                                                    ? Theme.of(context).primaryColor
-                                                    : const Color(0xff4b8d2c),
+                                            color: categorie.name == "SmartBag" ? Theme.of(context).primaryColor : const Color(0xff4b8d2c),
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        Text(
-                                          "\$${product.price}",
-                                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          selectedGramaje ?? '',
-                                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          selectedStructure ?? '',
-                                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          selectedPeelstick?.name ?? '',
-                                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          selectedValve ?? '',
-                                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          selectedFinish ?? '',
-                                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                                        ),
+                                        Text("\$${product.price}", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                                        Text(selectedGramaje ?? '', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                                        Text(selectedStructure ?? '', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                                        Text(selectedPeelstick?.name ?? '', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                                        Text(selectedValve ?? '', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                                        Text(selectedFinish ?? '', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                                         MouseRegion(
                                           cursor: SystemMouseCursors.click,
                                           child: GestureDetector(
@@ -1197,10 +1025,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
                                               margin: EdgeInsets.symmetric(vertical: 20),
                                               decoration: BoxDecoration(
-                                                color:
-                                                    categorie.name == "SmartBag"
-                                                        ? Theme.of(context).primaryColor
-                                                        : const Color(0xff4b8d2c),
+                                                color: categorie.name == "SmartBag" ? Theme.of(context).primaryColor : const Color(0xff4b8d2c),
                                                 borderRadius: BorderRadius.circular(16),
                                               ),
                                               child: Text(
@@ -1235,10 +1060,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                               child: BackdropFilter(
                                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                                 child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withAlpha(160),
-                                    border: Border.all(width: 1, color: Colors.grey),
-                                  ),
+                                  decoration: BoxDecoration(color: Colors.white.withAlpha(160), border: Border.all(width: 1, color: Colors.grey)),
                                   alignment: Alignment.center,
                                   child: Text(
                                     "Por favor, completa tu bolsa para continuar.",
@@ -1307,7 +1129,7 @@ class Model extends StatelessWidget {
 
     return Flutter3DViewer(
       progressBarColor: Colors.transparent,
-      autorotate: autoRotate,
+      //autorotate: autoRotate,
       activeGestureInterceptor: gestureDetector,
       controller: controllerModel,
       onLoad: onLoad,
@@ -1333,9 +1155,7 @@ class ChooseBagTitle extends StatelessWidget {
         children: [
           TextSpan(
             text: "$text1 ",
-            style: TextStyle(
-              color: product.categoria.name == "SmartBag" ? const Color(0xFF004F9E) : const Color(0xff4b8d2c),
-            ),
+            style: TextStyle(color: product.categoria.name == "SmartBag" ? const Color(0xFF004F9E) : const Color(0xff4b8d2c)),
           ),
           TextSpan(text: text2),
         ],
@@ -1365,10 +1185,7 @@ class Selected extends StatelessWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey,
-              width: isSelected ? 2 : 1,
-            ),
+            border: Border.all(color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey, width: isSelected ? 2 : 1),
           ),
           child: Text(label!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
         ),

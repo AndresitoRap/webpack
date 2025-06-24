@@ -172,16 +172,12 @@ class _HeaderState extends State<Header> {
                                                                 });
                                                               },
                                                               child: TweenAnimationBuilder<double>(
-                                                                tween: Tween<double>(
-                                                                  begin: 210,
-                                                                  end: ishoverother == "logo" ? 255 : 210,
-                                                                ),
+                                                                tween: Tween<double>(begin: 210, end: ishoverother == "logo" ? 255 : 210),
                                                                 duration: Duration(milliseconds: 200),
                                                                 builder: (context, value, child) {
                                                                   return GestureDetector(
                                                                     onTap: () {
-                                                                      if (ModalRoute.of(context)?.settings.name !=
-                                                                          '/') {
+                                                                      if (ModalRoute.of(context)?.settings.name != '/') {
                                                                         navigateWithSlide(context, '/');
                                                                       }
                                                                     },
@@ -200,19 +196,14 @@ class _HeaderState extends State<Header> {
                                                                                 child: TweenAnimationBuilder<double>(
                                                                                   tween: Tween<double>(
                                                                                     begin: 200,
-                                                                                    end:
-                                                                                        ishoverother == "back"
-                                                                                            ? 255
-                                                                                            : 200,
+                                                                                    end: ishoverother == "back" ? 255 : 200,
                                                                                   ),
                                                                                   duration: Duration(milliseconds: 200),
                                                                                   builder: (context, value, child) {
                                                                                     return Icon(
                                                                                       CupertinoIcons.chevron_back,
                                                                                       key: ValueKey<bool>(showSubmenu),
-                                                                                      color: Colors.white.withAlpha(
-                                                                                        value.toInt(),
-                                                                                      ),
+                                                                                      color: Colors.white.withAlpha(value.toInt()),
                                                                                       size: 26,
                                                                                     );
                                                                                   },
@@ -225,9 +216,7 @@ class _HeaderState extends State<Header> {
                                                                               child: Image.asset(
                                                                                 "assets/img/WIsotipo.webp",
                                                                                 height: 20,
-                                                                                color: Colors.white.withAlpha(
-                                                                                  value.toInt(),
-                                                                                ),
+                                                                                color: Colors.white.withAlpha(value.toInt()),
                                                                               ),
                                                                             ),
                                                                   );
@@ -293,10 +282,7 @@ class _HeaderState extends State<Header> {
                                                                     },
                                                                     cursor: SystemMouseCursors.click,
                                                                     child: TweenAnimationBuilder<double>(
-                                                                      tween: Tween<double>(
-                                                                        begin: 200,
-                                                                        end: ishoverother == "bag" ? 255 : 200,
-                                                                      ),
+                                                                      tween: Tween<double>(begin: 200, end: ishoverother == "bag" ? 255 : 200),
                                                                       duration: Duration(milliseconds: 200),
                                                                       builder: (context, value, child) {
                                                                         return AnimatedOpacity(
@@ -304,9 +290,7 @@ class _HeaderState extends State<Header> {
                                                                           duration: Duration(milliseconds: 300),
                                                                           child: Icon(
                                                                             CupertinoIcons.bag,
-                                                                            color: Colors.white.withAlpha(
-                                                                              value.toInt(),
-                                                                            ),
+                                                                            color: Colors.white.withAlpha(value.toInt()),
                                                                             size: 20,
                                                                           ),
                                                                         );
@@ -336,29 +320,19 @@ class _HeaderState extends State<Header> {
                                                                         cursor: SystemMouseCursors.click,
 
                                                                         child: TweenAnimationBuilder<double>(
-                                                                          tween: Tween<double>(
-                                                                            begin: 200,
-                                                                            end: ishoverother == "line" ? 255 : 200,
-                                                                          ),
+                                                                          tween: Tween<double>(begin: 200, end: ishoverother == "line" ? 255 : 200),
                                                                           duration: Duration(milliseconds: 200),
                                                                           builder: (context, value, child) {
                                                                             return AnimatedSwitcher(
                                                                               duration: Duration(milliseconds: 300),
 
                                                                               transitionBuilder: (child, animation) {
-                                                                                return ScaleTransition(
-                                                                                  scale: animation,
-                                                                                  child: child,
-                                                                                );
+                                                                                return ScaleTransition(scale: animation, child: child);
                                                                               },
                                                                               child: Icon(
-                                                                                isHover
-                                                                                    ? CupertinoIcons.xmark
-                                                                                    : CupertinoIcons.equal,
+                                                                                isHover ? CupertinoIcons.xmark : CupertinoIcons.equal,
                                                                                 key: ValueKey<bool>(isHover),
-                                                                                color: Colors.white.withAlpha(
-                                                                                  value.toInt(),
-                                                                                ),
+                                                                                color: Colors.white.withAlpha(value.toInt()),
                                                                                 size: 26,
                                                                               ),
                                                                             );
@@ -378,11 +352,7 @@ class _HeaderState extends State<Header> {
                                                           transitionBuilder: (child, animation) {
                                                             return FadeTransition(
                                                               opacity: animation,
-                                                              child: SizeTransition(
-                                                                sizeFactor: animation,
-                                                                axisAlignment: -1.0,
-                                                                child: child,
-                                                              ),
+                                                              child: SizeTransition(sizeFactor: animation, axisAlignment: -1.0, child: child),
                                                             );
                                                           },
                                                           child:
@@ -391,35 +361,22 @@ class _HeaderState extends State<Header> {
                                                                     key: ValueKey("hover_menu"),
                                                                     alignment: Alignment.topLeft,
                                                                     child: Padding(
-                                                                      padding: EdgeInsets.only(
-                                                                        top: 20,
-                                                                        left: 15,
-                                                                        right: 15,
-                                                                      ),
+                                                                      padding: EdgeInsets.only(top: 20, left: 15, right: 15),
                                                                       child:
                                                                           showSubmenu
                                                                               ? Column(
-                                                                                crossAxisAlignment:
-                                                                                    CrossAxisAlignment.start,
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                                                 children: [
                                                                                   Padding(
-                                                                                    padding: const EdgeInsets.only(
-                                                                                      bottom: 24.0,
-                                                                                    ),
+                                                                                    padding: const EdgeInsets.only(bottom: 24.0),
                                                                                     child: MouseRegion(
                                                                                       cursor: SystemMouseCursors.click,
                                                                                       child: GestureDetector(
                                                                                         onTap: () {
                                                                                           final path =
                                                                                               "/${MenuData.navbarItems[selectedMenuIndex!].replaceAll("®", "").replaceAll(" ", "")}";
-                                                                                          if (ModalRoute.of(
-                                                                                                context,
-                                                                                              )?.settings.name !=
-                                                                                              path) {
-                                                                                            navigateWithSlide(
-                                                                                              context,
-                                                                                              path,
-                                                                                            );
+                                                                                          if (ModalRoute.of(context)?.settings.name != path) {
+                                                                                            navigateWithSlide(context, path);
                                                                                           }
                                                                                         },
                                                                                         child: Text(
@@ -433,19 +390,14 @@ class _HeaderState extends State<Header> {
                                                                                       ),
                                                                                     ),
                                                                                   ),
-                                                                                  ...MenuData.submenus[selectedMenuIndex!].expand((
-                                                                                    section,
-                                                                                  ) {
+                                                                                  ...MenuData.submenus[selectedMenuIndex!].expand((section) {
                                                                                     return [
                                                                                       Padding(
-                                                                                        padding: EdgeInsets.symmetric(
-                                                                                          vertical: 10,
-                                                                                        ),
+                                                                                        padding: EdgeInsets.symmetric(vertical: 10),
                                                                                         child: Text(
                                                                                           section['title'],
                                                                                           style: TextStyle(
-                                                                                            color: Colors.white
-                                                                                                .withAlpha(200),
+                                                                                            color: Colors.white.withAlpha(200),
                                                                                             fontSize: 18,
                                                                                             fontWeight: FontWeight.bold,
                                                                                           ),
@@ -453,53 +405,33 @@ class _HeaderState extends State<Header> {
                                                                                       ),
                                                                                       const SizedBox(height: 8),
                                                                                       ...List<Widget>.from(
-                                                                                        section['items'].map<Widget>((
-                                                                                          item,
-                                                                                        ) {
+                                                                                        section['items'].map<Widget>((item) {
                                                                                           return MouseRegion(
-                                                                                            cursor:
-                                                                                                SystemMouseCursors
-                                                                                                    .click,
+                                                                                            cursor: SystemMouseCursors.click,
                                                                                             child: GestureDetector(
                                                                                               onTap: () {
-                                                                                                String
-                                                                                                path = normalizeRoute(
-                                                                                                  MenuData
-                                                                                                      .navbarItems[selectedMenuIndex!],
+                                                                                                String path = normalizeRoute(
+                                                                                                  MenuData.navbarItems[selectedMenuIndex!],
                                                                                                 );
-                                                                                                String sectionTitle =
-                                                                                                    normalizeRoute(
-                                                                                                      section["title"],
-                                                                                                    );
-                                                                                                String itemPath =
-                                                                                                    normalizeRoute(
-                                                                                                      item,
-                                                                                                    );
+                                                                                                String sectionTitle = normalizeRoute(
+                                                                                                  section["title"],
+                                                                                                );
+                                                                                                String itemPath = normalizeRoute(item);
 
-                                                                                                String fullRoute =
-                                                                                                    "/$path/$sectionTitle/$itemPath";
+                                                                                                String fullRoute = "/$path/$sectionTitle/$itemPath";
 
-                                                                                                if (ModalRoute.of(
-                                                                                                      context,
-                                                                                                    )?.settings.name !=
+                                                                                                if (ModalRoute.of(context)?.settings.name !=
                                                                                                     fullRoute) {
-                                                                                                  navigateWithSlide(
-                                                                                                    context,
-                                                                                                    fullRoute,
-                                                                                                  );
+                                                                                                  navigateWithSlide(context, fullRoute);
                                                                                                 }
                                                                                               },
                                                                                               child: Padding(
-                                                                                                padding:
-                                                                                                    const EdgeInsets.symmetric(
-                                                                                                      vertical: 4,
-                                                                                                    ),
+                                                                                                padding: const EdgeInsets.symmetric(vertical: 4),
                                                                                                 child: Text(
                                                                                                   item,
                                                                                                   style: TextStyle(
                                                                                                     color: Colors.white,
-                                                                                                    fontWeight:
-                                                                                                        FontWeight.bold,
+                                                                                                    fontWeight: FontWeight.bold,
                                                                                                     fontSize: 20,
                                                                                                   ),
                                                                                                 ),
@@ -513,94 +445,63 @@ class _HeaderState extends State<Header> {
                                                                                 ],
                                                                               )
                                                                               : Column(
-                                                                                crossAxisAlignment:
-                                                                                    CrossAxisAlignment.start,
-                                                                                children: List.generate(
-                                                                                  MenuData.navbarItems.length,
-                                                                                  (index) {
-                                                                                    return DelayedDisplay(
-                                                                                      slidingCurve: Curves.easeInOut,
-                                                                                      delay: Duration(
-                                                                                        milliseconds: 40 * index,
-                                                                                      ),
-                                                                                      fadingDuration: Duration(
-                                                                                        milliseconds: 300,
-                                                                                      ),
-                                                                                      slidingBeginOffset: const Offset(
-                                                                                        0.0,
-                                                                                        0.1,
-                                                                                      ),
-                                                                                      child: Padding(
-                                                                                        padding:
-                                                                                            const EdgeInsets.symmetric(
-                                                                                              vertical: 10.0,
-                                                                                            ),
-                                                                                        child: MouseRegion(
-                                                                                          cursor:
-                                                                                              SystemMouseCursors.click,
-                                                                                          onEnter: (_) {
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children: List.generate(MenuData.navbarItems.length, (index) {
+                                                                                  return DelayedDisplay(
+                                                                                    slidingCurve: Curves.easeInOut,
+                                                                                    delay: Duration(milliseconds: 40 * index),
+                                                                                    fadingDuration: Duration(milliseconds: 300),
+                                                                                    slidingBeginOffset: const Offset(0.0, 0.1),
+                                                                                    child: Padding(
+                                                                                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                                                                      child: MouseRegion(
+                                                                                        cursor: SystemMouseCursors.click,
+                                                                                        onEnter: (_) {
+                                                                                          setState(() {
+                                                                                            hoveredMobileIndex =
+                                                                                                hoveredMobileIndex == index ? null : index;
+                                                                                          });
+                                                                                        },
+                                                                                        onExit: (_) {
+                                                                                          setState(() {
+                                                                                            hoveredMobileIndex =
+                                                                                                hoveredMobileIndex == index ? null : index;
+                                                                                          });
+                                                                                        },
+                                                                                        child: GestureDetector(
+                                                                                          onTap: () {
                                                                                             setState(() {
-                                                                                              hoveredMobileIndex =
-                                                                                                  hoveredMobileIndex ==
-                                                                                                          index
-                                                                                                      ? null
-                                                                                                      : index;
+                                                                                              selectedMenuIndex = index;
+                                                                                              showSubmenu = true;
                                                                                             });
                                                                                           },
-                                                                                          onExit: (_) {
-                                                                                            setState(() {
-                                                                                              hoveredMobileIndex =
-                                                                                                  hoveredMobileIndex ==
-                                                                                                          index
-                                                                                                      ? null
-                                                                                                      : index;
-                                                                                            });
-                                                                                          },
-                                                                                          child: GestureDetector(
-                                                                                            onTap: () {
-                                                                                              setState(() {
-                                                                                                selectedMenuIndex =
-                                                                                                    index;
-                                                                                                showSubmenu = true;
-                                                                                              });
-                                                                                            },
 
-                                                                                            child: Row(
-                                                                                              children: [
-                                                                                                Text(
-                                                                                                  MenuData
-                                                                                                      .navbarItems[index],
-                                                                                                  style: TextStyle(
-                                                                                                    fontSize: 26,
-                                                                                                    fontWeight:
-                                                                                                        FontWeight.w600,
-                                                                                                    color: Colors.white,
-                                                                                                  ),
+                                                                                          child: Row(
+                                                                                            children: [
+                                                                                              Text(
+                                                                                                MenuData.navbarItems[index],
+                                                                                                style: TextStyle(
+                                                                                                  fontSize: 26,
+                                                                                                  fontWeight: FontWeight.w600,
+                                                                                                  color: Colors.white,
                                                                                                 ),
-                                                                                                Spacer(),
-                                                                                                AnimatedOpacity(
-                                                                                                  opacity:
-                                                                                                      hoveredMobileIndex ==
-                                                                                                              index
-                                                                                                          ? 1.0
-                                                                                                          : 0.0,
-                                                                                                  duration: Duration(
-                                                                                                    milliseconds: 300,
-                                                                                                  ),
-                                                                                                  child: Icon(
-                                                                                                    CupertinoIcons
-                                                                                                        .chevron_right,
-                                                                                                    color: Colors.white,
-                                                                                                  ),
+                                                                                              ),
+                                                                                              Spacer(),
+                                                                                              AnimatedOpacity(
+                                                                                                opacity: hoveredMobileIndex == index ? 1.0 : 0.0,
+                                                                                                duration: Duration(milliseconds: 300),
+                                                                                                child: Icon(
+                                                                                                  CupertinoIcons.chevron_right,
+                                                                                                  color: Colors.white,
                                                                                                 ),
-                                                                                              ],
-                                                                                            ),
+                                                                                              ),
+                                                                                            ],
                                                                                           ),
                                                                                         ),
                                                                                       ),
-                                                                                    );
-                                                                                  },
-                                                                                ),
+                                                                                    ),
+                                                                                  );
+                                                                                }),
                                                                               ),
                                                                     ),
                                                                   )
@@ -675,10 +576,7 @@ class _HeaderState extends State<Header> {
                                                   }
                                                 },
                                                 child: TweenAnimationBuilder<double>(
-                                                  tween: Tween<double>(
-                                                    begin: 210,
-                                                    end: ishoverother == "logo" ? 255 : 210,
-                                                  ),
+                                                  tween: Tween<double>(begin: 210, end: ishoverother == "logo" ? 255 : 210),
                                                   duration: Duration(milliseconds: 200),
                                                   curve: Curves.easeInOut,
                                                   builder: (context, value, child) {
@@ -702,18 +600,13 @@ class _HeaderState extends State<Header> {
                                                   });
                                                 },
                                                 child: TweenAnimationBuilder<double>(
-                                                  tween: Tween<double>(
-                                                    begin: 200,
-                                                    end: hoveredIndex == index ? 255 : 200,
-                                                  ),
+                                                  tween: Tween<double>(begin: 200, end: hoveredIndex == index ? 255 : 200),
                                                   duration: Duration(milliseconds: 200),
                                                   curve: Curves.easeInOut,
                                                   builder: (context, value, child) {
                                                     return GestureDetector(
                                                       onTap: () async {
-                                                        String currentPath = normalizeRoute(
-                                                          "/${MenuData.navbarItems[index].replaceAll("®", "")}",
-                                                        );
+                                                        String currentPath = normalizeRoute("/${MenuData.navbarItems[index].replaceAll("®", "")}");
                                                         final currentRoute = ModalRoute.of(context)?.settings.name;
 
                                                         if (hoveredIndex != index) {
@@ -736,10 +629,7 @@ class _HeaderState extends State<Header> {
                                                       },
                                                       child: Text(
                                                         MenuData.navbarItems[index],
-                                                        style: TextStyle(
-                                                          fontSize: 12,
-                                                          color: Colors.white.withAlpha(value.toInt()),
-                                                        ),
+                                                        style: TextStyle(fontSize: 12, color: Colors.white.withAlpha(value.toInt())),
                                                       ),
                                                     );
                                                   },
@@ -797,18 +687,11 @@ class _HeaderState extends State<Header> {
                                                     },
                                                     cursor: SystemMouseCursors.click,
                                                     child: TweenAnimationBuilder<double>(
-                                                      tween: Tween<double>(
-                                                        begin: 200,
-                                                        end: ishoverother == "bag" ? 255 : 200,
-                                                      ),
+                                                      tween: Tween<double>(begin: 200, end: ishoverother == "bag" ? 255 : 200),
                                                       duration: Duration(milliseconds: 200),
                                                       curve: Curves.easeInOut,
                                                       builder: (context, value, child) {
-                                                        return Icon(
-                                                          CupertinoIcons.bag,
-                                                          color: Colors.white.withAlpha(value.toInt()),
-                                                          size: 20,
-                                                        );
+                                                        return Icon(CupertinoIcons.bag, color: Colors.white.withAlpha(value.toInt()), size: 20);
                                                       },
                                                     ),
                                                   ),
@@ -822,11 +705,7 @@ class _HeaderState extends State<Header> {
                                           transitionBuilder: (Widget child, Animation<double> animation) {
                                             return FadeTransition(
                                               opacity: animation,
-                                              child: SizeTransition(
-                                                sizeFactor: animation,
-                                                axisAlignment: -1.0,
-                                                child: child,
-                                              ),
+                                              child: SizeTransition(sizeFactor: animation, axisAlignment: -1.0, child: child),
                                             );
                                           },
                                           child:
@@ -849,15 +728,10 @@ class _HeaderState extends State<Header> {
                                                                 children: [
                                                                   Text(
                                                                     section["title"],
-                                                                    style: TextStyle(
-                                                                      fontSize: 12,
-                                                                      color: Colors.white.withAlpha(200),
-                                                                    ),
+                                                                    style: TextStyle(fontSize: 12, color: Colors.white.withAlpha(200)),
                                                                   ),
                                                                   SizedBox(height: 25),
-                                                                  ...section["items"].asMap().entries.map<Widget>((
-                                                                    entry,
-                                                                  ) {
+                                                                  ...section["items"].asMap().entries.map<Widget>((entry) {
                                                                     int itemIndex = entry.key;
                                                                     String item = entry.value;
                                                                     return DelayedDisplay(
@@ -870,21 +744,13 @@ class _HeaderState extends State<Header> {
                                                                           cursor: SystemMouseCursors.click,
                                                                           child: GestureDetector(
                                                                             onTap: () {
-                                                                              String path = normalizeRoute(
-                                                                                MenuData.navbarItems[hoveredIndex!],
-                                                                              );
-                                                                              String sectionTitle = normalizeRoute(
-                                                                                section["title"],
-                                                                              );
+                                                                              String path = normalizeRoute(MenuData.navbarItems[hoveredIndex!]);
+                                                                              String sectionTitle = normalizeRoute(section["title"]);
                                                                               String itemPath = normalizeRoute(item);
 
-                                                                              String fullRoute =
-                                                                                  "/$path/$sectionTitle/$itemPath";
+                                                                              String fullRoute = "/$path/$sectionTitle/$itemPath";
 
-                                                                              if (ModalRoute.of(
-                                                                                    context,
-                                                                                  )?.settings.name !=
-                                                                                  fullRoute) {
+                                                                              if (ModalRoute.of(context)?.settings.name != fullRoute) {
                                                                                 navigateWithSlide(context, fullRoute);
                                                                               }
                                                                             },
@@ -893,9 +759,7 @@ class _HeaderState extends State<Header> {
                                                                               style: TextStyle(
                                                                                 fontSize: isFirstColumn ? 22 : 12,
                                                                                 fontWeight: FontWeight.bold,
-                                                                                color: Colors.white.withAlpha(
-                                                                                  isFirstColumn ? 255 : 250,
-                                                                                ),
+                                                                                color: Colors.white.withAlpha(isFirstColumn ? 255 : 250),
                                                                               ),
                                                                             ),
                                                                           ),
@@ -932,8 +796,9 @@ class HtmlBackgroundVideo extends StatefulWidget {
   final String src;
   final bool blur;
   final bool loop;
+  final VoidCallback? onEnded;
 
-  const HtmlBackgroundVideo({super.key, required this.src, this.blur = false, required this.loop});
+  const HtmlBackgroundVideo({super.key, required this.src, this.blur = false, required this.loop, this.onEnded});
 
   @override
   State<HtmlBackgroundVideo> createState() => _HtmlBackgroundVideoState();
@@ -958,12 +823,18 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
           ..style.border = 'none'
           ..style.width = '100%'
           ..style.height = '100%'
-          ..style.objectFit = 'contain'
+          ..style.objectFit = 'cover'
           ..style.transition = 'filter 0.5s ease-in-out'
           ..style.filter = widget.blur ? 'blur(30px)' : 'none';
 
     // ignore: undefined_prefixed_name
     ui.platformViewRegistry.registerViewFactory(_viewId, (int viewId) => _videoElement);
+
+    _videoElement.onEnded.listen((event) {
+      if (widget.onEnded != null) {
+        widget.onEnded!();
+      }
+    });
   }
 
   @override

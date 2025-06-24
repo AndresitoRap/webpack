@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 import 'package:webpack/class/cardproduct.dart';
 import 'package:webpack/class/categories.dart';
 import 'package:webpack/widgets/discover.dart';
@@ -21,6 +22,7 @@ class _SmartBagState extends State<SmartBag> {
   List<bool> isHoverIconList = List.generate(cardFindS.length, (_) => false);
   bool canScrollLeft = false;
   bool canScrollRight = true;
+  late VideoPlayerController _videoController;
 
   void _updateScrollButtons() {
     final maxScroll = _scrollController.position.maxScrollExtent;
@@ -49,12 +51,19 @@ class _SmartBagState extends State<SmartBag> {
   @override
   void initState() {
     super.initState();
+    _videoController = VideoPlayerController.asset('assets/videos/smartbag/SmartbagInicio.webm')
+      ..initialize().then((_) {
+        setState(() {});
+        _videoController.setLooping(true);
+        _videoController.play();
+      });
     _scrollControllerfamily.addListener(_updateScrollButtonsFamily);
     _scrollController.addListener(_updateScrollButtons);
   }
 
   @override
   void dispose() {
+    _videoController.dispose();
     _scrollControllerfamily.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -212,10 +221,12 @@ class _SmartBagState extends State<SmartBag> {
                       width: min(screenWidth, 2260),
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 20, horizontal: screenWidth * 0.055),
-                        child: Container(
-                          width: screenWidth,
-                          height: min(screenHeight * 0.75, 1000),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: Colors.grey),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(30),
+                          child:
+                              _videoController.value.isInitialized
+                                  ? SizedBox(width: double.infinity, height: min(screenHeight * 0.75, 1000), child: VideoPlayer(_videoController))
+                                  : Container(width: double.infinity, height: min(screenHeight * 0.75, 1000), color: Colors.grey),
                         ),
                       ),
                     ),

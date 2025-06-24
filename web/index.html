@@ -33,6 +33,7 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <div id="flutter_container"></div>
   <script src='https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.min.mjs' type='module'></script>
   <script type='module'>
   var { pdfjsLib } = globalThis;
@@ -45,8 +46,7 @@
   </script>
   <script src="flutter_bootstrap.js" async></script>
   <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/build/pdf.min.js"></script>
-  <script type="module" src="./assets/packages/flutter_3d_controller/assets/model_viewer.min.js" defer></script></head>
-
-  
+  <script type="module" src="./assets/packages/flutter_3d_controller/assets/model_viewer.min.js" defer></script>
+  <video style="display:none" playsinline></video>
 </body>
 </html>

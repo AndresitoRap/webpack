@@ -12,13 +12,7 @@ class HeardquartersCards {
   final double longitude;
   final String map;
 
-  HeardquartersCards({
-    required this.img,
-    required this.name,
-    required this.latitude,
-    required this.longitude,
-    required this.map,
-  });
+  HeardquartersCards({required this.img, required this.name, required this.latitude, required this.longitude, required this.map});
 }
 
 final List<HeardquartersCards> cardHQ = [
@@ -93,10 +87,7 @@ class _HeadquartersState extends State<Headquarters> {
                         Positioned(
                           child: Align(
                             alignment: Alignment.topCenter,
-                            child: Text(
-                              cardHQ[index].name,
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenWidth * 0.02),
-                            ),
+                            child: Text(cardHQ[index].name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenWidth * 0.02)),
                           ),
                         ),
                         Positioned(
@@ -105,11 +96,7 @@ class _HeadquartersState extends State<Headquarters> {
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
                               children: [
-                                Icon(
-                                  CupertinoIcons.location_fill,
-                                  color: Theme.of(context).primaryColor,
-                                  size: screenWidth * 0.02,
-                                ),
+                                Icon(CupertinoIcons.location_fill, color: Theme.of(context).primaryColor, size: screenWidth * 0.02),
                                 SizedBox(width: screenWidth * 0.006),
                                 Text("Encuentranos!", style: TextStyle(fontSize: screenWidth * 0.015)),
                               ],
@@ -131,6 +118,9 @@ class _HeadquartersState extends State<Headquarters> {
 
   void _showHeadquarterDialog(BuildContext context, HeardquartersCards headquarter) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final double dialogWidth = screenWidth.clamp(350.0, 700.0);
+    final double dialogHeight = screenHeight * 0.85;
 
     final String viewId = 'iframe-${headquarter.name.toLowerCase()}';
 
@@ -162,7 +152,8 @@ class _HeadquartersState extends State<Headquarters> {
               BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                 child: Container(
-                  width: MediaQuery.of(context).size.width * 0.5,
+                  width: dialogWidth,
+                  constraints: BoxConstraints(maxHeight: dialogHeight),
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: Colors.white.withAlpha(160),
@@ -176,19 +167,10 @@ class _HeadquartersState extends State<Headquarters> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          IconButton(
-                            onPressed: () {},
-                            icon: Icon(CupertinoIcons.xmark_circle_fill),
-                            color: Colors.transparent,
-                            iconSize: 0,
-                          ),
+                          IconButton(onPressed: () {}, icon: Icon(CupertinoIcons.xmark_circle_fill), color: Colors.transparent, iconSize: 0),
                           Text(
                             "Sede ${headquarter.name}",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Theme.of(context).primaryColor,
-                            ),
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Theme.of(context).primaryColor),
                           ),
                           IconButton(
                             onPressed: () => Navigator.pop(context),
@@ -199,42 +181,12 @@ class _HeadquartersState extends State<Headquarters> {
                         ],
                       ),
                       SizedBox(height: screenWidth * 0.01),
-                      Container(
-                        height: screenWidth * 0.4,
-                        width: screenWidth * 0.5,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.transparent),
-                        child: HtmlElementView(viewType: viewId),
-
-                        // FlutterMap(
-                        //   options: MapOptions(
-                        //     center: latlng.LatLng(headquarter.latitude, headquarter.longitude),
-                        //     zoom: 15, // Nivel de zoom
-                        //   ),
-                        //   children: [
-                        //     TileLayer(
-                        //       urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.webp",
-                        //       subdomains: ['a', 'b', 'c'], // Subdominios de OpenStreetMap
-                        //     ),
-                        //     MarkerLayer(
-                        //       markers: [
-                        //         Marker(
-                        //           width: 40.0,
-                        //           height: 40.0,
-                        //           point: latlng.LatLng(headquarter.latitude, headquarter.longitude),
-                        //           child: Container(
-                        //             decoration: BoxDecoration(
-                        //               shape: BoxShape.circle,
-                        //               color: Theme.of(context).primaryColor,
-                        //               border: Border.all(color: Colors.white, width: 2),
-                        //             ),
-                        //             child: const Icon(CupertinoIcons.location_solid, color: Colors.white, size: 24),
-                        //           ),
-                        //         ),
-                        //       ],
-                        //     ),
-                        //   ],
-                        // ),
+                      Expanded(
+                        child: Container(
+                          clipBehavior: Clip.antiAlias,
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.transparent),
+                          child: HtmlElementView(viewType: viewId),
+                        ),
                       ),
                     ],
                   ),

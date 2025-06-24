@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import 'package:webpack/class/cardproduct.dart';
+import 'package:webpack/class/cardproduct.dart' show cardFindS, cardFindE;
 import 'package:webpack/class/categories.dart';
 import 'package:webpack/widgets/discover.dart';
 import 'package:webpack/widgets/footer.dart';

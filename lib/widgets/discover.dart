@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:webpack/widgets/build_recommended.dart';
+import 'package:webpack/class/cardproduct.dart' show cardFindS;
 
 // ignore: must_be_immutable
 class Discover extends StatefulWidget {
@@ -75,10 +76,7 @@ class _DiscoverState extends State<Discover> {
               final card = widget.list[index];
               final double horizontalPadding = screenWidth * 0.06;
               return Padding(
-                padding: EdgeInsets.only(
-                  left: index == 0 ? horizontalPadding : 0,
-                  right: index == widget.list.length - 1 ? horizontalPadding : 20,
-                ),
+                padding: EdgeInsets.only(left: index == 0 ? horizontalPadding : 0, right: index == widget.list.length - 1 ? horizontalPadding : 20),
                 child: AnimatedScale(
                   scale: widget.ishoverlist[index] ? 1.02 : 1.0,
                   duration: Duration(milliseconds: 300),
@@ -115,10 +113,7 @@ class _DiscoverState extends State<Discover> {
                                   height: 40,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color:
-                                        widget.ishovericonlist[index]
-                                            ? getPrimaryColor(context)
-                                            : getPrimaryColor(context).withAlpha(200),
+                                    color: widget.ishovericonlist[index] ? getPrimaryColor(context) : getPrimaryColor(context).withAlpha(200),
                                   ),
                                   child: AnimatedOpacity(
                                     opacity: widget.ishovericonlist[index] ? 1 : 0.5,
@@ -173,9 +168,7 @@ class _DiscoverState extends State<Discover> {
             children: [
               IconButton(
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(
-                    widget.scrollControllerLeft ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80),
-                  ),
+                  backgroundColor: WidgetStateProperty.all(widget.scrollControllerLeft ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80)),
                 ),
                 onPressed:
                     widget.scrollControllerLeft
@@ -192,9 +185,7 @@ class _DiscoverState extends State<Discover> {
               const SizedBox(width: 20),
               IconButton(
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(
-                    widget.scrollControllerRigth ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80),
-                  ),
+                  backgroundColor: WidgetStateProperty.all(widget.scrollControllerRigth ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80)),
                 ),
                 onPressed:
                     widget.scrollControllerRigth
@@ -231,10 +222,7 @@ class _DiscoverState extends State<Discover> {
                 children: [
                   BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                    child: GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Container(color: Colors.transparent),
-                    ),
+                    child: GestureDetector(onTap: () => Navigator.pop(context), child: Container(color: Colors.transparent)),
                   ),
                   Center(
                     child: Stack(
@@ -252,10 +240,7 @@ class _DiscoverState extends State<Discover> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const SizedBox(height: 60),
-                                  Text(
-                                    card.title,
-                                    style: TextStyle(fontSize: 20, color: Theme.of(context).primaryColor),
-                                  ),
+                                  Text(card.title, style: TextStyle(fontSize: 20, color: Theme.of(context).primaryColor)),
                                   Text(
                                     card.body,
                                     style: TextStyle(
@@ -265,7 +250,7 @@ class _DiscoverState extends State<Discover> {
                                     ),
                                   ),
                                   const SizedBox(height: 50),
-                                  buildDialogContent(context, index),
+                                  buildDialogContent(context, index, isSmartBag: list == cardFindS),
                                 ],
                               ),
                             ),
@@ -276,11 +261,7 @@ class _DiscoverState extends State<Discover> {
                           right: 10,
                           child: IconButton(
                             onPressed: () => Navigator.of(context).pop(),
-                            icon: Icon(
-                              CupertinoIcons.xmark_circle_fill,
-                              size: 40,
-                              color: const Color.fromARGB(255, 71, 71, 71),
-                            ),
+                            icon: Icon(CupertinoIcons.xmark_circle_fill, size: 40, color: const Color.fromARGB(255, 71, 71, 71)),
                           ),
                         ),
                       ],

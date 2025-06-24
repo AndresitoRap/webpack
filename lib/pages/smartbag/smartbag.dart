@@ -223,22 +223,26 @@ class _SmartBagState extends State<SmartBag> {
                         padding: EdgeInsets.symmetric(vertical: 20, horizontal: screenWidth * 0.055),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(30),
-                          child:
-                              _videoController.value.isInitialized
-                                  ? SizedBox(
-                                    width: double.infinity,
-                                    height: min(screenHeight * 0.8, 1100),
-                                    child: FittedBox(
-                                      fit: BoxFit.cover,
-                                      clipBehavior: Clip.hardEdge,
-                                      child: SizedBox(
-                                        width: _videoController.value.size.width,
-                                        height: _videoController.value.size.height,
-                                        child: VideoPlayer(_videoController),
-                                      ),
-                                    ),
-                                  )
-                                  : Container(width: double.infinity, height: min(screenHeight * 0.8, 1100), color: Colors.grey),
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: min(screenHeight * 0.8, 1100),
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                ValueListenableBuilder<bool>(
+                                  valueListenable: videoBlurNotifier,
+                                  builder: (context, isBlur, _) {
+                                    return HtmlBackgroundVideo(
+                                      src: 'assets/videos/smartbag/SmartbagInicio.webm',
+                                      blur: isBlur,
+                                      loop: true,
+                                      showControls: true,
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),

@@ -796,9 +796,11 @@ class HtmlBackgroundVideo extends StatefulWidget {
   final String src;
   final bool blur;
   final bool loop;
+  final bool showControls;
+
   final VoidCallback? onEnded;
 
-  const HtmlBackgroundVideo({super.key, required this.src, this.blur = false, required this.loop, this.onEnded});
+  const HtmlBackgroundVideo({super.key, required this.src, this.blur = false, required this.loop, this.onEnded, this.showControls = false});
 
   @override
   State<HtmlBackgroundVideo> createState() => _HtmlBackgroundVideoState();
@@ -807,6 +809,7 @@ class HtmlBackgroundVideo extends StatefulWidget {
 class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
   late final String _viewId;
   late html.VideoElement _videoElement;
+  bool isPlaying = true;
 
   @override
   void initState() {
@@ -835,6 +838,17 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
         widget.onEnded!();
       }
     });
+
+    _videoElement.onPlay.listen((event) {
+      setState(() {
+        isPlaying = true;
+      });
+    });
+    _videoElement.onPause.listen((event) {
+      setState(() {
+        isPlaying = false;
+      });
+    });
   }
 
   @override
@@ -848,6 +862,30 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
 
   @override
   Widget build(BuildContext context) {
-    return HtmlElementView(viewType: _viewId);
+    return Stack(
+      children: [
+        HtmlElementView(viewType: _viewId),
+        if (widget.showControls)
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: FloatingActionButton(
+              shape: const CircleBorder(),
+              backgroundColor: Color(0xffb1b0b4),
+              mini: true,
+              child: Icon(isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white),
+              onPressed: () {
+                setState(() {
+                  if (_videoElement.paused) {
+                    _videoElement.play();
+                  } else {
+                    _videoElement.pause();
+                  }
+                });
+              },
+            ),
+          ),
+      ],
+    );
   }
 }

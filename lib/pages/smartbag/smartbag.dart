@@ -225,8 +225,20 @@ class _SmartBagState extends State<SmartBag> {
                           borderRadius: BorderRadius.circular(30),
                           child:
                               _videoController.value.isInitialized
-                                  ? SizedBox(width: double.infinity, height: min(screenHeight * 0.75, 1000), child: VideoPlayer(_videoController))
-                                  : Container(width: double.infinity, height: min(screenHeight * 0.75, 1000), color: Colors.grey),
+                                  ? SizedBox(
+                                    width: double.infinity,
+                                    height: min(screenHeight * 0.8, 1100),
+                                    child: FittedBox(
+                                      fit: BoxFit.cover,
+                                      clipBehavior: Clip.hardEdge,
+                                      child: SizedBox(
+                                        width: _videoController.value.size.width,
+                                        height: _videoController.value.size.height,
+                                        child: VideoPlayer(_videoController),
+                                      ),
+                                    ),
+                                  )
+                                  : Container(width: double.infinity, height: min(screenHeight * 0.8, 1100), color: Colors.grey),
                         ),
                       ),
                     ),

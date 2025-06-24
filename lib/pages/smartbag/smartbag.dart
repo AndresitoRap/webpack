@@ -51,12 +51,6 @@ class _SmartBagState extends State<SmartBag> {
   @override
   void initState() {
     super.initState();
-    _videoController = VideoPlayerController.asset('assets/videos/smartbag/SmartbagInicio.webm')
-      ..initialize().then((_) {
-        setState(() {});
-        _videoController.setLooping(true);
-        _videoController.play();
-      });
     _scrollControllerfamily.addListener(_updateScrollButtonsFamily);
     _scrollController.addListener(_updateScrollButtons);
   }

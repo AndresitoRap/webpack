@@ -134,13 +134,14 @@ final List<CardProduct> cardFindS = [
 
 final List<CardProduct> cardFindE = [
   CardProduct(
-    title: "Naturaleza en cada empaque.",
-    body: "El futuro se empaca en verde.",
+    title: "Un ícono en medio del silencio.",
+    body: "Diseño con alma propia.",
     image: "assets/img/ecobag/discover1.webp",
-    descriptionTop: "",
-    descriptionDown: "",
-    imageTop: "",
-    imageDown: "",
+    descriptionTop:
+        "EcoBag® se alza como un símbolo contemporáneo. Su presencia en escena no busca imitar la naturaleza, sino convivir con ella desde el respeto visual.",
+    descriptionDown: "Más que sostenible: evocador, envolvente y memorable. Esta línea demuestra que lo consciente también puede ser extraordinario.",
+    imageTop: "assets/img/ecobag/discover1_Top.webp",
+    imageDown: "assets/img/ecobag/discover1_Down.webp",
   ),
   CardProduct(
     title: "Ligera con el planeta.",

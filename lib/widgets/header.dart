@@ -797,10 +797,20 @@ class HtmlBackgroundVideo extends StatefulWidget {
   final bool blur;
   final bool loop;
   final bool showControls;
-
+  final BoxFit? fit;
+  final double? height;
   final VoidCallback? onEnded;
 
-  const HtmlBackgroundVideo({super.key, required this.src, this.blur = false, required this.loop, this.onEnded, this.showControls = false});
+  const HtmlBackgroundVideo({
+    super.key,
+    required this.src,
+    this.blur = false,
+    required this.loop,
+    this.onEnded,
+    this.showControls = false,
+    this.fit,
+    this.height,
+  });
 
   @override
   State<HtmlBackgroundVideo> createState() => _HtmlBackgroundVideoState();
@@ -826,12 +836,23 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
           ..style.border = 'none'
           ..style.width = '100%'
           ..style.height = '100%'
-          ..style.objectFit = 'cover'
+          ..style.objectFit = widget.fit?.name ?? 'cover'
           ..style.transition = 'filter 0.5s ease-in-out'
           ..style.filter = widget.blur ? 'blur(30px)' : 'none';
+    if (widget.height != null) {
+      _videoElement.style.height = '${widget.height}px';
+    }
 
     // ignore: undefined_prefixed_name
     ui.platformViewRegistry.registerViewFactory(_viewId, (int viewId) => _videoElement);
+
+    _videoElement.onClick.listen((_) {
+      if (_videoElement.paused) {
+        _videoElement.play();
+      } else {
+        _videoElement.pause();
+      }
+    });
 
     _videoElement.onEnded.listen((event) {
       if (widget.onEnded != null) {
@@ -864,7 +885,18 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        HtmlElementView(viewType: _viewId),
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              if (_videoElement.paused) {
+                _videoElement.play();
+              } else {
+                _videoElement.pause();
+              }
+            });
+          },
+          child: HtmlElementView(viewType: _viewId),
+        ),
         if (widget.showControls)
           Positioned(
             bottom: 20,

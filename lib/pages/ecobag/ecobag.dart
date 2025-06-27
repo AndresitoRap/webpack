@@ -214,13 +214,31 @@ class _EcoBagState extends State<EcoBag> {
                   SizedBox(height: 20),
                   Center(
                     child: SizedBox(
-                      width: screenWidth,
+                      width: min(screenWidth, 2260),
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 20, horizontal: screenWidth * 0.055),
-                        child: Container(
-                          width: screenWidth,
-                          height: min(screenHeight * 0.75, 1000),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: Colors.grey),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(30),
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: min(screenHeight * 0.8, 1100),
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                ValueListenableBuilder<bool>(
+                                  valueListenable: videoBlurNotifier,
+                                  builder: (context, isBlur, _) {
+                                    return HtmlBackgroundVideo(
+                                      src: 'assets/videos/ecobag/EcobagInicio.webm',
+                                      blur: isBlur,
+                                      loop: true,
+                                      showControls: true,
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -325,10 +343,7 @@ class _LeafAnimationState extends State<LeafAnimation> with SingleTickerProvider
             return Positioned(
               left: leaf.x * screenWidth,
               top: leaf.y,
-              child: Transform.rotate(
-                angle: leaf.rotation + leaf.y * 0.01,
-                child: Image.asset(leaf.image, width: leaf.size),
-              ),
+              child: Transform.rotate(angle: leaf.rotation + leaf.y * 0.01, child: Image.asset(leaf.image, width: leaf.size)),
             );
           }).toList(),
     );
@@ -343,12 +358,5 @@ class LeafData {
   final double size;
   final double rotation;
 
-  LeafData({
-    required this.image,
-    required this.x,
-    required this.y,
-    required this.speed,
-    required this.size,
-    required this.rotation,
-  });
+  LeafData({required this.image, required this.x, required this.y, required this.speed, required this.size, required this.rotation});
 }

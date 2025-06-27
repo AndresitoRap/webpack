@@ -294,12 +294,40 @@ class _DetailsProductState extends State<DetailsProduct> {
                           width: double.infinity,
                           height: 600,
                           clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(32), color: Colors.grey),
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(32)),
                           child:
                               product.categoria.name == "EcoBag"
-                                  ? AspectRatio(
-                                    aspectRatio: 16 / 9,
-                                    child: HtmlBackgroundVideo(src: "assets/assets/videos/ecobag/ecobag.mp4", loop: true),
+                                  ? Stack(
+                                    fit: StackFit.expand,
+                                    children: [
+                                      Container(color: Color.fromARGB(255, 244, 246, 246)),
+                                      BackdropFilter(filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40), child: Container(color: Colors.transparent)),
+                                      Center(
+                                        child: ShaderMask(
+                                          shaderCallback: (Rect bounds) {
+                                            return LinearGradient(
+                                              begin: Alignment.centerLeft,
+                                              end: Alignment.centerRight,
+                                              colors: [
+                                                Colors.transparent,
+                                                Colors.white.withOpacity(0.95),
+                                                Colors.white.withOpacity(0.95),
+                                                Colors.transparent,
+                                              ],
+                                              stops: [0.0, 0.2, 0.8, 1.0],
+                                            ).createShader(bounds);
+                                          },
+                                          blendMode: BlendMode.dstIn,
+                                          child: HtmlBackgroundVideo(
+                                            src: 'assets/assets/videos/ecobag/ecobag.webm',
+                                            blur: false,
+                                            loop: true,
+                                            showControls: true,
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   )
                                   : Center(),
                         ),

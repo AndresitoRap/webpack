@@ -231,6 +231,7 @@ class _SmartBagState extends State<SmartBag> {
                                       blur: isBlur,
                                       loop: true,
                                       showControls: true,
+                                      fit: BoxFit.cover,
                                     );
                                   },
                                 ),

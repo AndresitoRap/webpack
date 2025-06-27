@@ -836,8 +836,9 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
           ..style.border = 'none'
           ..style.width = '100%'
           ..style.height = '100%'
-          ..style.objectFit = widget.fit?.name ?? 'cover'
+          ..style.objectFit = (widget.fit ?? BoxFit.cover).name
           ..style.transition = 'filter 0.5s ease-in-out'
+          ..style.backgroundColor = 'white'
           ..style.filter = widget.blur ? 'blur(30px)' : 'none';
     if (widget.height != null) {
       _videoElement.style.height = '${widget.height}px';
@@ -906,15 +907,7 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
               backgroundColor: Color(0xffb1b0b4),
               mini: true,
               child: Icon(isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white),
-              onPressed: () {
-                setState(() {
-                  if (_videoElement.paused) {
-                    _videoElement.play();
-                  } else {
-                    _videoElement.pause();
-                  }
-                });
-              },
+              onPressed: () {},
             ),
           ),
       ],

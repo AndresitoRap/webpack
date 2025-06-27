@@ -233,6 +233,7 @@ class _EcoBagState extends State<EcoBag> {
                                       blur: isBlur,
                                       loop: true,
                                       showControls: true,
+                                      fit: BoxFit.cover,
                                     );
                                   },
                                 ),

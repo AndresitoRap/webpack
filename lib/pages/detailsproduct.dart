@@ -352,33 +352,50 @@ class _DetailsProductState extends State<DetailsProduct> {
                                       Container(color: Color.fromARGB(255, 244, 246, 246)),
                                       BackdropFilter(filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40), child: Container(color: Colors.transparent)),
                                       Center(
-                                        child: ShaderMask(
-                                          shaderCallback: (Rect bounds) {
-                                            return LinearGradient(
-                                              begin: Alignment.centerLeft,
-                                              end: Alignment.centerRight,
-                                              colors: [
-                                                Colors.transparent,
-                                                Colors.white.withOpacity(0.95),
-                                                Colors.white.withOpacity(0.95),
-                                                Colors.transparent,
-                                              ],
-                                              stops: [0.0, 0.2, 0.8, 1.0],
-                                            ).createShader(bounds);
-                                          },
-                                          blendMode: BlendMode.dstIn,
-                                          child: HtmlBackgroundVideo(
-                                            src: 'assets/assets/videos/ecobag/ecobag.webm',
-                                            blur: false,
-                                            loop: true,
-                                            showControls: true,
-                                            fit: BoxFit.contain,
+                                        child: SizedBox(
+                                          width: min(screenWidth, 2260),
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(vertical: 20, horizontal: screenWidth * 0.055),
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(30),
+                                              child: SizedBox(
+                                                width: double.infinity,
+                                                height: min(screenHeight * 0.8, 1100),
+                                                child: ValueListenableBuilder<bool>(
+                                                  valueListenable: videoBlurNotifier,
+                                                  builder: (context, isBlur, _) {
+                                                    return Stack(
+                                                      fit: StackFit.expand,
+                                                      children: [
+                                                        Container(color: Color.fromARGB(255, 244, 246, 246)),
+                                                        Center(
+                                                          child: HtmlBackgroundVideo(
+                                                            src: 'assets/assets/videos/ecobag/ecobag.webm',
+                                                            blur: isBlur,
+                                                            loop: true,
+                                                            showControls: true,
+                                                            fit: BoxFit.contain,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ],
                                   )
-                                  : Center(),
+                                  : Stack(
+                                    fit: StackFit.expand,
+                                    children: [
+                                      Container(color: Color.fromARGB(255, 0, 245, 245)),
+                                      BackdropFilter(filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40), child: Container(color: Colors.transparent)),
+                                      Image.asset('assets/img/ecobag/prueba.png', fit: BoxFit.cover, width: double.infinity, height: double.infinity),
+                                    ],
+                                  ),
                         ),
                         SizedBox(height: 40),
                         if (screenWidth >= 900)

@@ -877,7 +877,7 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
     super.didUpdateWidget(oldWidget);
     // Solo cambia el filtro si el blur ha cambiado
     if (oldWidget.blur != widget.blur) {
-      _videoElement.style.filter = widget.blur ? 'blur(10px)' : 'none';
+      _videoElement.style.filter = widget.blur ? 'blur(30px)' : 'none';
     }
   }
 

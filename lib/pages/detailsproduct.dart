@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_3d_controller/flutter_3d_controller.dart';
+import 'package:lottie/lottie.dart';
 import 'package:webpack/class/products.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
@@ -15,7 +16,7 @@ class DetailsProduct extends StatefulWidget {
 }
 
 class _DetailsProductState extends State<DetailsProduct> {
-  //Variables a escoger
+  // Variables a escoger
   NamedColor? selectedColor;
   String? hoveredColor;
   String? selectedGramaje;
@@ -25,14 +26,19 @@ class _DetailsProductState extends State<DetailsProduct> {
   String? selectedFinish;
   String? selectedStructure;
 
-  //Modelo
+  // Modelo
   late Flutter3DController controllerModel;
   late Flutter3DController controllerFinally;
   bool _modelLoaded = false;
+  bool _finalModelLoaded = false;
   bool _showTutorial = true;
 
   late ScrollController _scrollController;
   double _scrollOffset = 0.0;
+
+  Key _finalModelKey = UniqueKey();
+  String? _pendingTextureName;
+  String? _pendingPeelStickTexture;
 
   @override
   void initState() {
@@ -62,6 +68,50 @@ class _DetailsProductState extends State<DetailsProduct> {
     super.dispose();
   }
 
+  // Función para sincronizar el modelo final
+  void _updateFinalModel() {
+    if (_modelLoaded && selectedColor != null && selectedFinish != null && selectedPeelstick != null) {
+      final suffix = _getFinishSuffix(selectedFinish, widget.product);
+      final textureName = "${selectedColor!.name.replaceAll(" ", "_")}_$suffix";
+
+      // Almacenar texturas pendientes
+      _pendingTextureName = textureName;
+      _pendingPeelStickTexture = selectedPeelstick!.abbreviation;
+
+      // Forzar la reconstrucción del modelo final
+      setState(() {
+        _finalModelKey = UniqueKey(); // Cambiar la clave para forzar la reconstrucción
+        _finalModelLoaded = false; // Resetear el estado de carga
+      });
+    }
+  }
+
+  // Función para aplicar texturas al modelo final
+  void _applyTexturesToFinalModel() {
+    if (_finalModelLoaded && _pendingTextureName != null && _pendingPeelStickTexture != null) {
+      controllerFinally
+          .getAvailableTextures()
+          .then((textures) {
+            print("Texturas disponibles para modelo final: $textures");
+            if (textures.contains(_pendingTextureName)) {
+              controllerFinally.setTexture(textureName: _pendingTextureName!);
+              Future.delayed(Duration(milliseconds: 100), () {
+                if (textures.contains(_pendingPeelStickTexture)) {
+                  controllerFinally.setTexture(textureName: _pendingPeelStickTexture!);
+                } else {
+                  print("Textura de PeelStick no disponible: $_pendingPeelStickTexture");
+                }
+              });
+            } else {
+              print("Textura no disponible: $_pendingTextureName");
+            }
+          })
+          .catchError((error) {
+            print("Error al obtener texturas disponibles: $error");
+          });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -69,7 +119,7 @@ class _DetailsProductState extends State<DetailsProduct> {
     final product = widget.product;
     final categorie = widget.product.categoria;
 
-    //Validación
+    // Validación
     bool isComplete =
         selectedColor != null &&
         selectedGramaje != null &&
@@ -289,7 +339,6 @@ class _DetailsProductState extends State<DetailsProduct> {
                         if (product.categoria.name == "EcoBag")
                           Text("Materiales sostenibles", style: TextStyle(fontWeight: FontWeight.bold, color: const Color(0xff4b8d2c), fontSize: 20)),
                         SizedBox(height: 40),
-
                         Container(
                           width: double.infinity,
                           height: 600,
@@ -333,7 +382,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                         ),
                         SizedBox(height: 40),
                         if (screenWidth >= 900)
-                          //PC
+                          // PC
                           SizedBox(
                             width: double.infinity,
                             child: LayoutBuilder(
@@ -364,33 +413,41 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                   setState(() {
                                                     if (selectedColor == null) {
                                                       selectedColor = product.colors.first;
-                                                    } else {
-                                                      selectedColor = selectedColor;
                                                     }
                                                     if (selectedFinish == null) {
                                                       selectedFinish = product.finishes.first;
-                                                    } else {
-                                                      selectedFinish = selectedFinish;
                                                     }
                                                     if (selectedPeelstick == null) {
                                                       selectedPeelstick = peelStickOptions.first;
-                                                    } else {
-                                                      selectedPeelstick!.abbreviation;
                                                     }
-                                                    controllerModel.setTexture(
-                                                      textureName:
-                                                          "${selectedColor!.name.replaceAll(" ", "_")}_${_getFinishSuffix(selectedFinish, product)}",
-                                                    );
-                                                    Future.delayed(Duration(milliseconds: 100), () {
-                                                      controllerModel.setTexture(textureName: selectedPeelstick!.abbreviation);
-                                                    });
+                                                    _modelLoaded = true;
+                                                    controllerModel
+                                                        .getAvailableTextures()
+                                                        .then((textures) {
+                                                          final textureName =
+                                                              "${selectedColor!.name.replaceAll(" ", "_")}_${_getFinishSuffix(selectedFinish, product)}";
+                                                          print("Texturas disponibles para modelo inicial: $textures");
+                                                          if (textures.contains(textureName)) {
+                                                            controllerModel.setTexture(textureName: textureName);
+                                                          } else {
+                                                            print("Textura no disponible para modelo inicial: $textureName");
+                                                          }
+                                                          Future.delayed(Duration(milliseconds: 100), () {
+                                                            if (textures.contains(selectedPeelstick!.abbreviation)) {
+                                                              controllerModel.setTexture(textureName: selectedPeelstick!.abbreviation);
+                                                            } else {
+                                                              print("Textura de PeelStick no disponible: ${selectedPeelstick!.abbreviation}");
+                                                            }
+                                                          });
+                                                        })
+                                                        .catchError((error) {
+                                                          print("Error al obtener texturas disponibles: $error");
+                                                        });
                                                   });
-                                                  // final txt = await controllerModel.getAvailableTextures();
-                                                  // print("texturas: $txt");
+                                                  _updateFinalModel();
                                                 },
                                               ),
                                             ),
-
                                             AnimatedOpacity(
                                               opacity: _showTutorial ? 1.0 : 0.0,
                                               duration: Duration(milliseconds: 500),
@@ -401,9 +458,11 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                     borderRadius: BorderRadius.circular(16),
                                                     color: Colors.black.withAlpha(70),
                                                   ),
-
                                                   alignment: Alignment.center,
-                                                  child: Image.network("assets/assets/gifts/cursor.gif", width: 200, height: 200),
+                                                  child: ColorFiltered(
+                                                    colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                                                    child: Lottie.asset("assets/gifts/cursor.json", width: 130, height: 130),
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -411,7 +470,6 @@ class _DetailsProductState extends State<DetailsProduct> {
                                         ),
                                       ),
                                     ),
-
                                     Padding(
                                       padding: EdgeInsets.only(left: screenWidth * 0.5),
                                       child: Container(
@@ -432,9 +490,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                               }
                                               return "Color";
                                             }(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-
                                             const SizedBox(height: 10),
-
                                             Wrap(
                                               spacing: 10,
                                               runSpacing: 10,
@@ -460,7 +516,21 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                             selectedColor = c;
                                                           });
                                                           if (_modelLoaded) {
-                                                            controllerModel.setTexture(textureName: "${c.name.replaceAll(" ", "_")}_$suffix");
+                                                            controllerModel
+                                                                .getAvailableTextures()
+                                                                .then((textures) {
+                                                                  final textureName = "${c.name.replaceAll(" ", "_")}_$suffix";
+                                                                  print("Texturas disponibles para modelo inicial: $textures");
+                                                                  if (textures.contains(textureName)) {
+                                                                    controllerModel.setTexture(textureName: textureName);
+                                                                  } else {
+                                                                    print("Textura no disponible: $textureName");
+                                                                  }
+                                                                })
+                                                                .catchError((error) {
+                                                                  print("Error al obtener texturas disponibles: $error");
+                                                                });
+                                                            _updateFinalModel();
                                                           }
                                                         },
                                                         child: Column(
@@ -485,7 +555,6 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                     );
                                                   }).toList(),
                                             ),
-
                                             const SizedBox(height: 30),
                                             if (product.structures.isNotEmpty) ...[
                                               ChooseBagTitle(text1: "Estructura.", text2: "La resistencia de tú empaque.", product: product),
@@ -497,6 +566,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                     setState(() {
                                                       selectedStructure = value;
                                                     });
+                                                    _updateFinalModel();
                                                   },
                                                 );
                                               }),
@@ -510,6 +580,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                 setState(() {
                                                   selectedGramaje = value;
                                                 });
+                                                _updateFinalModel();
                                               },
                                             ),
                                             Selected(
@@ -519,6 +590,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                 setState(() {
                                                   selectedGramaje = value;
                                                 });
+                                                _updateFinalModel();
                                               },
                                             ),
                                             Selected(
@@ -528,11 +600,13 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                 setState(() {
                                                   selectedGramaje = value;
                                                 });
+                                                _updateFinalModel();
                                               },
                                             ),
-                                            if (product.subcategorie.enabledPS == true)
+                                            if (product.subcategorie.enabledPS)
                                               Column(
                                                 mainAxisAlignment: MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   const SizedBox(height: 30),
                                                   ChooseBagTitle(text1: "Peel Stick.", text2: "El accesorio perfecto.", product: product),
@@ -567,14 +641,26 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                               });
                                                             },
                                                             cursor: SystemMouseCursors.click,
-
                                                             child: GestureDetector(
                                                               onTap: () {
                                                                 setState(() {
                                                                   selectedPeelstick = option;
                                                                 });
                                                                 if (_modelLoaded) {
-                                                                  controllerModel.setTexture(textureName: option.abbreviation);
+                                                                  controllerModel
+                                                                      .getAvailableTextures()
+                                                                      .then((textures) {
+                                                                        print("Texturas disponibles para modelo inicial: $textures");
+                                                                        if (textures.contains(option.abbreviation)) {
+                                                                          controllerModel.setTexture(textureName: option.abbreviation);
+                                                                        } else {
+                                                                          print("Textura de PeelStick no disponible: ${option.abbreviation}");
+                                                                        }
+                                                                      })
+                                                                      .catchError((error) {
+                                                                        print("Error al obtener texturas disponibles: $error");
+                                                                      });
+                                                                  _updateFinalModel();
                                                                 }
                                                               },
                                                               child: Column(
@@ -607,7 +693,6 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                   ),
                                                 ],
                                               ),
-
                                             const SizedBox(height: 30),
                                             if (product.valves.isNotEmpty) ...[
                                               ChooseBagTitle(text1: "Valvula.", text2: "El respiro a tú empaque.", product: product),
@@ -619,12 +704,11 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                     setState(() {
                                                       selectedValve = value;
                                                     });
+                                                    _updateFinalModel();
                                                   },
                                                 );
                                               }),
                                             ],
-
-                                            const SizedBox(height: 30),
                                             if (product.finishes.isNotEmpty) ...[
                                               ChooseBagTitle(text1: "Terminación.", text2: "El acabado a tú empaque.", product: product),
                                               ...product.finishes.map((finish) {
@@ -635,9 +719,23 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                     setState(() {
                                                       selectedFinish = value;
                                                     });
-                                                    String suffix = _getFinishSuffix(selectedFinish, product);
                                                     if (_modelLoaded) {
-                                                      controllerModel.setTexture(textureName: "${selectedColor?.name}_$suffix");
+                                                      String suffix = _getFinishSuffix(selectedFinish, product);
+                                                      controllerModel
+                                                          .getAvailableTextures()
+                                                          .then((textures) {
+                                                            final textureName = "${selectedColor?.name}_$suffix";
+                                                            print("Texturas disponibles para modelo inicial: $textures");
+                                                            if (textures.contains(textureName)) {
+                                                              controllerModel.setTexture(textureName: textureName);
+                                                            } else {
+                                                              print("Textura no disponible: $textureName");
+                                                            }
+                                                          })
+                                                          .catchError((error) {
+                                                            print("Error al obtener texturas disponibles: $error");
+                                                          });
+                                                      _updateFinalModel();
                                                     }
                                                   },
                                                 );
@@ -653,7 +751,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                             ),
                           )
                         else
-                          //Celular
+                          // Celular
                           Column(
                             children: [
                               SizedBox(
@@ -673,39 +771,49 @@ class _DetailsProductState extends State<DetailsProduct> {
                                           setState(() {
                                             if (selectedColor == null) {
                                               selectedColor = product.colors.first;
-                                            } else {
-                                              selectedColor = selectedColor;
                                             }
                                             if (selectedFinish == null) {
                                               selectedFinish = product.finishes.first;
-                                            } else {
-                                              selectedFinish = selectedFinish;
                                             }
                                             if (selectedPeelstick == null) {
                                               selectedPeelstick = peelStickOptions.first;
-                                            } else {
-                                              selectedPeelstick!.abbreviation;
                                             }
-                                            controllerModel.setTexture(
-                                              textureName: "${selectedColor!.name.replaceAll(" ", "_")}_${_getFinishSuffix(selectedFinish, product)}",
-                                            );
-                                            Future.delayed(Duration(milliseconds: 100), () {
-                                              controllerModel.setTexture(textureName: selectedPeelstick!.abbreviation);
-                                            });
+                                            _modelLoaded = true;
+                                            controllerModel
+                                                .getAvailableTextures()
+                                                .then((textures) {
+                                                  final textureName =
+                                                      "${selectedColor!.name.replaceAll(" ", "_")}_${_getFinishSuffix(selectedFinish, product)}";
+                                                  print("Texturas disponibles para modelo inicial: $textures");
+                                                  if (textures.contains(textureName)) {
+                                                    controllerModel.setTexture(textureName: textureName);
+                                                  } else {
+                                                    print("Textura no disponible para modelo inicial: $textureName");
+                                                  }
+                                                  Future.delayed(Duration(milliseconds: 100), () {
+                                                    if (textures.contains(selectedPeelstick!.abbreviation)) {
+                                                      controllerModel.setTexture(textureName: selectedPeelstick!.abbreviation);
+                                                    } else {
+                                                      print("Textura de PeelStick no disponible: ${selectedPeelstick!.abbreviation}");
+                                                    }
+                                                  });
+                                                })
+                                                .catchError((error) {
+                                                  print("Error al obtener texturas disponibles: $error");
+                                                });
                                           });
+                                          _updateFinalModel();
                                         },
                                       ),
                                     ),
-
                                     AnimatedOpacity(
                                       opacity: _showTutorial ? 1.0 : 0.0,
                                       duration: Duration(milliseconds: 500),
                                       child: IgnorePointer(
                                         ignoring: true,
-                                        child: Container(
-                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.black.withAlpha(80)),
-                                          alignment: Alignment.center,
-                                          child: Image.network("assets/assets/gifts/cursor.gif", width: 200, height: 200),
+                                        child: ColorFiltered(
+                                          colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                                          child: Lottie.asset("assets/gifts/cursor.json", width: 130, height: 130),
                                         ),
                                       ),
                                     ),
@@ -713,7 +821,6 @@ class _DetailsProductState extends State<DetailsProduct> {
                                 ),
                               ),
                               const SizedBox(height: 20),
-
                               Container(
                                 padding: const EdgeInsets.all(30),
                                 width: screenWidth,
@@ -732,9 +839,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                       }
                                       return "Color";
                                     }(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-
                                     const SizedBox(height: 10),
-
                                     Wrap(
                                       spacing: 10,
                                       runSpacing: 10,
@@ -760,7 +865,21 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                     selectedColor = c;
                                                   });
                                                   if (_modelLoaded) {
-                                                    controllerModel.setTexture(textureName: "${c.name.replaceAll(" ", "_")}_$suffix");
+                                                    controllerModel
+                                                        .getAvailableTextures()
+                                                        .then((textures) {
+                                                          final textureName = "${c.name.replaceAll(" ", "_")}_$suffix";
+                                                          print("Texturas disponibles para modelo inicial: $textures");
+                                                          if (textures.contains(textureName)) {
+                                                            controllerModel.setTexture(textureName: textureName);
+                                                          } else {
+                                                            print("Textura no disponible: $textureName");
+                                                          }
+                                                        })
+                                                        .catchError((error) {
+                                                          print("Error al obtener texturas disponibles: $error");
+                                                        });
+                                                    _updateFinalModel();
                                                   }
                                                 },
                                                 child: Column(
@@ -784,7 +903,6 @@ class _DetailsProductState extends State<DetailsProduct> {
                                             );
                                           }).toList(),
                                     ),
-
                                     const SizedBox(height: 30),
                                     if (product.structures.isNotEmpty) ...[
                                       ChooseBagTitle(text1: "Estructura.", text2: "La resistencia de tú empaque.", product: product),
@@ -796,6 +914,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                             setState(() {
                                               selectedStructure = value;
                                             });
+                                            _updateFinalModel();
                                           },
                                         );
                                       }),
@@ -809,6 +928,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                         setState(() {
                                           selectedGramaje = value;
                                         });
+                                        _updateFinalModel();
                                       },
                                     ),
                                     Selected(
@@ -818,6 +938,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                         setState(() {
                                           selectedGramaje = value;
                                         });
+                                        _updateFinalModel();
                                       },
                                     ),
                                     Selected(
@@ -827,6 +948,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                         setState(() {
                                           selectedGramaje = value;
                                         });
+                                        _updateFinalModel();
                                       },
                                     ),
                                     const SizedBox(height: 30),
@@ -860,14 +982,26 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                 });
                                               },
                                               cursor: SystemMouseCursors.click,
-
                                               child: GestureDetector(
                                                 onTap: () {
                                                   setState(() {
                                                     selectedPeelstick = option;
                                                   });
                                                   if (_modelLoaded) {
-                                                    controllerModel.setTexture(textureName: option.abbreviation);
+                                                    controllerModel
+                                                        .getAvailableTextures()
+                                                        .then((textures) {
+                                                          print("Texturas disponibles para modelo inicial: $textures");
+                                                          if (textures.contains(option.abbreviation)) {
+                                                            controllerModel.setTexture(textureName: option.abbreviation);
+                                                          } else {
+                                                            print("Textura de PeelStick no disponible: ${option.abbreviation}");
+                                                          }
+                                                        })
+                                                        .catchError((error) {
+                                                          print("Error al obtener texturas disponibles: $error");
+                                                        });
+                                                    _updateFinalModel();
                                                   }
                                                 },
                                                 child: Column(
@@ -906,11 +1040,11 @@ class _DetailsProductState extends State<DetailsProduct> {
                                             setState(() {
                                               selectedValve = value;
                                             });
+                                            _updateFinalModel();
                                           },
                                         );
                                       }),
                                     ],
-
                                     const SizedBox(height: 30),
                                     if (product.finishes.isNotEmpty) ...[
                                       ChooseBagTitle(text1: "Terminación.", text2: "El acabado a tú empaque.", product: product),
@@ -922,9 +1056,23 @@ class _DetailsProductState extends State<DetailsProduct> {
                                             setState(() {
                                               selectedFinish = value;
                                             });
-                                            String suffix = _getFinishSuffix(selectedFinish, product);
                                             if (_modelLoaded) {
-                                              controllerModel.setTexture(textureName: "${selectedColor?.name}_$suffix");
+                                              String suffix = _getFinishSuffix(selectedFinish, product);
+                                              controllerModel
+                                                  .getAvailableTextures()
+                                                  .then((textures) {
+                                                    final textureName = "${selectedColor?.name}_$suffix";
+                                                    print("Texturas disponibles para modelo inicial: $textures");
+                                                    if (textures.contains(textureName)) {
+                                                      controllerModel.setTexture(textureName: textureName);
+                                                    } else {
+                                                      print("Textura no disponible: $textureName");
+                                                    }
+                                                  })
+                                                  .catchError((error) {
+                                                    print("Error al obtener texturas disponibles: $error");
+                                                  });
+                                              _updateFinalModel();
                                             }
                                           },
                                         );
@@ -964,17 +1112,17 @@ class _DetailsProductState extends State<DetailsProduct> {
                                           duration: const Duration(milliseconds: 1200),
                                           curve: Curves.easeInOut,
                                           child: Model(
+                                            key: _finalModelKey,
                                             product: product,
                                             controllerModel: controllerFinally,
                                             autoRotate: false,
                                             gestureDetector: false,
                                             selectedValve: selectedValve,
                                             onLoad: (String _) {
-                                              final suffix = _getFinishSuffix(selectedFinish, product);
-                                              controllerFinally.setTexture(textureName: "${selectedColor?.name.replaceAll(" ", "_")}_$suffix");
-                                              Future.delayed(Duration(milliseconds: 100), () {
-                                                controllerFinally.setTexture(textureName: selectedPeelstick!.abbreviation);
+                                              setState(() {
+                                                _finalModelLoaded = true;
                                               });
+                                              _applyTexturesToFinalModel();
                                             },
                                           ),
                                         ),
@@ -995,17 +1143,17 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                 duration: const Duration(milliseconds: 1200),
                                                 curve: Curves.easeInOut,
                                                 child: Model(
+                                                  key: _finalModelKey,
                                                   product: product,
                                                   controllerModel: controllerFinally,
                                                   autoRotate: false,
                                                   gestureDetector: false,
                                                   selectedValve: selectedValve,
                                                   onLoad: (String _) {
-                                                    final suffix = _getFinishSuffix(selectedFinish, product);
-                                                    controllerFinally.setTexture(textureName: "${selectedColor?.name.replaceAll(" ", "_")}_$suffix");
-                                                    Future.delayed(Duration(milliseconds: 100), () {
-                                                      controllerFinally.setTexture(textureName: selectedPeelstick!.abbreviation);
+                                                    setState(() {
+                                                      _finalModelLoaded = true;
                                                     });
+                                                    _applyTexturesToFinalModel();
                                                   },
                                                 ),
                                               ),
@@ -1130,15 +1278,17 @@ class Model extends StatelessWidget {
   final bool gestureDetector;
   final String? selectedValve;
   final dynamic onLoad;
+  final Key? key;
+
   const Model({
-    super.key,
+    this.key,
     required this.product,
     required this.controllerModel,
     required this.autoRotate,
     required this.gestureDetector,
     required this.selectedValve,
     required this.onLoad,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -1149,7 +1299,7 @@ class Model extends StatelessWidget {
       src = "assets/assets/3Dmodels/${product.subcategorie.title}/$fixProductName/$fixProductName.glb";
     } else if (selectedValve == "Válvula desgasificadora") {
       src = "assets/assets/3Dmodels/${product.subcategorie.title}/$fixProductName/${fixProductName}_D.glb";
-    } else if ((selectedValve == "Válvula dosificadora")) {
+    } else if (selectedValve == "Válvula dosificadora") {
       src = "assets/assets/3Dmodels/${product.subcategorie.title}/$fixProductName/${fixProductName}_V.glb";
     } else {
       src = "assets/assets/3Dmodels/${product.subcategorie.title}/$fixProductName/$fixProductName.glb";
@@ -1157,13 +1307,13 @@ class Model extends StatelessWidget {
 
     return Flutter3DViewer(
       progressBarColor: Colors.transparent,
-      //autorotate: autoRotate,
+      autorotate: autoRotate,
       activeGestureInterceptor: gestureDetector,
       controller: controllerModel,
       onLoad: onLoad,
       src: src,
       onError: (error) {
-        print("Error error error error $error");
+        print("Error loading 3D model: $error");
       },
     );
   }
@@ -1222,7 +1372,6 @@ class Selected extends StatelessWidget {
   }
 }
 
-// Función que devuelve el sufijo de la terminación seleccionada
 String _getFinishSuffix(String? finish, Product product) {
   if (finish != null) {
     if (finish.toLowerCase().contains("brillante")) {

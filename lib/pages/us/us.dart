@@ -15,7 +15,6 @@ class _UsState extends State<Us> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeigth = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Stack(
         children: [
@@ -31,7 +30,7 @@ class _UsState extends State<Us> {
                   child:
                       screenWidth >= 1200
                           ? Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 40),
+                            padding: EdgeInsets.only(left: 40),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
@@ -42,31 +41,36 @@ class _UsState extends State<Us> {
                                     children: [
                                       Text(
                                         "Nosotros",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                          fontSize: min(100, screenWidth * 0.09),
-                                        ),
+                                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: min(100, screenWidth * 0.09)),
                                       ),
                                       Text(
                                         textAlign: TextAlign.justify,
                                         "Somos una empresa colombiana comprometida con la innovación, el diseño y la producción de empaques flexibles de alta calidad que protegen, conservan y realzan los productos de todos los sectores. A través de tecnología de punta y un enfoque humano, construimos relaciones duraderas con nuestros clientes, siendo su aliado estratégico y confiable en soluciones de empaque.",
 
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                          fontSize: min(20, screenWidth * 0.09),
-                                        ),
+                                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: min(20, screenWidth * 0.09)),
                                       ),
                                     ],
                                   ),
                                 ),
                                 SizedBox(width: screenWidth * 0.1),
-                                SizedBox(
-                                  height: 800,
-                                  child: Opacity(
-                                    opacity: (screenWidth * 0.0003).clamp(0.0, 1.0),
-                                    child: Image.asset("assets/img/us/us.webp", fit: BoxFit.contain),
+                                Flexible(
+                                  child: Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: SizedBox(
+                                      height: 800,
+                                      child: ShaderMask(
+                                        shaderCallback: (Rect bounds) {
+                                          return const LinearGradient(
+                                            begin: Alignment.centerLeft,
+                                            end: Alignment.centerRight,
+                                            colors: [Colors.transparent, Colors.white],
+                                            stops: [0.0, 0.1], // puedes ajustar el 0.8 para mover la transición
+                                          ).createShader(bounds);
+                                        },
+                                        blendMode: BlendMode.dstIn,
+                                        child: Image.asset("assets/img/us/pruebva.webp", fit: BoxFit.cover),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -81,7 +85,7 @@ class _UsState extends State<Us> {
                                   height: 800,
                                   child: Opacity(
                                     opacity: (screenWidth * 0.0003).clamp(0.0, 1.0),
-                                    child: Image.asset("assets/img/us/us.webp", fit: BoxFit.contain),
+                                    child: Image.asset("assets/img/us/pruebva.webp", fit: BoxFit.cover),
                                   ),
                                 ),
                               ),
@@ -93,22 +97,14 @@ class _UsState extends State<Us> {
                                   children: [
                                     Text(
                                       "Nosotros",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                        fontSize: min(100, screenWidth * 0.09),
-                                      ),
+                                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: min(100, screenWidth * 0.09)),
                                     ),
                                     SizedBox(
                                       width: screenWidth >= 1000 ? screenWidth * 0.6 : null,
                                       child: Text(
                                         textAlign: TextAlign.justify,
                                         "Somos una empresa colombiana comprometida con la innovación, el diseño y la producción de empaques flexibles de alta calidad que protegen, conservan y realzan los productos de todos los sectores. A través de tecnología de punta y un enfoque humano, construimos relaciones duraderas con nuestros clientes, siendo su aliado estratégico y confiable en soluciones de empaque.",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                          fontSize: min(20, screenWidth * 0.09),
-                                        ),
+                                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: min(20, screenWidth * 0.09)),
                                       ),
                                     ),
                                   ],
@@ -118,15 +114,9 @@ class _UsState extends State<Us> {
                           ),
                 ),
                 SizedBox(height: 20),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 30),
-                  child: Divider(thickness: 1, color: Colors.black),
-                ),
+                Container(margin: EdgeInsets.symmetric(horizontal: 30), child: Divider(thickness: 1, color: Colors.black)),
                 SizedBox(height: 20),
-                Text(
-                  "Nuestros valores",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(50, screenWidth * 0.1)),
-                ),
+                Text("Nuestros valores", style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(50, screenWidth * 0.1))),
                 SizedBox(height: 10),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
@@ -224,8 +214,7 @@ final List<Values> _supportCards = [
   Values(
     icon: CupertinoIcons.lock_open,
     title: "Honestidad",
-    description:
-        "Tenemos integrados nuestros procesos para apoyar la verdad, la justicia y la amabilidad con todas las personas que interactuamos.",
+    description: "Tenemos integrados nuestros procesos para apoyar la verdad, la justicia y la amabilidad con todas las personas que interactuamos.",
   ),
   Values(
     icon: CupertinoIcons.heart_fill,
@@ -240,7 +229,6 @@ final List<Values> _supportCards = [
   Values(
     icon: CupertinoIcons.hand_raised,
     title: "Lealtad",
-    description:
-        "Somos fieles, respetamos los valores y los compromisos establecidos con las personas que interactuamos.",
+    description: "Somos fieles, respetamos los valores y los compromisos establecidos con las personas que interactuamos.",
   ),
 ];

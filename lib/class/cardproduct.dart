@@ -134,42 +134,45 @@ final List<CardProduct> cardFindS = [
 
 final List<CardProduct> cardFindE = [
   CardProduct(
-    title: "Un ícono en medio del silencio.",
-    body: "Diseño con alma propia.",
+    title: "Un faro en la penumbra.",
+    body: "Presencia que trasciende.",
     image: "assets/img/ecobag/discover1.webp",
     descriptionTop:
-        "EcoBag® se alza como un símbolo contemporáneo. Su presencia en escena no busca imitar la naturaleza, sino convivir con ella desde el respeto visual.",
-    descriptionDown: "Más que sostenible: evocador, envolvente y memorable. Esta línea demuestra que lo consciente también puede ser extraordinario.",
+        "EcoBag® surge desde la penumbra, resaltando su textura con delicados reflejos de luz. Su silueta firme y elegante establece un diálogo entre el misterio del bosque y la pureza del diseño.",
+    descriptionDown:
+        "Cada detalle de este empaque está concebido para evocar asombro y sofisticación, transformando la oscuridad en un escenario donde lo esencial brilla con fuerza. Una experiencia visual memorable.",
     imageTop: "assets/img/ecobag/discover1_Top.webp",
     imageDown: "assets/img/ecobag/discover1_Down.webp",
   ),
   CardProduct(
-    title: "Ligera con el planeta.",
-    body: "Firme con lo que protege.",
+    title: "Raíces y ligereza.",
+    body: "Conexión viva con la tierra.",
     image: "assets/img/ecobag/discover2.webp",
-    descriptionTop: "EcoBag® en su expresión más esencial. Hecha para integrarse sin esfuerzo, destacar con sutileza y proteger con eficiencia.",
+    descriptionTop:
+        "EcoBag® se posa con suavidad sobre un tronco vivo, integrándose al paisaje con respeto y armonía. Su textura natural y colores orgánicos evocan la frescura de un bosque en pleno despertar.",
     descriptionDown:
-        "Ideal para marcas conscientes que valoran la simplicidad con propósito. Un empaque que respira naturalidad sin perder presencia.",
+        "Pensada para marcas que buscan autenticidad, esta propuesta fusiona sostenibilidad y estilo, mostrándose ligera al tacto y firme en su compromiso con el planeta. Un empaque que respira naturaleza.",
     imageTop: "assets/img/ecobag/discover2_Top.webp",
     imageDown: "assets/img/ecobag/discover2_Down.webp",
   ),
   CardProduct(
-    title: "Diseñada para preservar lo esencial.",
-    body: "Donde el aroma se encuentra con la intención.",
+    title: "Esencia que despierta.",
+    body: "Alma de tradición cafetera.",
     image: "assets/img/ecobag/discover3.webp",
     descriptionTop:
-        "Un diseño que protege lo valioso. La textura visual evoca profundidad, mientras su estructura conserva el carácter del producto intacto.",
-    descriptionDown: "Pensado para destacar con sobriedad y propósito. Ideal para marcas que entienden que el empaque también transmite esencia.",
+        "Un soplo de historia que evoca mañanas compartidas y el suave murmullo de tazas humeantes, despertando sensaciones con cada nota aromática.",
+    descriptionDown:
+        "Las vibraciones del origen se entrelazan en cada inhalación, recordándonos que el verdadero sabor brota de la tierra y de la pasión de quienes la cultivan.",
     imageTop: "assets/img/ecobag/discover3_Top.webp",
     imageDown: "assets/img/ecobag/discover3_Down.webp",
   ),
   CardProduct(
-    title: "Menos impacto, más intención.",
-    body: "Sutil, esencial y perfectamente equilibrado.",
+    title: "Silueta serena.",
+    body: "Elegancia que inspira calma.",
     image: "assets/img/ecobag/discover4.webp",
     isblack: true,
-    descriptionTop: "Un empaque que encuentra belleza en lo simple. Su presencia discreta realza el producto sin competir con él.",
-    descriptionDown: "Ideal para quienes valoran el diseño silencioso y consciente. Porque cada elección visual también comunica propósito.",
+    descriptionTop: "Invita a la pausa interior, a la conexión con uno mismo en su estado más puro.",
+    descriptionDown: "Un refugio de tranquilidad donde la inspiración brota sin esfuerzo, recordándonos el poder de la simplicidad.",
     imageTop: "assets/img/ecobag/discover4_Top.webp",
     imageDown: "assets/img/ecobag/discover4_Down.webp",
   ),

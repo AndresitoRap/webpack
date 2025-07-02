@@ -29,7 +29,13 @@ Widget buildDialogContent(BuildContext context, int index, {required bool isSmar
                 : Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(flex: 1, child: AspectRatio(aspectRatio: 3 / 4, child: Image.asset(card.imageTop, fit: BoxFit.cover))),
+                    Expanded(
+                      flex: 1,
+                      child: AspectRatio(
+                        aspectRatio: 3 / 4,
+                        child: ClipRRect(borderRadius: BorderRadius.circular(16), child: Image.asset(card.imageTop, fit: BoxFit.cover)),
+                      ),
+                    ),
                     const SizedBox(width: 30),
                     Expanded(
                       flex: 1,
@@ -96,7 +102,13 @@ Widget buildDialogContent(BuildContext context, int index, {required bool isSmar
                       ),
                     ),
                     const SizedBox(width: 30),
-                    Expanded(flex: 1, child: AspectRatio(aspectRatio: 3 / 4, child: Image.asset(card.imageDown, fit: BoxFit.cover))),
+                    Expanded(
+                      flex: 1,
+                      child: AspectRatio(
+                        aspectRatio: 3 / 4,
+                        child: ClipRRect(borderRadius: BorderRadius.circular(16), child: Image.asset(card.imageDown, fit: BoxFit.cover)),
+                      ),
+                    ),
                   ],
                 ),
           ],

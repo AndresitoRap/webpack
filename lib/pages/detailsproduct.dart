@@ -388,13 +388,20 @@ class _DetailsProductState extends State<DetailsProduct> {
                                       ),
                                     ],
                                   )
-                                  : Stack(
-                                    fit: StackFit.expand,
-                                    children: [
-                                      Container(color: Color.fromARGB(255, 0, 245, 245)),
-                                      BackdropFilter(filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40), child: Container(color: Colors.transparent)),
-                                      Image.asset('assets/img/ecobag/prueba.png', fit: BoxFit.cover, width: double.infinity, height: double.infinity),
-                                    ],
+                                  : ClipRRect(
+                                    borderRadius: BorderRadius.circular(32),
+                                    child: ValueListenableBuilder<bool>(
+                                      valueListenable: videoBlurNotifier,
+                                      builder: (context, isBlur, _) {
+                                        return HtmlBackgroundVideo(
+                                          src: 'assets/videos/smartbag/smartbag_products.webm',
+                                          blur: isBlur,
+                                          loop: true,
+                                          showControls: true,
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    ),
                                   ),
                         ),
                         SizedBox(height: 40),

@@ -10,7 +10,7 @@ import 'package:webpack/pages/support/legalpolicies.dart';
 import 'package:webpack/pages/support/pqrs.dart';
 import 'package:webpack/pages/support/whatsapppage.dart';
 import 'package:webpack/pages/support/support.dart';
-import 'package:webpack/pages/us/aboutus.dart';
+import 'package:webpack/pages/us/aboutUs.dart';
 import 'package:webpack/pages/us/us.dart';
 import 'package:webpack/widgets/page_not_found.dart';
 import 'package:webpack/class/categories.dart';
@@ -30,11 +30,7 @@ void navigateWithSlide(BuildContext context, String routeName, {Widget? target})
     } else {
       Navigator.push(
         context,
-        PageRouteBuilder(
-          pageBuilder: (_, __, ___) => target,
-          transitionsBuilder: (_, __, ___, child) => child,
-          transitionDuration: Duration.zero,
-        ),
+        PageRouteBuilder(pageBuilder: (_, __, ___) => target, transitionsBuilder: (_, __, ___, child) => child, transitionDuration: Duration.zero),
       );
     }
   }, routeName);
@@ -106,12 +102,7 @@ class MyApp extends StatelessWidget {
           if (productList != null && preferidList != null) {
             return _buildRoute(
               settings,
-              Commerce(
-                section: section,
-                listproducts: productList,
-                productpreferid: preferidList,
-                selectedSubcategorie: matchedCard,
-              ),
+              Commerce(section: section, listproducts: productList, productpreferid: preferidList, selectedSubcategorie: matchedCard),
             );
           }
         }
@@ -176,10 +167,7 @@ class TransitionOverlayState extends State<TransitionOverlay> with TickerProvide
       begin: const Offset(-1, 0),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.fastEaseInToSlowEaseOut));
-    _slideOut = Tween<Offset>(
-      begin: Offset.zero,
-      end: const Offset(1, 0),
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn));
+    _slideOut = Tween<Offset>(begin: Offset.zero, end: const Offset(1, 0)).animate(CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn));
   }
 
   void playTransition(Function onMidCallback, String incomingRoute) async {

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:webpack/class/menu_data.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:webpack/main.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 //blur para los videos (HTML incrustado)
 final ValueNotifier<bool> videoBlurNotifier = ValueNotifier(false);
@@ -213,9 +214,9 @@ class _HeaderState extends State<Header> {
                                                                             : AnimatedOpacity(
                                                                               opacity: isHover ? 0.0 : 1.0,
                                                                               duration: Duration(milliseconds: 300),
-                                                                              child: Image.asset(
-                                                                                "assets/img/WIsotipo.webp",
-                                                                                height: 20,
+                                                                              child: SvgPicture.asset(
+                                                                                "assets/img/WIsotipo.svg",
+                                                                                height: 23,
                                                                                 color: Colors.white.withAlpha(value.toInt()),
                                                                               ),
                                                                             ),
@@ -580,9 +581,9 @@ class _HeaderState extends State<Header> {
                                                   duration: Duration(milliseconds: 200),
                                                   curve: Curves.easeInOut,
                                                   builder: (context, value, child) {
-                                                    return Image.asset(
-                                                      "assets/img/WIsotipo.webp",
-                                                      height: 20,
+                                                    return SvgPicture.asset(
+                                                      "assets/img/WIsotipo.svg",
+                                                      height: 23,
                                                       color: Colors.white.withAlpha(value.toInt()),
                                                     );
                                                   },

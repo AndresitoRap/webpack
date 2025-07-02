@@ -171,8 +171,10 @@ final List<CardProduct> cardFindE = [
     body: "Elegancia que inspira calma.",
     image: "assets/img/ecobag/discover4.webp",
     isblack: true,
-    descriptionTop: "Invita a la pausa interior, a la conexión con uno mismo en su estado más puro.",
-    descriptionDown: "Un refugio de tranquilidad donde la inspiración brota sin esfuerzo, recordándonos el poder de la simplicidad.",
+    descriptionTop:
+        "Un diseño que respira serenidad. Esta propuesta nace de la contemplación, con líneas limpias y tonos suaves que invitan a la introspección y al descanso visual.",
+    descriptionDown:
+        "Minimalismo con alma. Su estética natural y equilibrada transforma el empaque en un espacio de silencio y presencia. Ideal para marcas que comunican desde la armonía y la intención.",
     imageTop: "assets/img/ecobag/discover4_Top.webp",
     imageDown: "assets/img/ecobag/discover4_Down.webp",
   ),

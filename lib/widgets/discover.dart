@@ -213,7 +213,16 @@ class _DiscoverState extends State<Discover> {
       builder: (BuildContext context) {
         final screenWidth = MediaQuery.of(context).size.width;
         final card = list[index];
+
+        // ✅ Detectar si es SmartBag y aplicar color
+        final bool isSmartBag = list == cardFindS;
+        final Color primaryColor =
+            isSmartBag
+                ? const Color(0xFF0056A3) // Azul para SmartBag
+                : const Color(0xFF4B8D2C); // Verde para EcoBag
+
         final ScrollController scrollController = ScrollController();
+
         return LayoutBuilder(
           builder: (context, constraints) {
             return Material(
@@ -240,22 +249,25 @@ class _DiscoverState extends State<Discover> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const SizedBox(height: 60),
-                                  Text(card.title, style: TextStyle(fontSize: 20, color: Theme.of(context).primaryColor)),
+
+                                  // ✅ Título y subtítulo con color según tipo
+                                  Text(card.title, style: TextStyle(fontSize: 20, color: primaryColor)),
                                   Text(
                                     card.body,
-                                    style: TextStyle(
-                                      fontSize: min(50, screenWidth * 0.06),
-                                      fontWeight: FontWeight.bold,
-                                      color: Theme.of(context).primaryColor,
-                                    ),
+                                    style: TextStyle(fontSize: min(50, screenWidth * 0.06), fontWeight: FontWeight.bold, color: primaryColor),
                                   ),
+
                                   const SizedBox(height: 50),
-                                  buildDialogContent(context, index, isSmartBag: list == cardFindS),
+
+                                  // ✅ Contenido inferior
+                                  buildDialogContent(context, index, isSmartBag: isSmartBag),
                                 ],
                               ),
                             ),
                           ),
                         ),
+
+                        // ❌ Botón cerrar (mismo diseño, se puede cambiar también si deseas)
                         Positioned(
                           top: 60,
                           right: 10,

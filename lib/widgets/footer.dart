@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:url_launcher/url_launcher.dart'; // Para abrir enlaces
 
@@ -55,12 +56,9 @@ class Footer extends StatelessWidget {
                   )
                   : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildScheduleSection(context),
-                      const SizedBox(height: 20),
-                      _buildSocialMediaSection(context),
-                    ],
+                    children: [_buildScheduleSection(context), const SizedBox(height: 20), _buildSocialMediaSection(context)],
                   ),
+              // Correo electrónico ahora se muestra en _buildScheduleSection
               const SizedBox(height: 20),
               screenWidth >= mobileBreakpoint
                   ? Row(
@@ -207,16 +205,63 @@ class Footer extends StatelessWidget {
               Text.rich(
                 TextSpan(
                   children: [
-                    TextSpan(
-                      text: "${schedule['day']}: ",
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                    ),
+                    TextSpan(text: "${schedule['day']}: ", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
                     TextSpan(text: schedule['time'], style: TextStyle(color: Colors.black)),
                   ],
                 ),
               ),
             ],
           ),
+        ),
+        Stack(
+          children: [
+            Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: "Correo: ",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      foreground:
+                          Paint()
+                            ..style = PaintingStyle.stroke
+                            ..strokeWidth = 3
+                            ..color = Theme.of(context).scaffoldBackgroundColor,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "info@empaquespackvision.com",
+                    style: TextStyle(
+                      foreground:
+                          Paint()
+                            ..style = PaintingStyle.stroke
+                            ..strokeWidth = 3
+                            ..color = Theme.of(context).scaffoldBackgroundColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(text: "Correo: ", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+                  TextSpan(
+                    text: "info@empaquespackvision.com",
+                    style: TextStyle(color: Colors.black),
+                    recognizer:
+                        TapGestureRecognizer()
+                          ..onTap = () async {
+                            final Uri emailUri = Uri(scheme: 'mailto', path: 'info@empaquespackvision.com');
+                            if (await canLaunchUrl(emailUri)) {
+                              await launchUrl(emailUri);
+                            }
+                          },
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ],
     );

@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=/Users/programador/development/flutter"
-export "FLUTTER_APPLICATION_PATH=/Users/programador/Library/CloudStorage/OneDrive-PACKVISIONS.A.S/Webpack"
+export "FLUTTER_ROOT=/Users/diseno3d/development/flutter"
+export "FLUTTER_APPLICATION_PATH=/Users/diseno3d/Documents/GitHub/webpack"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=1.0.0"

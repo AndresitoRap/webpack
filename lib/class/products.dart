@@ -226,11 +226,7 @@ final List<Product> pPDoypackEco = [
     description:
         "Sencillez con propósito. La EcoBag Doypack Unicolor combina un diseño minimalista con una actitud consciente hacia el planeta 🌱. Su acabado limpio y uniforme refleja modernidad y compromiso ecológico, ideal para marcas que valoran lo esencial sin renunciar al estilo. Un empaque que transmite confianza, pureza y responsabilidad en cada detalle ♻️.",
     price: 1234566,
-    colors: [
-      NamedColor("Negro", Color(0xff312F2D)),
-      NamedColor("Blanco", Color(0xffE9E6E5)),
-      NamedColor("Natural", Color(0xffB89267)),
-    ],
+    colors: [NamedColor("Negro", Color(0xff312F2D)), NamedColor("Blanco", Color(0xffE9E6E5)), NamedColor("Natural", Color(0xffB89267))],
     structures: ["Gruesa"],
     valves: ["Sin válvula"],
     finishes: ["Papel"],
@@ -641,11 +637,7 @@ final List<Product> doypackecoshop = [
     description:
         "Sencillez con propósito. La EcoBag Doypack Unicolor combina un diseño minimalista con una actitud consciente hacia el planeta 🌱. Su acabado limpio y uniforme refleja modernidad y compromiso ecológico, ideal para marcas que valoran lo esencial sin renunciar al estilo. Un empaque que transmite confianza, pureza y responsabilidad en cada detalle ♻️.",
     price: 1234566,
-    colors: [
-      NamedColor("Negro", Color(0xff312F2D)),
-      NamedColor("Blanco", Color(0xffE9E6E5)),
-      NamedColor("Natural", Color(0xffB89267)),
-    ],
+    colors: [NamedColor("Negro", Color(0xff312F2D)), NamedColor("Blanco", Color(0xffE9E6E5)), NamedColor("Natural", Color(0xffB89267))],
     structures: ["Gruesa"],
     valves: ["Sin válvula"],
     finishes: ["Papel"],

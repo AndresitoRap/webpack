@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_3d_controller/flutter_3d_controller.dart';
 import 'package:lottie/lottie.dart';
@@ -418,80 +419,117 @@ class _DetailsProductState extends State<DetailsProduct> {
                                     Positioned(
                                       top: min(currentTop, 1050),
                                       left: screenWidth * 0.06,
-                                      child: Container(
-                                        height: 500,
-                                        width: screenWidth * 0.4,
-                                        alignment: Alignment.topCenter,
-                                        child: Stack(
-                                          children: [
-                                            Listener(
-                                              onPointerDown: (_) => _hideTutorial(),
-                                              onPointerMove: (_) => _hideTutorial(),
-                                              child: Model(
-                                                product: product,
-                                                controllerModel: controllerModel,
-                                                autoRotate: true,
-                                                gestureDetector: true,
-                                                selectedValve: selectedValve,
-                                                onLoad: (String _) {
-                                                  setState(() {
-                                                    if (selectedColor == null) {
-                                                      selectedColor = product.colors.first;
-                                                    }
-                                                    if (selectedFinish == null) {
-                                                      selectedFinish = product.finishes.first;
-                                                    }
-                                                    if (selectedPeelstick == null) {
-                                                      selectedPeelstick = peelStickOptions.first;
-                                                    }
-                                                    _modelLoaded = true;
-                                                    controllerModel
-                                                        .getAvailableTextures()
-                                                        .then((textures) {
-                                                          final textureName =
-                                                              "${selectedColor!.name.replaceAll(" ", "_")}_${_getFinishSuffix(selectedFinish, product)}";
-                                                          print("Texturas disponibles para modelo inicial: $textures");
-                                                          if (textures.contains(textureName)) {
-                                                            controllerModel.setTexture(textureName: textureName);
-                                                          } else {
-                                                            print("Textura no disponible para modelo inicial: $textureName");
-                                                          }
-                                                          Future.delayed(Duration(milliseconds: 100), () {
-                                                            if (textures.contains(selectedPeelstick!.abbreviation)) {
-                                                              controllerModel.setTexture(textureName: selectedPeelstick!.abbreviation);
-                                                            } else {
-                                                              print("Textura de PeelStick no disponible: ${selectedPeelstick!.abbreviation}");
-                                                            }
-                                                          });
-                                                        })
-                                                        .catchError((error) {
-                                                          print("Error al obtener texturas disponibles: $error");
-                                                        });
-                                                  });
-                                                  _updateFinalModel();
-                                                },
-                                              ),
-                                            ),
-                                            AnimatedOpacity(
-                                              opacity: _showTutorial ? 1.0 : 0.0,
-                                              duration: Duration(milliseconds: 500),
-                                              child: IgnorePointer(
-                                                ignoring: true,
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(16),
-                                                    color: Colors.black.withAlpha(70),
-                                                  ),
-                                                  alignment: Alignment.center,
-                                                  child: ColorFiltered(
-                                                    colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                                                    child: Lottie.asset("assets/gifts/cursor.json", width: 130, height: 130),
-                                                  ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                "Modelo 3D",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Theme.of(context).primaryColor,
+                                                  fontSize: min(screenWidth * 0.04, 25),
                                                 ),
                                               ),
+                                              SizedBox(width: 5),
+                                              Tooltip(
+                                                message:
+                                                    "🖱️ En computador:\n"
+                                                    "- Haz clic izquierdo y mantén presionado mientras mueves el ratón para girar el modelo.\n"
+                                                    "- Usa la rueda del ratón para hacer zoom (adelante para acercar, atrás para alejar).\n"
+                                                    "- Presiona Shift y haz clic izquierdo para mover el modelo sin girarlo.\n\n"
+                                                    "📱 En tablet o celular:\n"
+                                                    "- Usa un dedo para girar el modelo.\n"
+                                                    "- Usa dos dedos para moverlo de posición.\n"
+                                                    "- Junta o separa los dedos (pellizcar o expandir) para hacer zoom.",
+                                                child: Icon(
+                                                  CupertinoIcons.question_circle_fill,
+                                                  color: Theme.of(context).colorScheme.tertiary,
+                                                  size: 18,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 20),
+
+                                          Container(
+                                            height: 500,
+                                            width: screenWidth * 0.4,
+                                            alignment: Alignment.topCenter,
+                                            child: Stack(
+                                              children: [
+                                                Listener(
+                                                  onPointerDown: (_) => _hideTutorial(),
+                                                  onPointerMove: (_) => _hideTutorial(),
+                                                  child: Model(
+                                                    product: product,
+                                                    controllerModel: controllerModel,
+                                                    autoRotate: true,
+                                                    gestureDetector: true,
+                                                    selectedValve: selectedValve,
+                                                    onLoad: (String _) {
+                                                      setState(() {
+                                                        if (selectedColor == null) {
+                                                          selectedColor = product.colors.first;
+                                                        }
+                                                        if (selectedFinish == null) {
+                                                          selectedFinish = product.finishes.first;
+                                                        }
+                                                        if (selectedPeelstick == null) {
+                                                          selectedPeelstick = peelStickOptions.first;
+                                                        }
+                                                        _modelLoaded = true;
+                                                        controllerModel
+                                                            .getAvailableTextures()
+                                                            .then((textures) {
+                                                              final textureName =
+                                                                  "${selectedColor!.name.replaceAll(" ", "_")}_${_getFinishSuffix(selectedFinish, product)}";
+                                                              print("Texturas disponibles para modelo inicial: $textures");
+                                                              if (textures.contains(textureName)) {
+                                                                controllerModel.setTexture(textureName: textureName);
+                                                              } else {
+                                                                print("Textura no disponible para modelo inicial: $textureName");
+                                                              }
+                                                              Future.delayed(Duration(milliseconds: 100), () {
+                                                                if (textures.contains(selectedPeelstick!.abbreviation)) {
+                                                                  controllerModel.setTexture(textureName: selectedPeelstick!.abbreviation);
+                                                                } else {
+                                                                  print("Textura de PeelStick no disponible: ${selectedPeelstick!.abbreviation}");
+                                                                }
+                                                              });
+                                                            })
+                                                            .catchError((error) {
+                                                              print("Error al obtener texturas disponibles: $error");
+                                                            });
+                                                      });
+                                                      _updateFinalModel();
+                                                    },
+                                                  ),
+                                                ),
+                                                AnimatedOpacity(
+                                                  opacity: _showTutorial ? 1.0 : 0.0,
+                                                  duration: Duration(milliseconds: 500),
+                                                  child: IgnorePointer(
+                                                    ignoring: true,
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(16),
+                                                        color: Colors.black.withAlpha(70),
+                                                      ),
+                                                      alignment: Alignment.center,
+                                                      child: ColorFiltered(
+                                                        colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                                                        child: Lottie.asset("assets/gifts/cursor.json", width: 130, height: 130),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                     Padding(
@@ -1184,7 +1222,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                             ),
                                           ),
                                         Text(
-                                          "Tu nuevo empaque",
+                                          "Tu nuevo empaque ${product.subcategorie.title}",
                                           style: TextStyle(
                                             fontSize: 32,
                                             fontWeight: FontWeight.bold,
@@ -1210,11 +1248,11 @@ class _DetailsProductState extends State<DetailsProduct> {
                                           ),
                                         ),
                                         Text("\$${product.price}", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                                        Text(selectedGramaje ?? '', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                                        Text(selectedStructure ?? '', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                                        Text(selectedPeelstick?.name ?? '', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                                        Text(selectedValve ?? '', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                                        Text(selectedFinish ?? '', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                                        Text("Gramaje: $selectedGramaje ", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                                        Text("Estructura $selectedStructure", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                                        Text("Peel Stick: ${selectedPeelstick?.name}", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                                        Text("Tipo de válvula: $selectedValve", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                                        Text("Terminado tipo $selectedFinish", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                                         MouseRegion(
                                           cursor: SystemMouseCursors.click,
                                           child: GestureDetector(

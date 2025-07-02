@@ -11,6 +11,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 //blur para los videos (HTML incrustado)
 final ValueNotifier<bool> videoBlurNotifier = ValueNotifier(false);
+final ValueNotifier<bool> htmlIncrustbool = ValueNotifier(false);
 
 class Header extends StatefulWidget {
   final void Function(bool)? onHoverChange;

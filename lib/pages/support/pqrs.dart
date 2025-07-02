@@ -4,26 +4,17 @@ import 'package:webpack/widgets/header.dart';
 import 'dart:ui' as ui;
 import 'dart:html' as html;
 
-class PQRS extends StatelessWidget {
+class PQRS extends StatefulWidget {
   const PQRS({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    const iframeId = 'iframeFormEncuesta';
-    const url = 'https://forms.office.com/r/qnhVaPYkUJ';
+  State<PQRS> createState() => _PQRSState();
+}
 
-    // ✅ Registrar el iframe SOLO si no ha sido registrado antes
-    // Esto evita errores por múltiples registros
-    // ignore: undefined_prefixed_name
-    ui.platformViewRegistry.registerViewFactory(
-      iframeId,
-      (int viewId) =>
-          html.IFrameElement()
-            ..src = url
-            ..style.border = 'none'
-            ..style.width = '100%'
-            ..style.height = '1000px',
-    );
+class _PQRSState extends State<PQRS> {
+  @override
+  Widget build(BuildContext context) {
+    const url = 'https://forms.office.com/r/qnhVaPYkUJ';
 
     return Scaffold(
       body: Stack(
@@ -32,8 +23,20 @@ class PQRS extends StatelessWidget {
             scrollDirection: Axis.vertical,
             child: Padding(
               padding: const EdgeInsets.only(top: 45),
+
               child: Column(
-                children: [const SizedBox(height: 1000, child: HtmlElementView(viewType: iframeId)), const Footer()],
+                children: [
+                  SizedBox(
+                    height: 1000,
+                    child: ValueListenableBuilder<bool>(
+                      valueListenable: videoBlurNotifier,
+                      builder: (context, isBlur, _) {
+                        return HtmlBlurIframe(url: url, blur: isBlur);
+                      },
+                    ),
+                  ),
+                  const Footer(),
+                ],
               ),
             ),
           ),
@@ -41,5 +44,60 @@ class PQRS extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class HtmlBlurIframe extends StatefulWidget {
+  final String url;
+  final bool blur;
+  final double height;
+
+  const HtmlBlurIframe({super.key, required this.url, this.blur = false, this.height = 1000});
+
+  @override
+  State<HtmlBlurIframe> createState() => _HtmlBlurIframeState();
+}
+
+class _HtmlBlurIframeState extends State<HtmlBlurIframe> {
+  late String _viewId;
+
+  @override
+  void initState() {
+    super.initState();
+    _generateIframe();
+  }
+
+  void _generateIframe() {
+    _viewId = 'iframe-${widget.url.hashCode}-${widget.blur}-${DateTime.now().millisecondsSinceEpoch}';
+
+    // ignore: undefined_prefixed_name
+    ui.platformViewRegistry.registerViewFactory(_viewId, (int viewId) {
+      final iframe =
+          html.IFrameElement()
+            ..src = widget.url
+            ..style.border = 'none'
+            ..style.width = '100%'
+            ..style.height = '${widget.height}px'
+            ..style.transition = 'filter 0.5s ease-in-out'
+            ..style.backgroundColor = 'white'
+            ..style.filter = widget.blur ? 'blur(30px)' : 'none';
+
+      return iframe;
+    });
+  }
+
+  @override
+  void didUpdateWidget(HtmlBlurIframe oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.blur != widget.blur) {
+      setState(() {
+        _generateIframe(); // fuerza cambio de ID y registro
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return HtmlElementView(key: ValueKey(_viewId), viewType: _viewId);
   }
 }

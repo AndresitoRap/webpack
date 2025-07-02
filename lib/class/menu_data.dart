@@ -9,7 +9,7 @@ class MenuData {
       },
       {
         "title": "Especiales SmartBag®",
-        "items": ["Standpack", "Piramidales", "Accesorios"],
+        "items": ["Standpack", "Accesorios"],
       },
     ],
     [
@@ -19,7 +19,7 @@ class MenuData {
       },
       {
         "title": "Especial de EcoBag®",
-        "items": ["Piramidales"],
+        "items": [""],
       },
     ],
     [
@@ -37,7 +37,7 @@ class MenuData {
     [
       {
         "title": "Ayuda Rápida",
-        "items": ["Whatsapp", "Teléfono"],
+        "items": ["Whatsapp"],
       },
       {
         "title": "Politicas",

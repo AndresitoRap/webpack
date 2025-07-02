@@ -53,10 +53,7 @@ class _WhatsappPageState extends State<WhatsappPage> {
                                       children: [
                                         Text(
                                           "¿Tienes preguntas?",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: min(50, screenWidth * 0.06),
-                                          ),
+                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(50, screenWidth * 0.06)),
                                         ),
                                         Text.rich(
                                           TextSpan(
@@ -69,10 +66,7 @@ class _WhatsappPageState extends State<WhatsappPage> {
                                                   fontSize: min(40, screenWidth * 0.06),
                                                 ),
                                               ),
-                                              TextSpan(
-                                                text: "\nNuestro equipo está listo para ayudarte.",
-                                                style: TextStyle(fontSize: 23),
-                                              ),
+                                              TextSpan(text: "\nNuestro equipo está listo para ayudarte.", style: TextStyle(fontSize: 23)),
                                             ],
                                           ),
                                         ),
@@ -119,14 +113,7 @@ class _WhatsappPageState extends State<WhatsappPage> {
                                             children: [
                                               Icon(Boxicons.bxl_whatsapp, color: Colors.white, size: 30),
                                               SizedBox(width: screenWidth * 0.005),
-                                              Text(
-                                                "Ir a Whatsapp",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 20,
-                                                ),
-                                              ),
+                                              Text("Ir a Whatsapp", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
                                             ],
                                           ),
                                         ),
@@ -137,10 +124,7 @@ class _WhatsappPageState extends State<WhatsappPage> {
                                   // Imagen
                                   Transform.translate(
                                     offset: Offset(screenWidth * 0.4, screenWidth * 0.3),
-                                    child: Transform.scale(
-                                      scale: 1.6,
-                                      child: Image.asset("assets/img/support/support_chat.webp"),
-                                    ),
+                                    child: Transform.scale(scale: 1.6, child: Image.asset("assets/img/support/support_chat.webp")),
                                   ),
                                 ],
                               )
@@ -156,10 +140,7 @@ class _WhatsappPageState extends State<WhatsappPage> {
                                       children: [
                                         Text(
                                           "¿Tienes preguntas?",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: min(50, screenWidth * 0.06),
-                                          ),
+                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(50, screenWidth * 0.06)),
                                         ),
                                         Text.rich(
                                           TextSpan(
@@ -172,10 +153,7 @@ class _WhatsappPageState extends State<WhatsappPage> {
                                                   fontSize: min(30, screenWidth * 0.05),
                                                 ),
                                               ),
-                                              TextSpan(
-                                                text: "Nuestro equipo está listo para ayudarte.",
-                                                style: TextStyle(fontSize: 20),
-                                              ),
+                                              TextSpan(text: "Nuestro equipo está listo para ayudarte.", style: TextStyle(fontSize: 20)),
                                             ],
                                           ),
                                         ),
@@ -211,8 +189,7 @@ class _WhatsappPageState extends State<WhatsappPage> {
                                                 padding: EdgeInsets.all(8),
                                                 decoration: BoxDecoration(
                                                   borderRadius: BorderRadius.circular(12),
-                                                  color:
-                                                      _whatsapp ? Color.fromARGB(255, 28, 165, 78) : Color(0xff25d366),
+                                                  color: _whatsapp ? Color.fromARGB(255, 28, 165, 78) : Color(0xff25d366),
                                                 ),
                                                 child: Row(
                                                   mainAxisSize: MainAxisSize.min,
@@ -221,11 +198,7 @@ class _WhatsappPageState extends State<WhatsappPage> {
                                                     SizedBox(width: screenWidth * 0.005),
                                                     Text(
                                                       "Ir a Whatsapp",
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 20,
-                                                      ),
+                                                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
                                                     ),
                                                   ],
                                                 ),
@@ -255,11 +228,7 @@ class _WhatsappPageState extends State<WhatsappPage> {
                     children: [
                       Text(
                         "Estamos para ayudarte",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
-                          fontSize: min(30, screenWidth * 0.05),
-                        ),
+                        style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor, fontSize: min(30, screenWidth * 0.05)),
                       ),
                     ],
                   ),
@@ -283,46 +252,63 @@ class _WhatsappPageState extends State<WhatsappPage> {
                       alignment: WrapAlignment.center,
                       children:
                           _supportCardsPerson.map((card) {
-                            return Container(
-                              width: itemWidth.clamp(260, 350),
-                              height: 300,
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(color: Colors.grey.shade300),
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4))],
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    card.zone,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Theme.of(context).primaryColor,
-                                      fontSize: 20,
-                                    ),
+                            return MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  final Uri phoneUri = Uri(scheme: 'tel', path: '6017460533${card.ext}');
+                                  if (await canLaunchUrl(phoneUri)) {
+                                    await launchUrl(phoneUri);
+                                  } else {
+                                    throw 'No se pudo iniciar la llamada a $phoneUri';
+                                  }
+                                },
+                                child: Container(
+                                  width: itemWidth.clamp(260, 350),
+                                  height: 300,
+                                  padding: const EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(color: Colors.grey.shade300),
+                                    borderRadius: BorderRadius.circular(12),
+                                    boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4))],
                                   ),
-                                  Expanded(child: Image.asset(card.img)),
-                                  Row(
+                                  child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
-                                      Column(
+                                      Text(
+                                        textAlign: TextAlign.center,
+                                        card.zone,
+                                        style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor, fontSize: 20),
+                                      ),
+                                      Text(
+                                        "Sede ${card.sede}",
+                                        style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary, fontSize: 16),
+                                      ),
+                                      Expanded(child: Image.asset(card.img)),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           Icon(CupertinoIcons.phone_fill, color: Theme.of(context).primaryColor),
+                                          const SizedBox(width: 10),
+                                          Text.rich(
+                                            TextSpan(
+                                              children: [
+                                                TextSpan(text: "(601) 746 05 33 "),
+                                                TextSpan(
+                                                  text: card.ext,
+                                                  style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ],
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [Text("(601) 746 05 33 ${card.ext}")],
                                       ),
                                     ],
                                   ),
-                                ],
+                                ),
                               ),
                             );
                           }).toList(),
@@ -344,17 +330,28 @@ class _WhatsappPageState extends State<WhatsappPage> {
 // Modelo de tarjeta
 class SupportCardPerson {
   final String ext;
+  final String sede;
   final String zone;
   final String img;
 
-  SupportCardPerson({required this.ext, required this.zone, required this.img});
+  SupportCardPerson({required this.ext, required this.zone, required this.img, required this.sede});
 }
 
 // Lista de tarjetas
 final List<SupportCardPerson> _supportCardsPerson = [
-  SupportCardPerson(ext: "104", zone: "Asesora Comercial", img: "assets/img/support/Adviser1.webp"),
-  SupportCardPerson(ext: "103", zone: "Asesora Comercial", img: "assets/img/support/Adviser2.webp"),
-  SupportCardPerson(ext: "512", zone: "Servicio al cliente", img: "assets/img/support/Customer_Service.webp"),
-  SupportCardPerson(ext: "109", zone: "Asesora Comercial", img: "assets/img/support/Adviser3.webp"),
-  SupportCardPerson(ext: "508", zone: "Asesora Comercial", img: "assets/img/support/Adviser4.webp"),
+  //Carvajal
+  SupportCardPerson(ext: "101", zone: "Asesora Comercial", img: "assets/img/support/Adviser1.webp", sede: "Carvajal - Bogotá D.C."), //Betty
+  SupportCardPerson(ext: "107", zone: "Asesora Comercial ", img: "assets/img/support/Adviser2.webp", sede: "Carvajal - Bogotá D.C."), //Lorena
+  //Norte
+  SupportCardPerson(ext: "102", zone: "Asesora Comercial", img: "assets/img/support/Adviser3.webp", sede: "Nogal - Bogotá D.C."), //Luisa
+  SupportCardPerson(ext: "105", zone: "Asesora Comercial", img: "assets/img/support/Adviser4.webp", sede: "Nogal - Bogotá D.C."), //Liliana
+  //Tecplas
+  SupportCardPerson(ext: "104", zone: "Asesora Comercial", img: "assets/img/support/Adviser5.webp", sede: "Tecplas - Mosquera"), //Yeimi
+  SupportCardPerson(ext: "103", zone: "Asesora Comercial", img: "assets/img/support/Adviser6.webp", sede: "Tecplas - Mosquera"), //Laura
+  SupportCardPerson(
+    ext: "109",
+    zone: "Asesora Comercial y Servicio al Cliente",
+    img: "assets/img/support/Adviser7.webp",
+    sede: "Tecplas - Mosquera",
+  ), //Fernanda y Andres
 ];

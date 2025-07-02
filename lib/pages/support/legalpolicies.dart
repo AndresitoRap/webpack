@@ -12,156 +12,243 @@ class LegalPolicies extends StatefulWidget {
 
 class _LegalPoliciesState extends State<LegalPolicies> {
   bool _isHovering = false;
+  bool _showScrollToTopButton = false;
+
+  late ScrollController _scrollController;
+  final Map<String, GlobalKey> sectionKeys = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      if (_scrollController.offset > 300 && !_showScrollToTopButton) {
+        setState(() => _showScrollToTopButton = true);
+      } else if (_scrollController.offset <= 300 && _showScrollToTopButton) {
+        setState(() => _showScrollToTopButton = false);
+      }
+    });
+    for (var item in glossaryitem) {
+      sectionKeys[item.index] = GlobalKey();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final defaultStyle = TextStyle(
-      fontWeight: FontWeight.bold,
-      color: Theme.of(context).colorScheme.primary,
-      fontSize: 18,
-    );
+    final defaultStyle = TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary, fontSize: 18);
 
     final hoverStyle = defaultStyle.copyWith(decoration: TextDecoration.underline);
 
     return Scaffold(
       body: Stack(
         children: [
-          SingleChildScrollView(
-            padding: const EdgeInsets.only(bottom: 100),
-            child: Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    vertical: 100,
-                    horizontal: MediaQuery.of(context).size.width > 1024 ? 100 : 20,
-                  ),
-                  width: 1200,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Title(title: "PACKVISIÓN S.A.S - POLÍTICAS LEGALES Y REGLAMENTARIAS"),
-                      const SizedBox(height: 10),
-                      Text(
-                        "Última actualización: Abril 3, 2025",
-                        style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
-                      ),
-                      const SizedBox(height: 60),
-
-                      // Índice
-                      Center(child: Title(title: "Contenido")),
-                      const SizedBox(height: 20),
-                      Column(
+          Stack(
+            children: [
+              SingleChildScrollView(
+                controller: _scrollController,
+                padding: const EdgeInsets.only(bottom: 100),
+                child: Column(
+                  key: GlobalKey(), // para evitar warning de scroll
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 100, horizontal: MediaQuery.of(context).size.width > 1024 ? 100 : 20),
+                      width: 1200,
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children:
-                            glossaryitem.map((item) => Glosaryitem(number: item.index, about: item.title)).toList(),
-                      ),
-                      const SizedBox(height: 40),
-                      ...glossaryitem.map(
-                        (item) => Padding(
-                          padding: const EdgeInsets.only(top: 40),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Title(
-                                title: "${item.index}. ${item.title}",
-                                color: Theme.of(context).colorScheme.secondary.withAlpha(150),
-                              ),
-                              const SizedBox(height: 10),
-                              if (item.content != null) item.content!,
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 50),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            textAlign: TextAlign.center,
-                            "Packvision, Ecobag, Smartbag, Mitteland y sus logotipos son marcas registradas, se prohíbe su uso y distribución.",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: Theme.of(context).primaryColor,
+                          Title(title: "PACKVISIÓN S.A.S - POLÍTICAS LEGALES Y REGLAMENTARIAS"),
+                          const SizedBox(height: 10),
+                          Text("Última actualización: Abril 3, 2025", style: TextStyle(color: Theme.of(context).colorScheme.tertiary)),
+                          const SizedBox(height: 60),
+
+                          // Índice
+                          Center(child: Title(title: "Contenido")),
+                          const SizedBox(height: 20),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children:
+                                glossaryitem.map((item) {
+                                  return Glosaryitem(
+                                    number: item.index,
+                                    about: item.title,
+                                    onTap: () {
+                                      final keyContext = sectionKeys[item.index]?.currentContext;
+                                      if (keyContext != null) {
+                                        Scrollable.ensureVisible(keyContext, duration: const Duration(milliseconds: 600), curve: Curves.easeInOut);
+                                      }
+                                    },
+                                  );
+                                }).toList(),
+                          ),
+                          const SizedBox(height: 40),
+                          ...glossaryitem.map(
+                            (item) => Padding(
+                              padding: const EdgeInsets.only(top: 40),
+                              key: sectionKeys[item.index],
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Title(title: "${item.index}. ${item.title}", color: Theme.of(context).colorScheme.secondary.withAlpha(150)),
+                                  const SizedBox(height: 10),
+                                  if (item.content != null) item.content!,
+                                ],
+                              ),
                             ),
                           ),
-                          const SizedBox(height: 20),
-                          Text.rich(
-                            textAlign: TextAlign.center,
-                            TextSpan(
-                              children: [
+                          const SizedBox(height: 50),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                textAlign: TextAlign.center,
+                                "Packvision, Ecobag, Smartbag, Mitteland y sus logotipos son marcas registradas, se prohíbe su uso y distribución.",
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Theme.of(context).primaryColor),
+                              ),
+                              const SizedBox(height: 20),
+                              Text.rich(
+                                textAlign: TextAlign.center,
                                 TextSpan(
-                                  text:
-                                      "Los datos personales serán tratados cumpliendo los principios y regulaciones previstas en las leyes de Colombia, de acuerdo con lo que determina la ",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                ),
-                                WidgetSpan(
-                                  alignment: PlaceholderAlignment.middle,
-                                  child: MouseRegion(
-                                    onEnter: (_) => setState(() => _isHovering = true),
-                                    onExit: (_) => setState(() => _isHovering = false),
-                                    cursor: SystemMouseCursors.click,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        navigateWithSlide(context, '/Soporte/Politicas/Tratamiento-de-datos');
-                                      },
-                                      child: Text(
-                                        "Política de Protección de Datos Personales.",
-                                        style:
-                                            _isHovering
-                                                ? hoverStyle.copyWith(
-                                                  decoration: TextDecoration.underline,
-                                                  decorationColor: Theme.of(context).colorScheme.primary,
-                                                  decorationThickness: 2,
-                                                )
-                                                : defaultStyle,
+                                  children: [
+                                    TextSpan(
+                                      text:
+                                          "Los datos personales serán tratados cumpliendo los principios y regulaciones previstas en las leyes de Colombia, de acuerdo con lo que determina la ",
+                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Theme.of(context).primaryColor),
+                                    ),
+                                    WidgetSpan(
+                                      alignment: PlaceholderAlignment.middle,
+                                      child: MouseRegion(
+                                        onEnter: (_) => setState(() => _isHovering = true),
+                                        onExit: (_) => setState(() => _isHovering = false),
+                                        cursor: SystemMouseCursors.click,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            navigateWithSlide(context, '/Soporte/Politicas/Tratamiento-de-datos');
+                                          },
+                                          child: Text(
+                                            "Política de Protección de Datos Personales.",
+                                            style:
+                                                _isHovering
+                                                    ? hoverStyle.copyWith(
+                                                      decoration: TextDecoration.underline,
+                                                      decorationColor: Theme.of(context).colorScheme.primary,
+                                                      decorationThickness: 2,
+                                                    )
+                                                    : defaultStyle,
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
+                    ),
+                    const Footer(),
+                  ],
+                ),
+              ),
+              const Header(),
+            ],
+          ),
+          Positioned(
+            bottom: 30,
+            right: 30,
+            child: AnimatedOpacity(
+              opacity: _showScrollToTopButton ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 300),
+              child: Visibility(
+                visible: _showScrollToTopButton,
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  onEnter: (_) => setState(() => _isHovering = true),
+                  onExit: (_) => setState(() => _isHovering = false),
+                  child: TweenAnimationBuilder<double>(
+                    duration: const Duration(milliseconds: 200),
+                    tween: Tween(begin: 1.0, end: _isHovering ? 1.1 : 1.0),
+                    builder: (context, scale, child) {
+                      return Transform.scale(
+                        scale: scale,
+                        alignment: Alignment.center,
+                        child: GestureDetector(
+                          onTap: () {
+                            _scrollController.animateTo(0, duration: const Duration(milliseconds: 600), curve: Curves.easeOut);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: _isHovering ? Theme.of(context).primaryColor.withAlpha(230) : Theme.of(context).primaryColor.withAlpha(200),
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 6, offset: Offset(2, 2))],
+                            ),
+                            child: Icon(Icons.arrow_upward, color: Colors.white),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
-                const Footer(),
-              ],
+              ),
             ),
           ),
-          const Header(),
         ],
       ),
     );
   }
 }
 
-class Glosaryitem extends StatelessWidget {
+class Glosaryitem extends StatefulWidget {
   final String number;
   final String about;
-  const Glosaryitem({super.key, required this.number, required this.about});
+  final VoidCallback onTap;
+  const Glosaryitem({super.key, required this.number, required this.about, required this.onTap});
+
+  @override
+  State<Glosaryitem> createState() => _GlosaryitemState();
+}
+
+class _GlosaryitemState extends State<Glosaryitem> {
+  bool _isHovering = false;
 
   @override
   Widget build(BuildContext context) {
-    return Text.rich(
-      TextSpan(
-        children: [
-          TextSpan(
-            text: "$number. ",
-            style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.tertiary, fontWeight: FontWeight.bold),
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _isHovering = true),
+      onExit: (_) => setState(() => _isHovering = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: "${widget.number}. ",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),
+                ),
+                TextSpan(
+                  text: " ${widget.about}",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color:
+                        _isHovering ? Theme.of(context).colorScheme.primary.withOpacity(0.8) : Theme.of(context).colorScheme.tertiary.withAlpha(200),
+                  ),
+                ),
+              ],
+            ),
           ),
-          TextSpan(
-            text: " $about",
-            style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.tertiary.withAlpha(200)),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -174,10 +261,7 @@ class Title extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title.toUpperCase(),
-      style: TextStyle(fontWeight: FontWeight.bold, color: color ?? Theme.of(context).primaryColor, fontSize: 30),
-    );
+    return Text(title.toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, color: color ?? Theme.of(context).primaryColor, fontSize: 30));
   }
 }
 
@@ -240,8 +324,7 @@ final List<Glossaryitem> glossaryitem = [
                 style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E)),
               ),
               TextSpan(
-                text:
-                    "El departamento de ventas y legal revisarán la documentación en un plazo no mayor a 3 días hábiles.",
+                text: "El departamento de ventas y legal revisarán la documentación en un plazo no mayor a 3 días hábiles.",
                 style: TextStyle(height: 2, fontSize: 15),
               ),
             ],
@@ -251,10 +334,7 @@ final List<Glossaryitem> glossaryitem = [
           TextSpan(
             children: [
               TextSpan(text: "3. ", style: TextStyle(fontSize: 17, color: Color(0xff004F9E))),
-              TextSpan(
-                text: "Notificación: ",
-                style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E)),
-              ),
+              TextSpan(text: "Notificación: ", style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E))),
               TextSpan(
                 text:
                     "Si se encuentran incumplimientos, se notificará al cliente por escrito en un plazo de 5 días hábiles con las razones específicas.",
@@ -267,10 +347,7 @@ final List<Glossaryitem> glossaryitem = [
           TextSpan(
             children: [
               TextSpan(text: "4. ", style: TextStyle(fontSize: 17, color: Color(0xff004F9E))),
-              TextSpan(
-                text: "Aprobación: ",
-                style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E)),
-              ),
+              TextSpan(text: "Aprobación: ", style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E))),
               TextSpan(
                 text: "Solo se procederá con la producción una vez que todos los requisitos legales estén en regla.",
                 style: TextStyle(height: 2, fontSize: 15),
@@ -331,11 +408,7 @@ final List<Glossaryitem> glossaryitem = [
           "En caso de requerirse un empaque con laminación especial, sea UHT, poliamida o laminaciones con películas particulares se tendrá un incremento hasta del 35% sobre el valor del empaque con base en la lista de precios establecida.",
         ),
         const SizedBox(height: 20),
-        Text(
-          textAlign: TextAlign.justify,
-          style: TextStyle(height: 2, fontSize: 15),
-          "La cantidad mínima de impresión sera de:",
-        ),
+        Text(textAlign: TextAlign.justify, style: TextStyle(height: 2, fontSize: 15), "La cantidad mínima de impresión sera de:"),
         const SizedBox(height: 20),
         Text(
           textAlign: TextAlign.justify,
@@ -475,10 +548,7 @@ final List<Glossaryitem> glossaryitem = [
           TextSpan(
             children: [
               TextSpan(text: "1. ", style: TextStyle(fontSize: 17, color: Color(0xff004F9E))),
-              TextSpan(
-                text: "Entrega urgente: ",
-                style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E)),
-              ),
+              TextSpan(text: "Entrega urgente: ", style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E))),
               TextSpan(
                 text:
                     "Para entregas prioritarias, ofrecemos un servicio de entrega en 10 días hábiles con un recargo del 20% sobre el valor total del pedido.",
@@ -496,8 +566,7 @@ final List<Glossaryitem> glossaryitem = [
                 style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E)),
               ),
               TextSpan(
-                text:
-                    "Para pedidos urgentes, ofrecemos un servicio en 15 días hábiles con un recargo del 10% sobre el valor total del pedido.",
+                text: "Para pedidos urgentes, ofrecemos un servicio en 15 días hábiles con un recargo del 10% sobre el valor total del pedido.",
                 style: TextStyle(height: 2, fontSize: 15),
               ),
             ],
@@ -540,10 +609,7 @@ final List<Glossaryitem> glossaryitem = [
         Text.rich(
           TextSpan(
             children: [
-              TextSpan(
-                text: "Propiedad de los fotopolímeros: ",
-                style: TextStyle(fontSize: 17, color: Color(0xff004F9E)),
-              ),
+              TextSpan(text: "Propiedad de los fotopolímeros: ", style: TextStyle(fontSize: 17, color: Color(0xff004F9E))),
               TextSpan(
                 text:
                     "La propiedad de los fotopolímeros es del cliente y la cantidad de fotopolímeros podrá variar de acuerdo con el diseño. Los fotopolímeros son un artículo en consignación, por lo tanto, es responsabilidad del cliente asumir los valores de reposición por uso repetitivo o constante. La reposición de estos es necesaria debido al desgaste que sufre el fotopolímero en el proceso de impresión.",
@@ -556,10 +622,7 @@ final List<Glossaryitem> glossaryitem = [
         Text.rich(
           TextSpan(
             children: [
-              TextSpan(
-                text: "Facturación de los fotopolímeros: ",
-                style: TextStyle(fontSize: 17, color: Color(0xff004F9E)),
-              ),
+              TextSpan(text: "Facturación de los fotopolímeros: ", style: TextStyle(fontSize: 17, color: Color(0xff004F9E))),
               TextSpan(
                 text:
                     "Se llevará a cabo en la misma fecha de su elaboración y consignación dentro de la base de datos de PACKVISION SAS para su debido alistamiento; esto por temas de control de inventarios.",
@@ -572,10 +635,7 @@ final List<Glossaryitem> glossaryitem = [
         Text.rich(
           TextSpan(
             children: [
-              TextSpan(
-                text: "Duración de los fotopolímeros: ",
-                style: TextStyle(fontSize: 17, color: Color(0xff004F9E)),
-              ),
+              TextSpan(text: "Duración de los fotopolímeros: ", style: TextStyle(fontSize: 17, color: Color(0xff004F9E))),
               TextSpan(
                 text:
                     "Los estándares de cambio por desgaste de los fotopolímeros es con base en las películas que se imprimen, se constituyen a los 65.000 metros aproximadamente para poliésteres (PET), polipropilenos (BOPP) y para papel (KRAFT) se establecen 40.000 metros aproximadamente.",
@@ -594,10 +654,7 @@ final List<Glossaryitem> glossaryitem = [
         Text.rich(
           TextSpan(
             children: [
-              TextSpan(
-                text: "Costos adicionales en el proceso de impresión:  ",
-                style: TextStyle(fontSize: 17, color: Color(0xff004F9E)),
-              ),
+              TextSpan(text: "Costos adicionales en el proceso de impresión:  ", style: TextStyle(fontSize: 17, color: Color(0xff004F9E))),
               TextSpan(
                 text:
                     "Para los pedidos que tengan Pantones especiales, lacas, tintas con acabados especiales (fluorescentes, terminado metálico) tendrá un incremento hasta del 15% sobre el valor del empaque con base en la lista de precios. Sin embargo, se evaluará cada caso respectivamente calculando así el precio del empaque con respecto a cada tinta especial.",
@@ -681,8 +738,7 @@ final List<Glossaryitem> glossaryitem = [
             children: [
               TextSpan(text: "Empaques genéricos: ", style: TextStyle(fontSize: 17, color: Color(0xff004F9E))),
               TextSpan(
-                text:
-                    "El tiempo de entrega del empaque genérico con accesorios varía dependiendo del tipo y cantidades de cada uno.",
+                text: "El tiempo de entrega del empaque genérico con accesorios varía dependiendo del tipo y cantidades de cada uno.",
                 style: TextStyle(height: 2, fontSize: 15),
               ),
             ],
@@ -699,14 +755,8 @@ final List<Glossaryitem> glossaryitem = [
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)),
               ),
               children: [
-                Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Text("REFERENCIA", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Text("VENTA MÍNIMA", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                ),
+                Padding(padding: EdgeInsets.all(12), child: Text("REFERENCIA", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                Padding(padding: EdgeInsets.all(12), child: Text("VENTA MÍNIMA", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
               ],
             ),
             TableRow(
@@ -714,10 +764,7 @@ final List<Glossaryitem> glossaryitem = [
                 Padding(padding: EdgeInsets.all(12), child: Text("Referencias de 500g /340g/ 250g / 125g Doypack")),
                 Padding(
                   padding: EdgeInsets.all(12),
-                  child: Text(
-                    "La cantidad mínima de venta es de 50 unidades",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  child: Text("La cantidad mínima de venta es de 50 unidades", style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ],
             ),
@@ -725,31 +772,20 @@ final List<Glossaryitem> glossaryitem = [
               children: [
                 Padding(
                   padding: EdgeInsets.all(12),
-                  child: Text(
-                    "Referencias de 125g 4PRO y FLOWPACK o SACHET pequeños igual o menor a 30cm de repetición.",
-                  ),
+                  child: Text("Referencias de 125g 4PRO y FLOWPACK o SACHET pequeños igual o menor a 30cm de repetición."),
                 ),
                 Padding(
                   padding: EdgeInsets.all(12),
-                  child: Text(
-                    "La cantidad mínima de venta es de 100 unidades",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  child: Text("La cantidad mínima de venta es de 100 unidades", style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ],
             ),
             TableRow(
               children: [
+                Padding(padding: EdgeInsets.all(12), child: Text("Referencias de 1000g/2500g o cojines mayores a 30 cm de repetición.")),
                 Padding(
                   padding: EdgeInsets.all(12),
-                  child: Text("Referencias de 1000g/2500g o cojines mayores a 30 cm de repetición."),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Text(
-                    "La cantidad mínima de venta es de 30 unidades",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  child: Text("La cantidad mínima de venta es de 30 unidades", style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ],
             ),
@@ -758,13 +794,7 @@ final List<Glossaryitem> glossaryitem = [
         const SizedBox(height: 20),
         Table(
           border: TableBorder.all(color: Color(0xff052344), borderRadius: BorderRadius.circular(12)),
-          columnWidths: const {
-            0: FlexColumnWidth(3),
-            1: FlexColumnWidth(),
-            2: FlexColumnWidth(),
-            3: FlexColumnWidth(),
-            4: FlexColumnWidth(),
-          },
+          columnWidths: const {0: FlexColumnWidth(3), 1: FlexColumnWidth(), 2: FlexColumnWidth(), 3: FlexColumnWidth(), 4: FlexColumnWidth()},
           children: const [
             TableRow(
               decoration: BoxDecoration(
@@ -772,22 +802,10 @@ final List<Glossaryitem> glossaryitem = [
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)),
               ),
               children: [
-                Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Text("ACCESORIOS", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Text("50 a 500", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Text("501 a 1.000", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Text("1001 a 3.000", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                ),
+                Padding(padding: EdgeInsets.all(12), child: Text("ACCESORIOS", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                Padding(padding: EdgeInsets.all(12), child: Text("50 a 500", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                Padding(padding: EdgeInsets.all(12), child: Text("501 a 1.000", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                Padding(padding: EdgeInsets.all(12), child: Text("1001 a 3.000", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
                 Padding(
                   padding: EdgeInsets.all(12),
                   child: Text("3.001 a 10.000", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
@@ -904,13 +922,9 @@ final List<Glossaryitem> glossaryitem = [
         Text.rich(
           TextSpan(
             children: [
+              TextSpan(text: "Forma de pago:  ", style: TextStyle(fontSize: 17, color: Color(0xff004F9E), fontWeight: FontWeight.bold)),
               TextSpan(
-                text: "Forma de pago:  ",
-                style: TextStyle(fontSize: 17, color: Color(0xff004F9E), fontWeight: FontWeight.bold),
-              ),
-              TextSpan(
-                text:
-                    "Recibimos todos los medios de pago. Toda venta causa el 19% de impuesto de valor agregado I.V.A.",
+                text: "Recibimos todos los medios de pago. Toda venta causa el 19% de impuesto de valor agregado I.V.A.",
                 style: TextStyle(height: 2, fontSize: 15),
               ),
             ],
@@ -946,8 +960,7 @@ final List<Glossaryitem> glossaryitem = [
               TextSpan(text: "2.  ", style: TextStyle(fontSize: 17, color: Color(0xff004F9E))),
 
               TextSpan(
-                text:
-                    "La forma de pago para empaques genéricos se debe realizar en su totalidad antes de despachar el producto.",
+                text: "La forma de pago para empaques genéricos se debe realizar en su totalidad antes de despachar el producto.",
                 style: TextStyle(height: 2, fontSize: 15),
               ),
             ],
@@ -992,12 +1005,7 @@ final List<Glossaryitem> glossaryitem = [
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Medios de pago:",
-                  style: TextStyle(fontSize: 27, color: Color(0xff004F9E), fontWeight: FontWeight.bold),
-                ),
-              ],
+              children: [Text("Medios de pago:", style: TextStyle(fontSize: 27, color: Color(0xff004F9E), fontWeight: FontWeight.bold))],
             ),
             const SizedBox(height: 15),
             Row(
@@ -1107,10 +1115,7 @@ final List<Glossaryitem> glossaryitem = [
           ],
         ),
         const SizedBox(height: 20),
-        Text(
-          "Cuando el pago es realizado en dólares:",
-          style: TextStyle(fontSize: 30, color: Color(0xff004F9E), fontWeight: FontWeight.bold),
-        ),
+        Text("Cuando el pago es realizado en dólares:", style: TextStyle(fontSize: 30, color: Color(0xff004F9E), fontWeight: FontWeight.bold)),
         const SizedBox(height: 20),
         Table(
           border: TableBorder.all(color: Color(0xff052344), borderRadius: BorderRadius.circular(12)),
@@ -1133,24 +1138,12 @@ final List<Glossaryitem> glossaryitem = [
                   padding: EdgeInsets.all(12),
                   child: Text("Nombre del Banco", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
                 ),
+                Padding(padding: EdgeInsets.all(12), child: Text("Dirección", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                Padding(padding: EdgeInsets.all(12), child: Text("Código SWIFT", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                Padding(padding: EdgeInsets.all(12), child: Text("ABBA", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
                 Padding(
                   padding: EdgeInsets.all(12),
-                  child: Text("Dirección", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Text("Código SWIFT", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Text("ABBA", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Text(
-                    "Titular de la cuenta",
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
+                  child: Text("Titular de la cuenta", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
                 ),
                 Padding(
                   padding: EdgeInsets.all(12),
@@ -1170,10 +1163,7 @@ final List<Glossaryitem> glossaryitem = [
             ),
           ],
         ),
-        Text(
-          "Cuando el pago es realizado en euros:",
-          style: TextStyle(fontSize: 30, color: Color(0xff004F9E), fontWeight: FontWeight.bold),
-        ),
+        Text("Cuando el pago es realizado en euros:", style: TextStyle(fontSize: 30, color: Color(0xff004F9E), fontWeight: FontWeight.bold)),
         const SizedBox(height: 20),
         Table(
           border: TableBorder.all(color: Color(0xff052344), borderRadius: BorderRadius.circular(12)),
@@ -1198,35 +1188,20 @@ final List<Glossaryitem> glossaryitem = [
                   padding: EdgeInsets.all(12),
                   child: Text("Nombre del Banco", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Text("Dirección", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Text("Código SWIFT", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Text("IBAN", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                ),
+                Padding(padding: EdgeInsets.all(12), child: Text("Dirección", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                Padding(padding: EdgeInsets.all(12), child: Text("Código SWIFT", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                Padding(padding: EdgeInsets.all(12), child: Text("IBAN", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
                 Padding(
                   padding: EdgeInsets.all(12),
                   child: Text("Banco Beneficiario", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
                 ),
                 Padding(
                   padding: EdgeInsets.all(12),
-                  child: Text(
-                    "Cuenta del Beneficiario",
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
+                  child: Text("Cuenta del Beneficiario", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
                 ),
                 Padding(
                   padding: EdgeInsets.all(12),
-                  child: Text(
-                    "Titular de la cuenta",
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
+                  child: Text("Titular de la cuenta", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
                 ),
                 Padding(
                   padding: EdgeInsets.all(12),
@@ -1237,10 +1212,7 @@ final List<Glossaryitem> glossaryitem = [
             TableRow(
               children: [
                 Padding(padding: EdgeInsets.all(12), child: Text("Standard Chartered Bank Fráncfort")),
-                Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Text("Franklinstrasse 46-48\nFráncfort del Meno, Alemania"),
-                ),
+                Padding(padding: EdgeInsets.all(12), child: Text("Franklinstrasse 46-48\nFráncfort del Meno, Alemania")),
                 Padding(padding: EdgeInsets.all(12), child: Text("SCBLDEFX")),
                 Padding(padding: EdgeInsets.all(12), child: Text("DE78 5123 0500 0050 021005")),
                 Padding(padding: EdgeInsets.all(12), child: Text("Davivienda Internacional")),
@@ -1263,10 +1235,7 @@ final List<Glossaryitem> glossaryitem = [
         Text.rich(
           TextSpan(
             children: [
-              TextSpan(
-                text: "Exportaciones: ",
-                style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E)),
-              ),
+              TextSpan(text: "Exportaciones: ", style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E))),
               TextSpan(
                 text:
                     "Los precios son para valores en dólares y en euros, EXW Bogotá y todos los costos y gastos de la operación de la exportación van por cuenta del cliente. Se maneja todos los términos legales establecidos para esta clase de operaciones. No causa IVA, siempre y cuando el cliente anexe el documento DEX legal o certificados equivalentes expedidos por la entidad competente (DIAN).",
@@ -1305,8 +1274,7 @@ final List<Glossaryitem> glossaryitem = [
                 style: TextStyle(height: 2, fontSize: 15),
               ),
               TextSpan(
-                text:
-                    "vía WhatsApp al 317 868 91 25 o al correo electrónico del dominio @empaquespackvision.com del comercial que le atiende.",
+                text: "vía WhatsApp al 317 868 91 25 o al correo electrónico del dominio @empaquespackvision.com del comercial que le atiende.",
                 style: TextStyle(height: 2, fontSize: 15, color: Color(0xff004F9E), fontWeight: FontWeight.bold),
               ),
             ],
@@ -1490,10 +1458,7 @@ final List<Glossaryitem> glossaryitem = [
         Text.rich(
           TextSpan(
             children: [
-              TextSpan(
-                text: "Devoluciones: ",
-                style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E)),
-              ),
+              TextSpan(text: "Devoluciones: ", style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E))),
               TextSpan(
                 text:
                     "En el caso de solicitar devoluciones de dinero se hará dentro de los 15 días hábiles siguientes cumpliendo los requerimientos de PQRS y descontando los valores causados por artes, renders, Dummies, elaboración de diseño y otros que apliquen, la devolución será sustentada de acuerdo con la política legal implementada para tal fin.",
@@ -1568,13 +1533,9 @@ final List<Glossaryitem> glossaryitem = [
         Text.rich(
           TextSpan(
             children: [
+              TextSpan(text: "Consumidores: ", style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E))),
               TextSpan(
-                text: "Consumidores: ",
-                style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E)),
-              ),
-              TextSpan(
-                text:
-                    "Todo individuo o entidad que adquiere, utiliza o disfruta como destinatario final de bienes o servicios.",
+                text: "Todo individuo o entidad que adquiere, utiliza o disfruta como destinatario final de bienes o servicios.",
                 style: TextStyle(height: 2, fontSize: 15),
               ),
             ],
@@ -1588,8 +1549,7 @@ final List<Glossaryitem> glossaryitem = [
                 style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E)),
               ),
               TextSpan(
-                text:
-                    "Personas o entidades que producen, distribuyen, comercializan, venden o prestan servicios a los consumidores.",
+                text: "Personas o entidades que producen, distribuyen, comercializan, venden o prestan servicios a los consumidores.",
                 style: TextStyle(height: 2, fontSize: 15),
               ),
             ],
@@ -1672,10 +1632,7 @@ final List<Glossaryitem> glossaryitem = [
         Text.rich(
           TextSpan(
             children: [
-              TextSpan(
-                text: "3. Plazos: ",
-                style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E)),
-              ),
+              TextSpan(text: "3. Plazos: ", style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E))),
               TextSpan(
                 text:
                     "De acuerdo con la Ley 1480, se estipula un término de 15 días hábiles para productos no perecederos desde la fecha de compra para que el consumidor ejerza su derecho al retracto (devolución) del bien en las condiciones originales, aunque esto puede variar en caso de defectos.",
@@ -1702,10 +1659,7 @@ final List<Glossaryitem> glossaryitem = [
         Text.rich(
           TextSpan(
             children: [
-              TextSpan(
-                text: "5. Resolución: ",
-                style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E)),
-              ),
+              TextSpan(text: "5. Resolución: ", style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E))),
               TextSpan(
                 text:
                     "Una vez evaluada y aceptada la devolución, se procederá según lo establecido en la ley, que podría implicar la reparación del producto, su reemplazo, la rescisión del contrato o la devolución del dinero descontando los valores que apliquen.",
@@ -1729,8 +1683,7 @@ final List<Glossaryitem> glossaryitem = [
                 style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E)),
               ),
               TextSpan(
-                text:
-                    "Los proveedores tienen el derecho de recibir el pago acordado por los bienes y servicios que proporcionan.",
+                text: "Los proveedores tienen el derecho de recibir el pago acordado por los bienes y servicios que proporcionan.",
                 style: TextStyle(height: 2, fontSize: 15),
               ),
             ],
@@ -1744,8 +1697,7 @@ final List<Glossaryitem> glossaryitem = [
                 style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E)),
               ),
               TextSpan(
-                text:
-                    "Esperan ser tratados de manera justa y honesta por los consumidores, sin discriminación o abuso.",
+                text: "Esperan ser tratados de manera justa y honesta por los consumidores, sin discriminación o abuso.",
                 style: TextStyle(height: 2, fontSize: 15),
               ),
             ],
@@ -1773,8 +1725,7 @@ final List<Glossaryitem> glossaryitem = [
                 style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E)),
               ),
               TextSpan(
-                text:
-                    "Pueden rehusar el servicio bajo ciertas condiciones, que vayan en disonancia según las leyes del país.",
+                text: "Pueden rehusar el servicio bajo ciertas condiciones, que vayan en disonancia según las leyes del país.",
                 style: TextStyle(height: 2, fontSize: 15),
               ),
             ],
@@ -1839,8 +1790,7 @@ final List<Glossaryitem> glossaryitem = [
                 style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E)),
               ),
               TextSpan(
-                text:
-                    "Deben utilizar los productos y servicios según las instrucciones y no hacer un uso indebido de ellos.",
+                text: "Deben utilizar los productos y servicios según las instrucciones y no hacer un uso indebido de ellos.",
                 style: TextStyle(height: 2, fontSize: 15),
               ),
             ],
@@ -1854,8 +1804,7 @@ final List<Glossaryitem> glossaryitem = [
                 style: TextStyle(fontWeight: FontWeight.bold, height: 2, fontSize: 17, color: Color(0xff004F9E)),
               ),
               TextSpan(
-                text:
-                    "Deben adherirse a las condiciones de cualquier garantía y seguir los procedimientos adecuados para las reclamaciones.",
+                text: "Deben adherirse a las condiciones de cualquier garantía y seguir los procedimientos adecuados para las reclamaciones.",
                 style: TextStyle(height: 2, fontSize: 15),
               ),
             ],

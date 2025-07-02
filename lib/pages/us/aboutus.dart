@@ -50,7 +50,9 @@ class _AboutUsState extends State<AboutUs> {
           ValueListenableBuilder<bool>(
             valueListenable: videoBlurNotifier,
             builder: (context, isBlur, _) {
-              return Positioned.fill(child: HtmlBackgroundVideo(src: 'assets/assets/videos/us/backgroundus.webm', blur: isBlur, loop: true));
+              return Positioned.fill(
+                child: HtmlBackgroundVideo(src: 'assets/assets/videos/us/backgroundus.webm', blur: isBlur, loop: true, showControls: true),
+              );
             },
           ),
 
@@ -93,7 +95,7 @@ class _AboutUsState extends State<AboutUs> {
             controller: _scrollController,
             child: Column(
               children: [
-                SizedBox(height: screenHeight * 2),
+                SizedBox(height: screenHeight * 2.8),
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 20),
                   width: double.infinity,

@@ -65,52 +65,61 @@ class _HeadquartersState extends State<Headquarters> {
         const SizedBox(height: 50),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(cardHQ.length, (int index) {
-              return MouseRegion(
-                cursor: SystemMouseCursors.click,
+          child: ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: cardHQ.length,
+            itemBuilder: (context, index) {
+              final sede = cardHQ[index];
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12.0),
                 child: GestureDetector(
                   onTap: () {
-                    _showHeadquarterDialog(context, cardHQ[index]);
+                    _showHeadquarterDialog(context, sede);
                   },
                   child: Container(
-                    height: screenWidth * 0.20,
-                    width: screenWidth * 0.25,
                     decoration: BoxDecoration(
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(width: 3, color: Colors.black54),
-                      image: DecorationImage(image: AssetImage(cardHQ[index].img)),
+                      boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 5, offset: Offset(0, 2))],
                     ),
-                    child: Stack(
+                    padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 120),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Positioned(
-                          child: Align(
-                            alignment: Alignment.topCenter,
-                            child: Text(cardHQ[index].name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenWidth * 0.02)),
-                          ),
+                        Column(
+                          children: [
+                            Text("${sede.name}.", style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenWidth * 0.03, 30))),
+                            SizedBox(height: 8),
+                            Text("Encuentranos", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: min(screenWidth * 0.025, 25))),
+                          ],
                         ),
-                        Positioned(
-                          bottom: 0,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Icon(CupertinoIcons.location_fill, color: Theme.of(context).primaryColor, size: screenWidth * 0.02),
-                                SizedBox(width: screenWidth * 0.006),
-                                Text("Encuentranos!", style: TextStyle(fontSize: screenWidth * 0.015)),
-                              ],
-                            ),
-                          ),
-                        ),
+                        SizedBox(height: 120, child: Image.asset(sede.img)),
                       ],
                     ),
+                    // Column(
+                    //   crossAxisAlignment: CrossAxisAlignment.start,
+                    //   children: [
+                    //     // Título
+                    //     Text(sede.name, style: TextStyle(fontSize: screenWidth * 0.022, fontWeight: FontWeight.bold, color: Colors.black87)),
+                    //     SizedBox(height: 8),
+                    //     // Contenido
+                    //     Row(
+                    //       children: [
+                    //         Icon(CupertinoIcons.location_fill, color: Theme.of(context).primaryColor, size: screenWidth * 0.018),
+                    //         SizedBox(width: 8),
+                    //         Text("Encuéntranos!", style: TextStyle(fontSize: screenWidth * 0.016, color: Colors.black54)),
+                    //       ],
+                    //     ),
+                    //   ],
+                    // ),
                   ),
                 ),
               );
-            }),
+            },
           ),
         ),
+
         const SizedBox(height: 100),
       ],
     );

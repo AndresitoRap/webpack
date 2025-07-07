@@ -1,22 +1,37 @@
+import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_3d_controller/flutter_3d_controller.dart';
 import 'package:lottie/lottie.dart';
+import 'package:webpack/class/categories.dart';
 import 'package:webpack/class/products.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
 
 class DetailsProduct extends StatefulWidget {
   final Product product;
-  const DetailsProduct({super.key, required this.product});
+  final List<Product>? allProducts;
+  const DetailsProduct({super.key, required this.product, this.allProducts});
 
   @override
   State<DetailsProduct> createState() => _DetailsProductState();
 }
 
 class _DetailsProductState extends State<DetailsProduct> {
+  //Lista
+  late List<Terminado> terminadosDisponibles;
+  Terminado? selectedTerminado;
+  late Product currentProduct;
+
+  List<Terminado> findTerminadosForProduct(List<Product> products) {
+    final subcat = products.first.subcategorie;
+    final cat = products.first.categoria;
+
+    return productSections['${cat.name}/${subcat.title}'] ?? [];
+  }
+
   // Variables a escoger
   NamedColor? selectedColor;
   String? hoveredColor;
@@ -26,6 +41,27 @@ class _DetailsProductState extends State<DetailsProduct> {
   String? selectedValve;
   String? selectedFinish;
   String? selectedStructure;
+
+  double getPrecioSeleccionado() {
+    if (selectedTerminado != null && selectedStructure != null && selectedGramaje != null) {
+      final estructura = selectedTerminado!.structures.firstWhere(
+        (e) => e.name == selectedStructure,
+        orElse: () => selectedTerminado!.structures.first,
+      );
+
+      final ability = estructura.ability.firstWhere((a) => a.name == selectedGramaje, orElse: () => estructura.ability.first);
+
+      // Buscar el producto coincidente
+      final matchingProduct = ability.product.firstWhere(
+        (p) => p.name == widget.product.name && p.subcategorie.title == widget.product.subcategorie.title,
+        orElse: () => widget.product,
+      );
+
+      return matchingProduct.price;
+    }
+
+    return widget.product.price;
+  }
 
   // Modelo
   late Flutter3DController controllerModel;
@@ -46,13 +82,23 @@ class _DetailsProductState extends State<DetailsProduct> {
     super.initState();
     controllerModel = Flutter3DController();
     controllerFinally = Flutter3DController();
-    _modelLoaded = true;
+    _modelLoaded = false; // Cambiado a false hasta que el modelo se cargue
     _scrollController =
         ScrollController()..addListener(() {
           setState(() {
             _scrollOffset = _scrollController.offset;
           });
         });
+
+    currentProduct = widget.product;
+    final todosLosProductos = widget.allProducts ?? [widget.product];
+    terminadosDisponibles = findTerminadosForProduct(todosLosProductos);
+
+    // Inicializar con el terminado "Mate" si está disponible
+    if (terminadosDisponibles.isNotEmpty) {
+      selectedTerminado = terminadosDisponibles.firstWhere((t) => t.name.toLowerCase() == "mate", orElse: () => terminadosDisponibles.first);
+      selectedFinish = selectedTerminado!.name;
+    }
   }
 
   void _hideTutorial() {
@@ -72,7 +118,8 @@ class _DetailsProductState extends State<DetailsProduct> {
   // Función para sincronizar el modelo final
   void _updateFinalModel() {
     if (_modelLoaded && selectedColor != null && selectedFinish != null && selectedPeelstick != null) {
-      final suffix = _getFinishSuffix(selectedFinish, widget.product);
+      final suffix = getFinishSuffix(selectedTerminado!);
+
       final textureName = "${selectedColor!.name.replaceAll(" ", "_")}_$suffix";
 
       // Almacenar texturas pendientes
@@ -225,30 +272,14 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                           children: [
                                                             Text(
-                                                              product.name,
+                                                              product.subcategorie.title,
                                                               style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold),
                                                             ),
                                                             const SizedBox(height: 10),
-                                                            Row(
-                                                              mainAxisSize: MainAxisSize.min,
-                                                              children:
-                                                                  product.colors.map((c) {
-                                                                    return Container(
-                                                                      margin: const EdgeInsets.only(left: 2, right: 10),
-                                                                      width: 20,
-                                                                      height: 20,
-                                                                      decoration: BoxDecoration(
-                                                                        border: Border.all(color: Colors.white, width: 1),
-                                                                        color: c.color,
-                                                                        shape: BoxShape.circle,
-                                                                      ),
-                                                                    );
-                                                                  }).toList(),
-                                                            ),
-                                                            const SizedBox(height: 20),
+
                                                             Text(
                                                               textAlign: TextAlign.justify,
-                                                              product.description,
+                                                              product.subcategorie.infoBuild,
                                                               style: TextStyle(color: Colors.white, fontSize: 16),
                                                             ),
                                                           ],
@@ -260,7 +291,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                               ),
                                             ),
                                           ),
-                                          Positioned(top: -20, left: -600, child: Image.asset(widget.product.image, width: 1200)),
+                                          Positioned(top: -20, left: -600, child: Image.asset(product.subcategorie.img, width: 1200)),
                                         ],
                                       ),
                                     ],
@@ -284,11 +315,12 @@ class _DetailsProductState extends State<DetailsProduct> {
                                           child: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Center(child: Image.asset(widget.product.image, fit: BoxFit.cover)),
+                                              Center(child: Image.asset(product.subcategorie.img, fit: BoxFit.cover)),
                                               SizedBox(height: 20),
                                               Text(
-                                                widget.product.name,
+                                                product.subcategorie.title,
                                                 style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold),
                                               ),
                                               const SizedBox(height: 10),
@@ -311,7 +343,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                               const SizedBox(height: 20),
                                               Text(
                                                 textAlign: TextAlign.justify,
-                                                product.description,
+                                                product.subcategorie.infoBuild,
                                                 style: TextStyle(color: Colors.white, fontSize: 16),
                                               ),
                                             ],
@@ -330,7 +362,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                     height: 50,
                     width: double.infinity,
                     decoration: BoxDecoration(border: Border.symmetric(horizontal: BorderSide(color: Colors.black26, width: 2))),
-                    child: Center(child: Text("Escoge tu ${product.name}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20))),
+                    child: Center(child: Text("Crea tu ${product.subcategorie.title}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20))),
                   ),
                   SizedBox(height: 50),
                   Padding(
@@ -345,65 +377,24 @@ class _DetailsProductState extends State<DetailsProduct> {
                           height: 600,
                           clipBehavior: Clip.antiAlias,
                           decoration: BoxDecoration(borderRadius: BorderRadius.circular(32)),
-                          child:
-                              product.categoria.name == "EcoBag"
-                                  ? Stack(
-                                    fit: StackFit.expand,
-                                    children: [
-                                      Container(color: Color.fromARGB(255, 244, 246, 246)),
-                                      BackdropFilter(filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40), child: Container(color: Colors.transparent)),
-                                      Center(
-                                        child: SizedBox(
-                                          width: min(screenWidth, 2260),
-                                          child: Padding(
-                                            padding: EdgeInsets.symmetric(vertical: 20, horizontal: screenWidth * 0.055),
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(30),
-                                              child: SizedBox(
-                                                width: double.infinity,
-                                                height: min(screenHeight * 0.8, 1100),
-                                                child: ValueListenableBuilder<bool>(
-                                                  valueListenable: videoBlurNotifier,
-                                                  builder: (context, isBlur, _) {
-                                                    return Stack(
-                                                      fit: StackFit.expand,
-                                                      children: [
-                                                        Container(color: Color.fromARGB(255, 244, 246, 246)),
-                                                        Center(
-                                                          child: HtmlBackgroundVideo(
-                                                            src: 'assets/assets/videos/ecobag/ecobag.webm',
-                                                            blur: isBlur,
-                                                            loop: true,
-                                                            showControls: true,
-                                                            fit: BoxFit.contain,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                  : ClipRRect(
-                                    borderRadius: BorderRadius.circular(32),
-                                    child: ValueListenableBuilder<bool>(
-                                      valueListenable: videoBlurNotifier,
-                                      builder: (context, isBlur, _) {
-                                        return HtmlBackgroundVideo(
-                                          src: 'assets/videos/smartbag/smartbag_products.webm',
-                                          blur: isBlur,
-                                          loop: true,
-                                          showControls: true,
-                                          fit: BoxFit.cover,
-                                        );
-                                      },
-                                    ),
-                                  ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(32),
+                            child: ValueListenableBuilder<bool>(
+                              valueListenable: videoBlurNotifier,
+                              builder: (context, isBlur, _) {
+                                return HtmlBackgroundVideo(
+                                  src:
+                                      product.categoria.name == "SmartBag"
+                                          ? 'assets/videos/smartbag/smartbag_products.webm'
+                                          : 'assets/assets/videos/ecobag/ecobag.webm',
+                                  blur: isBlur,
+                                  loop: true,
+                                  showControls: true,
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                            ),
+                          ),
                         ),
                         SizedBox(height: 40),
                         if (screenWidth >= 900)
@@ -429,7 +420,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                 "Modelo 3D",
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
-                                                  color: Theme.of(context).primaryColor,
+                                                  color: categorie.name == "SmartBag" ? const Color(0xFF004F9E) : const Color(0xff4b8d2c),
                                                   fontSize: min(screenWidth * 0.04, 25),
                                                 ),
                                               ),
@@ -446,7 +437,10 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                     "- Junta o separa los dedos (pellizcar o expandir) para hacer zoom.",
                                                 child: Icon(
                                                   CupertinoIcons.question_circle_fill,
-                                                  color: Theme.of(context).colorScheme.tertiary,
+                                                  color:
+                                                      categorie.name == "SmartBag"
+                                                          ? const Color.fromARGB(255, 0, 49, 98)
+                                                          : const Color.fromARGB(255, 42, 79, 24),
                                                   size: 18,
                                                 ),
                                               ),
@@ -475,7 +469,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                           selectedColor = product.colors.first;
                                                         }
                                                         if (selectedFinish == null) {
-                                                          selectedFinish = product.finishes.first;
+                                                          selectedFinish = terminadosDisponibles.first.name;
                                                         }
                                                         if (selectedPeelstick == null) {
                                                           selectedPeelstick = peelStickOptions.first;
@@ -485,7 +479,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                             .getAvailableTextures()
                                                             .then((textures) {
                                                               final textureName =
-                                                                  "${selectedColor!.name.replaceAll(" ", "_")}_${_getFinishSuffix(selectedFinish, product)}";
+                                                                  "${selectedColor!.name.replaceAll(" ", "_")}_${getFinishSuffix(selectedTerminado!)}";
                                                               print("Texturas disponibles para modelo inicial: $textures");
                                                               if (textures.contains(textureName)) {
                                                                 controllerModel.setTexture(textureName: textureName);
@@ -538,272 +532,227 @@ class _DetailsProductState extends State<DetailsProduct> {
                                         padding: const EdgeInsets.all(30),
                                         width: screenWidth,
                                         decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(22)),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            ChooseBagTitle(text1: "Color.", text2: "Empecemos escogiendo tú color.", product: product),
-                                            const SizedBox(height: 10),
-                                            Text(() {
-                                              if (hoveredColor != null) {
-                                                return "Color - $hoveredColor";
-                                              }
-                                              if (selectedColor != null) {
-                                                return "Color - ${selectedColor!.name}";
-                                              }
-                                              return "Color";
-                                            }(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                                            const SizedBox(height: 10),
-                                            Wrap(
-                                              spacing: 10,
-                                              runSpacing: 10,
-                                              children:
-                                                  product.colors.map((c) {
-                                                    final isSelected = selectedColor == c;
-                                                    return MouseRegion(
-                                                      onEnter: (_) {
-                                                        setState(() {
-                                                          hoveredColor = c.name;
-                                                        });
-                                                      },
-                                                      onExit: (_) {
-                                                        setState(() {
-                                                          hoveredColor = null;
-                                                        });
-                                                      },
-                                                      cursor: SystemMouseCursors.click,
-                                                      child: GestureDetector(
-                                                        onTap: () {
-                                                          String suffix = _getFinishSuffix(selectedFinish, product);
-                                                          setState(() {
-                                                            selectedColor = c;
-                                                          });
-                                                          if (_modelLoaded) {
-                                                            controllerModel
-                                                                .getAvailableTextures()
-                                                                .then((textures) {
-                                                                  final textureName = "${c.name.replaceAll(" ", "_")}_$suffix";
-                                                                  print("Texturas disponibles para modelo inicial: $textures");
-                                                                  if (textures.contains(textureName)) {
-                                                                    controllerModel.setTexture(textureName: textureName);
-                                                                  } else {
-                                                                    print("Textura no disponible: $textureName");
-                                                                  }
-                                                                })
-                                                                .catchError((error) {
-                                                                  print("Error al obtener texturas disponibles: $error");
-                                                                });
-                                                            _updateFinalModel();
+                                        child: FormCreateBag(
+                                          product: product,
+                                          terminadosDisponibles: terminadosDisponibles,
+                                          selectedTerminado: selectedTerminado,
+                                          selectedStructure: selectedStructure,
+                                          selectedGramaje: selectedGramaje,
+                                          selectedColor: selectedColor,
+                                          selectedPeelstick: selectedPeelstick,
+                                          hoveredPS: hoveredPS,
+                                          onHoverPS: (value) => {},
+                                          selectedValve: selectedValve,
+                                          selectedFinish: selectedFinish,
+                                          controllerModel: controllerModel,
+                                          modelLoaded: _modelLoaded,
+                                          onSelectTerminado: (t) {
+                                            setState(() {
+                                              selectedTerminado = t;
+                                              selectedStructure = null; // Reiniciar estructura
+                                              selectedGramaje = null; // Reiniciar gramaje
+                                              selectedColor = null; // Reiniciar color
+                                              selectedPeelstick = null; // Reiniciar peel stick
+                                              selectedValve = null; // Reiniciar válvula
+                                              selectedFinish = t.name; // Actualizar terminado
+                                              currentProduct = widget.product; // Reiniciar producto
+
+                                              // Seleccionar el primer color disponible si hay estructuras y gramajes
+                                              if (selectedTerminado != null && t.structures.isNotEmpty) {
+                                                final estructura = t.structures.first;
+                                                if (estructura.ability.isNotEmpty) {
+                                                  final ability = estructura.ability.first;
+                                                  final producto = ability.product.firstWhere(
+                                                    (p) => p.subcategorie.title == widget.product.subcategorie.title,
+                                                    orElse: () => widget.product,
+                                                  );
+
+                                                  currentProduct = producto;
+                                                  selectedColor = producto.colors.isNotEmpty ? producto.colors.first : null;
+
+                                                  // Aplicar la textura del primer color disponible
+                                                  if (_modelLoaded && selectedColor != null) {
+                                                    final suffix = getFinishSuffix(selectedTerminado!);
+                                                    final textureName = "${selectedColor!.name.replaceAll(" ", "_")}_$suffix";
+
+                                                    controllerModel
+                                                        .getAvailableTextures()
+                                                        .then((textures) {
+                                                          print("Texturas disponibles para modelo inicial: $textures");
+                                                          if (textures.contains(textureName)) {
+                                                            controllerModel.setTexture(textureName: textureName);
+                                                          } else {
+                                                            print("Textura no disponible: $textureName");
                                                           }
-                                                        },
-                                                        child: Column(
-                                                          mainAxisSize: MainAxisSize.min,
-                                                          children: [
-                                                            Container(
-                                                              width: 40,
-                                                              height: 40,
-                                                              decoration: BoxDecoration(
-                                                                shape: BoxShape.circle,
-                                                                color: c.color,
-                                                                border: Border.all(
-                                                                  color:
-                                                                      isSelected ? Theme.of(context).colorScheme.primary : Colors.grey.withAlpha(100),
-                                                                  width: isSelected ? 2 : 1,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }).toList(),
-                                            ),
-                                            const SizedBox(height: 30),
-                                            if (product.structures.isNotEmpty) ...[
-                                              ChooseBagTitle(text1: "Estructura.", text2: "La resistencia de tú empaque.", product: product),
-                                              ...product.structures.map((structure) {
-                                                return Selected(
-                                                  selected: selectedStructure,
-                                                  label: structure,
-                                                  onTap: (value) {
-                                                    setState(() {
-                                                      selectedStructure = value;
-                                                    });
-                                                    _updateFinalModel();
-                                                  },
+                                                        })
+                                                        .catchError((error) {
+                                                          print("Error al obtener texturas disponibles: $error");
+                                                        });
+                                                  }
+                                                }
+                                              }
+                                            });
+
+                                            _updateFinalModel();
+                                          },
+
+                                          onSelectStructure: (value) {
+                                            setState(() {
+                                              selectedStructure = value;
+                                              selectedGramaje = null; // Reiniciar gramaje
+                                              selectedColor = null; // Reiniciar color
+                                              selectedPeelstick = peelStickOptions.isNotEmpty ? peelStickOptions.first : null; // Reiniciar peel stick
+                                              selectedValve =
+                                                  widget.product.valves.isNotEmpty ? widget.product.valves.first : null; // Reiniciar válvula
+                                              currentProduct = widget.product; // Reiniciar producto
+                                            });
+                                            _updateFinalModel();
+                                          },
+
+                                          onSelectGramaje: (value) {
+                                            setState(() {
+                                              selectedGramaje = value;
+
+                                              if (selectedTerminado != null && selectedStructure != null) {
+                                                final estructura = selectedTerminado!.structures.firstWhere(
+                                                  (e) => e.name == selectedStructure,
+                                                  orElse: () => selectedTerminado!.structures.first,
                                                 );
-                                              }),
-                                            ],
-                                            const SizedBox(height: 30),
-                                            ChooseBagTitle(text1: "Gramaje.", text2: "Lo grueso de tú empaque.", product: product),
-                                            Selected(
-                                              selected: selectedGramaje,
-                                              label: "500G",
-                                              onTap: (value) {
-                                                setState(() {
-                                                  selectedGramaje = value;
-                                                });
-                                                _updateFinalModel();
-                                              },
-                                            ),
-                                            Selected(
-                                              selected: selectedGramaje,
-                                              label: "250G",
-                                              onTap: (value) {
-                                                setState(() {
-                                                  selectedGramaje = value;
-                                                });
-                                                _updateFinalModel();
-                                              },
-                                            ),
-                                            Selected(
-                                              selected: selectedGramaje,
-                                              label: "125G",
-                                              onTap: (value) {
-                                                setState(() {
-                                                  selectedGramaje = value;
-                                                });
-                                                _updateFinalModel();
-                                              },
-                                            ),
-                                            if (product.subcategorie.enabledPS)
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  const SizedBox(height: 30),
-                                                  ChooseBagTitle(text1: "Peel Stick.", text2: "El accesorio perfecto.", product: product),
-                                                  const SizedBox(height: 10),
-                                                  Text(() {
-                                                    if (hoveredPS != null) {
-                                                      return hoveredPS == "Sin Peel Stick" ? "Sin Peel Stick" : "Color - $hoveredPS";
-                                                    }
-                                                    if (selectedPeelstick != null) {
-                                                      return selectedPeelstick!.name == "Sin Peel Stick"
-                                                          ? "Sin Peel Stick"
-                                                          : "Color - ${selectedPeelstick!.name}";
-                                                    }
-                                                    return "Color";
-                                                  }(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                                                  const SizedBox(height: 10),
-                                                  Wrap(
-                                                    spacing: 10,
-                                                    runSpacing: 10,
-                                                    children:
-                                                        peelStickOptions.map((option) {
-                                                          final isSelected = selectedPeelstick == option;
-                                                          return MouseRegion(
-                                                            onEnter: (_) {
-                                                              setState(() {
-                                                                hoveredPS = option.name;
-                                                              });
-                                                            },
-                                                            onExit: (_) {
-                                                              setState(() {
-                                                                hoveredPS = null;
-                                                              });
-                                                            },
-                                                            cursor: SystemMouseCursors.click,
-                                                            child: GestureDetector(
-                                                              onTap: () {
-                                                                setState(() {
-                                                                  selectedPeelstick = option;
-                                                                });
-                                                                if (_modelLoaded) {
-                                                                  controllerModel
-                                                                      .getAvailableTextures()
-                                                                      .then((textures) {
-                                                                        print("Texturas disponibles para modelo inicial: $textures");
-                                                                        if (textures.contains(option.abbreviation)) {
-                                                                          controllerModel.setTexture(textureName: option.abbreviation);
-                                                                        } else {
-                                                                          print("Textura de PeelStick no disponible: ${option.abbreviation}");
-                                                                        }
-                                                                      })
-                                                                      .catchError((error) {
-                                                                        print("Error al obtener texturas disponibles: $error");
-                                                                      });
-                                                                  _updateFinalModel();
-                                                                }
-                                                              },
-                                                              child: Column(
-                                                                mainAxisSize: MainAxisSize.min,
-                                                                children: [
-                                                                  Container(
-                                                                    width: 40,
-                                                                    height: 40,
-                                                                    decoration: BoxDecoration(
-                                                                      shape: BoxShape.circle,
-                                                                      color: option.name == "Sin Peel Stick" ? Colors.transparent : option.color,
-                                                                      border: Border.all(
-                                                                        color:
-                                                                            isSelected
-                                                                                ? Theme.of(context).colorScheme.primary
-                                                                                : Colors.grey.withAlpha(100),
-                                                                        width: isSelected ? 2 : 1,
-                                                                      ),
-                                                                    ),
-                                                                    child:
-                                                                        option.name == "Sin Peel Stick"
-                                                                            ? Center(child: Icon(Icons.block, size: 20, color: Colors.red))
-                                                                            : null,
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          );
-                                                        }).toList(),
-                                                  ),
-                                                ],
-                                              ),
-                                            const SizedBox(height: 30),
-                                            if (product.valves.isNotEmpty) ...[
-                                              ChooseBagTitle(text1: "Valvula.", text2: "El respiro a tú empaque.", product: product),
-                                              ...product.valves.map((valve) {
-                                                return Selected(
-                                                  selected: selectedValve,
-                                                  label: valve,
-                                                  onTap: (value) {
-                                                    setState(() {
-                                                      selectedValve = value;
-                                                    });
-                                                    _updateFinalModel();
-                                                  },
+
+                                                final ability = estructura.ability.firstWhere(
+                                                  (a) => a.name == selectedGramaje,
+                                                  orElse: () => estructura.ability.first,
                                                 );
-                                              }),
-                                            ],
-                                            if (product.finishes.isNotEmpty) ...[
-                                              ChooseBagTitle(text1: "Terminación.", text2: "El acabado a tú empaque.", product: product),
-                                              ...product.finishes.map((finish) {
-                                                return Selected(
-                                                  selected: selectedFinish,
-                                                  label: finish,
-                                                  onTap: (value) {
-                                                    setState(() {
-                                                      selectedFinish = value;
-                                                    });
-                                                    if (_modelLoaded) {
-                                                      String suffix = _getFinishSuffix(selectedFinish, product);
-                                                      controllerModel
-                                                          .getAvailableTextures()
-                                                          .then((textures) {
-                                                            final textureName = "${selectedColor?.name}_$suffix";
-                                                            print("Texturas disponibles para modelo inicial: $textures");
-                                                            if (textures.contains(textureName)) {
-                                                              controllerModel.setTexture(textureName: textureName);
-                                                            } else {
-                                                              print("Textura no disponible: $textureName");
-                                                            }
-                                                          })
-                                                          .catchError((error) {
-                                                            print("Error al obtener texturas disponibles: $error");
-                                                          });
-                                                      _updateFinalModel();
-                                                    }
-                                                  },
+
+                                                final producto = ability.product.firstWhere(
+                                                  (p) => p.subcategorie.title == widget.product.subcategorie.title,
+                                                  orElse: () => widget.product,
                                                 );
-                                              }),
-                                            ],
-                                          ],
+
+                                                currentProduct = producto;
+
+                                                // Seleccionar el primer color disponible para el producto
+                                                selectedColor = producto.colors.isNotEmpty ? producto.colors.first : null;
+
+                                                // Aplicar la nueva textura al modelo inicial
+                                                if (_modelLoaded && selectedColor != null && selectedTerminado != null) {
+                                                  final suffix = getFinishSuffix(selectedTerminado!);
+                                                  final textureName = "${selectedColor!.name.replaceAll(" ", "_")}_$suffix";
+
+                                                  controllerModel
+                                                      .getAvailableTextures()
+                                                      .then((textures) {
+                                                        print("Texturas disponibles para modelo inicial: $textures");
+                                                        if (textures.contains(textureName)) {
+                                                          controllerModel.setTexture(textureName: textureName);
+                                                        } else {
+                                                          print("Textura no disponible: $textureName");
+                                                        }
+                                                      })
+                                                      .catchError((error) {
+                                                        print("Error al obtener texturas disponibles: $error");
+                                                      });
+                                                }
+                                              }
+                                            });
+
+                                            _updateFinalModel();
+                                          },
+
+                                          onSelectColor: (value) {
+                                            setState(() {
+                                              selectedColor = value;
+
+                                              if (_modelLoaded && selectedTerminado != null) {
+                                                final suffix = getFinishSuffix(selectedTerminado!);
+                                                final textureName = "${value.name.replaceAll(" ", "_")}_$suffix";
+
+                                                controllerModel
+                                                    .getAvailableTextures()
+                                                    .then((textures) {
+                                                      print("Texturas disponibles para modelo inicial: $textures");
+                                                      if (textures.contains(textureName)) {
+                                                        controllerModel.setTexture(textureName: textureName);
+                                                      } else {
+                                                        print("Textura no disponible: $textureName");
+                                                      }
+                                                    })
+                                                    .catchError((error) {
+                                                      print("Error al obtener texturas disponibles: $error");
+                                                    });
+                                              }
+                                            });
+
+                                            _updateFinalModel();
+                                          },
+
+                                          onSelectPeelstick: (value) {
+                                            setState(() {
+                                              selectedPeelstick = value;
+
+                                              if (_modelLoaded && selectedColor != null && selectedTerminado != null) {
+                                                final suffix = getFinishSuffix(selectedTerminado!);
+                                                final textureName = "${selectedColor!.name.replaceAll(" ", "_")}_$suffix";
+
+                                                controllerModel
+                                                    .getAvailableTextures()
+                                                    .then((textures) {
+                                                      print("Texturas disponibles para modelo inicial: $textures");
+                                                      if (textures.contains(textureName)) {
+                                                        controllerModel.setTexture(textureName: textureName);
+                                                      } else {
+                                                        print("Textura no disponible: $textureName");
+                                                      }
+                                                      if (textures.contains(value.abbreviation)) {
+                                                        Future.delayed(Duration(milliseconds: 100), () {
+                                                          controllerModel.setTexture(textureName: value.abbreviation);
+                                                        });
+                                                      } else {
+                                                        print("Textura de PeelStick no disponible: ${value.abbreviation}");
+                                                      }
+                                                    })
+                                                    .catchError((error) {
+                                                      print("Error al obtener texturas disponibles: $error");
+                                                    });
+                                              }
+                                            });
+
+                                            _updateFinalModel();
+                                          },
+
+                                          onSelectValve: (value) {
+                                            setState(() {
+                                              selectedValve = value;
+                                            });
+                                            _updateFinalModel();
+                                          },
+
+                                          onSelectFinish: (value) {
+                                            setState(() {
+                                              selectedFinish = value;
+
+                                              if (_modelLoaded && selectedColor != null && selectedTerminado != null) {
+                                                final suffix = getFinishSuffix(selectedTerminado!);
+                                                final textureName = "${selectedColor!.name.replaceAll(" ", "_")}_$suffix";
+
+                                                controllerModel
+                                                    .getAvailableTextures()
+                                                    .then((textures) {
+                                                      print("Texturas disponibles para modelo inicial: $textures");
+                                                      if (textures.contains(textureName)) {
+                                                        controllerModel.setTexture(textureName: textureName);
+                                                      } else {
+                                                        print("Textura no disponible: $textureName");
+                                                      }
+                                                    })
+                                                    .catchError((error) {
+                                                      print("Error al obtener texturas disponibles: $error");
+                                                    });
+                                              }
+                                            });
+
+                                            _updateFinalModel();
+                                          },
                                         ),
                                       ),
                                     ),
@@ -816,6 +765,32 @@ class _DetailsProductState extends State<DetailsProduct> {
                           // Celular
                           Column(
                             children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "Modelo 3D",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: min(screenWidth * 0.04, 25),
+                                    ),
+                                  ),
+                                  SizedBox(width: 5),
+                                  Tooltip(
+                                    message:
+                                        "🖱️ En computador:\n"
+                                        "- Haz clic izquierdo y mantén presionado mientras mueves el ratón para girar el modelo.\n"
+                                        "- Usa la rueda del ratón para hacer zoom (adelante para acercar, atrás para alejar).\n"
+                                        "- Presiona Shift y haz clic izquierdo para mover el modelo sin girarlo.\n\n"
+                                        "📱 En tablet o celular:\n"
+                                        "- Usa un dedo para girar el modelo.\n"
+                                        "- Usa dos dedos para moverlo de posición.\n"
+                                        "- Junta o separa los dedos (pellizcar o expandir) para hacer zoom.",
+                                    child: Icon(CupertinoIcons.question_circle_fill, color: Theme.of(context).colorScheme.tertiary, size: 18),
+                                  ),
+                                ],
+                              ),
                               SizedBox(
                                 height: 400,
                                 child: Stack(
@@ -829,14 +804,15 @@ class _DetailsProductState extends State<DetailsProduct> {
                                         autoRotate: true,
                                         gestureDetector: true,
                                         selectedValve: selectedValve,
-                                        onLoad: (String _) async {
+                                        onLoad: (String _) {
                                           setState(() {
                                             if (selectedColor == null) {
                                               selectedColor = product.colors.first;
                                             }
-                                            if (selectedFinish == null) {
-                                              selectedFinish = product.finishes.first;
+                                            if (selectedFinish == null && terminadosDisponibles.isNotEmpty) {
+                                              selectedFinish = terminadosDisponibles.first.name;
                                             }
+
                                             if (selectedPeelstick == null) {
                                               selectedPeelstick = peelStickOptions.first;
                                             }
@@ -844,14 +820,23 @@ class _DetailsProductState extends State<DetailsProduct> {
                                             controllerModel
                                                 .getAvailableTextures()
                                                 .then((textures) {
+                                                  if (selectedColor == null || selectedTerminado == null || selectedPeelstick == null) {
+                                                    print(
+                                                      "❌ Valores nulos detectados: selectedColor=$selectedColor, selectedTerminado=$selectedTerminado, selectedPeelstick=$selectedPeelstick",
+                                                    );
+                                                    return; // no continuar si falta algo
+                                                  }
+
                                                   final textureName =
-                                                      "${selectedColor!.name.replaceAll(" ", "_")}_${_getFinishSuffix(selectedFinish, product)}";
+                                                      "${selectedColor!.name.replaceAll(" ", "_")}_${getFinishSuffix(selectedTerminado!)}";
                                                   print("Texturas disponibles para modelo inicial: $textures");
+
                                                   if (textures.contains(textureName)) {
                                                     controllerModel.setTexture(textureName: textureName);
                                                   } else {
                                                     print("Textura no disponible para modelo inicial: $textureName");
                                                   }
+
                                                   Future.delayed(Duration(milliseconds: 100), () {
                                                     if (textures.contains(selectedPeelstick!.abbreviation)) {
                                                       controllerModel.setTexture(textureName: selectedPeelstick!.abbreviation);
@@ -873,9 +858,13 @@ class _DetailsProductState extends State<DetailsProduct> {
                                       duration: Duration(milliseconds: 500),
                                       child: IgnorePointer(
                                         ignoring: true,
-                                        child: ColorFiltered(
-                                          colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                                          child: Lottie.asset("assets/gifts/cursor.json", width: 130, height: 130),
+                                        child: Container(
+                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.black.withAlpha(70)),
+                                          alignment: Alignment.center,
+                                          child: ColorFiltered(
+                                            colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                                            child: Lottie.asset("assets/gifts/cursor.json", width: 130, height: 130),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -887,260 +876,226 @@ class _DetailsProductState extends State<DetailsProduct> {
                                 padding: const EdgeInsets.all(30),
                                 width: screenWidth,
                                 decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(22)),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ChooseBagTitle(text1: "Color.", text2: "Empecemos escogiendo tú color.", product: product),
-                                    const SizedBox(height: 10),
-                                    Text(() {
-                                      if (hoveredColor != null) {
-                                        return "Color - $hoveredColor";
-                                      }
-                                      if (selectedColor != null) {
-                                        return "Color - ${selectedColor!.name}";
-                                      }
-                                      return "Color";
-                                    }(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                                    const SizedBox(height: 10),
-                                    Wrap(
-                                      spacing: 10,
-                                      runSpacing: 10,
-                                      children:
-                                          product.colors.map((c) {
-                                            final isSelected = selectedColor == c;
-                                            return MouseRegion(
-                                              onEnter: (_) {
-                                                setState(() {
-                                                  hoveredColor = c.name;
-                                                });
-                                              },
-                                              onExit: (_) {
-                                                setState(() {
-                                                  hoveredColor = null;
-                                                });
-                                              },
-                                              cursor: SystemMouseCursors.click,
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  String suffix = _getFinishSuffix(selectedFinish, product);
-                                                  setState(() {
-                                                    selectedColor = c;
-                                                  });
-                                                  if (_modelLoaded) {
-                                                    controllerModel
-                                                        .getAvailableTextures()
-                                                        .then((textures) {
-                                                          final textureName = "${c.name.replaceAll(" ", "_")}_$suffix";
-                                                          print("Texturas disponibles para modelo inicial: $textures");
-                                                          if (textures.contains(textureName)) {
-                                                            controllerModel.setTexture(textureName: textureName);
-                                                          } else {
-                                                            print("Textura no disponible: $textureName");
-                                                          }
-                                                        })
-                                                        .catchError((error) {
-                                                          print("Error al obtener texturas disponibles: $error");
-                                                        });
-                                                    _updateFinalModel();
+                                child: FormCreateBag(
+                                  product: product,
+                                  terminadosDisponibles: terminadosDisponibles,
+                                  selectedTerminado: selectedTerminado,
+                                  selectedStructure: selectedStructure,
+                                  selectedGramaje: selectedGramaje,
+                                  selectedColor: selectedColor,
+                                  selectedPeelstick: selectedPeelstick,
+                                  hoveredPS: hoveredPS,
+                                  onHoverPS: (value) => {},
+                                  selectedValve: selectedValve,
+                                  selectedFinish: selectedFinish,
+                                  controllerModel: controllerModel,
+                                  modelLoaded: _modelLoaded,
+                                  onSelectTerminado: (t) {
+                                    setState(() {
+                                      selectedTerminado = t;
+                                      selectedStructure = null; // Reiniciar estructura
+                                      selectedGramaje = null; // Reiniciar gramaje
+                                      selectedColor = null; // Reiniciar color
+                                      selectedPeelstick = null; // Reiniciar peel stick
+                                      selectedValve = null; // Reiniciar válvula
+                                      selectedFinish = t.name; // Actualizar terminado
+                                      currentProduct = widget.product; // Reiniciar producto
+
+                                      // Seleccionar el primer color disponible si hay estructuras y gramajes
+                                      if (selectedTerminado != null && t.structures.isNotEmpty) {
+                                        final estructura = t.structures.first;
+                                        if (estructura.ability.isNotEmpty) {
+                                          final ability = estructura.ability.first;
+                                          final producto = ability.product.firstWhere(
+                                            (p) => p.subcategorie.title == widget.product.subcategorie.title,
+                                            orElse: () => widget.product,
+                                          );
+
+                                          currentProduct = producto;
+                                          selectedColor = producto.colors.isNotEmpty ? producto.colors.first : null;
+
+                                          // Aplicar la textura del primer color disponible
+                                          if (_modelLoaded && selectedColor != null) {
+                                            final suffix = getFinishSuffix(selectedTerminado!);
+                                            final textureName = "${selectedColor!.name.replaceAll(" ", "_")}_$suffix";
+
+                                            controllerModel
+                                                .getAvailableTextures()
+                                                .then((textures) {
+                                                  print("Texturas disponibles para modelo inicial: $textures");
+                                                  if (textures.contains(textureName)) {
+                                                    controllerModel.setTexture(textureName: textureName);
+                                                  } else {
+                                                    print("Textura no disponible: $textureName");
                                                   }
-                                                },
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    Container(
-                                                      width: 40,
-                                                      height: 40,
-                                                      decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        color: c.color,
-                                                        border: Border.all(
-                                                          color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey.withAlpha(100),
-                                                          width: isSelected ? 2 : 1,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            );
-                                          }).toList(),
-                                    ),
-                                    const SizedBox(height: 30),
-                                    if (product.structures.isNotEmpty) ...[
-                                      ChooseBagTitle(text1: "Estructura.", text2: "La resistencia de tú empaque.", product: product),
-                                      ...product.structures.map((structure) {
-                                        return Selected(
-                                          selected: selectedStructure,
-                                          label: structure,
-                                          onTap: (value) {
-                                            setState(() {
-                                              selectedStructure = value;
-                                            });
-                                            _updateFinalModel();
-                                          },
-                                        );
-                                      }),
-                                    ],
-                                    const SizedBox(height: 30),
-                                    ChooseBagTitle(text1: "Gramaje.", text2: "Lo grueso de tú empaque.", product: product),
-                                    Selected(
-                                      selected: selectedGramaje,
-                                      label: "500G",
-                                      onTap: (value) {
-                                        setState(() {
-                                          selectedGramaje = value;
-                                        });
-                                        _updateFinalModel();
-                                      },
-                                    ),
-                                    Selected(
-                                      selected: selectedGramaje,
-                                      label: "250G",
-                                      onTap: (value) {
-                                        setState(() {
-                                          selectedGramaje = value;
-                                        });
-                                        _updateFinalModel();
-                                      },
-                                    ),
-                                    Selected(
-                                      selected: selectedGramaje,
-                                      label: "125G",
-                                      onTap: (value) {
-                                        setState(() {
-                                          selectedGramaje = value;
-                                        });
-                                        _updateFinalModel();
-                                      },
-                                    ),
-                                    const SizedBox(height: 30),
-                                    ChooseBagTitle(text1: "Peel Stick.", text2: "El accesorio perfecto.", product: product),
-                                    const SizedBox(height: 10),
-                                    Text(() {
-                                      if (hoveredPS != null) {
-                                        return hoveredPS == "Sin Peel Stick" ? "Sin Peel Stick" : "Color - $hoveredPS";
-                                      }
-                                      if (selectedPeelstick != null) {
-                                        return selectedPeelstick!.name == "Sin Peel Stick" ? "Sin Peel Stick" : "Color - ${selectedPeelstick!.name}";
-                                      }
-                                      return "Color";
-                                    }(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                                    const SizedBox(height: 10),
-                                    Wrap(
-                                      spacing: 10,
-                                      runSpacing: 10,
-                                      children:
-                                          peelStickOptions.map((option) {
-                                            final isSelected = selectedPeelstick == option;
-                                            return MouseRegion(
-                                              onEnter: (_) {
-                                                setState(() {
-                                                  hoveredPS = option.name;
+                                                })
+                                                .catchError((error) {
+                                                  print("Error al obtener texturas disponibles: $error");
                                                 });
-                                              },
-                                              onExit: (_) {
-                                                setState(() {
-                                                  hoveredPS = null;
+                                          }
+                                        }
+                                      }
+                                    });
+
+                                    _updateFinalModel();
+                                  },
+
+                                  onSelectStructure: (value) {
+                                    setState(() {
+                                      selectedStructure = value;
+                                      selectedGramaje = null; // Reiniciar gramaje
+                                      selectedColor = null; // Reiniciar color
+                                      selectedPeelstick = peelStickOptions.isNotEmpty ? peelStickOptions.first : null; // Reiniciar peel stick
+                                      selectedValve = widget.product.valves.isNotEmpty ? widget.product.valves.first : null; // Reiniciar válvula
+                                      currentProduct = widget.product; // Reiniciar producto
+                                    });
+                                    _updateFinalModel();
+                                  },
+
+                                  onSelectGramaje: (value) {
+                                    setState(() {
+                                      selectedGramaje = value;
+
+                                      if (selectedTerminado != null && selectedStructure != null) {
+                                        final estructura = selectedTerminado!.structures.firstWhere(
+                                          (e) => e.name == selectedStructure,
+                                          orElse: () => selectedTerminado!.structures.first,
+                                        );
+
+                                        final ability = estructura.ability.firstWhere(
+                                          (a) => a.name == selectedGramaje,
+                                          orElse: () => estructura.ability.first,
+                                        );
+
+                                        final producto = ability.product.firstWhere(
+                                          (p) => p.subcategorie.title == widget.product.subcategorie.title,
+                                          orElse: () => widget.product,
+                                        );
+
+                                        currentProduct = producto;
+
+                                        // Seleccionar el primer color disponible para el producto
+                                        selectedColor = producto.colors.isNotEmpty ? producto.colors.first : null;
+
+                                        // Aplicar la nueva textura al modelo inicial
+                                        if (_modelLoaded && selectedColor != null && selectedTerminado != null) {
+                                          final suffix = getFinishSuffix(selectedTerminado!);
+                                          final textureName = "${selectedColor!.name.replaceAll(" ", "_")}_$suffix";
+
+                                          controllerModel
+                                              .getAvailableTextures()
+                                              .then((textures) {
+                                                print("Texturas disponibles para modelo inicial: $textures");
+                                                if (textures.contains(textureName)) {
+                                                  controllerModel.setTexture(textureName: textureName);
+                                                } else {
+                                                  print("Textura no disponible: $textureName");
+                                                }
+                                              })
+                                              .catchError((error) {
+                                                print("Error al obtener texturas disponibles: $error");
+                                              });
+                                        }
+                                      }
+                                    });
+
+                                    _updateFinalModel();
+                                  },
+
+                                  onSelectColor: (value) {
+                                    setState(() {
+                                      selectedColor = value;
+
+                                      if (_modelLoaded && selectedTerminado != null) {
+                                        final suffix = getFinishSuffix(selectedTerminado!);
+                                        final textureName = "${value.name.replaceAll(" ", "_")}_$suffix";
+
+                                        controllerModel
+                                            .getAvailableTextures()
+                                            .then((textures) {
+                                              print("Texturas disponibles para modelo inicial: $textures");
+                                              if (textures.contains(textureName)) {
+                                                controllerModel.setTexture(textureName: textureName);
+                                              } else {
+                                                print("Textura no disponible: $textureName");
+                                              }
+                                            })
+                                            .catchError((error) {
+                                              print("Error al obtener texturas disponibles: $error");
+                                            });
+                                      }
+                                    });
+
+                                    _updateFinalModel();
+                                  },
+
+                                  onSelectPeelstick: (value) {
+                                    setState(() {
+                                      selectedPeelstick = value;
+
+                                      if (_modelLoaded && selectedColor != null && selectedTerminado != null) {
+                                        final suffix = getFinishSuffix(selectedTerminado!);
+                                        final textureName = "${selectedColor!.name.replaceAll(" ", "_")}_$suffix";
+
+                                        controllerModel
+                                            .getAvailableTextures()
+                                            .then((textures) {
+                                              print("Texturas disponibles para modelo inicial: $textures");
+                                              if (textures.contains(textureName)) {
+                                                controllerModel.setTexture(textureName: textureName);
+                                              } else {
+                                                print("Textura no disponible: $textureName");
+                                              }
+                                              if (textures.contains(value.abbreviation)) {
+                                                Future.delayed(Duration(milliseconds: 100), () {
+                                                  controllerModel.setTexture(textureName: value.abbreviation);
                                                 });
-                                              },
-                                              cursor: SystemMouseCursors.click,
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    selectedPeelstick = option;
-                                                  });
-                                                  if (_modelLoaded) {
-                                                    controllerModel
-                                                        .getAvailableTextures()
-                                                        .then((textures) {
-                                                          print("Texturas disponibles para modelo inicial: $textures");
-                                                          if (textures.contains(option.abbreviation)) {
-                                                            controllerModel.setTexture(textureName: option.abbreviation);
-                                                          } else {
-                                                            print("Textura de PeelStick no disponible: ${option.abbreviation}");
-                                                          }
-                                                        })
-                                                        .catchError((error) {
-                                                          print("Error al obtener texturas disponibles: $error");
-                                                        });
-                                                    _updateFinalModel();
-                                                  }
-                                                },
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    Container(
-                                                      width: 40,
-                                                      height: 40,
-                                                      decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        color: option.name == "Sin Peel Stick" ? Colors.transparent : option.color,
-                                                        border: Border.all(
-                                                          color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey.withAlpha(100),
-                                                          width: isSelected ? 2 : 1,
-                                                        ),
-                                                      ),
-                                                      child:
-                                                          option.name == "Sin Peel Stick"
-                                                              ? Center(child: Icon(Icons.block, size: 20, color: Colors.red))
-                                                              : null,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            );
-                                          }).toList(),
-                                    ),
-                                    const SizedBox(height: 30),
-                                    if (product.valves.isNotEmpty) ...[
-                                      ChooseBagTitle(text1: "Valvula.", text2: "El respiro a tú empaque.", product: product),
-                                      ...product.valves.map((valve) {
-                                        return Selected(
-                                          selected: selectedValve,
-                                          label: valve,
-                                          onTap: (value) {
-                                            setState(() {
-                                              selectedValve = value;
+                                              } else {
+                                                print("Textura de PeelStick no disponible: ${value.abbreviation}");
+                                              }
+                                            })
+                                            .catchError((error) {
+                                              print("Error al obtener texturas disponibles: $error");
                                             });
-                                            _updateFinalModel();
-                                          },
-                                        );
-                                      }),
-                                    ],
-                                    const SizedBox(height: 30),
-                                    if (product.finishes.isNotEmpty) ...[
-                                      ChooseBagTitle(text1: "Terminación.", text2: "El acabado a tú empaque.", product: product),
-                                      ...product.finishes.map((finish) {
-                                        return Selected(
-                                          selected: selectedFinish,
-                                          label: finish,
-                                          onTap: (value) {
-                                            setState(() {
-                                              selectedFinish = value;
+                                      }
+                                    });
+
+                                    _updateFinalModel();
+                                  },
+
+                                  onSelectValve: (value) {
+                                    setState(() {
+                                      selectedValve = value;
+                                    });
+                                    _updateFinalModel();
+                                  },
+
+                                  onSelectFinish: (value) {
+                                    setState(() {
+                                      selectedFinish = value;
+
+                                      if (_modelLoaded && selectedColor != null && selectedTerminado != null) {
+                                        final suffix = getFinishSuffix(selectedTerminado!);
+                                        final textureName = "${selectedColor!.name.replaceAll(" ", "_")}_$suffix";
+
+                                        controllerModel
+                                            .getAvailableTextures()
+                                            .then((textures) {
+                                              print("Texturas disponibles para modelo inicial: $textures");
+                                              if (textures.contains(textureName)) {
+                                                controllerModel.setTexture(textureName: textureName);
+                                              } else {
+                                                print("Textura no disponible: $textureName");
+                                              }
+                                            })
+                                            .catchError((error) {
+                                              print("Error al obtener texturas disponibles: $error");
                                             });
-                                            if (_modelLoaded) {
-                                              String suffix = _getFinishSuffix(selectedFinish, product);
-                                              controllerModel
-                                                  .getAvailableTextures()
-                                                  .then((textures) {
-                                                    final textureName = "${selectedColor?.name}_$suffix";
-                                                    print("Texturas disponibles para modelo inicial: $textures");
-                                                    if (textures.contains(textureName)) {
-                                                      controllerModel.setTexture(textureName: textureName);
-                                                    } else {
-                                                      print("Textura no disponible: $textureName");
-                                                    }
-                                                  })
-                                                  .catchError((error) {
-                                                    print("Error al obtener texturas disponibles: $error");
-                                                  });
-                                              _updateFinalModel();
-                                            }
-                                          },
-                                        );
-                                      }),
-                                    ],
-                                  ],
+                                      }
+                                    });
+
+                                    _updateFinalModel();
+                                  },
                                 ),
                               ),
                             ],
@@ -1164,11 +1119,11 @@ class _DetailsProductState extends State<DetailsProduct> {
                                 children: [
                                   if (screenWidth >= 900)
                                     Positioned(
-                                      bottom: -200,
-                                      left: min(300, screenWidth * 0.5),
+                                      bottom: 0,
+                                      left: min(400, screenWidth * 0.5),
                                       child: SizedBox(
-                                        height: 700,
-                                        width: 700,
+                                        height: min(screenWidth * 0.6, 500),
+                                        width: min(screenWidth * 0.6, 500),
                                         child: AnimatedOpacity(
                                           opacity: isComplete ? 1.0 : 0.0,
                                           duration: const Duration(milliseconds: 1200),
@@ -1177,7 +1132,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                             key: _finalModelKey,
                                             product: product,
                                             controllerModel: controllerFinally,
-                                            autoRotate: false,
+                                            autoRotate: true,
                                             gestureDetector: false,
                                             selectedValve: selectedValve,
                                             onLoad: (String _) {
@@ -1208,7 +1163,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                   key: _finalModelKey,
                                                   product: product,
                                                   controllerModel: controllerFinally,
-                                                  autoRotate: false,
+                                                  autoRotate: true,
                                                   gestureDetector: false,
                                                   selectedValve: selectedValve,
                                                   onLoad: (String _) {
@@ -1247,10 +1202,14 @@ class _DetailsProductState extends State<DetailsProduct> {
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        Text("\$${product.price}", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                                        Text(
+                                          "\$${getPrecioSeleccionado().toStringAsFixed(2)} por unidad",
+                                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                                        ),
                                         Text("Gramaje: $selectedGramaje ", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                                         Text("Estructura $selectedStructure", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                                        Text("Peel Stick: ${selectedPeelstick?.name}", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                                        if (product.subcategorie.enabledPS)
+                                          Text("Peel Stick: ${selectedPeelstick?.name}", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                                         Text("Tipo de válvula: $selectedValve", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                                         Text("Terminado tipo $selectedFinish", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                                         MouseRegion(
@@ -1333,16 +1292,16 @@ class _DetailsProductState extends State<DetailsProduct> {
   }
 }
 
-class Model extends StatelessWidget {
+class Model extends StatefulWidget {
   final Product product;
   final Flutter3DController controllerModel;
-  final bool autoRotate;
+  bool autoRotate;
   final bool gestureDetector;
   final String? selectedValve;
   final dynamic onLoad;
   final Key? key;
 
-  const Model({
+  Model({
     this.key,
     required this.product,
     required this.controllerModel,
@@ -1353,30 +1312,58 @@ class Model extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<Model> createState() => _ModelState();
+}
+
+class _ModelState extends State<Model> {
+  Timer? _interactionTimer;
+
+  void _onUserInteraction() {
+    _interactionTimer?.cancel();
+    _interactionTimer = Timer(Duration(seconds: 3), () {
+      widget.controllerModel.resetCameraOrbit();
+    });
+  }
+
+  @override
+  void dispose() {
+    _interactionTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final String fixProductName = product.name.replaceAll(" ", "_");
     String src;
 
-    if (selectedValve == null || selectedValve == "Sin válvula") {
-      src = "assets/assets/3Dmodels/${product.subcategorie.title}/$fixProductName/$fixProductName.glb";
-    } else if (selectedValve == "Válvula desgasificadora") {
-      src = "assets/assets/3Dmodels/${product.subcategorie.title}/$fixProductName/${fixProductName}_D.glb";
-    } else if (selectedValve == "Válvula dosificadora") {
-      src = "assets/assets/3Dmodels/${product.subcategorie.title}/$fixProductName/${fixProductName}_V.glb";
+    if (widget.selectedValve == null || widget.selectedValve == "Sin válvula") {
+      src = "assets/3Dmodels/${widget.product.subcategorie.title}/${widget.product.subcategorie.title}.glb";
+      print("Cargando modelo: $src");
+    } else if (widget.selectedValve == "Válvula desgasificadora") {
+      src = "assets/3Dmodels/${widget.product.subcategorie.title}/${widget.product.subcategorie.title}_D.glb";
+      print("Cargando modelo: $src");
+    } else if (widget.selectedValve == "Válvula dosificadora") {
+      src = "assets/3Dmodels/${widget.product.subcategorie.title}/${widget.product.subcategorie.title}_V.glb";
+      print("Cargando modelo: $src");
     } else {
-      src = "assets/assets/3Dmodels/${product.subcategorie.title}/$fixProductName/$fixProductName.glb";
+      src = "assets/3Dmodels/${widget.product.subcategorie.title}/${widget.product.subcategorie.title}.glb";
+      print("Cargando modelo: $src");
     }
 
-    return Flutter3DViewer(
-      progressBarColor: Colors.transparent,
-      autorotate: autoRotate,
-      activeGestureInterceptor: gestureDetector,
-      controller: controllerModel,
-      onLoad: onLoad,
-      src: src,
-      onError: (error) {
-        print("Error loading 3D model: $error");
-      },
+    return Listener(
+      onPointerDown: (_) => _onUserInteraction(),
+      onPointerMove: (_) => _onUserInteraction(),
+      onPointerUp: (_) => _onUserInteraction(),
+      child: Flutter3DViewer(
+        progressBarColor: Colors.transparent,
+        autorotate: widget.autoRotate,
+        activeGestureInterceptor: widget.gestureDetector,
+        controller: widget.controllerModel,
+        onLoad: widget.onLoad,
+        src: src,
+        onError: (error) {
+          print("Error loading 3D model: $error");
+        },
+      ),
     );
   }
 }
@@ -1408,45 +1395,242 @@ class Selected extends StatelessWidget {
   final String? selected;
   final String? label;
   final void Function(String value) onTap;
+  final bool isEnabled;
 
-  const Selected({super.key, required this.selected, required this.label, required this.onTap});
+  const Selected({super.key, required this.selected, required this.label, required this.onTap, this.isEnabled = true});
 
   @override
   Widget build(BuildContext context) {
     final isSelected = selected == label;
 
+    if (!isEnabled) {
+      // Mostrar opciones por defecto: 50G, 250G, 500G en gris
+      return Column(
+        children:
+            ["50Gr", "250Gr", "500Gr"].map((item) {
+              return Container(
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey, width: 1),
+                  color: Colors.grey.withAlpha(50),
+                ),
+                child: Text(item, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.grey)),
+              );
+            }).toList(),
+      );
+    }
+
+    // Modo normal
     return MouseRegion(
-      cursor: SystemMouseCursors.click,
+      cursor: isEnabled ? SystemMouseCursors.click : SystemMouseCursors.basic,
       child: GestureDetector(
         onTap: () => onTap(label!),
         child: Container(
-          margin: EdgeInsets.symmetric(vertical: 10),
-          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
           width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey, width: isSelected ? 2 : 1),
+            color: isEnabled ? Colors.white : Colors.grey.withAlpha(50),
           ),
-          child: Text(label!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+          child: Text(label!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: isEnabled ? Colors.black : Colors.grey)),
         ),
       ),
     );
   }
 }
 
-String _getFinishSuffix(String? finish, Product product) {
-  if (finish != null) {
-    if (finish.toLowerCase().contains("brillante")) {
-      return "B";
-    } else if (finish.toLowerCase().contains("mate")) {
-      return "M";
-    } else if (finish.toLowerCase().contains("papel")) {
-      return "P";
+String getFinishSuffix(Terminado terminado) {
+  final name = terminado.name.toLowerCase();
+  if (name.contains("mate")) return "M";
+  if (name.contains("brillante")) return "B";
+  if (name.contains("papel")) return "P";
+  return "P"; // valor por defecto
+}
+
+class FormCreateBag extends StatelessWidget {
+  final Product product;
+  final List<Terminado> terminadosDisponibles;
+  final Terminado? selectedTerminado;
+  final String? selectedStructure;
+  final String? selectedGramaje;
+  final NamedColor? selectedColor;
+  final PeelStickOption? selectedPeelstick;
+  final String? hoveredPS;
+  final ValueChanged<String?> onHoverPS;
+  final String? selectedValve;
+  final String? selectedFinish;
+  final ValueChanged<Terminado> onSelectTerminado;
+  final ValueChanged<String?> onSelectStructure;
+  final ValueChanged<String?> onSelectGramaje;
+  final ValueChanged<NamedColor> onSelectColor;
+  final ValueChanged<PeelStickOption> onSelectPeelstick;
+  final ValueChanged<String?> onSelectValve;
+  final ValueChanged<String?> onSelectFinish;
+  final Flutter3DController controllerModel;
+  final bool modelLoaded;
+
+  const FormCreateBag({
+    super.key,
+    required this.product,
+    required this.terminadosDisponibles,
+    required this.selectedTerminado,
+    required this.selectedStructure,
+    required this.selectedGramaje,
+    required this.selectedColor,
+    required this.selectedPeelstick,
+    required this.hoveredPS,
+    required this.onHoverPS,
+    required this.selectedValve,
+    required this.selectedFinish,
+    required this.onSelectTerminado,
+    required this.onSelectStructure,
+    required this.onSelectGramaje,
+    required this.onSelectColor,
+    required this.onSelectPeelstick,
+    required this.onSelectValve,
+    required this.onSelectFinish,
+    required this.controllerModel,
+    required this.modelLoaded,
+  });
+
+  // Obtener los colores disponibles para el gramaje seleccionado
+  List<NamedColor> getAvailableColors() {
+    if (selectedTerminado != null && selectedStructure != null && selectedGramaje != null) {
+      final estructura = selectedTerminado!.structures.firstWhere(
+        (e) => e.name == selectedStructure,
+        orElse: () => selectedTerminado!.structures.first,
+      );
+
+      final ability = estructura.ability.firstWhere((a) => a.name == selectedGramaje, orElse: () => estructura.ability.first);
+
+      final producto = ability.product.firstWhere((p) => p.subcategorie.title == product.subcategorie.title, orElse: () => product);
+
+      return producto.colors;
     }
+    return [];
   }
-  return product.finishes.first.toLowerCase().startsWith("b")
-      ? "B"
-      : product.finishes.first.toLowerCase().startsWith("m")
-      ? "M"
-      : "P";
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        /// Terminado
+        ChooseBagTitle(text1: "Dale estilo a tu empaque.", text2: "Elige el terminado.", product: product),
+        ...terminadosDisponibles.map((terminado) {
+          return Selected(selected: selectedTerminado?.name, label: terminado.name, onTap: (_) => onSelectTerminado(terminado));
+        }),
+
+        const SizedBox(height: 30),
+
+        /// Estructura
+        if (selectedTerminado != null && selectedTerminado!.structures.isNotEmpty) ...[
+          ChooseBagTitle(text1: "Define la estructura", text2: "La base de tu empaque perfecto.", product: product),
+          ...selectedTerminado!.structures.map((estructura) {
+            return Selected(selected: selectedStructure, label: estructura.name, onTap: (value) => onSelectStructure(value));
+          }),
+        ] else
+          Selected(selected: null, label: null, isEnabled: false, onTap: (_) {}),
+
+        const SizedBox(height: 30),
+
+        /// Gramaje
+        if (selectedTerminado != null && selectedStructure != null) ...[
+          ChooseBagTitle(text1: "¿Cuánto quieres empacar?", text2: "Elige la capacidad o gramaje de tu bolsa.", product: product),
+          ...selectedTerminado!.structures.firstWhere((e) => e.name == selectedStructure).ability.map((a) {
+            return Selected(selected: selectedGramaje, label: a.name, onTap: (value) => onSelectGramaje(value));
+          }),
+        ] else
+          Selected(selected: null, label: null, isEnabled: false, onTap: (_) {}),
+
+        const SizedBox(height: 30),
+
+        /// Color
+        if (selectedTerminado != null && selectedStructure != null && selectedGramaje != null) ...[
+          ChooseBagTitle(text1: "Tu color, tu estilo.", text2: "Escoge el que conecte con tus clientes.", product: product),
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children:
+                getAvailableColors().map((c) {
+                  return MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () {
+                        onSelectColor(c);
+                        if (modelLoaded && selectedTerminado != null) {
+                          final suffix = getFinishSuffix(selectedTerminado!);
+                          final textureName = "${c.name.replaceAll(" ", "_")}_$suffix";
+                          controllerModel
+                              .getAvailableTextures()
+                              .then((textures) {
+                                print("Texturas disponibles: $textures");
+                                if (textures.contains(textureName)) {
+                                  controllerModel.setTexture(textureName: textureName);
+                                } else {
+                                  print("Textura no disponible: $textureName");
+                                }
+                              })
+                              .catchError((error) {
+                                print("Error al obtener texturas disponibles: $error");
+                              });
+                        }
+                      },
+                      child: Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          color: c.color,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            width: 2,
+                            color: selectedColor?.name == c.name ? Theme.of(context).colorScheme.primary : Colors.grey.shade300,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+          ),
+        ],
+
+        /// Peel Stick
+        if (product.subcategorie.enabledPS && selectedTerminado != null && selectedStructure != null && selectedGramaje != null) ...[
+          const SizedBox(height: 30),
+          ChooseBagTitle(text1: "Peel Stick.", text2: "El accesorio perfecto.", product: product),
+          Text(() {
+            if (hoveredPS != null) {
+              return hoveredPS == "Sin Peel Stick" ? "Sin Peel Stick" : "Color - $hoveredPS";
+            }
+            if (selectedPeelstick != null) {
+              return selectedPeelstick!.name == "Sin Peel Stick" ? "Sin Peel Stick" : "Color - ${selectedPeelstick!.name}";
+            }
+            return "Color";
+          }(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 10),
+          ...peelStickOptions.map((option) {
+            return MouseRegion(
+              onEnter: (_) => onHoverPS(option.name),
+              onExit: (_) => onHoverPS(null),
+              child: Selected(selected: selectedPeelstick?.name, label: option.name, onTap: (_) => onSelectPeelstick(option), isEnabled: true),
+            );
+          }),
+        ],
+
+        /// Válvula
+        if (product.valves.isNotEmpty && selectedTerminado != null && selectedStructure != null && selectedGramaje != null) ...[
+          const SizedBox(height: 30),
+          ChooseBagTitle(text1: "¿Tu empaque lleva válvula?", text2: "Elige si deseas incluirla.", product: product),
+          ...product.valves.map((valve) {
+            return Selected(selected: selectedValve, label: valve, onTap: (value) => onSelectValve(value));
+          }),
+        ],
+      ],
+    );
+  }
 }

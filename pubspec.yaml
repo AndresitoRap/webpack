@@ -19,6 +19,8 @@ dependencies:
   video_player_web: ^2.3.5
   lottie: ^3.3.1
   flutter_svg: ^2.2.0
+  collection: ^1.19.1
+  visibility_detector: ^0.4.0+2
 
 
 dev_dependencies:
@@ -55,8 +57,6 @@ flutter:
     - assets/3Dmodels/DOYPACK/Grano_café/
     - assets/3Dmodels/DOYPACK/Unicolor/
     - assets/3Dmodels/FLOWPACK/
-    - assets/3Dmodels/FLOWPACK/Metalizados/
-    - assets/3Dmodels/FLOWPACK/Unicolor/
     - assets/3Dmodels/STANDPACK/
     - assets/3Dmodels/STANDPACK/Fruta/
     - assets/3Dmodels/STANDPACK/Pollo/

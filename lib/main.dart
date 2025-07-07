@@ -16,6 +16,7 @@ import 'package:webpack/widgets/page_not_found.dart';
 import 'package:webpack/class/categories.dart';
 import 'package:webpack/class/products.dart';
 import 'package:webpack/pages/commerce.dart';
+import 'package:collection/collection.dart';
 
 final GlobalKey<TransitionOverlayState> transitionOverlayKey = GlobalKey();
 
@@ -92,42 +93,56 @@ class MyApp extends StatelessWidget {
           final section = uri.pathSegments[2];
           final routeKey = '${uri.pathSegments[0]}/$section';
           final productList = productSections[routeKey];
-          final preferidList = productPreferid[routeKey];
           final allCards = [...subcategorieSmart, ...subcategorieEco];
           final matchedCard = allCards.firstWhere((card) => card.route == settings.name, orElse: null);
           if (matchedCard == null) {
             return _buildRoute(settings, const PageNotFound());
           }
+          print("Ruta completa: ${settings.name}");
+          print("Segmentos: ${uri.pathSegments}");
 
-          if (productList != null && preferidList != null) {
-            return _buildRoute(
-              settings,
-              Commerce(section: section, listproducts: productList, productpreferid: preferidList, selectedSubcategorie: matchedCard),
-            );
+          if (productList != null) {
+            return _buildRoute(settings, Commerce(section: section, selectedSubcategorie: matchedCard));
           }
         }
 
         if (uri.pathSegments.length == 4 &&
             (uri.pathSegments[0].toLowerCase() == 'smartbag' || uri.pathSegments[0].toLowerCase() == 'ecobag') &&
-            uri.pathSegments[1].toLowerCase().startsWith('explora-')) {
+            uri.pathSegments[1].toLowerCase().startsWith('explora-') &&
+            uri.pathSegments[3].toLowerCase() == 'crea-tu-empaque') {
           final bagType = uri.pathSegments[0]; // SmartBag o EcoBag
           final section = uri.pathSegments[2]; // 4PRO, DOYPACK, etc.
-          final productSlug = uri.pathSegments[3]; // rosa-de-sharon
-          final routeKey = '$bagType/$section'; // SmartBag/4PRO
+          final routeKey = '$bagType/$section'; // Ej: SmartBag/4PRO
 
           final products = productSections[routeKey];
-          if (products != null) {
-            try {
-              final product = products.firstWhere((p) => _slugify(p.name) == productSlug);
-              return _buildRoute(settings, DetailsProduct(product: product));
-            } catch (e) {
-              return _buildRoute(settings, const PageNotFound());
+
+          final allCards = [...subcategorieSmart, ...subcategorieEco];
+          final matchedCard = allCards.firstWhere(
+            (card) => uri.path.contains(card.route),
+            orElse: () => throw Exception('No matching Subcategorie found'),
+          );
+
+          if (products != null && matchedCard.route.isNotEmpty) {
+            final allProducts =
+                products
+                    .expand((terminado) => terminado.structures)
+                    .expand((estructura) => estructura.ability)
+                    .expand((ability) => ability.product)
+                    .toList();
+
+            if (allProducts.isNotEmpty) {
+              return _buildRoute(
+                settings,
+                DetailsProduct(
+                  product: allProducts.first, // ✅ PASA UN SOLO Product
+                  allProducts: allProducts, // ✅ Aquí sí va la lista
+                ),
+              );
             }
           }
 
           return _buildRoute(settings, const PageNotFound());
         }
-        return _buildRoute(settings, const PageNotFound());
       },
     );
   }

@@ -74,6 +74,7 @@ flutter:
     - assets/img/home/
     - assets/img/ecobag/
     - assets/img/smartbag/
+    - assets/img/smartbag/4pro/
     - assets/img/support/
     - assets/img/us/
     - assets/fonts/
@@ -82,6 +83,7 @@ flutter:
     - assets/videos/
     - assets/videos/ecobag/
     - assets/videos/smartbag/
+    - assets/videos/smartbag/4pro/
     - assets/videos/us/
       
       

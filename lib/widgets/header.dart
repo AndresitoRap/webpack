@@ -843,7 +843,7 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
           ..style.height = '100%'
           ..style.objectFit = (widget.fit ?? BoxFit.cover).name
           ..style.transition = 'filter 0.5s ease-in-out'
-          ..style.backgroundColor = 'white'
+          ..style.backgroundColor = 'transparent'
           ..style.filter = widget.blur ? 'blur(30px)' : 'none';
 
     if (widget.height != null) {

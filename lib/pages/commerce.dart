@@ -96,10 +96,23 @@ class _FourProState extends State<FourPro> {
     ];
 
     final List<dynamic> localCards = [
-      {"title": "Cierre seguro", "body": "Zipper y sellado hermético para mayor protección.", "image": "assets/img/home/eco.webp", "isblack": false},
-      {"title": "Material premium", "body": "Fabricado con materiales de alta calidad.", "image": "assets/img/home/eco.webp", "isblack": true},
-      {"title": "Alta versatilidad", "body": "Úsalo para alimentos, cosméticos y más.", "image": "assets/img/home/eco.webp", "isblack": false},
-      {"title": "Alta versatilidad", "body": "Úsalo para alimentos, cosméticos y más.", "image": "assets/img/home/eco.webp", "isblack": false},
+      {
+        "title": "La nueva 4PRO SmartBag.\nDiseñada para marcas inteligentes. Segura, funcional y con un diseño que habla por sí solo.",
+        "image": "assets/img/home/eco.webp",
+      },
+      {
+        "title": "Sella. Protege. Impacta.\nZipper hermético, materiales premium y acabados que destacan en cualquier estantería.",
+        "image": "assets/img/home/eco.webp",
+      },
+      {
+        "title":
+            "El empaque que entiende tu producto.\nVersatilidad para alimentos, cosméticos, suplementos y mucho más. Siempre listo para destacar.",
+        "image": "assets/img/home/eco.webp",
+      },
+      {
+        "title": "Tecnología en cada detalle.\nLa 4PRO SmartBag combina innovación, presencia visual y sostenibilidad, en una sola solución.",
+        "image": "assets/img/home/eco.webp",
+      },
     ];
 
     final screenWidth = widget.screenWidth;
@@ -107,13 +120,14 @@ class _FourProState extends State<FourPro> {
     return Padding(
       padding: EdgeInsets.only(top: 45),
       child: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: screenWidth * 0.03),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // TABS
-              ScrollAnimatedWrapper(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // TABS
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: screenWidth * 0.03),
+
+              child: ScrollAnimatedWrapper(
                 visibilityKey: Key('tabs'),
                 child: Center(
                   child: SizedBox(
@@ -135,8 +149,12 @@ class _FourProState extends State<FourPro> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
-              Column(
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: screenWidth * 0.03),
+
+              child: Column(
                 children: [
                   Center(
                     child: ScrollAnimatedWrapper(
@@ -145,45 +163,71 @@ class _FourProState extends State<FourPro> {
                         width: min(screenWidth, 1500),
                         height: 600,
                         decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: const Color.fromARGB(161, 255, 255, 255)),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        child: Stack(
                           children: [
+                            Positioned.fill(
+                              child:
+                                  screenWidth < 700
+                                      ? Image.asset("assets/img/smartbag/4Pro/prueba.png", fit: BoxFit.cover, alignment: Alignment.centerLeft)
+                                      : Row(
+                                        children: [
+                                          Expanded(
+                                            flex: 100,
+                                            child: AspectRatio(
+                                              aspectRatio: 16 / 16, // o el ratio real de tu video
+                                              child: HtmlBackgroundVideo(
+                                                src: 'assets/videos/smartbag/4pro/4pro.webm',
+                                                loop: false,
+                                                isPause: false,
+                                                fit: BoxFit.contain,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(flex: 6, child: SizedBox()), // para balancear
+                                        ],
+                                      ),
+                            ),
                             Padding(
                               padding: EdgeInsets.only(left: screenWidth * 0.1),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Simplemente \nfuncional.",
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenWidth * 0.04, 40), letterSpacing: 1.2),
-                                  ),
-                                  SizedBox(height: 5),
-                                  Text(
-                                    "Más que empaque,es lenguaje visual,versátil, \nsofisticado,y técnicamente ideal.",
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(fontWeight: FontWeight.normal, fontSize: min(screenWidth * 0.015, 15), letterSpacing: 1.2),
-                                  ),
-                                  SizedBox(height: 30),
-                                  ElevatedButton(
-                                    onPressed: () {},
-                                    style: ButtonStyle(
-                                      backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
-                                      foregroundColor: WidgetStateProperty.all(Colors.white),
-                                      padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 28, vertical: 18)),
-                                      shape: WidgetStateProperty.all(
-                                        RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8), // 🔽 Antes: 30
-                                        ),
-                                      ),
-                                      elevation: WidgetStateProperty.all(6),
-                                      shadowColor: WidgetStateProperty.all(Theme.of(context).primaryColor.withOpacity(0.3)),
-                                      overlayColor: WidgetStateProperty.all(Colors.white.withOpacity(0.1)),
+                              child: ScrollAnimatedWrapper(
+                                visibilityKey: Key("Mas-Empaque"),
+                                duration: Duration(milliseconds: 800),
+                                delay: screenWidth < 700 ? Duration.zero : Duration(milliseconds: 550),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Simplemente \nfuncional.",
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenWidth * 0.04, 40), letterSpacing: 1.2),
                                     ),
-                                    child: Text("Armar mi 4PRO", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, letterSpacing: 1.2)),
-                                  ),
-                                ],
+                                    SizedBox(height: 5),
+                                    Text(
+                                      "Más que empaque, es lenguaje visual, versátil, \nsofisticado, y técnicamente ideal.",
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(fontWeight: FontWeight.normal, fontSize: max(10, screenWidth * 0.01), letterSpacing: 1.2),
+                                    ),
+                                    SizedBox(height: 30),
+                                    ElevatedButton(
+                                      onPressed: () {},
+                                      style: ButtonStyle(
+                                        backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
+                                        foregroundColor: WidgetStateProperty.all(Colors.white),
+                                        padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 28, vertical: 18)),
+                                        shape: WidgetStateProperty.all(
+                                          RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8), // 🔽 Antes: 30
+                                          ),
+                                        ),
+                                        elevation: WidgetStateProperty.all(6),
+                                        shadowColor: WidgetStateProperty.all(Theme.of(context).primaryColor.withOpacity(0.3)),
+                                        overlayColor: WidgetStateProperty.all(Colors.white.withOpacity(0.1)),
+                                      ),
+                                      child: Text("Armar mi 4PRO", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, letterSpacing: 1.2)),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
@@ -191,6 +235,7 @@ class _FourProState extends State<FourPro> {
                       ),
                     ),
                   ),
+
                   ScrollAnimatedWrapper(
                     visibilityKey: Key("Nuestro-empaque"),
                     child: Container(
@@ -266,30 +311,36 @@ class _FourProState extends State<FourPro> {
                   ),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 85, vertical: 40),
+            ),
+            ScrollAnimatedWrapper(
+              visibilityKey: Key('4funciones'),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: screenWidth * 0.03),
                 child: Text(
                   "4 Funciones, 4PRO",
                   style: TextStyle(fontSize: min(screenWidth * 0.03, 60), color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
                 ),
               ),
+            ),
 
-              //Discover local
-              SingleChildScrollView(
+            //Discover local
+            ScrollAnimatedWrapper(
+              visibilityKey: Key('4funciones-cards'),
+              child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 controller: scrollController,
                 child: Row(
                   children: List.generate(localCards.length, (int index) {
                     final card = localCards[index];
-                    final double horizontalPadding = screenWidth * 0.045;
+                    final double horizontalPadding = screenWidth * 0.06;
                     return Padding(
                       padding: EdgeInsets.only(
                         left: index == 0 ? horizontalPadding : 0,
                         right: index == localCards.length - 1 ? horizontalPadding : 20,
                       ),
                       child: Container(
-                        width: min(screenWidth * 0.52, 1080),
-                        height: min(screenWidth * 0.93, 540),
+                        width: min(screenWidth * 0.8, 1000),
+                        height: min(screenWidth * 0.6, 700),
                         padding: EdgeInsets.only(top: 22, left: 22),
                         margin: EdgeInsets.only(top: 20, bottom: 20, right: 20),
                         decoration: BoxDecoration(
@@ -298,47 +349,27 @@ class _FourProState extends State<FourPro> {
                         ),
                         child: Stack(
                           children: [
-                            Positioned(
-                              bottom: 10,
-                              right: 10,
-                              child: MouseRegion(
-                                child: AnimatedContainer(
-                                  duration: Duration(milliseconds: 200),
-                                  curve: Curves.easeInBack,
-                                  width: 40,
-                                  height: 40,
-                                  decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.red),
-                                  child: Icon(Icons.add_rounded, color: Colors.white),
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        card['title'],
+                                        style: TextStyle(
+                                          height: 0,
+                                          color: Colors.white,
+                                          fontSize: min(screenWidth * 0.03, 25),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 40),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    card['title'],
-                                    style: TextStyle(
-                                      height: 0,
-                                      color: card['isblack'] ? Colors.black : Colors.white,
-                                      fontSize: min(screenWidth * 0.02, 20),
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Text(
-                                    card['body'],
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      height: 0,
-                                      color: card['isblack'] ? Colors.black : Colors.white,
-                                      fontSize: min(screenWidth * 0.03, 25),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                Expanded(flex: 1, child: SizedBox(width: 100)),
+                              ],
                             ),
                           ],
                         ),
@@ -347,75 +378,295 @@ class _FourProState extends State<FourPro> {
                   }),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: screenWidth * 0.03, horizontal: screenWidth * 0.1),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    // Botón izquierdo
-                    IconButton(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(scrollControllerLeft ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80)),
-                      ),
-                      onPressed:
-                          scrollControllerLeft
-                              ? () {
-                                scrollController.animateTo(
-                                  scrollController.offset - 1000,
-                                  duration: Duration(milliseconds: 200),
-                                  curve: Curves.easeInOut,
-                                );
-                              }
-                              : null,
-                      icon: Icon(Icons.arrow_back_ios_new_rounded),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: screenWidth * 0.03, horizontal: screenWidth * 0.1),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  // Botón izquierdo
+                  IconButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(scrollControllerLeft ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80)),
                     ),
-                    const SizedBox(width: 20),
-                    IconButton(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(scrollControllerRigth ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80)),
-                      ),
-                      onPressed:
-                          scrollControllerRigth
-                              ? () {
-                                scrollController.animateTo(
-                                  scrollController.offset + 1000,
-                                  duration: Duration(milliseconds: 200),
-                                  curve: Curves.easeInOut,
-                                );
-                              }
-                              : null,
-                      icon: Icon(Icons.arrow_forward_ios_rounded),
+                    onPressed:
+                        scrollControllerLeft
+                            ? () {
+                              scrollController.animateTo(
+                                scrollController.offset - 1000,
+                                duration: Duration(milliseconds: 200),
+                                curve: Curves.easeInOut,
+                              );
+                            }
+                            : null,
+                    icon: Icon(Icons.arrow_back_ios_new_rounded),
+                  ),
+                  const SizedBox(width: 20),
+                  IconButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(scrollControllerRigth ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80)),
                     ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Center(
-                  child: Text(
-                    "Una familia, múltiples funciones. \nSiempre 4PRO.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: min(screenWidth * 0.03, 45), color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                    onPressed:
+                        scrollControllerRigth
+                            ? () {
+                              scrollController.animateTo(
+                                scrollController.offset + 1000,
+                                duration: Duration(milliseconds: 200),
+                                curve: Curves.easeInOut,
+                              );
+                            }
+                            : null,
+                    icon: Icon(Icons.arrow_forward_ios_rounded),
                   ),
-                ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20.0),
-                child: Center(
-                  child: Container(
-                    width: min(screenWidth, 1500),
-                    height: 600,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: const Color.fromARGB(161, 255, 255, 255)),
-                  ),
-                ),
-              ),
+            ),
 
-              SizedBox(height: 200),
-              Footer(),
-            ],
-          ),
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: const Color.fromARGB(161, 255, 255, 255)),
+              child: Column(
+                children: [
+                  ScrollAnimatedWrapper(
+                    visibilityKey: Key("una-familia"),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 200, bottom: 100),
+                      child: Center(
+                        child: Text.rich(
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: min(screenWidth * 0.04, 45), color: Colors.black, fontWeight: FontWeight.bold),
+
+                          TextSpan(
+                            children: [
+                              TextSpan(text: "Una familia, "),
+                              TextSpan(text: "múltiples funciones\n", style: TextStyle(color: Theme.of(context).primaryColor)),
+                              TextSpan(text: "Siempre 4PRO."),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  ScrollAnimatedWrapper(
+                    visibilityKey: Key('foto4pro'),
+                    child: SizedBox(
+                      height: min(screenWidth * 0.9, 1200),
+                      child: Image.asset('assets/img/smartbag/discover5_Top.webp', height: MediaQuery.of(context).size.height * 0.9),
+                    ),
+                  ),
+                  ScrollAnimatedWrapper(
+                    visibilityKey: Key("Textsfoto4pro"),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: min(screenWidth * 0.1, 100), vertical: 100),
+                      width: min(screenWidth, 1100),
+                      child: Center(
+                        child: Text.rich(
+                          TextSpan(
+                            style: TextStyle(fontSize: min(screenWidth * 0.03, 25), height: 1.2, color: Colors.black),
+                            children: [
+                              const TextSpan(text: "Más que una bolsa, una solución inteligente. "),
+                              const TextSpan(text: "Fabricada con polímeros avanzados y refuerzos termosellados, "),
+                              TextSpan(
+                                text: "la 4PRO SmartBag resiste peso, humedad y uso intensivo sin perder estética. ",
+                                style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                              ),
+                              const TextSpan(text: "Ideal para alimentos, suplementos o cosmética. "),
+                              TextSpan(
+                                text: "Su diseño optimiza la logística y mejora la experiencia del usuario. ",
+                                style: TextStyle(color: Theme.of(context).primaryColor),
+                              ),
+                              const TextSpan(text: "Alto rendimiento, pensado para hoy y mañana."),
+                            ],
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  //Contenedores
+                  Padding(padding: EdgeInsets.symmetric(horizontal: min(screenWidth * 0.1, 400)), child: buildResponsiveInfoCards(context)),
+                  SizedBox(height: 200),
+                ],
+              ),
+            ),
+            const SizedBox(height: 100),
+
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: screenWidth * 0.03),
+
+              child: Center(
+                child: Container(
+                  width: min(screenWidth, 1000),
+                  padding: EdgeInsets.all(32),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [BoxShadow(color: Colors.black.withAlpha(10), spreadRadius: 2, blurRadius: 10)],
+                  ),
+                  child: ScrollAnimatedWrapper(
+                    visibilityKey: Key("porque4pro2"),
+                    child: Row(
+                      children: [
+                        Image.asset("assets/img/BLogo.webp", height: 50),
+                        SizedBox(width: 40),
+                        Expanded(
+                          child: Text.rich(
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black.withAlpha(200), fontSize: min(screenWidth * 0.03, 20)),
+                            TextSpan(
+                              children: [
+                                TextSpan(text: "En PackVision entendimos que el mercado actual exige mucho más que un simple empaque; "),
+                                TextSpan(
+                                  text: "busca una experiencia completa que combine protección avanzada, ",
+                                  style: TextStyle(color: Theme.of(context).primaryColor),
+                                ),
+                                TextSpan(text: "presentación visual impecable y funcionalidad práctica para el consumidor final. "),
+                                TextSpan(text: "Por eso desarrollamos la 4PRO SmartBag, ", style: TextStyle(color: Theme.of(context).primaryColor)),
+                                TextSpan(
+                                  text:
+                                      "una solución diseñada para elevar la percepción de tu producto, mantener su frescura por más tiempo y facilitar su uso diario. ",
+                                ),
+                                TextSpan(
+                                  text:
+                                      "La 4PRO combina tecnología de empaque multicapa, materiales de alta barrera y detalles como válvulas y cierres inteligentes ",
+                                ),
+                                TextSpan(
+                                  text: "para que tu marca se destaque no solo por lo que ofrece, sino por cómo lo entrega.",
+                                  style: TextStyle(color: Theme.of(context).primaryColor),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            SizedBox(height: 200),
+            Footer(),
+          ],
         ),
       ),
     );
   }
+}
+
+class InfoCardData {
+  final String imagePath;
+  final String title;
+  final String description;
+
+  InfoCardData({required this.imagePath, required this.title, required this.description});
+}
+
+class InfoCard extends StatelessWidget {
+  final InfoCardData data;
+  final double maxFontSize;
+  final EdgeInsets padding;
+  final bool isup;
+
+  const InfoCard({super.key, required this.data, required this.maxFontSize, this.padding = const EdgeInsets.all(16), this.isup = false});
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return Container(
+      padding: padding,
+      margin: const EdgeInsets.all(8),
+      decoration: BoxDecoration(color: const Color.fromARGB(255, 237, 243, 255), borderRadius: BorderRadius.circular(16)),
+      child:
+          isup
+              ? Column(
+                children: [
+                  Text.rich(
+                    textAlign: TextAlign.center,
+                    TextSpan(
+                      children: [
+                        TextSpan(text: data.title, style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
+                        TextSpan(text: data.description),
+                      ],
+                    ),
+                    style: TextStyle(fontSize: min(screenWidth * 0.03, maxFontSize)),
+                  ),
+                  const SizedBox(height: 12),
+                  Expanded(child: Image.asset(data.imagePath)),
+                ],
+              )
+              : Column(
+                children: [
+                  Expanded(child: Image.asset(data.imagePath)),
+                  const SizedBox(height: 12),
+                  Text.rich(
+                    textAlign: TextAlign.center,
+                    TextSpan(
+                      children: [
+                        TextSpan(text: data.title, style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
+                        TextSpan(text: data.description),
+                      ],
+                    ),
+                    style: TextStyle(fontSize: min(screenWidth * 0.03, maxFontSize)),
+                  ),
+                ],
+              ),
+    );
+  }
+}
+
+Widget buildResponsiveInfoCards(BuildContext context) {
+  final List<InfoCardData> items = [
+    InfoCardData(
+      imagePath: "assets/img/smartbag/4pro/types.png",
+      title: "Tu decides la terminación ",
+      description:
+          "brillante para un acabado más reflectivo, Mate para una apariencia elegante y sobria, y Ventana para mostrar el producto sin perder protección.",
+    ),
+    InfoCardData(
+      imagePath: "assets/img/smartbag/valvula.webp",
+      title: "Agrega funcionalidad con accesorios inteligentes. ",
+      description:
+          "El sistema Peel Stick permite abrir y cerrar la bolsa fácilmente. Las válvulas desgasificadoras conservan productos frescos por más tiempo.",
+    ),
+    InfoCardData(
+      imagePath: "assets/img/smartbag/flowpack.webp",
+      title: "Cuatro capas ",
+      description:
+          "una protección total. La 4PRO combina PET, BOPP y PE para ofrecer una barrera contra la humedad, la luz y el oxígeno, con una presentación elegante y segura.",
+    ),
+  ];
+
+  return LayoutBuilder(
+    builder: (context, constraints) {
+      final isMobile = constraints.maxWidth < 700;
+
+      if (isMobile) {
+        return Column(children: items.map((data) => SizedBox(height: 300, child: InfoCard(data: data, maxFontSize: 30))).toList());
+      } else {
+        return SizedBox(
+          width: min(constraints.maxWidth, 1100),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(height: 350, child: InfoCard(data: items[0], maxFontSize: 16, isup: true)),
+                    SizedBox(height: 350, child: InfoCard(data: items[1], maxFontSize: 16, isup: true)),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: SizedBox(
+                  height: 700,
+                  child: InfoCard(data: items[2], maxFontSize: 16, padding: const EdgeInsets.only(right: 16, left: 16, top: 30, bottom: 50)),
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+    },
+  );
 }

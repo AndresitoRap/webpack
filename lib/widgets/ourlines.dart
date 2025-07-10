@@ -13,10 +13,12 @@ class OurLines extends StatelessWidget {
     required ScrollController scrollControllerfamily,
     required this.canScrollLeftFamily,
     required this.canScrollRightFamily,
+    this.titleColor,
   }) : _scrollControllerfamily = scrollControllerfamily;
 
   final ScrollController _scrollControllerfamily;
   final String text;
+  final Color? titleColor;
   final bool canScrollLeftFamily;
   final bool canScrollRightFamily;
   final dynamic list;
@@ -36,7 +38,7 @@ class OurLines extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
             child: Text(
               text,
-              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: min(screenWidth * 0.07, 55)),
+              style: TextStyle(color: titleColor ?? Colors.black, fontWeight: FontWeight.bold, fontSize: min(screenWidth * 0.07, 55)),
             ),
           ),
           SingleChildScrollView(
@@ -49,11 +51,7 @@ class OurLines extends StatelessWidget {
                 return Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(
-                        left: index == 0 ? horizontalPadding : 0,
-                        right: index == 7 - 1 ? horizontalPadding : 50,
-                        top: 80,
-                      ),
+                      padding: EdgeInsets.only(left: index == 0 ? horizontalPadding : 0, right: index == 7 - 1 ? horizontalPadding : 50, top: 80),
                       child: SizedBox(
                         width: min(300, screenWidth),
                         height: 590,
@@ -71,11 +69,7 @@ class OurLines extends StatelessWidget {
                             SizedBox(height: 20),
                             Text(
                               categorie.title,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: ecoOrSmartColor,
-                                fontSize: min(40, screenWidth * 0.04),
-                              ),
+                              style: TextStyle(fontWeight: FontWeight.bold, color: ecoOrSmartColor, fontSize: min(40, screenWidth * 0.04)),
                             ),
                             SizedBox(height: 20),
                             Text(categorie.description, style: TextStyle(fontSize: min(16, screenWidth * 0.03))),
@@ -98,20 +92,14 @@ class OurLines extends StatelessWidget {
                                     },
                                     child: Container(
                                       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(30),
-                                        color: ecoOrSmartColor,
-                                      ),
+                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: ecoOrSmartColor),
                                       child: Text("Saber más", style: TextStyle(color: Colors.white, fontSize: 16)),
                                     ),
                                   ),
                                 )
                                 : Container(
                                   padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(30),
-                                    color: const Color.fromARGB(255, 216, 216, 216),
-                                  ),
+                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: const Color.fromARGB(255, 216, 216, 216)),
                                   child: Text("Saber más", style: TextStyle(color: Colors.grey, fontSize: 16)),
                                 ),
                           ],
@@ -131,9 +119,7 @@ class OurLines extends StatelessWidget {
               children: [
                 IconButton(
                   style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(
-                      canScrollLeftFamily ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80),
-                    ),
+                    backgroundColor: WidgetStateProperty.all(canScrollLeftFamily ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80)),
                   ),
                   onPressed:
                       canScrollLeftFamily
@@ -150,9 +136,7 @@ class OurLines extends StatelessWidget {
                 const SizedBox(width: 20),
                 IconButton(
                   style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(
-                      canScrollRightFamily ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80),
-                    ),
+                    backgroundColor: WidgetStateProperty.all(canScrollRightFamily ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80)),
                   ),
                   onPressed:
                       canScrollRightFamily

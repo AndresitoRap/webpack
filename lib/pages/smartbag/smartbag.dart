@@ -268,6 +268,7 @@ class _SmartBagState extends State<SmartBag> {
 
                   Discover(
                     title: "Descubre Smart.",
+                    titleColor: Theme.of(context).primaryColor,
                     list: cardFindS,
                     scrollController: _scrollControllerDiscover,
                     ishoverlist: isHoverCardList,
@@ -278,6 +279,7 @@ class _SmartBagState extends State<SmartBag> {
                   SizedBox(height: screenWidth * 0.1),
                   OurLines(
                     text: "Nuestras lineas.",
+                    titleColor: Theme.of(context).primaryColor,
                     list: subcategorieSmart,
                     ecoOrSmartColor: Theme.of(context).primaryColor,
                     scrollControllerfamily: _scrollControllerfamily,

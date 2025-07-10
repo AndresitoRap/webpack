@@ -9,6 +9,7 @@ import 'package:webpack/class/cardproduct.dart' show cardFindS;
 // ignore: must_be_immutable
 class Discover extends StatefulWidget {
   final String title;
+  final Color? titleColor;
   final ScrollController scrollController;
   final List<bool> ishoverlist;
   final List<bool> ishovericonlist;
@@ -24,6 +25,7 @@ class Discover extends StatefulWidget {
     required this.ishovericonlist,
     required this.scrollControllerLeft,
     required this.scrollControllerRigth,
+    this.titleColor, // ← nuevo parámetro
   });
 
   @override
@@ -64,7 +66,14 @@ class _DiscoverState extends State<Discover> {
                         ..color = Theme.of(context).scaffoldBackgroundColor,
                 ),
               ),
-              Text(widget.title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenWidth * 0.07, 55))),
+              Text(
+                widget.title,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: min(screenWidth * 0.07, 55),
+                  color: widget.titleColor ?? Colors.black, // ← usa el color si lo pasaron
+                ),
+              ),
             ],
           ),
         ),

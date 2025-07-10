@@ -263,6 +263,7 @@ class _EcoBagState extends State<EcoBag> {
                   SizedBox(height: 20),
                   Discover(
                     title: "Descubre Eco.",
+                    titleColor: Color.fromARGB(255, 75, 141, 44),
                     list: cardFindE,
                     scrollController: _scrollControllerDiscover,
                     ishoverlist: isHoverCardList,
@@ -273,6 +274,7 @@ class _EcoBagState extends State<EcoBag> {
                   SizedBox(height: screenWidth * 0.1),
                   OurLines(
                     text: "Nuestas Ecolineas.",
+                    titleColor: Color.fromARGB(255, 75, 141, 44),
                     list: subcategorieEco,
                     ecoOrSmartColor: Color.fromARGB(255, 75, 141, 44),
                     scrollControllerfamily: _scrollControllerfamily,

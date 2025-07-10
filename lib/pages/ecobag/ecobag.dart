@@ -18,6 +18,8 @@ class EcoBag extends StatefulWidget {
 class _EcoBagState extends State<EcoBag> {
   //Seccion scrolleable
   final ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollControllerDiscover = ScrollController();
+  double scrollProgress = 0.0; // Va de 0.0 (sin scroll) a 1.0 (scroll máximo definido)
   List<bool> isHoverCardList = List.generate(cardFindE.length, (_) => false);
   List<bool> isHoverIconList = List.generate(cardFindE.length, (_) => false);
   bool canScrollLeft = false;
@@ -54,6 +56,12 @@ class _EcoBagState extends State<EcoBag> {
 
     _scrollControllerfamily.addListener(_updateScrollButtonsFamily);
     _scrollController.addListener(_updateScrollButtons);
+    _scrollController.addListener(() {
+      final offset = _scrollController.offset.clamp(0, 200);
+      setState(() {
+        scrollProgress = offset / 200; // de 0.0 a 1.0
+      });
+    });
   }
 
   @override
@@ -82,11 +90,15 @@ class _EcoBagState extends State<EcoBag> {
         children: [
           const LeafAnimation(),
           SingleChildScrollView(
+            controller: _scrollController,
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 45),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Container(height: 200, width: screenWidth, color: Colors.grey),
+
+                  SizedBox(height: 50),
                   SizedBox(height: 50),
                   screenWidth >= 1000
                       ? Center(
@@ -213,42 +225,46 @@ class _EcoBagState extends State<EcoBag> {
                       ),
                   SizedBox(height: 20),
                   Center(
-                    child: SizedBox(
-                      width: min(screenWidth, 2260),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 20, horizontal: screenWidth * 0.055),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(30),
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: min(screenHeight * 0.8, 1100),
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                ValueListenableBuilder<bool>(
-                                  valueListenable: videoBlurNotifier,
-                                  builder: (context, isBlur, _) {
-                                    return HtmlBackgroundVideo(
-                                      src: 'assets/videos/ecobag/EcobagInicio.webm',
-                                      blur: isBlur,
-                                      loop: true,
-                                      showControls: true,
-                                      fit: BoxFit.cover,
-                                    );
-                                  },
-                                ),
-                              ],
+                    child: Builder(
+                      builder: (context) {
+                        final borderRadius = BorderRadius.circular(30 * scrollProgress);
+                        final horizontalPadding = screenWidth * 0.055 * scrollProgress;
+
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20, horizontal: horizontalPadding),
+                          child: ClipRRect(
+                            borderRadius: borderRadius,
+                            child: Container(
+                              width: double.infinity,
+                              height: min(screenHeight * 0.8, 1100),
+                              child: Stack(
+                                fit: StackFit.expand,
+                                children: [
+                                  ValueListenableBuilder<bool>(
+                                    valueListenable: videoBlurNotifier,
+                                    builder: (context, isBlur, _) {
+                                      return HtmlBackgroundVideo(
+                                        src: 'assets/videos/ecobag/EcobagInicio.webm',
+                                        blur: isBlur,
+                                        loop: true,
+                                        showControls: true,
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
                   ),
                   SizedBox(height: 20),
                   Discover(
                     title: "Descubre Eco.",
                     list: cardFindE,
-                    scrollController: _scrollController,
+                    scrollController: _scrollControllerDiscover,
                     ishoverlist: isHoverCardList,
                     ishovericonlist: isHoverIconList,
                     scrollControllerLeft: canScrollLeft,

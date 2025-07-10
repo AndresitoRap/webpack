@@ -59,7 +59,29 @@ class FourPro extends StatefulWidget {
 }
 
 class _FourProState extends State<FourPro> {
-  int activeTabIndex = 0;
+  final ScrollController scrollController = ScrollController();
+  bool scrollControllerLeft = false;
+  bool scrollControllerRigth = true;
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(_handleScroll);
+  }
+
+  void _handleScroll() {
+    final position = scrollController.position;
+    setState(() {
+      scrollControllerLeft = position.pixels > 0;
+      scrollControllerRigth = position.pixels < position.maxScrollExtent;
+    });
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,10 +99,9 @@ class _FourProState extends State<FourPro> {
       {"title": "Cierre seguro", "body": "Zipper y sellado hermético para mayor protección.", "image": "assets/img/home/eco.webp", "isblack": false},
       {"title": "Material premium", "body": "Fabricado con materiales de alta calidad.", "image": "assets/img/home/eco.webp", "isblack": true},
       {"title": "Alta versatilidad", "body": "Úsalo para alimentos, cosméticos y más.", "image": "assets/img/home/eco.webp", "isblack": false},
+      {"title": "Alta versatilidad", "body": "Úsalo para alimentos, cosméticos y más.", "image": "assets/img/home/eco.webp", "isblack": false},
     ];
-    final ScrollController scrollController = ScrollController();
-    bool scrollControllerLeft = false;
-    bool scrollControllerRigth = true;
+
     final screenWidth = widget.screenWidth;
 
     return Padding(
@@ -104,7 +125,7 @@ class _FourProState extends State<FourPro> {
                         Text(
                           "4PRO",
                           style: TextStyle(
-                            fontSize: min(screenWidth * 0.035, 36),
+                            fontSize: min(screenWidth * 0.035, 56),
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).primaryColor,
                           ),
@@ -122,8 +143,8 @@ class _FourProState extends State<FourPro> {
                       visibilityKey: Key("Simplemente-funcional"),
                       child: Container(
                         width: min(screenWidth, 1500),
-                        height: 500,
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: const Color.fromARGB(255, 210, 210, 210)),
+                        height: 600,
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: const Color.fromARGB(161, 255, 255, 255)),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -139,13 +160,28 @@ class _FourProState extends State<FourPro> {
                                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenWidth * 0.04, 40), letterSpacing: 1.2),
                                   ),
                                   SizedBox(height: 5),
+                                  Text(
+                                    "Más que empaque,es lenguaje visual,versátil, \nsofisticado,y técnicamente ideal.",
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(fontWeight: FontWeight.normal, fontSize: min(screenWidth * 0.015, 15), letterSpacing: 1.2),
+                                  ),
+                                  SizedBox(height: 30),
                                   ElevatedButton(
                                     onPressed: () {},
                                     style: ButtonStyle(
-                                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColor),
-                                      foregroundColor: WidgetStatePropertyAll(Colors.white),
+                                      backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
+                                      foregroundColor: WidgetStateProperty.all(Colors.white),
+                                      padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 28, vertical: 18)),
+                                      shape: WidgetStateProperty.all(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8), // 🔽 Antes: 30
+                                        ),
+                                      ),
+                                      elevation: WidgetStateProperty.all(6),
+                                      shadowColor: WidgetStateProperty.all(Theme.of(context).primaryColor.withOpacity(0.3)),
+                                      overlayColor: WidgetStateProperty.all(Colors.white.withOpacity(0.1)),
                                     ),
-                                    child: Text("Armar mi 4Pro", style: TextStyle(fontWeight: FontWeight.bold)),
+                                    child: Text("Armar mi 4PRO", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, letterSpacing: 1.2)),
                                   ),
                                 ],
                               ),
@@ -162,7 +198,7 @@ class _FourProState extends State<FourPro> {
                       padding: EdgeInsets.all(8),
                       margin: EdgeInsets.symmetric(vertical: 100),
                       width: min(screenWidth * 0.95, 1300),
-                      decoration: BoxDecoration(color: const Color.fromARGB(255, 255, 255, 255), borderRadius: BorderRadius.circular(16)),
+                      decoration: BoxDecoration(color: const Color.fromARGB(161, 255, 255, 255), borderRadius: BorderRadius.circular(16)),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -231,8 +267,11 @@ class _FourProState extends State<FourPro> {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 100, bottom: 50),
-                child: Text("4 Funciones, 4PRO", style: TextStyle(fontSize: min(screenWidth * 0.03, 60), fontWeight: FontWeight.bold)),
+                padding: const EdgeInsets.symmetric(horizontal: 85, vertical: 40),
+                child: Text(
+                  "4 Funciones, 4PRO",
+                  style: TextStyle(fontSize: min(screenWidth * 0.03, 60), color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                ),
               ),
 
               //Discover local
@@ -242,15 +281,15 @@ class _FourProState extends State<FourPro> {
                 child: Row(
                   children: List.generate(localCards.length, (int index) {
                     final card = localCards[index];
-                    final double horizontalPadding = screenWidth * 0.01;
+                    final double horizontalPadding = screenWidth * 0.045;
                     return Padding(
                       padding: EdgeInsets.only(
                         left: index == 0 ? horizontalPadding : 0,
                         right: index == localCards.length - 1 ? horizontalPadding : 20,
                       ),
                       child: Container(
-                        width: min(screenWidth * 0.52, 380),
-                        height: min(screenWidth * 0.93, 700),
+                        width: min(screenWidth * 0.52, 1080),
+                        height: min(screenWidth * 0.93, 540),
                         padding: EdgeInsets.only(top: 22, left: 22),
                         margin: EdgeInsets.only(top: 20, bottom: 20, right: 20),
                         decoration: BoxDecoration(
@@ -313,6 +352,7 @@ class _FourProState extends State<FourPro> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    // Botón izquierdo
                     IconButton(
                       style: ButtonStyle(
                         backgroundColor: WidgetStateProperty.all(scrollControllerLeft ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80)),
@@ -321,7 +361,7 @@ class _FourProState extends State<FourPro> {
                           scrollControllerLeft
                               ? () {
                                 scrollController.animateTo(
-                                  scrollController.offset - 500,
+                                  scrollController.offset - 1000,
                                   duration: Duration(milliseconds: 200),
                                   curve: Curves.easeInOut,
                                 );
@@ -338,7 +378,7 @@ class _FourProState extends State<FourPro> {
                           scrollControllerRigth
                               ? () {
                                 scrollController.animateTo(
-                                  scrollController.offset + 500,
+                                  scrollController.offset + 1000,
                                   duration: Duration(milliseconds: 200),
                                   curve: Curves.easeInOut,
                                 );
@@ -347,6 +387,26 @@ class _FourProState extends State<FourPro> {
                       icon: Icon(Icons.arrow_forward_ios_rounded),
                     ),
                   ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Center(
+                  child: Text(
+                    "Una familia, múltiples funciones. \nSiempre 4PRO.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: min(screenWidth * 0.03, 45), color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20.0),
+                child: Center(
+                  child: Container(
+                    width: min(screenWidth, 1500),
+                    height: 600,
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: const Color.fromARGB(161, 255, 255, 255)),
+                  ),
                 ),
               ),
 

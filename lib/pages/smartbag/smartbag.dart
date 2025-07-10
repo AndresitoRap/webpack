@@ -18,10 +18,13 @@ class SmartBag extends StatefulWidget {
 class _SmartBagState extends State<SmartBag> {
   //Seccion scrolleable
   final ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollControllerDiscover = ScrollController();
+  double scrollProgress = 0.0; // va de 0.0 a 1.0 según el scroll
   List<bool> isHoverCardList = List.generate(cardFindS.length, (_) => false);
   List<bool> isHoverIconList = List.generate(cardFindS.length, (_) => false);
   bool canScrollLeft = false;
   bool canScrollRight = true;
+  bool isVideoShrunk = false;
   late VideoPlayerController _videoController;
 
   void _updateScrollButtons() {
@@ -53,6 +56,16 @@ class _SmartBagState extends State<SmartBag> {
     super.initState();
     _scrollControllerfamily.addListener(_updateScrollButtonsFamily);
     _scrollController.addListener(_updateScrollButtons);
+
+    // Listener de scroll principal
+    _scrollController.addListener(() {
+      final offset = _scrollController.offset.clamp(0, 200);
+      final progress = offset / 200;
+
+      setState(() {
+        scrollProgress = progress;
+      });
+    });
   }
 
   @override
@@ -80,11 +93,14 @@ class _SmartBagState extends State<SmartBag> {
       body: Stack(
         children: [
           SingleChildScrollView(
+            controller: _scrollController,
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 45),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Container(height: 200, width: screenWidth, color: Colors.grey),
+
                   SizedBox(height: 50),
                   screenWidth >= 1000
                       ? Center(
@@ -211,34 +227,40 @@ class _SmartBagState extends State<SmartBag> {
                       ),
                   SizedBox(height: 20),
                   Center(
-                    child: SizedBox(
-                      width: min(screenWidth, 2260),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 20, horizontal: screenWidth * 0.055),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(30),
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: min(screenHeight * 0.8, 1100),
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                ValueListenableBuilder<bool>(
-                                  valueListenable: videoBlurNotifier,
-                                  builder: (context, isBlur, _) {
-                                    return HtmlBackgroundVideo(
-                                      src: 'assets/videos/smartbag/SmartbagInicio.webm',
-                                      blur: isBlur,
-                                      loop: true,
-                                      showControls: true,
-                                      fit: BoxFit.cover,
-                                    );
-                                  },
+                    child: Center(
+                      child: Builder(
+                        builder: (context) {
+                          final borderRadius = BorderRadius.circular(30 * scrollProgress);
+                          final horizontalPadding = screenWidth * 0.055 * scrollProgress;
+
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 20, horizontal: horizontalPadding),
+                            child: ClipRRect(
+                              borderRadius: borderRadius,
+                              child: Container(
+                                width: double.infinity,
+                                height: min(screenHeight * 0.8, 1100),
+                                child: Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    ValueListenableBuilder<bool>(
+                                      valueListenable: videoBlurNotifier,
+                                      builder: (context, isBlur, _) {
+                                        return HtmlBackgroundVideo(
+                                          src: 'assets/videos/smartbag/SmartbagInicio.webm',
+                                          blur: isBlur,
+                                          loop: true,
+                                          showControls: true,
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -247,7 +269,7 @@ class _SmartBagState extends State<SmartBag> {
                   Discover(
                     title: "Descubre Smart.",
                     list: cardFindS,
-                    scrollController: _scrollController,
+                    scrollController: _scrollControllerDiscover,
                     ishoverlist: isHoverCardList,
                     ishovericonlist: isHoverIconList,
                     scrollControllerLeft: canScrollLeft,

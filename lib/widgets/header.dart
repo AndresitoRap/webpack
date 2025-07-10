@@ -833,6 +833,7 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
 
     _videoElement =
         html.VideoElement()
+          ..id = _viewId
           ..src = widget.src
           ..autoplay = true
           ..loop = widget.loop
@@ -844,6 +845,7 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
           ..style.transition = 'filter 0.5s ease-in-out'
           ..style.backgroundColor = 'white'
           ..style.filter = widget.blur ? 'blur(30px)' : 'none';
+
     if (widget.height != null) {
       _videoElement.style.height = '${widget.height}px';
     }
@@ -852,8 +854,7 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
     ui.platformViewRegistry.registerViewFactory(_viewId, (int viewId) => _videoElement);
 
     _videoElement.onClick.listen((_) {
-      if (!widget.isPause) return; // no hacer nada si no se puede pausar
-
+      if (!widget.isPause) return;
       if (_videoElement.paused) {
         _videoElement.play();
       } else {
@@ -862,20 +863,20 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
     });
 
     _videoElement.onEnded.listen((event) {
-      if (widget.onEnded != null) {
-        widget.onEnded!();
-      }
+      widget.onEnded?.call();
     });
 
-    _videoElement.onPlay.listen((event) {
-      setState(() {
-        isPlaying = true;
-      });
-    });
     _videoElement.onPlay.listen((event) {
       if (!mounted) return;
       setState(() {
         isPlaying = true;
+      });
+    });
+
+    _videoElement.onPause.listen((event) {
+      if (!mounted) return;
+      setState(() {
+        isPlaying = false;
       });
     });
   }
@@ -883,7 +884,6 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
   @override
   void didUpdateWidget(covariant HtmlBackgroundVideo oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Solo cambia el filtro si el blur ha cambiado
     if (oldWidget.blur != widget.blur) {
       _videoElement.style.filter = widget.blur ? 'blur(30px)' : 'none';
     }
@@ -893,10 +893,10 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
+        // El video con GestureDetector
         GestureDetector(
           onTap: () {
-            if (!widget.isPause) return; // prevenir toggle si no se permite
-
+            if (!widget.isPause) return;
             setState(() {
               if (_videoElement.paused) {
                 _videoElement.play();
@@ -907,16 +907,30 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
           },
           child: HtmlElementView(viewType: _viewId),
         ),
+
+        // Botón de control de reproducción
         if (widget.showControls)
           Positioned(
             bottom: 20,
             right: 20,
-            child: FloatingActionButton(
-              shape: const CircleBorder(),
-              backgroundColor: Color(0xffb1b0b4),
-              mini: true,
-              child: Icon(isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white),
-              onPressed: () {},
+            child: GestureDetector(
+              onTap: () {
+                if (!widget.isPause) return;
+                setState(() {
+                  if (_videoElement.paused) {
+                    _videoElement.play();
+                  } else {
+                    _videoElement.pause();
+                  }
+                });
+              },
+              child: FloatingActionButton(
+                shape: const CircleBorder(),
+                backgroundColor: const Color(0xffb1b0b4),
+                mini: true,
+                child: Icon(isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white),
+                onPressed: () {},
+              ),
             ),
           ),
       ],

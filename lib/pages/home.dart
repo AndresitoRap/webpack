@@ -567,7 +567,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
                                                   blur: isBlur,
                                                   loop: true,
                                                   showControls: false,
-                                                  isPause: false,
+                                                  //isPause: false,
                                                   fit: BoxFit.fill,
                                                 ),
                                               );
@@ -586,7 +586,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
                                                   blur: isBlur,
                                                   loop: true,
                                                   showControls: false,
-                                                  isPause: false,
+                                                  //isPause: false,
                                                   fit: BoxFit.fill,
                                                 ),
                                               );

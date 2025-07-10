@@ -4,6 +4,8 @@ import 'dart:ui_web' as ui;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:html' as html;
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:webpack/widgets/scrollopacity.dart';
 
 class HeardquartersCards {
   final String img;
@@ -18,7 +20,7 @@ class HeardquartersCards {
 final List<HeardquartersCards> cardHQ = [
   HeardquartersCards(
     img: "assets/img/home/Carvajal.webp",
-    name: "Carvajal",
+    name: "Carvajal - Bogotá D.C",
     latitude: 4.60971,
     longitude: -74.08175,
     map:
@@ -26,7 +28,7 @@ final List<HeardquartersCards> cardHQ = [
   ),
   HeardquartersCards(
     img: "assets/img/home/Norte.webp",
-    name: "Nogal",
+    name: "Nogal - Bogotá D.C",
     latitude: 4.6610239150862025,
     longitude: -74.05414093434182,
     map:
@@ -34,7 +36,7 @@ final List<HeardquartersCards> cardHQ = [
   ),
   HeardquartersCards(
     img: "assets/img/home/Mosquera.webp",
-    name: "Mosquera",
+    name: "Mosquera - Cundinamarca",
     latitude: 4.695486,
     longitude: -74.190506,
     map:
@@ -71,48 +73,77 @@ class _HeadquartersState extends State<Headquarters> {
             itemCount: cardHQ.length,
             itemBuilder: (context, index) {
               final sede = cardHQ[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                child: GestureDetector(
-                  onTap: () {
-                    _showHeadquarterDialog(context, sede);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 5, offset: Offset(0, 2))],
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 120),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          children: [
-                            Text("${sede.name}.", style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenWidth * 0.03, 30))),
-                            SizedBox(height: 8),
-                            Text("Encuentranos", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: min(screenWidth * 0.025, 25))),
-                          ],
+              final isTabletOrPC = screenWidth <= 1000; // puedes ajustar este valor si deseas
+
+              return ScrollAnimatedWrapper(
+                visibilityKey: Key('Headquartes-${sede.name}'),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () {
+                        _showHeadquarterDialog(context, sede);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 5, offset: Offset(0, 2))],
                         ),
-                        SizedBox(height: 120, child: Image.asset(sede.img)),
-                      ],
+                        padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 120),
+                        child:
+                            isTabletOrPC
+                                ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SizedBox(height: 180, child: Image.asset(sede.img)),
+                                    const SizedBox(height: 24),
+                                    Text("${sede.name}.", style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenWidth * 0.03, 30))),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "Encuéntranos",
+                                          style: TextStyle(color: Theme.of(context).primaryColor, fontSize: min(screenWidth * 0.020, 20)),
+                                        ),
+                                        const SizedBox(width: 5),
+                                        Icon(CupertinoIcons.location, color: Theme.of(context).primaryColor, size: min(screenWidth * 0.020, 20)),
+                                      ],
+                                    ),
+                                  ],
+                                )
+                                : Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Sede ${sede.name}.",
+                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenWidth * 0.03, 30)),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              "Encuéntranos",
+                                              style: TextStyle(color: Theme.of(context).primaryColor, fontSize: min(screenWidth * 0.020, 20)),
+                                            ),
+                                            const SizedBox(width: 5),
+                                            Icon(CupertinoIcons.placemark, color: Theme.of(context).primaryColor, size: min(screenWidth * 0.020, 20)),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 120, child: Image.asset(sede.img)),
+                                  ],
+                                ),
+                      ),
                     ),
-                    // Column(
-                    //   crossAxisAlignment: CrossAxisAlignment.start,
-                    //   children: [
-                    //     // Título
-                    //     Text(sede.name, style: TextStyle(fontSize: screenWidth * 0.022, fontWeight: FontWeight.bold, color: Colors.black87)),
-                    //     SizedBox(height: 8),
-                    //     // Contenido
-                    //     Row(
-                    //       children: [
-                    //         Icon(CupertinoIcons.location_fill, color: Theme.of(context).primaryColor, size: screenWidth * 0.018),
-                    //         SizedBox(width: 8),
-                    //         Text("Encuéntranos!", style: TextStyle(fontSize: screenWidth * 0.016, color: Colors.black54)),
-                    //       ],
-                    //     ),
-                    //   ],
-                    // ),
                   ),
                 ),
               );

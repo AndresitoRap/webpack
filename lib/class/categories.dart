@@ -130,7 +130,6 @@ final List<Subcategorie> subcategorieEco = [
     dimentions: "7,5 × 0,5 × 32 cm",
     route: "/EcoBag/Explora-EcoBag/4PRO",
     enabledPS: true,
-    enabled: false,
   ),
   Subcategorie(
     category: categorieEco,

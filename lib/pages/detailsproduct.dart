@@ -539,9 +539,19 @@ class _DetailsProductState extends State<DetailsProduct> {
                                           selectedStructure: selectedStructure,
                                           selectedGramaje: selectedGramaje,
                                           selectedColor: selectedColor,
+                                          hoveredColor: hoveredColor,
+                                          onHoverColor: (value) {
+                                            setState(() {
+                                              hoveredColor = value;
+                                            });
+                                          },
                                           selectedPeelstick: selectedPeelstick,
                                           hoveredPS: hoveredPS,
-                                          onHoverPS: (value) => {},
+                                          onHoverPS: (value) {
+                                            setState(() {
+                                              hoveredPS = value;
+                                            });
+                                          },
                                           selectedValve: selectedValve,
                                           selectedFinish: selectedFinish,
                                           controllerModel: controllerModel,
@@ -883,6 +893,8 @@ class _DetailsProductState extends State<DetailsProduct> {
                                   selectedStructure: selectedStructure,
                                   selectedGramaje: selectedGramaje,
                                   selectedColor: selectedColor,
+                                  hoveredColor: hoveredColor,
+                                  onHoverColor: (value) => {},
                                   selectedPeelstick: selectedPeelstick,
                                   hoveredPS: hoveredPS,
                                   onHoverPS: (value) => {},
@@ -1202,6 +1214,21 @@ class _DetailsProductState extends State<DetailsProduct> {
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
+                                        SizedBox(
+                                          width: 400,
+                                          child: Text(
+                                            product.description,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color:
+                                                  categorie.name == "SmartBag"
+                                                      ? Theme.of(context).primaryColor.withAlpha(150)
+                                                      : const Color(0xff4b8d2c).withAlpha(150),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 4),
                                         Text(
                                           "\$${getPrecioSeleccionado().toStringAsFixed(2)} por unidad",
                                           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -1459,9 +1486,13 @@ class FormCreateBag extends StatelessWidget {
   final String? selectedStructure;
   final String? selectedGramaje;
   final NamedColor? selectedColor;
+  final String? hoveredColor;
+  final ValueChanged<String?> onHoverColor;
+
   final PeelStickOption? selectedPeelstick;
   final String? hoveredPS;
   final ValueChanged<String?> onHoverPS;
+
   final String? selectedValve;
   final String? selectedFinish;
   final ValueChanged<Terminado> onSelectTerminado;
@@ -1482,6 +1513,9 @@ class FormCreateBag extends StatelessWidget {
     required this.selectedStructure,
     required this.selectedGramaje,
     required this.selectedColor,
+    required this.hoveredColor,
+    required this.onHoverColor,
+
     required this.selectedPeelstick,
     required this.hoveredPS,
     required this.onHoverPS,
@@ -1515,8 +1549,37 @@ class FormCreateBag extends StatelessWidget {
     return [];
   }
 
+  List<NamedColor> getColorsForSelection() {
+    if (selectedTerminado != null && selectedStructure != null && selectedGramaje != null) {
+      final estructura = selectedTerminado!.structures.firstWhere(
+        (e) => e.name == selectedStructure,
+        orElse: () => selectedTerminado!.structures.first,
+      );
+
+      final ability = estructura.ability.firstWhere((a) => a.name == selectedGramaje, orElse: () => estructura.ability.first);
+
+      final Set<String> seen = {};
+      final List<NamedColor> colors = [];
+
+      for (final product in ability.product) {
+        for (final color in product.colors) {
+          if (!seen.contains(color.name)) {
+            seen.add(color.name);
+            colors.add(color);
+          }
+        }
+      }
+
+      return colors;
+    }
+
+    return [];
+  }
+
   @override
   Widget build(BuildContext context) {
+    final allColors = getColorsForSelection();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1553,13 +1616,28 @@ class FormCreateBag extends StatelessWidget {
         /// Color
         if (selectedTerminado != null && selectedStructure != null && selectedGramaje != null) ...[
           ChooseBagTitle(text1: "Tu color, tu estilo.", text2: "Escoge el que conecte con tus clientes.", product: product),
+          Text(() {
+            if (hoveredColor != null) {
+              return "Color - $hoveredColor";
+            }
+            if (selectedColor != null) {
+              return "Color - ${selectedColor!.name}";
+            }
+            return "Color";
+          }(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+
+          const SizedBox(height: 10),
+
           Wrap(
             spacing: 12,
             runSpacing: 12,
             children:
-                getAvailableColors().map((c) {
+                allColors.map((c) {
                   return MouseRegion(
                     cursor: SystemMouseCursors.click,
+                    onEnter: (_) => onHoverColor(c.name),
+                    onExit: (_) => onHoverColor(null),
+
                     child: GestureDetector(
                       onTap: () {
                         onSelectColor(c);
@@ -1586,7 +1664,7 @@ class FormCreateBag extends StatelessWidget {
                         width: 40,
                         decoration: BoxDecoration(
                           color: c.color,
-                          shape: BoxShape.circle,
+                          borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             width: 2,
                             color: selectedColor?.name == c.name ? Theme.of(context).colorScheme.primary : Colors.grey.shade300,

@@ -802,6 +802,7 @@ class HtmlBackgroundVideo extends StatefulWidget {
   final BoxFit? fit;
   final double? height;
   final VoidCallback? onEnded;
+  final bool isPause;
 
   const HtmlBackgroundVideo({
     super.key,
@@ -812,6 +813,7 @@ class HtmlBackgroundVideo extends StatefulWidget {
     this.showControls = false,
     this.fit,
     this.height,
+    this.isPause = true,
   });
 
   @override
@@ -850,6 +852,8 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
     ui.platformViewRegistry.registerViewFactory(_viewId, (int viewId) => _videoElement);
 
     _videoElement.onClick.listen((_) {
+      if (!widget.isPause) return; // no hacer nada si no se puede pausar
+
       if (_videoElement.paused) {
         _videoElement.play();
       } else {
@@ -868,9 +872,10 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
         isPlaying = true;
       });
     });
-    _videoElement.onPause.listen((event) {
+    _videoElement.onPlay.listen((event) {
+      if (!mounted) return;
       setState(() {
-        isPlaying = false;
+        isPlaying = true;
       });
     });
   }
@@ -890,6 +895,8 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
       children: [
         GestureDetector(
           onTap: () {
+            if (!widget.isPause) return; // prevenir toggle si no se permite
+
             setState(() {
               if (_videoElement.paused) {
                 _videoElement.play();

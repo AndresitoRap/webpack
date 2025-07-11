@@ -1,10 +1,10 @@
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 import 'package:webpack/class/categories.dart';
-import 'package:webpack/class/products.dart';
 import 'package:webpack/main.dart';
-import 'package:webpack/widgets/discover.dart';
+import 'package:webpack/widgets/4pro/widgetsfourpro.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
 import 'package:webpack/widgets/scrollopacity.dart';
@@ -28,18 +28,42 @@ class _CommerceState extends State<Commerce> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final currentRoute = ModalRoute.of(context)?.settings.name ?? '';
-    print(widget.section);
-
+    final section = widget.section.toLowerCase();
+    final categoryName = widget.selectedSubcategorie.category.name.toLowerCase();
     Widget content;
 
-    switch (widget.section.toLowerCase()) {
-      case '4pro':
-        content = FourPro(screenWidth: screenWidth, currentRoute: currentRoute, subcategorie: widget.selectedSubcategorie, section: widget.section);
+    if (categoryName == 'smartbag') {
+      switch (section) {
+        case '4pro':
+          content = FourPro(screenWidth: screenWidth, currentRoute: currentRoute, subcategorie: widget.selectedSubcategorie, section: widget.section);
+          break;
 
-        break;
+        case 'ecobag':
+          content = FourProEco(
+            screenWidth: screenWidth,
+            currentRoute: currentRoute,
+            subcategorie: widget.selectedSubcategorie,
+            section: widget.section,
+          );
+          break;
 
-      default:
-        content = Center(child: Text('Sección no encontrada'));
+        default:
+          content = const Center(child: Text('Sub‑sección no encontrada'));
+      }
+    } else {
+      switch (section) {
+        case '4pro':
+          content = FourProEco(
+            screenWidth: screenWidth,
+            currentRoute: currentRoute,
+            subcategorie: widget.selectedSubcategorie,
+            section: widget.section,
+          );
+          break;
+
+        default:
+          content = const Center(child: Text('Categoría no encontrada'));
+      }
     }
 
     return Scaffold(body: Stack(children: [content, Header()]));
@@ -58,15 +82,40 @@ class FourPro extends StatefulWidget {
   State<FourPro> createState() => _FourProState();
 }
 
-class _FourProState extends State<FourPro> {
+class _FourProState extends State<FourPro> with TickerProviderStateMixin {
   final ScrollController scrollController = ScrollController();
   bool scrollControllerLeft = false;
   bool scrollControllerRigth = true;
+
+  late final AnimationController _imgCtrl;
+  late final Animation<Offset> _imgSlide;
+  late final Animation<double> _imgOpacity;
+
+  late final AnimationController _imgCtrlDown;
+  late final Animation<Offset> _imgSlide2;
+  late final Animation<double> _imgOpacityDown;
 
   @override
   void initState() {
     super.initState();
     scrollController.addListener(_handleScroll);
+
+    _imgCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200));
+    _imgOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: _imgCtrl, curve: Curves.easeOut));
+
+    _imgSlide = Tween<Offset>(
+      begin: const Offset(0.1, 0), // fuera a la derecha
+      end: Offset.zero, // posición final
+    ).animate(CurvedAnimation(parent: _imgCtrl, curve: Curves.easeOut));
+
+    _imgCtrlDown = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200));
+
+    _imgOpacityDown = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: _imgCtrlDown, curve: Curves.easeOut));
+
+    _imgSlide2 = Tween<Offset>(
+      begin: const Offset(-0.1, 0), // entra desde la izquierda
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _imgCtrlDown, curve: Curves.easeOut));
   }
 
   void _handleScroll() {
@@ -79,6 +128,9 @@ class _FourProState extends State<FourPro> {
 
   @override
   void dispose() {
+    _imgCtrl.dispose();
+    _imgCtrlDown.dispose();
+
     scrollController.dispose();
     super.dispose();
   }
@@ -210,7 +262,10 @@ class _FourProState extends State<FourPro> {
                                     ),
                                     SizedBox(height: 30),
                                     ElevatedButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        final route = '${widget.subcategorie.route}/crea-tu-empaque';
+                                        navigateWithSlide(context, route); // tu función personalizada
+                                      },
                                       style: ButtonStyle(
                                         backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
                                         foregroundColor: WidgetStateProperty.all(Colors.white),
@@ -430,7 +485,7 @@ class _FourProState extends State<FourPro> {
                   ScrollAnimatedWrapper(
                     visibilityKey: Key("una-familia"),
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 200, bottom: 100),
+                      padding: const EdgeInsets.only(top: 200, bottom: 50),
                       child: Center(
                         child: Text.rich(
                           textAlign: TextAlign.center,
@@ -447,105 +502,168 @@ class _FourProState extends State<FourPro> {
                       ),
                     ),
                   ),
-                  ScrollAnimatedWrapper(
-                    visibilityKey: Key('foto4pro'),
-                    child: SizedBox(
-                      height: min(screenWidth * 0.9, 1200),
-                      child: Image.asset('assets/img/smartbag/discover5_Top.webp', height: MediaQuery.of(context).size.height * 0.9),
-                    ),
-                  ),
-                  ScrollAnimatedWrapper(
-                    visibilityKey: Key("Textsfoto4pro"),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: min(screenWidth * 0.1, 100), vertical: 100),
-                      width: min(screenWidth, 1100),
-                      child: Center(
-                        child: Text.rich(
-                          TextSpan(
-                            style: TextStyle(fontSize: min(screenWidth * 0.03, 25), height: 1.2, color: Colors.black),
+                  screenWidth >= 790
+                      ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
                             children: [
-                              const TextSpan(text: "Más que una bolsa, una solución inteligente. "),
-                              const TextSpan(text: "Fabricada con polímeros avanzados y refuerzos termosellados, "),
-                              TextSpan(
-                                text: "la 4PRO SmartBag resiste peso, humedad y uso intensivo sin perder estética. ",
-                                style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                              Expanded(
+                                child: ScrollAnimatedWrapper(
+                                  visibilityKey: Key('text-foto-4pro-familia'),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: min(screenWidth * 0.1, 50)),
+                                    child: Text.rich(
+                                      TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: "Más que empaque, ",
+                                            style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                "es identidad funcional. 4PRO SmartBag se adapta, protege y representa lo que tu marca realmente quiere decir.",
+                                          ),
+                                        ],
+                                      ),
+                                      textAlign: TextAlign.justify,
+                                      style: TextStyle(fontSize: min(screenWidth * 0.020, 22), fontWeight: FontWeight.w500, color: Colors.black),
+                                    ),
+                                  ),
+                                ),
                               ),
-                              const TextSpan(text: "Ideal para alimentos, suplementos o cosmética. "),
-                              TextSpan(
-                                text: "Su diseño optimiza la logística y mejora la experiencia del usuario. ",
-                                style: TextStyle(color: Theme.of(context).primaryColor),
+
+                              Expanded(
+                                child: VisibilityDetector(
+                                  key: const Key('img-slide-anim'),
+                                  onVisibilityChanged: (info) {
+                                    if (info.visibleFraction > 0.5 && !_imgCtrl.isCompleted) {
+                                      _imgCtrl.forward();
+                                    }
+                                  },
+                                  child: FadeTransition(
+                                    opacity: _imgOpacity,
+                                    child: SlideTransition(position: _imgSlide, child: Image.asset("assets/img/smartbag/4pro/top.webp")),
+                                  ),
+                                ),
                               ),
-                              const TextSpan(text: "Alto rendimiento, pensado para hoy y mañana."),
                             ],
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ),
+                          SizedBox(height: min(screenWidth * 0.1, 70)),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: VisibilityDetector(
+                                  key: const Key('img-slide-anim2'),
+                                  onVisibilityChanged: (info) {
+                                    if (info.visibleFraction > 0.5 && !_imgCtrlDown.isCompleted) {
+                                      _imgCtrlDown.forward();
+                                    }
+                                  },
+                                  child: FadeTransition(
+                                    opacity: _imgOpacityDown,
+                                    child: SlideTransition(position: _imgSlide2, child: Image.asset("assets/img/smartbag/4pro/down.webp")),
+                                  ),
+                                ),
+                              ),
 
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: min(screenWidth * 0.1, 50)),
+                                  child: Text.rich(
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: "Tecnología, confianza y diseño\n",
+                                          style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              "en cada capa de la 4PRO SmartBag. Diseñada para quienes necesitan soluciones con impacto real y protección superior.",
+                                        ),
+                                      ],
+                                    ),
+                                    textAlign: TextAlign.justify,
+                                    style: TextStyle(fontSize: min(screenWidth * 0.020, 22), fontWeight: FontWeight.w500, color: Colors.black),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                      : Column(
+                        children: [
+                          VisibilityDetector(
+                            key: const Key('img-slide-anim2'),
+                            onVisibilityChanged: (info) {
+                              if (info.visibleFraction > 0.5 && !_imgCtrlDown.isCompleted) {
+                                _imgCtrlDown.forward();
+                              }
+                            },
+                            child: FadeTransition(
+                              opacity: _imgOpacityDown,
+                              child: SlideTransition(position: _imgSlide2, child: Image.asset("assets/img/smartbag/4pro/down.webp")),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: min(screenWidth * 0.1, 100), vertical: 50),
+                            child: Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(text: "Tecnología, confianza y diseño\n", style: TextStyle(color: Theme.of(context).primaryColor)),
+                                  TextSpan(text: "en cada capa de la 4PRO SmartBag.\n"),
+                                  TextSpan(text: "Diseñada para quienes necesitan soluciones\ncon impacto real y protección superior."),
+                                ],
+                              ),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: min(screenWidth * 0.025, 25), fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          VisibilityDetector(
+                            key: const Key('img-slide-anim'),
+                            onVisibilityChanged: (info) {
+                              if (info.visibleFraction > 0.5 && !_imgCtrl.isCompleted) {
+                                _imgCtrl.forward();
+                              }
+                            },
+                            child: FadeTransition(
+                              opacity: _imgOpacity,
+                              child: SlideTransition(position: _imgSlide, child: Image.asset("assets/img/smartbag/4pro/top.webp")),
+                            ),
+                          ),
+                          ScrollAnimatedWrapper(
+                            visibilityKey: Key('text-foto-4pro-familia'),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: min(screenWidth * 0.1, 100), vertical: 50),
+                              child: Text.rich(
+                                TextSpan(
+                                  children: [
+                                    TextSpan(text: "Más que empaque, ", style: TextStyle(color: Theme.of(context).primaryColor)),
+                                    TextSpan(text: "es identidad funcional.\n"),
+                                    TextSpan(text: "4PRO SmartBag se adapta, protege y representa\nlo que tu marca realmente quiere decir."),
+                                  ],
+                                ),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: min(screenWidth * 0.025, 25), fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                   //Contenedores
-                  Padding(padding: EdgeInsets.symmetric(horizontal: min(screenWidth * 0.1, 400)), child: buildResponsiveInfoCards(context)),
+                  SizedBox(height: screenWidth >= 790 ? 200 : 60),
+
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: min(screenWidth * 0.1, 400)),
+                    child: ScrollAnimatedWrapper(visibilityKey: Key("Info4pro"), child: buildResponsiveInfoCards(context)),
+                  ),
                   SizedBox(height: 200),
                 ],
               ),
             ),
-            const SizedBox(height: 100),
-
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: screenWidth * 0.03),
-
-              child: Center(
-                child: Container(
-                  width: min(screenWidth, 1000),
-                  padding: EdgeInsets.all(32),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [BoxShadow(color: Colors.black.withAlpha(10), spreadRadius: 2, blurRadius: 10)],
-                  ),
-                  child: ScrollAnimatedWrapper(
-                    visibilityKey: Key("porque4pro2"),
-                    child: Row(
-                      children: [
-                        Image.asset("assets/img/BLogo.webp", height: 50),
-                        SizedBox(width: 40),
-                        Expanded(
-                          child: Text.rich(
-                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black.withAlpha(200), fontSize: min(screenWidth * 0.03, 20)),
-                            TextSpan(
-                              children: [
-                                TextSpan(text: "En PackVision entendimos que el mercado actual exige mucho más que un simple empaque; "),
-                                TextSpan(
-                                  text: "busca una experiencia completa que combine protección avanzada, ",
-                                  style: TextStyle(color: Theme.of(context).primaryColor),
-                                ),
-                                TextSpan(text: "presentación visual impecable y funcionalidad práctica para el consumidor final. "),
-                                TextSpan(text: "Por eso desarrollamos la 4PRO SmartBag, ", style: TextStyle(color: Theme.of(context).primaryColor)),
-                                TextSpan(
-                                  text:
-                                      "una solución diseñada para elevar la percepción de tu producto, mantener su frescura por más tiempo y facilitar su uso diario. ",
-                                ),
-                                TextSpan(
-                                  text:
-                                      "La 4PRO combina tecnología de empaque multicapa, materiales de alta barrera y detalles como válvulas y cierres inteligentes ",
-                                ),
-                                TextSpan(
-                                  text: "para que tu marca se destaque no solo por lo que ofrece, sino por cómo lo entrega.",
-                                  style: TextStyle(color: Theme.of(context).primaryColor),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            SizedBox(height: 200),
+            Container(width: double.infinity, height: 100, child: Text("Secuencia de imagenes")),
+            SizedBox(height: 100),
             Footer(),
           ],
         ),
@@ -554,119 +672,131 @@ class _FourProState extends State<FourPro> {
   }
 }
 
-class InfoCardData {
-  final String imagePath;
-  final String title;
-  final String description;
+class FourProEco extends StatefulWidget {
+  final double screenWidth;
+  final String currentRoute;
+  final Subcategorie subcategorie;
+  final String section;
 
-  InfoCardData({required this.imagePath, required this.title, required this.description});
+  const FourProEco({super.key, required this.screenWidth, required this.currentRoute, required this.subcategorie, required this.section});
+
+  @override
+  State<FourProEco> createState() => _FourProEcoState();
 }
 
-class InfoCard extends StatelessWidget {
-  final InfoCardData data;
-  final double maxFontSize;
-  final EdgeInsets padding;
-  final bool isup;
+class _FourProEcoState extends State<FourProEco> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late List<Animation<double>> _entryAnimations;
+  late Animation<double> _arcAnimation;
+  final int cardCount = 5; // Número de cards
+  final double cardWidth = 150; // Ancho de cada card
+  final double arcRadius = 300; // Radio del arco
 
-  const InfoCard({super.key, required this.data, required this.maxFontSize, this.padding = const EdgeInsets.all(16), this.isup = false});
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 10), // Duración total del ciclo
+      vsync: this,
+    )..repeat(); // Repite la animación continuamente
+
+    // Animaciones de entrada (de izquierda a derecha)
+    _entryAnimations = List.generate(
+      cardCount,
+      (index) => Tween<double>(begin: -widget.screenWidth, end: 0).animate(
+        CurvedAnimation(
+          parent: _controller,
+          curve: Interval(
+            index * 0.1, // Retraso para cada card
+            (index * 0.1) + 0.3, // Duración de entrada
+            curve: Curves.easeOut,
+          ),
+        ),
+      ),
+    );
+
+    // Animación del movimiento en arco
+    _arcAnimation = Tween<double>(begin: 0, end: 2 * pi).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.4, 1.0, curve: Curves.linear), // Comienza después de la entrada
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    return Container(
-      padding: padding,
-      margin: const EdgeInsets.all(8),
-      decoration: BoxDecoration(color: const Color.fromARGB(255, 237, 243, 255), borderRadius: BorderRadius.circular(16)),
-      child:
-          isup
-              ? Column(
-                children: [
-                  Text.rich(
-                    textAlign: TextAlign.center,
-                    TextSpan(
-                      children: [
-                        TextSpan(text: data.title, style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
-                        TextSpan(text: data.description),
-                      ],
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    return Column(
+      children: [
+        Container(
+          height: screenHeight,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color.fromARGB(255, 41, 112, 9), Colors.transparent],
+            ),
+          ),
+          child: Stack(
+            children: List.generate(cardCount, (index) {
+              return AnimatedBuilder(
+                animation: _controller,
+                builder: (context, child) {
+                  // Posición inicial en X (entrada)
+                  double xOffset = _entryAnimations[index].value;
+                  // Si la animación de entrada ha terminado, aplicar movimiento en arco
+                  if (_controller.value > (index * 0.1 + 0.3)) {
+                    // Calcular posición en el arco
+                    double angle = _arcAnimation.value + (index * (pi / (cardCount + 1)));
+                    xOffset = widget.screenWidth / 2 + arcRadius * cos(angle) - cardWidth / 2;
+                  }
+
+                  return Positioned(
+                    left: xOffset,
+                    top: screenHeight * 0.4 + arcRadius * sin((index * (pi / (cardCount + 1))) + _arcAnimation.value),
+                    child: Transform.rotate(
+                      angle: _arcAnimation.value * 0.1, // Rotación suave para efecto dinámico
+                      child: Card(
+                        elevation: 5,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        child: Container(
+                          width: cardWidth,
+                          height: 200,
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Producto ${index + 1}',
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 8),
+                              const Text(
+                                'Descripción del producto en la 4PRO SmartBag.',
+                                style: TextStyle(fontSize: 14),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
-                    style: TextStyle(fontSize: min(screenWidth * 0.03, maxFontSize)),
-                  ),
-                  const SizedBox(height: 12),
-                  Expanded(child: Image.asset(data.imagePath)),
-                ],
-              )
-              : Column(
-                children: [
-                  Expanded(child: Image.asset(data.imagePath)),
-                  const SizedBox(height: 12),
-                  Text.rich(
-                    textAlign: TextAlign.center,
-                    TextSpan(
-                      children: [
-                        TextSpan(text: data.title, style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
-                        TextSpan(text: data.description),
-                      ],
-                    ),
-                    style: TextStyle(fontSize: min(screenWidth * 0.03, maxFontSize)),
-                  ),
-                ],
-              ),
+                  );
+                },
+              );
+            }),
+          ),
+        ),
+      ],
     );
   }
-}
-
-Widget buildResponsiveInfoCards(BuildContext context) {
-  final List<InfoCardData> items = [
-    InfoCardData(
-      imagePath: "assets/img/smartbag/4pro/types.png",
-      title: "Tu decides la terminación ",
-      description:
-          "brillante para un acabado más reflectivo, Mate para una apariencia elegante y sobria, y Ventana para mostrar el producto sin perder protección.",
-    ),
-    InfoCardData(
-      imagePath: "assets/img/smartbag/valvula.webp",
-      title: "Agrega funcionalidad con accesorios inteligentes. ",
-      description:
-          "El sistema Peel Stick permite abrir y cerrar la bolsa fácilmente. Las válvulas desgasificadoras conservan productos frescos por más tiempo.",
-    ),
-    InfoCardData(
-      imagePath: "assets/img/smartbag/flowpack.webp",
-      title: "Cuatro capas ",
-      description:
-          "una protección total. La 4PRO combina PET, BOPP y PE para ofrecer una barrera contra la humedad, la luz y el oxígeno, con una presentación elegante y segura.",
-    ),
-  ];
-
-  return LayoutBuilder(
-    builder: (context, constraints) {
-      final isMobile = constraints.maxWidth < 700;
-
-      if (isMobile) {
-        return Column(children: items.map((data) => SizedBox(height: 300, child: InfoCard(data: data, maxFontSize: 30))).toList());
-      } else {
-        return SizedBox(
-          width: min(constraints.maxWidth, 1100),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(height: 350, child: InfoCard(data: items[0], maxFontSize: 16, isup: true)),
-                    SizedBox(height: 350, child: InfoCard(data: items[1], maxFontSize: 16, isup: true)),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: SizedBox(
-                  height: 700,
-                  child: InfoCard(data: items[2], maxFontSize: 16, padding: const EdgeInsets.only(right: 16, left: 16, top: 30, bottom: 50)),
-                ),
-              ),
-            ],
-          ),
-        );
-      }
-    },
-  );
 }

@@ -1,9 +1,10 @@
-import 'dart:ui';
+import 'dart:ui_web' as ui;
 import 'dart:html' as html;
+
+import 'dart:ui_web' as ui_web show platformViewRegistry;
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:webpack/class/menu_data.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:webpack/main.dart';
@@ -84,7 +85,7 @@ class _HeaderState extends State<Header> {
             return SizedBox(
               width: double.infinity,
               height: double.infinity,
-              child: BackdropFilter(filter: ImageFilter.blur(sigmaX: value, sigmaY: value), child: Container()),
+              child: BackdropFilter(filter: ui.ImageFilter.blur(sigmaX: value, sigmaY: value), child: Container()),
             );
           },
         ),
@@ -120,7 +121,7 @@ class _HeaderState extends State<Header> {
                                 : 48,
                         child: ClipRRect(
                           child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
+                            filter: ui.ImageFilter.blur(sigmaX: 40, sigmaY: 40),
                             child: Stack(
                               children: [
                                 SingleChildScrollView(
@@ -535,7 +536,7 @@ class _HeaderState extends State<Header> {
                       height: isHover ? 387 : 46,
                       child: ClipRRect(
                         child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                          filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                           child: AnimatedContainer(
                             duration: Duration(milliseconds: 300),
                             curve: Curves.easeInOut,
@@ -803,6 +804,7 @@ class HtmlBackgroundVideo extends StatefulWidget {
   final double? height;
   final VoidCallback? onEnded;
   final bool isPause;
+  final bool retry;
 
   const HtmlBackgroundVideo({
     super.key,
@@ -814,6 +816,7 @@ class HtmlBackgroundVideo extends StatefulWidget {
     this.fit,
     this.height,
     this.isPause = true,
+    this.retry = false,
   });
 
   @override
@@ -824,6 +827,7 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
   late final String _viewId;
   late html.VideoElement _videoElement;
   bool isPlaying = true;
+  double _retryRotationTurns = 0;
 
   @override
   void initState() {
@@ -851,7 +855,7 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
     }
 
     // ignore: undefined_prefixed_name
-    ui.platformViewRegistry.registerViewFactory(_viewId, (int viewId) => _videoElement);
+    ui_web.platformViewRegistry.registerViewFactory(_viewId, (int viewId) => _videoElement);
 
     _videoElement.onClick.listen((_) {
       if (!widget.isPause) return;
@@ -930,6 +934,29 @@ class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
                 mini: true,
                 child: Icon(isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white),
                 onPressed: () {},
+              ),
+            ),
+          ),
+        if (widget.retry)
+          Positioned(
+            bottom: 20,
+            left: 20,
+            child: FloatingActionButton(
+              shape: const CircleBorder(),
+              backgroundColor: const Color(0xffb1b0b4),
+              mini: true,
+              onPressed: () {
+                _videoElement.pause();
+                _videoElement.currentTime = 0;
+                _videoElement.play();
+                setState(() {
+                  _retryRotationTurns += 0.50; // 90 grados = 1/4 vuelta
+                });
+              },
+              child: AnimatedRotation(
+                turns: _retryRotationTurns,
+                duration: const Duration(milliseconds: 100),
+                child: const Icon(Icons.restart_alt_outlined, color: Colors.white),
               ),
             ),
           ),

@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:ui';
+// Gráficos y filtros: siempre vienen de dart:ui
+import 'dart:ui' as ui show ImageFilter;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_3d_controller/flutter_3d_controller.dart';
 import 'package:lottie/lottie.dart';
-import 'package:webpack/class/categories.dart';
 import 'package:webpack/class/products.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
@@ -251,7 +252,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                             child: ClipRRect(
                                               borderRadius: BorderRadius.circular(32),
                                               child: BackdropFilter(
-                                                filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
+                                                filter: ui.ImageFilter.blur(sigmaX: 40, sigmaY: 40),
                                                 child: Container(
                                                   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                                                   child: Row(
@@ -309,7 +310,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(32),
                                       child: BackdropFilter(
-                                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                        filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                                         child: Container(
                                           padding: EdgeInsets.all(20),
                                           child: Column(
@@ -385,8 +386,8 @@ class _DetailsProductState extends State<DetailsProduct> {
                                 return HtmlBackgroundVideo(
                                   src:
                                       product.categoria.name == "SmartBag"
-                                          ? 'assets/videos/smartbag/smartbag_products.webm'
-                                          : 'assets/assets/videos/ecobag/ecobag.webm',
+                                          ? 'assets/assets/videos/smartbag/smartbag_products.webm'
+                                          : 'assets/assets/assets/videos/ecobag/ecobag.webm',
                                   blur: isBlur,
                                   loop: true,
                                   showControls: true,
@@ -1282,7 +1283,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.zero,
                               child: BackdropFilter(
-                                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                                 child: Container(
                                   decoration: BoxDecoration(color: Colors.white.withAlpha(160), border: Border.all(width: 1, color: Colors.grey)),
                                   alignment: Alignment.center,

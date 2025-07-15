@@ -22,6 +22,7 @@ dependencies:
   collection: ^1.19.1
   visibility_detector: ^0.4.0+2
   carousel_slider: ^5.1.1
+  animated_text_kit: ^4.2.3
 
 
 dev_dependencies:
@@ -73,8 +74,10 @@ flutter:
     - assets/img/3DM/SmartBag/Standpack/
     - assets/img/home/
     - assets/img/ecobag/
+    - assets/img/ecobag/4pro/
     - assets/img/smartbag/
     - assets/img/smartbag/4pro/
+    - assets/img/smartbag/4pro/frames/
     - assets/img/support/
     - assets/img/us/
     - assets/fonts/

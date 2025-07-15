@@ -1,5 +1,6 @@
 import 'dart:math';
-import 'dart:ui';
+// Gráficos y filtros: siempre vienen de dart:ui
+import 'dart:ui' as ui show ImageFilter;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -239,7 +240,7 @@ class _DiscoverState extends State<Discover> {
               child: Stack(
                 children: [
                   BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                    filter: ui.ImageFilter.blur(sigmaX: 6, sigmaY: 6),
                     child: GestureDetector(onTap: () => Navigator.pop(context), child: Container(color: Colors.transparent)),
                   ),
                   Center(

@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import 'package:webpack/class/cardproduct.dart' show cardFindS, cardFindE;
+import 'package:webpack/class/cardproduct.dart' show cardFindS;
 import 'package:webpack/class/categories.dart';
 import 'package:webpack/widgets/discover.dart';
 import 'package:webpack/widgets/footer.dart';
@@ -247,7 +247,7 @@ class _SmartBagState extends State<SmartBag> {
                                       valueListenable: videoBlurNotifier,
                                       builder: (context, isBlur, _) {
                                         return HtmlBackgroundVideo(
-                                          src: 'assets/videos/smartbag/SmartbagInicio.webm',
+                                          src: 'assets/assets/videos/smartbag/SmartbagInicio.webm',
                                           blur: isBlur,
                                           loop: true,
                                           showControls: true,

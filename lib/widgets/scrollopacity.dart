@@ -4,17 +4,19 @@ import 'package:visibility_detector/visibility_detector.dart';
 class ScrollAnimatedWrapper extends StatefulWidget {
   final Widget child;
   final Duration duration;
-  final Duration delay; // ⏱ Nuevo campo
+  final Duration delay;
   final Offset startOffset;
   final Key visibilityKey;
+  final VoidCallback? onVisible; // 👈 NUEVO
 
   const ScrollAnimatedWrapper({
     super.key,
     required this.child,
     required this.visibilityKey,
     this.duration = const Duration(milliseconds: 800),
-    this.delay = Duration.zero, // ⏱ Valor por defecto: sin retraso
+    this.delay = Duration.zero,
     this.startOffset = const Offset(0, 0.1),
+    this.onVisible, // 👈 NUEVO
   });
 
   @override
@@ -37,6 +39,7 @@ class _ScrollAnimatedWrapperState extends State<ScrollAnimatedWrapper> {
               setState(() {
                 _visible = true;
               });
+              widget.onVisible?.call(); // 👈 Disparar callback
             }
           });
         }

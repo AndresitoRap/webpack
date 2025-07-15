@@ -244,7 +244,7 @@ class _EcoBagState extends State<EcoBag> {
                                     valueListenable: videoBlurNotifier,
                                     builder: (context, isBlur, _) {
                                       return HtmlBackgroundVideo(
-                                        src: 'assets/videos/ecobag/EcobagInicio.webm',
+                                        src: 'assets/assets/videos/ecobag/EcobagInicio.webm',
                                         blur: isBlur,
                                         loop: true,
                                         showControls: true,

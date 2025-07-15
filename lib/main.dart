@@ -16,7 +16,6 @@ import 'package:webpack/widgets/page_not_found.dart';
 import 'package:webpack/class/categories.dart';
 import 'package:webpack/class/products.dart';
 import 'package:webpack/pages/commerce.dart';
-import 'package:collection/collection.dart';
 
 final GlobalKey<TransitionOverlayState> transitionOverlayKey = GlobalKey();
 

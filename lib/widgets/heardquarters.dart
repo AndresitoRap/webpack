@@ -1,6 +1,7 @@
 import 'dart:math';
-import 'dart:ui';
-import 'dart:ui_web' as ui;
+// Gráficos y filtros: siempre vienen de dart:ui
+import 'dart:ui' as ui show ImageFilter, Canvas, Paint;
+import 'dart:ui_web' as ui_web show platformViewRegistry;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:html' as html;
@@ -167,7 +168,7 @@ class _HeadquartersState extends State<Headquarters> {
     // Solo registrar si no existe
     if (!_isViewRegistered(viewId)) {
       // ignore: undefined_prefixed_name
-      ui.platformViewRegistry.registerViewFactory(
+      ui_web.platformViewRegistry.registerViewFactory(
         viewId,
         (int viewId) =>
             html.IFrameElement()
@@ -190,7 +191,7 @@ class _HeadquartersState extends State<Headquarters> {
             clipBehavior: Clip.none,
             children: [
               BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                 child: Container(
                   width: dialogWidth,
                   constraints: BoxConstraints(maxHeight: dialogHeight),

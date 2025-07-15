@@ -563,7 +563,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
                                               return ClipRRect(
                                                 borderRadius: const BorderRadius.horizontal(left: Radius.circular(24)),
                                                 child: HtmlBackgroundVideo(
-                                                  src: 'assets/videos/smartbag/smart1.webm',
+                                                  src: 'assets/assets/videos/smartbag/smart1.webm',
                                                   blur: isBlur,
                                                   loop: true,
                                                   showControls: false,
@@ -582,7 +582,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
                                               return ClipRRect(
                                                 borderRadius: const BorderRadius.horizontal(right: Radius.circular(24)),
                                                 child: HtmlBackgroundVideo(
-                                                  src: 'assets/videos/ecobag/eco1.webm',
+                                                  src: 'assets/assets/videos/ecobag/eco1.webm',
                                                   blur: isBlur,
                                                   loop: true,
                                                   showControls: false,

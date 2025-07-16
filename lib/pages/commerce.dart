@@ -1,15 +1,15 @@
 import 'dart:math';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:webpack/class/categories.dart';
 import 'package:webpack/main.dart';
+import 'package:webpack/widgets/4pro/imageSequenceScroller.dart';
 import 'package:webpack/widgets/4pro/widgetsfourpro.dart';
-import 'package:webpack/widgets/ImageSequenceScroller%201.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
 import 'package:webpack/widgets/scrollopacity.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
 
 double computeYOffset({
   required BuildContext context,
@@ -135,6 +135,7 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    scrollController.addListener(checkGreenPosition);
     scrollControllerCards.addListener(_handleScroll);
 
     _imgCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200));
@@ -172,6 +173,24 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  // secuencia
+
+  final ScrollController scrollController = ScrollController();
+  final GlobalKey greenKey = GlobalKey();
+  final GlobalKey redKey = GlobalKey();
+  bool showContentAfterSequence = false;
+
+  double greenYOffset = 0;
+  bool isAnimatingGreen = false;
+
+  void handlePinChange(bool isPinned) {
+    if (!isPinned && !showContentAfterSequence) {
+      setState(() {
+        showContentAfterSequence = true;
+      });
+    }
+  }
+
   void checkGreenPosition() {
     final double newYOffset = computeYOffset(
       context: context,
@@ -189,16 +208,11 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
     });
   }
 
-  final ScrollController scrollController = ScrollController();
-  final GlobalKey greenKey = GlobalKey();
-  final GlobalKey redKey = GlobalKey();
-  bool showContentAfterSequence = false;
-
-  double greenYOffset = 0;
-  bool isAnimatingGreen = false;
-
+  // final de secuencia
   @override
   Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double redPaddingTop = 588 * 5; // 8px por frame
     final List<Map<String, dynamic>> items = [
       {"icon": CupertinoIcons.shield, "text": "Protección superior para conservar la calidad de tus productos."},
 
@@ -211,31 +225,35 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
 
     final List<dynamic> localCards = [
       {
-        "title": "La nueva 4PRO SmartBag.\nDiseñada para marcas inteligentes. Segura, funcional y con un diseño que habla por sí solo.",
-        "image": "assets/img/home/eco.webp",
+        "title": "4PRO SmartBag:\nsegura, funcional y diseñada para marcas inteligentes",
+        "image": "assets/img/smartbag/4pro/card1.webp",
+        "colorText": Colors.white,
       },
       {
         "title": "Sella. Protege. Impacta.\nZipper hermético, materiales premium y acabados que destacan en cualquier estantería.",
-        "image": "assets/img/home/eco.webp",
+        "image": "assets/img/smartbag/4pro/card2.webp",
+        "colorText": Colors.white,
       },
       {
         "title":
             "El empaque que entiende tu producto.\nVersatilidad para alimentos, cosméticos, suplementos y mucho más. Siempre listo para destacar.",
         "image": "assets/img/home/eco.webp",
+        "colorText": Colors.white,
       },
       {
         "title": "Tecnología en cada detalle.\nLa 4PRO SmartBag combina innovación, presencia visual y sostenibilidad, en una sola solución.",
         "image": "assets/img/home/eco.webp",
+        "colorText": Colors.white,
       },
     ];
 
     final screenWidth = widget.screenWidth;
-    final double redPaddingTop = 588 * 5;
 
     return Padding(
       padding: EdgeInsets.only(top: 45),
       child: SingleChildScrollView(
         controller: scrollController,
+        scrollDirection: Axis.vertical,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -274,7 +292,7 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
                 children: [
                   Center(
                     child: ScrollAnimatedWrapper(
-                      visibilityKey: Key("Simplemente-funcional"),
+                      visibilityKey: const Key("Simplemente-funcional"),
                       child: Container(
                         width: min(screenWidth, 1500),
                         height: 600,
@@ -284,15 +302,20 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
                             Positioned.fill(
                               child:
                                   screenWidth < 700
-                                      ? Image.asset("assets/img/smartbag/4Pro/prueba.png", fit: BoxFit.cover, alignment: Alignment.centerLeft)
+                                      ? Image.asset(
+                                        "assets/img/smartbag/4Pro/prueba.png",
+                                        cacheWidth: 800,
+                                        fit: BoxFit.cover,
+                                        alignment: Alignment.centerLeft,
+                                      )
                                       : Row(
                                         children: [
                                           Expanded(
-                                            flex: 100,
+                                            flex: 40,
                                             child: AspectRatio(
-                                              aspectRatio: 16 / 16, // o el ratio real de tu video
+                                              aspectRatio: 16 / 9, // o el ratio real de tu video
                                               child: HtmlBackgroundVideo(
-                                                src: '/assets/assets/videos/smartbag/4pro/4pro.webm',
+                                                src: 'assets/videos/smartbag/4pro/4pro.webm',
                                                 loop: false,
                                                 isPause: false,
                                                 fit: BoxFit.contain,
@@ -306,7 +329,7 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
                             Padding(
                               padding: EdgeInsets.only(left: screenWidth * 0.1),
                               child: ScrollAnimatedWrapper(
-                                visibilityKey: Key("Mas-Empaque"),
+                                visibilityKey: const Key("Mas-Empaque"),
                                 duration: Duration(milliseconds: 800),
                                 delay: screenWidth < 700 ? Duration.zero : Duration(milliseconds: 550),
                                 child: Column(
@@ -340,8 +363,8 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
                                           ),
                                         ),
                                         elevation: WidgetStateProperty.all(6),
-                                        shadowColor: WidgetStateProperty.all(Theme.of(context).primaryColor.withOpacity(0.3)),
-                                        overlayColor: WidgetStateProperty.all(Colors.white.withOpacity(0.1)),
+                                        shadowColor: WidgetStateProperty.all(Theme.of(context).primaryColor..withAlpha(77)),
+                                        overlayColor: WidgetStateProperty.all(Colors.white.withAlpha(26)),
                                       ),
                                       child: Text("Armar mi 4PRO", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, letterSpacing: 1.2)),
                                     ),
@@ -356,7 +379,7 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
                   ),
 
                   ScrollAnimatedWrapper(
-                    visibilityKey: Key("Nuestro-empaque"),
+                    visibilityKey: const Key("Nuestro-empaque"),
                     child: Container(
                       height: 100,
                       padding: EdgeInsets.all(8),
@@ -459,7 +482,7 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
                       ),
                       child: Container(
                         width: min(screenWidth * 0.8, 1000),
-                        height: min(screenWidth * 0.6, 700),
+                        height: min(screenWidth * 0.6, 550),
                         padding: EdgeInsets.only(top: 22, left: 22),
                         margin: EdgeInsets.only(top: 20, bottom: 20, right: 20),
                         decoration: BoxDecoration(
@@ -475,13 +498,16 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        card['title'],
-                                        style: TextStyle(
-                                          height: 0,
-                                          color: Colors.white,
-                                          fontSize: min(screenWidth * 0.03, 25),
-                                          fontWeight: FontWeight.bold,
+                                      Padding(
+                                        padding: EdgeInsets.only(left: screenWidth * 0.02, top: screenWidth * 0.01),
+                                        child: Text(
+                                          card['title'],
+                                          style: TextStyle(
+                                            height: 0,
+                                            color: card['colorText'] ?? Colors.white,
+                                            fontSize: min(screenWidth * 0.03, 25),
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -511,8 +537,8 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
                     onPressed:
                         scrollControllerLeft
                             ? () {
-                              scrollController.animateTo(
-                                scrollController.offset - 1000,
+                              scrollControllerCards.animateTo(
+                                scrollControllerCards.offset - 1000,
                                 duration: Duration(milliseconds: 200),
                                 curve: Curves.easeInOut,
                               );
@@ -528,8 +554,8 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
                     onPressed:
                         scrollControllerRigth
                             ? () {
-                              scrollController.animateTo(
-                                scrollController.offset + 1000,
+                              scrollControllerCards.animateTo(
+                                scrollControllerCards.offset + 1000,
                                 duration: Duration(milliseconds: 200),
                                 curve: Curves.easeInOut,
                               );
@@ -540,14 +566,13 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
                 ],
               ),
             ),
-
             Container(
               width: double.infinity,
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: const Color.fromARGB(161, 255, 255, 255)),
               child: Column(
                 children: [
                   ScrollAnimatedWrapper(
-                    visibilityKey: Key("una-familia"),
+                    visibilityKey: const Key("una-familia"),
                     child: Padding(
                       padding: const EdgeInsets.only(top: 200, bottom: 50),
                       child: Center(
@@ -609,7 +634,10 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
                                     },
                                     child: FadeTransition(
                                       opacity: _imgOpacity,
-                                      child: SlideTransition(position: _imgSlide, child: Image.asset("assets/img/smartbag/4pro/top.webp")),
+                                      child: SlideTransition(
+                                        position: _imgSlide,
+                                        child: Image.asset("assets/img/smartbag/4pro/top.webp", cacheWidth: 800),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -628,7 +656,10 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
                                     },
                                     child: FadeTransition(
                                       opacity: _imgOpacityDown,
-                                      child: SlideTransition(position: _imgSlide2, child: Image.asset("assets/img/smartbag/4pro/down.webp")),
+                                      child: SlideTransition(
+                                        position: _imgSlide2,
+                                        child: Image.asset("assets/img/smartbag/4pro/down.webp", cacheWidth: 800),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -673,7 +704,10 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
                               },
                               child: FadeTransition(
                                 opacity: _imgOpacityDown,
-                                child: SlideTransition(position: _imgSlide2, child: Image.asset("assets/img/smartbag/4pro/down.webp")),
+                                child: SlideTransition(
+                                  position: _imgSlide2,
+                                  child: Image.asset("assets/img/smartbag/4pro/down.webp", cacheWidth: 800),
+                                ),
                               ),
                             ),
                             Padding(
@@ -699,7 +733,7 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
                               },
                               child: FadeTransition(
                                 opacity: _imgOpacity,
-                                child: SlideTransition(position: _imgSlide, child: Image.asset("assets/img/smartbag/4pro/top.webp")),
+                                child: SlideTransition(position: _imgSlide, child: Image.asset("assets/img/smartbag/4pro/top.webp", cacheWidth: 800)),
                               ),
                             ),
                             ScrollAnimatedWrapper(
@@ -727,31 +761,73 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
 
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: min(screenWidth * 0.1, 400)),
-                    child: ScrollAnimatedWrapper(visibilityKey: Key("Info4pro"), child: buildResponsiveInfoCards(context)),
+                    child: ScrollAnimatedWrapper(visibilityKey: const Key("Info4pro"), child: buildResponsiveInfoCards(context)),
                   ),
                   SizedBox(height: 200),
                 ],
               ),
             ),
-            //Secuencia de imagenes
-            Center(
-              child: AnimatedContainer(
-                key: greenKey,
-                duration: Duration.zero,
-                curve: Curves.linear,
-                transform: Matrix4.translationValues(0, greenYOffset, 0),
-                width: MediaQuery.of(context).size.height * 1.5,
-                child: ImageSequenceScroller(
-                  framePrefix: 'assets/img/smartbag/4pro/frames/frame',
-                  frameExtension: 'webp',
-                  totalFrames: 588,
-                  width: double.infinity,
-                  externalScrollController: scrollController,
+
+            if (screenWidth >= 700) ...[
+              // 👉 PC o Tablet → animación con secuencia
+              Center(
+                child: AnimatedContainer(
+                  key: greenKey,
+                  duration: Duration.zero,
+                  curve: Curves.linear,
+                  transform: Matrix4.translationValues(0, greenYOffset, 0),
+                  width: screenHeight * 1.5,
+                  child: ImageSequenceScroller(
+                    framePrefix: 'assets/img/smartbag/4pro/frames/frame',
+                    frameExtension: 'webp',
+                    totalFrames: 588,
+                    width: double.infinity,
+                    externalScrollController: scrollController,
+                  ),
                 ),
               ),
-            ),
-            Padding(padding: EdgeInsets.only(top: redPaddingTop, bottom: 1000), child: Container(key: redKey, height: 100, width: double.infinity)),
-
+              Padding(padding: EdgeInsets.only(top: redPaddingTop - 100), child: SizedBox(key: redKey, height: 100, width: double.infinity)),
+            ] else ...[
+              // 👉 Móvil → mostrar 4 imágenes fijas en columna
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06), // igual que el resto del diseño
+                child: Column(
+                  children: [
+                    Image.asset(
+                      'assets/img/smartbag/4pro/frames/frame0095.webp',
+                      width: double.infinity,
+                      fit: BoxFit.contain,
+                      cacheWidth: 1920,
+                      filterQuality: FilterQuality.high,
+                    ),
+                    SizedBox(height: 16),
+                    Image.asset(
+                      'assets/img/smartbag/4pro/frames/frame0225.webp',
+                      width: double.infinity,
+                      fit: BoxFit.contain,
+                      cacheWidth: 1920,
+                      filterQuality: FilterQuality.high,
+                    ),
+                    SizedBox(height: 16),
+                    Image.asset(
+                      'assets/img/smartbag/4pro/frames/frame0369.webp',
+                      width: double.infinity,
+                      fit: BoxFit.contain,
+                      cacheWidth: 1920,
+                      filterQuality: FilterQuality.high,
+                    ),
+                    SizedBox(height: 16),
+                    Image.asset(
+                      'assets/img/smartbag/4pro/frames/frame0496.webp',
+                      width: double.infinity,
+                      fit: BoxFit.contain,
+                      cacheWidth: 1920,
+                      filterQuality: FilterQuality.high,
+                    ),
+                  ],
+                ),
+              ),
+            ],
             Stack(
               clipBehavior: Clip.none,
               children: [
@@ -775,7 +851,7 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       ScrollAnimatedWrapper(
-                        visibilityKey: Key("Unica-e-in"),
+                        visibilityKey: const Key("Unica-e-in"),
                         child: Text(
                           "UNICA E INIGUALABLE",
                           style: TextStyle(color: Theme.of(context).primaryColor, fontSize: min(screenWidth * 0.05, 48), fontWeight: FontWeight.bold),
@@ -785,7 +861,7 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
                       const SizedBox(height: 50),
                       ScrollAnimatedWrapper(
                         visibilityKey: Key('Image-unica-e-in'),
-                        child: Image.asset("assets/img/smartbag/4pro.webp", fit: BoxFit.cover, height: 400),
+                        child: Image.asset("assets/img/smartbag/4pro.webp", fit: BoxFit.cover, cacheWidth: 800, height: 400),
                       ),
                     ],
                   ),
@@ -945,7 +1021,8 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
               ),
             ),
             SizedBox(height: 100),
-            Footer(),
+
+            const Footer(),
           ],
         ),
       ),
@@ -966,10 +1043,11 @@ class FourProEco extends StatefulWidget {
   State<FourProEco> createState() => _FourProEcoState();
 }
 
-class _FourProEcoState extends State<FourProEco> with SingleTickerProviderStateMixin {
+class _FourProEcoState extends State<FourProEco> with TickerProviderStateMixin {
   final String textLine1 = "4PRO";
   final String textLine2 = "EcoBag";
   bool _showImage = false;
+  final ScrollController scrollControllerCards = ScrollController();
 
   final List<bool> visibleLettersLine1 = [];
   final List<bool> visibleLettersLine2 = [];
@@ -981,7 +1059,18 @@ class _FourProEcoState extends State<FourProEco> with SingleTickerProviderStateM
   bool _showLeftArrow = false;
   bool _showRightArrow = true;
   String selectedColor = "Kraft Azul";
+
+  //Cards
   final ScrollController _scrollController = ScrollController();
+  bool scrollControllerLeft = false;
+  bool scrollControllerRigth = true;
+  void _handleScroll() {
+    final position = scrollControllerCards.position;
+    setState(() {
+      scrollControllerLeft = position.pixels > 0;
+      scrollControllerRigth = position.pixels < position.maxScrollExtent;
+    });
+  }
 
   double scrollProgress = 0.0; // va de 0.0 a 1.0 según el scroll
   final GlobalKey _videoKey = GlobalKey();
@@ -1035,6 +1124,7 @@ class _FourProEcoState extends State<FourProEco> with SingleTickerProviderStateM
 
     // Listener de scroll principal
     _scrollController.addListener(_onScroll);
+    scrollControllerCards.addListener(_handleScroll);
   }
 
   void _onScroll() {
@@ -1049,9 +1139,10 @@ class _FourProEcoState extends State<FourProEco> with SingleTickerProviderStateM
     // Queremos que la animación empiece cuando el widget
     // entra en los primeros 200 px del viewport
     final raw = (viewportHeight - widgetTop).clamp(0, 200);
-    final progress = raw / 180;
-
-    setState(() => scrollProgress = progress);
+    final progress = raw / 200;
+    setState(() {
+      scrollProgress = progress;
+    });
   }
 
   @override
@@ -1094,6 +1185,15 @@ class _FourProEcoState extends State<FourProEco> with SingleTickerProviderStateM
     final screenHeight = MediaQuery.of(context).size.height;
     final selectedItem = colors.firstWhere((item) => item["name"] == selectedColor, orElse: () => colors.first);
 
+    final List<dynamic> localCards = [
+      {"title": "4PRO Ecobag® está\ndiseñada pensando en el planeta. ", "image": "assets/img/home/eco.webp"},
+      {"title": "Tu producto merece verse\ny mantenerse\nimpecable.", "image": "assets/img/home/eco.webp"},
+      {
+        "title": "Cierre hermético, zipper,\nválvula desgasificadora.Todo para que\ntu producto luzca profesional.",
+        "image": "assets/img/home/eco.webp",
+      },
+    ];
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 253, 255, 252),
       body: SingleChildScrollView(
@@ -1110,9 +1210,19 @@ class _FourProEcoState extends State<FourProEco> with SingleTickerProviderStateM
                     children: [
                       AnimatedOpacity(
                         opacity: _showImage ? 1.0 : 0.0,
-                        duration: const Duration(seconds: 2), // duración del fade in
+                        duration: const Duration(milliseconds: 1000),
                         curve: Curves.easeInOut,
-                        child: SizedBox(height: 500, width: 500, child: Image.asset("assets/img/ecobag/4pro.webp", fit: BoxFit.cover)),
+                        child: AnimatedScale(
+                          scale: _showImage ? 1.0 : 1.3,
+                          duration: const Duration(milliseconds: 1000),
+                          curve: Curves.easeOutBack,
+                          child: AnimatedSlide(
+                            offset: _showImage ? Offset(0, 0) : Offset(0, 0.1),
+                            duration: const Duration(milliseconds: 1000),
+                            curve: Curves.easeOut,
+                            child: SizedBox(height: 500, width: 500, child: Image.asset("assets/img/ecobag/4pro.webp", fit: BoxFit.cover)),
+                          ),
+                        ),
                       ),
 
                       Wrap(
@@ -1149,7 +1259,11 @@ class _FourProEcoState extends State<FourProEco> with SingleTickerProviderStateM
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 30),
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              final route = '${widget.subcategorie.route}/crea-tu-empaque';
+                              // print(route);
+                              navigateWithSlide(context, route); // tu función personalizada
+                            },
                             style: ButtonStyle(
                               backgroundColor: WidgetStatePropertyAll(Colors.white),
                               overlayColor: WidgetStatePropertyAll(Color.fromARGB(255, 222, 240, 213)),
@@ -1242,6 +1356,13 @@ class _FourProEcoState extends State<FourProEco> with SingleTickerProviderStateM
                           ),
                           if (screenWidth >= 990) SizedBox(height: 100),
                           Expanded(child: Center(child: Image.asset("assets/img/ecobag/4pro/Bags.png", fit: BoxFit.contain))),
+                          Center(
+                            child: Text(
+                              textAlign: TextAlign.center,
+                              "Nota: Los colores mostrados en la imagen son solo una referencia. Contamos con una amplia variedad de colores disponibles para personalizar tu empaque según tu marca y necesidades.",
+                              style: TextStyle(color: Color.fromARGB(255, 75, 141, 44).withAlpha(150), fontSize: 10),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -1472,110 +1593,116 @@ class _FourProEcoState extends State<FourProEco> with SingleTickerProviderStateM
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: screenWidth <= 1000 ? 50 : 100),
-                    child: Text.rich(
-                      style: TextStyle(fontSize: min(screenWidth * 0.025, 23), fontWeight: FontWeight.w300),
-                      TextSpan(
-                        children: [
-                          TextSpan(text: "Disponible en versiones de "),
-                          TextSpan(text: "3 y 4 láminas ", style: TextStyle(color: Color.fromARGB(255, 75, 141, 44), fontWeight: FontWeight.bold)),
-                          TextSpan(text: "para adaptarse a tus necesidades de protección, frescura y sostenibilidad."),
-                        ],
+                  ScrollAnimatedWrapper(
+                    visibilityKey: Key("Disponible-en"),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: screenWidth <= 1000 ? 50 : 100),
+                      child: Text.rich(
+                        style: TextStyle(fontSize: min(screenWidth * 0.025, 23), fontWeight: FontWeight.w300),
+                        TextSpan(
+                          children: [
+                            TextSpan(text: "Disponible en versiones de "),
+                            TextSpan(text: "3 y 4 láminas ", style: TextStyle(color: Color.fromARGB(255, 75, 141, 44), fontWeight: FontWeight.bold)),
+                            TextSpan(text: "para adaptarse a tus necesidades de protección, frescura y sostenibilidad."),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
-                    child:
-                        screenWidth <= 1000
-                            ? Column(
-                              children: [
-                                Text.rich(
-                                  style: TextStyle(fontSize: min(screenWidth * 0.025, 23), fontWeight: FontWeight.w300),
-                                  TextSpan(
+                  ScrollAnimatedWrapper(
+                    visibilityKey: Key("Info-disponible"),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
+                      child:
+                          screenWidth <= 1000
+                              ? Column(
+                                children: [
+                                  Text.rich(
+                                    style: TextStyle(fontSize: min(screenWidth * 0.025, 23), fontWeight: FontWeight.w300),
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(text: "Las bolsas Ecobag 4PRO están compuestas por 3 láminas que trabajan juntas para mantener "),
+                                        TextSpan(
+                                          text: "la frescura y resistencia en cada empaque. ",
+                                          style: TextStyle(color: Color.fromARGB(255, 75, 141, 44), fontWeight: FontWeight.bold),
+                                        ),
+                                        TextSpan(text: "Esta estructura optimiza el rendimiento sin sacrificar flexibilidad ni sostenibilidad."),
+                                      ],
+                                    ),
+                                  ),
+                                  Image.asset("assets/img/ecobag/4pro/Kraft_negro.webp", height: 600, fit: BoxFit.fitHeight),
+                                  Text.rich(
+                                    style: TextStyle(fontSize: min(screenWidth * 0.025, 23), fontWeight: FontWeight.w300),
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(text: "Cuando tu diseño requiere una ventana frontal, "),
+                                        TextSpan(
+                                          text: "se añade una cuarta lámina que protege sin comprometer la visibilidad del producto. ",
+                                          style: TextStyle(color: Color.fromARGB(255, 75, 141, 44), fontWeight: FontWeight.bold),
+                                        ),
+                                        TextSpan(
+                                          text: " La capa adicional mantiene la integridad del empaque mientras ofrece una experiencia visual única.",
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              )
+                              : SizedBox(
+                                width: 1200,
+                                child: Center(
+                                  child: Row(
                                     children: [
-                                      TextSpan(text: "Las bolsas Ecobag 4PRO están compuestas por 3 láminas que trabajan juntas para mantener "),
-                                      TextSpan(
-                                        text: "la frescura y resistencia en cada empaque. ",
-                                        style: TextStyle(color: Color.fromARGB(255, 75, 141, 44), fontWeight: FontWeight.bold),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Column(
+                                          children: [
+                                            Text.rich(
+                                              style: TextStyle(fontSize: min(screenWidth * 0.025, 23), fontWeight: FontWeight.w300),
+                                              TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                    text: "Las bolsas Ecobag 4PRO están compuestas por 3 láminas que trabajan juntas para mantener ",
+                                                  ),
+                                                  TextSpan(
+                                                    text: "la frescura y resistencia en cada empaque. ",
+                                                    style: TextStyle(color: Color.fromARGB(255, 75, 141, 44), fontWeight: FontWeight.bold),
+                                                  ),
+                                                  TextSpan(
+                                                    text: "Esta estructura optimiza el rendimiento sin sacrificar flexibilidad ni sostenibilidad.",
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(height: screenWidth <= 1000 ? 50 : 100),
+                                            Text.rich(
+                                              style: TextStyle(fontSize: min(screenWidth * 0.025, 23), fontWeight: FontWeight.w300),
+                                              TextSpan(
+                                                children: [
+                                                  TextSpan(text: "Cuando tu diseño requiere una ventana frontal, "),
+                                                  TextSpan(
+                                                    text: "se añade una cuarta lámina que protege sin comprometer la visibilidad del producto. ",
+                                                    style: TextStyle(color: Color.fromARGB(255, 75, 141, 44), fontWeight: FontWeight.bold),
+                                                  ),
+                                                  TextSpan(
+                                                    text:
+                                                        " La capa adicional mantiene la integridad del empaque mientras ofrece una experiencia visual única.",
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      TextSpan(text: "Esta estructura optimiza el rendimiento sin sacrificar flexibilidad ni sostenibilidad."),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Image.asset("assets/img/ecobag/4pro/Kraft_negro.webp", fit: BoxFit.fitHeight, height: 600),
+                                      ),
                                     ],
                                   ),
-                                ),
-                                Image.asset("assets/img/ecobag/4pro/Kraft_negro.webp", height: 600, fit: BoxFit.fitHeight),
-                                Text.rich(
-                                  style: TextStyle(fontSize: min(screenWidth * 0.025, 23), fontWeight: FontWeight.w300),
-                                  TextSpan(
-                                    children: [
-                                      TextSpan(text: "Cuando tu diseño requiere una ventana frontal, "),
-                                      TextSpan(
-                                        text: "se añade una cuarta lámina que protege sin comprometer la visibilidad del producto. ",
-                                        style: TextStyle(color: Color.fromARGB(255, 75, 141, 44), fontWeight: FontWeight.bold),
-                                      ),
-                                      TextSpan(
-                                        text: " La capa adicional mantiene la integridad del empaque mientras ofrece una experiencia visual única.",
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            )
-                            : SizedBox(
-                              width: 1200,
-                              child: Center(
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 1,
-                                      child: Column(
-                                        children: [
-                                          Text.rich(
-                                            style: TextStyle(fontSize: min(screenWidth * 0.025, 23), fontWeight: FontWeight.w300),
-                                            TextSpan(
-                                              children: [
-                                                TextSpan(
-                                                  text: "Las bolsas Ecobag 4PRO están compuestas por 3 láminas que trabajan juntas para mantener ",
-                                                ),
-                                                TextSpan(
-                                                  text: "la frescura y resistencia en cada empaque. ",
-                                                  style: TextStyle(color: Color.fromARGB(255, 75, 141, 44), fontWeight: FontWeight.bold),
-                                                ),
-                                                TextSpan(
-                                                  text: "Esta estructura optimiza el rendimiento sin sacrificar flexibilidad ni sostenibilidad.",
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(height: screenWidth <= 1000 ? 50 : 100),
-                                          Text.rich(
-                                            style: TextStyle(fontSize: min(screenWidth * 0.025, 23), fontWeight: FontWeight.w300),
-                                            TextSpan(
-                                              children: [
-                                                TextSpan(text: "Cuando tu diseño requiere una ventana frontal, "),
-                                                TextSpan(
-                                                  text: "se añade una cuarta lámina que protege sin comprometer la visibilidad del producto. ",
-                                                  style: TextStyle(color: Color.fromARGB(255, 75, 141, 44), fontWeight: FontWeight.bold),
-                                                ),
-                                                TextSpan(
-                                                  text:
-                                                      " La capa adicional mantiene la integridad del empaque mientras ofrece una experiencia visual única.",
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Image.asset("assets/img/ecobag/4pro/Kraft_negro.webp", fit: BoxFit.fitHeight, height: 600),
-                                    ),
-                                  ],
                                 ),
                               ),
-                            ),
+                    ),
                   ),
                 ],
               ),
@@ -1586,79 +1713,318 @@ class _FourProEcoState extends State<FourProEco> with SingleTickerProviderStateM
               child: SizedBox(
                 width: min(screenWidth, 1720),
                 child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        textAlign: TextAlign.left,
-                        "Con sistema de cierre.",
-                        style: TextStyle(
-                          fontSize: min(screenWidth * 0.06, 50),
-                          color: Color.fromARGB(255, 75, 141, 44),
-                          fontWeight: FontWeight.bold,
-                          height: 0,
+                  child: ScrollAnimatedWrapper(
+                    visibilityKey: Key("Peel-valv-sistemas"),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          textAlign: TextAlign.left,
+                          "Con sistema de cierre.",
+                          style: TextStyle(
+                            fontSize: min(screenWidth * 0.06, 50),
+                            color: Color.fromARGB(255, 75, 141, 44),
+                            fontWeight: FontWeight.bold,
+                            height: 0,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 20),
-                      Text(
-                        textAlign: TextAlign.start,
-                        "Preserva la frescura con válvula y\nPeel & Stick sin complicaciones.",
-                        style: TextStyle(fontSize: min(screenWidth * 0.06, 50), fontWeight: FontWeight.bold, height: 0),
-                      ),
-                      SizedBox(height: 30),
+                        SizedBox(height: 20),
+                        Text(
+                          textAlign: TextAlign.start,
+                          "Preserva la frescura con válvula y\nPeel & Stick sin complicaciones.",
+                          style: TextStyle(fontSize: min(screenWidth * 0.06, 50), fontWeight: FontWeight.bold, height: 0),
+                        ),
+                        SizedBox(height: 30),
 
-                      Text(
-                        "La Ecobag 4PRO con sistema de válvula y sello Peel & Stick ofrece una solución versátil y práctica para preservar la frescura de tus productos. Su diseño multicapa permite una conservación prolongada, mientras que la válvula garantiza una liberación controlada de gases. El cierre Peel & Stick aporta facilidad de uso y reutilización sin comprometer el sellado. Todo en un empaque sostenible, inteligente y visualmente impactante.",
-                        textAlign: TextAlign.justify,
-                        style: TextStyle(fontSize: min(screenWidth * 0.03, 25), fontWeight: FontWeight.w500, height: 0),
-                      ),
-                    ],
+                        Text(
+                          "La Ecobag 4PRO con sistema de válvula y sello Peel & Stick ofrece una solución versátil y práctica para preservar la frescura de tus productos. Su diseño multicapa permite una conservación prolongada, mientras que la válvula garantiza una liberación controlada de gases. El cierre Peel & Stick aporta facilidad de uso y reutilización sin comprometer el sellado. Todo en un empaque sostenible, inteligente y visualmente impactante.",
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(fontSize: min(screenWidth * 0.03, 25), fontWeight: FontWeight.w500, height: 0),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
+            SizedBox(height: screenHeight <= 1000 ? 50 : 100),
+            ScrollAnimatedWrapper(
+              visibilityKey: Key("Video-ecobag-ps-vlv"),
+              child: TweenAnimationBuilder<double>(
+                duration: Duration(milliseconds: 600),
+                curve: Curves.easeInOut,
+                tween: Tween<double>(begin: 0.0, end: scrollProgress),
+                builder: (context, scrollProgress, child) {
+                  final borderRadius = BorderRadius.circular(30 * scrollProgress);
+                  final horizontalPadding = screenWidth * 0.055 * scrollProgress;
 
-            Center(
-              child: Center(
-                child: Builder(
-                  builder: (context) {
-                    final borderRadius = BorderRadius.circular(30 * scrollProgress);
-                    final horizontalPadding = screenWidth * 0.055 * scrollProgress;
-
-                    return Padding(
-                      padding: EdgeInsets.symmetric(vertical: 20, horizontal: horizontalPadding),
-                      child: ClipRRect(
-                        key: _videoKey,
-                        borderRadius: borderRadius,
-                        child: Container(
-                          width: double.infinity,
-                          height: min(screenHeight * 0.8, 1100),
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              ValueListenableBuilder<bool>(
-                                valueListenable: videoBlurNotifier,
-                                builder: (context, isBlur, _) {
-                                  return HtmlBackgroundVideo(
-                                    src: 'assets/assets/videos/smartbag/SmartbagInicio.webm',
-                                    blur: isBlur,
-                                    loop: true,
-                                    showControls: true,
-                                    fit: BoxFit.cover,
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: horizontalPadding),
+                    child: ClipRRect(
+                      key: _videoKey,
+                      borderRadius: borderRadius,
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: min(screenHeight * 0.8, 1100),
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            ValueListenableBuilder<bool>(
+                              valueListenable: videoBlurNotifier,
+                              builder: (context, isBlur, _) {
+                                return HtmlBackgroundVideo(
+                                  src: 'assets/assets/videos/smartbag/SmartbagInicio.webm',
+                                  blur: isBlur,
+                                  loop: true,
+                                  showControls: true,
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                            ),
+                          ],
                         ),
                       ),
-                    );
-                  },
+                    ),
+                  );
+                },
+              ),
+            ),
+            SizedBox(height: screenHeight <= 1000 ? 50 : 100),
+
+            ScrollAnimatedWrapper(
+              visibilityKey: Key('4funciones'),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: screenWidth * 0.03),
+                child: Row(
+                  children: [
+                    Text(
+                      "4 Funciones, 4PRO",
+                      style: TextStyle(fontSize: min(screenWidth * 0.03, 60), color: Color.fromARGB(255, 75, 141, 44), fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
               ),
             ),
+
+            //Discover local
+            ScrollAnimatedWrapper(
+              visibilityKey: Key('4funciones-cards'),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                controller: scrollControllerCards,
+                child: Row(
+                  children: List.generate(localCards.length, (int index) {
+                    final card = localCards[index];
+                    final double horizontalPadding = screenWidth * 0.06;
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        left: index == 0 ? horizontalPadding : 0,
+                        right: index == localCards.length - 1 ? horizontalPadding : 20,
+                      ),
+                      child: Container(
+                        width: min(screenWidth * 0.8, 1000),
+                        height: min(screenWidth * 0.6, 500),
+                        padding: EdgeInsets.only(top: 22, left: 22),
+                        margin: EdgeInsets.only(top: 20, bottom: 20, right: 20),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(26),
+                          image: DecorationImage(image: AssetImage(card['image']), fit: BoxFit.cover),
+                        ),
+                        child: Stack(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        card['title'],
+                                        style: TextStyle(
+                                          height: 0,
+                                          color: Colors.white,
+                                          fontSize: min(screenWidth * 0.03, 25),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(flex: 1, child: SizedBox(width: 100)),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: screenWidth * 0.03, horizontal: screenWidth * 0.1),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  // Botón izquierdo
+                  IconButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(scrollControllerLeft ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80)),
+                    ),
+                    onPressed:
+                        scrollControllerLeft
+                            ? () {
+                              scrollControllerCards.animateTo(
+                                scrollControllerCards.offset - 1000,
+                                duration: Duration(milliseconds: 200),
+                                curve: Curves.easeInOut,
+                              );
+                            }
+                            : null,
+                    icon: Icon(Icons.arrow_back_ios_new_rounded),
+                  ),
+                  const SizedBox(width: 20),
+                  IconButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(scrollControllerRigth ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80)),
+                    ),
+                    onPressed:
+                        scrollControllerRigth
+                            ? () {
+                              scrollControllerCards.animateTo(
+                                scrollControllerCards.offset + 1000,
+                                duration: Duration(milliseconds: 200),
+                                curve: Curves.easeInOut,
+                              );
+                            }
+                            : null,
+                    icon: Icon(Icons.arrow_forward_ios_rounded),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: screenWidth <= 1000 ? 50 : 100),
+            SizedBox(
+              width: min(screenWidth, 1600),
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: screenWidth * 0.06, horizontal: screenWidth * 0.06),
+                  child: ScrollAnimatedWrapper(
+                    visibilityKey: Key('nos-importa'),
+                    child: Column(
+                      children: [
+                        Text(
+                          "Te importa. Nos importa.",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 75, 141, 44),
+                            fontSize: min(screenWidth * 0.06, 70),
+                          ),
+                        ),
+                        SizedBox(height: screenWidth >= 1000 ? 50 : 100),
+                        Text(
+                          textAlign: TextAlign.center,
+                          "Desde empaques como 4PRO®, diseñados para proteger tu producto y destacar tu marca, hasta soluciones como Ecobag, que combinan funcionalidad con conciencia ambiental. Usamos materiales reciclables, desarrollamos opciones versátiles como válvulas y cierres herméticos, y te ofrecemos formatos pensados para cada necesidad, siempre con una visión sustentable. Porque cada detalle cuenta cuando quieres hacer las cosas bien.",
+                          style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black87, fontSize: min(screenWidth * 0.026, 25), height: 0),
+                        ),
+                        SizedBox(height: screenWidth >= 1000 ? 50 : 100),
+
+                        SizedBox(
+                          width: min(screenWidth, 1600),
+                          child:
+                              screenWidth > 900
+                                  ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      for (var item in [
+                                        (
+                                          CupertinoIcons.leaf_arrow_circlepath,
+                                          "Sostenibilidad real.",
+                                          "Usamos materiales reciclables y procesos responsables en toda la línea 4PRO® y Ecobag.",
+                                        ),
+                                        (
+                                          CupertinoIcons.shield_lefthalf_fill,
+                                          "Protección garantizada",
+                                          "Empaques que conservan aroma, frescura y calidad con barrera multicapa y protección UV.",
+                                        ),
+                                        (
+                                          CupertinoIcons.cube_box,
+                                          "Diseño funcional",
+                                          "Opciones como válvulas, zippers y acabados premium para destacar tu producto con estilo.",
+                                        ),
+                                      ])
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                                            child: _buildBenefitBox(icon: item.$1, title: item.$2, description: item.$3),
+                                          ),
+                                        ),
+                                    ],
+                                  )
+                                  : Column(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: [
+                                      for (var item in [
+                                        (
+                                          CupertinoIcons.leaf_arrow_circlepath,
+                                          "Sostenibilidad real.",
+                                          "Usamos materiales reciclables y procesos responsables en toda la línea 4PRO® y Ecobag.",
+                                        ),
+                                        (
+                                          CupertinoIcons.shield_lefthalf_fill,
+                                          "Protección garantizada",
+                                          "Empaques que conservan aroma, frescura y calidad con barrera multicapa y protección UV.",
+                                        ),
+                                        (
+                                          CupertinoIcons.cube_box,
+                                          "Diseño funcional",
+                                          "Opciones como válvulas, zippers y acabados premium para destacar tu producto con estilo.",
+                                        ),
+                                      ])
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                                          child: _buildBenefitBox(icon: item.$1, title: item.$2, description: item.$3),
+                                        ),
+                                    ],
+                                  ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: screenWidth <= 1000 ? 50 : 100),
+
+            Row(
+              children: [
+                Expanded(child: LeafWithBagReveal(currentRoute: widget.currentRoute, subcategorie: widget.subcategorie, section: widget.section)),
+              ],
+            ),
+
+            Footer(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildBenefitBox({required IconData icon, required String title, required String description}) {
+    final screenw = MediaQuery.of(context).size.width;
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: min(screenw * 0.1, 40), color: Color(0xFF4B8D2C)),
+          const SizedBox(height: 20),
+          Text(title, textAlign: TextAlign.start, style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenw * 0.03, 24))),
+          const SizedBox(height: 10),
+          Text(description, textAlign: TextAlign.start, style: TextStyle(fontSize: min(screenw * 0.025, 22), fontWeight: FontWeight.w300)),
+        ],
       ),
     );
   }

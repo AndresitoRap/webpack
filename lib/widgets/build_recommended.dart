@@ -70,7 +70,7 @@ Widget buildDialogContent(BuildContext context, int index, {required bool isSmar
           children: [
             screenWidth < 1070
                 // Celular
-                ? MobileStyle(description: "Empaques Packvisión ${card.descriptionDown ?? ""}", imagePath: card.imageDown)
+                ? MobileStyle(description: "Empaques Packvisión ${card.descriptionDown}", imagePath: card.imageDown)
                 // PC
                 : Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -85,7 +85,7 @@ Widget buildDialogContent(BuildContext context, int index, {required bool isSmar
                               TextSpan(
                                 children: [
                                   TextSpan(
-                                    text: card.descriptionDown ?? "",
+                                    text: card.descriptionDown,
                                     style: TextStyle(
                                       color: Color.fromARGB(255, 125, 126, 129),
                                       fontWeight: FontWeight.bold,

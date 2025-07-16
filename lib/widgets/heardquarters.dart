@@ -1,11 +1,10 @@
 import 'dart:math';
 // Gráficos y filtros: siempre vienen de dart:ui
-import 'dart:ui' as ui show ImageFilter, Canvas, Paint;
+import 'dart:ui' as ui show ImageFilter;
 import 'dart:ui_web' as ui_web show platformViewRegistry;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:html' as html;
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:webpack/widgets/scrollopacity.dart';
 
 class HeardquartersCards {

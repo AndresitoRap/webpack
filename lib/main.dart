@@ -93,12 +93,12 @@ class MyApp extends StatelessWidget {
           final routeKey = '${uri.pathSegments[0]}/$section';
           final productList = productSections[routeKey];
           final allCards = [...subcategorieSmart, ...subcategorieEco];
-          final matchedCard = allCards.firstWhere((card) => card.route == settings.name, orElse: null);
-          if (matchedCard == null) {
-            return _buildRoute(settings, const PageNotFound());
-          }
-          print("Ruta completa: ${settings.name}");
-          print("Segmentos: ${uri.pathSegments}");
+          final matchedCard = allCards.firstWhere(
+            (card) => card.route == settings.name,
+            orElse: () => throw Exception('No matching Subcategorie found'),
+          );
+          //print("Ruta completa: ${settings.name}");
+          //print("Segmentos: ${uri.pathSegments}");
 
           if (productList != null) {
             return _buildRoute(settings, Commerce(section: section, selectedSubcategorie: matchedCard));
@@ -142,6 +142,7 @@ class MyApp extends StatelessWidget {
 
           return _buildRoute(settings, const PageNotFound());
         }
+        return null;
       },
     );
   }
@@ -241,12 +242,4 @@ class TransitionOverlayState extends State<TransitionOverlay> with TickerProvide
       ],
     );
   }
-}
-
-String _slugify(String text) {
-  return text
-      .toLowerCase()
-      .replaceAll(RegExp(r'[^\w\s-]'), '') // quitar símbolos raros
-      .replaceAll(' ', '-') // reemplazar espacios por guiones
-      .replaceAll(RegExp('-+'), '-'); // evitar guiones dobles
 }

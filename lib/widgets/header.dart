@@ -1,4 +1,3 @@
-import 'dart:ui_web' as ui;
 import 'dart:html' as html;
 
 import 'dart:ui_web' as ui_web show platformViewRegistry;
@@ -219,7 +218,10 @@ class _HeaderState extends State<Header> {
                                                                               child: SvgPicture.asset(
                                                                                 "assets/img/WIsotipo.svg",
                                                                                 height: 23,
-                                                                                color: Colors.white.withAlpha(value.toInt()),
+                                                                                colorFilter: ColorFilter.mode(
+                                                                                  Colors.white.withAlpha(value.toInt()),
+                                                                                  BlendMode.srcIn,
+                                                                                ),
                                                                               ),
                                                                             ),
                                                                   );

@@ -141,22 +141,25 @@ class _DetailsProductState extends State<DetailsProduct> {
       controllerFinally
           .getAvailableTextures()
           .then((textures) {
-            print("Texturas disponibles para modelo final: $textures");
+            //print("Texturas disponibles para modelo final: $textures");
             if (textures.contains(_pendingTextureName)) {
               controllerFinally.setTexture(textureName: _pendingTextureName!);
               Future.delayed(Duration(milliseconds: 100), () {
                 if (textures.contains(_pendingPeelStickTexture)) {
                   controllerFinally.setTexture(textureName: _pendingPeelStickTexture!);
                 } else {
-                  print("Textura de PeelStick no disponible: $_pendingPeelStickTexture");
+                  null;
+                  //print("Textura de PeelStick no disponible: $_pendingPeelStickTexture");
                 }
               });
             } else {
-              print("Textura no disponible: $_pendingTextureName");
+              null;
+              // print("Textura no disponible: $_pendingTextureName");
             }
           })
           .catchError((error) {
-            print("Error al obtener texturas disponibles: $error");
+            null;
+            // print("Error al obtener texturas disponibles: $error");
           });
     }
   }
@@ -466,37 +469,34 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                     selectedValve: selectedValve,
                                                     onLoad: (String _) {
                                                       setState(() {
-                                                        if (selectedColor == null) {
-                                                          selectedColor = product.colors.first;
-                                                        }
-                                                        if (selectedFinish == null) {
-                                                          selectedFinish = terminadosDisponibles.first.name;
-                                                        }
-                                                        if (selectedPeelstick == null) {
-                                                          selectedPeelstick = peelStickOptions.first;
-                                                        }
+                                                        selectedColor ??= product.colors.first;
+                                                        selectedFinish ??= terminadosDisponibles.first.name;
+                                                        selectedPeelstick ??= peelStickOptions.first;
                                                         _modelLoaded = true;
                                                         controllerModel
                                                             .getAvailableTextures()
                                                             .then((textures) {
                                                               final textureName =
                                                                   "${selectedColor!.name.replaceAll(" ", "_")}_${getFinishSuffix(selectedTerminado!)}";
-                                                              print("Texturas disponibles para modelo inicial: $textures");
+                                                              // print("Texturas disponibles para modelo inicial: $textures");
                                                               if (textures.contains(textureName)) {
                                                                 controllerModel.setTexture(textureName: textureName);
                                                               } else {
-                                                                print("Textura no disponible para modelo inicial: $textureName");
+                                                                null;
+                                                                // print("Textura no disponible para modelo inicial: $textureName");
                                                               }
                                                               Future.delayed(Duration(milliseconds: 100), () {
                                                                 if (textures.contains(selectedPeelstick!.abbreviation)) {
                                                                   controllerModel.setTexture(textureName: selectedPeelstick!.abbreviation);
                                                                 } else {
-                                                                  print("Textura de PeelStick no disponible: ${selectedPeelstick!.abbreviation}");
+                                                                  null;
+                                                                  // print("Textura de PeelStick no disponible: ${selectedPeelstick!.abbreviation}");
                                                                 }
                                                               });
                                                             })
                                                             .catchError((error) {
-                                                              print("Error al obtener texturas disponibles: $error");
+                                                              null;
+                                                              // print("Error al obtener texturas disponibles: $error");
                                                             });
                                                       });
                                                       _updateFinalModel();
@@ -589,15 +589,17 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                     controllerModel
                                                         .getAvailableTextures()
                                                         .then((textures) {
-                                                          print("Texturas disponibles para modelo inicial: $textures");
+                                                          // print("Texturas disponibles para modelo inicial: $textures");
                                                           if (textures.contains(textureName)) {
                                                             controllerModel.setTexture(textureName: textureName);
                                                           } else {
-                                                            print("Textura no disponible: $textureName");
+                                                            null;
+                                                            // print("Textura no disponible: $textureName");
                                                           }
                                                         })
                                                         .catchError((error) {
-                                                          print("Error al obtener texturas disponibles: $error");
+                                                          null;
+                                                          // print("Error al obtener texturas disponibles: $error");
                                                         });
                                                   }
                                                 }
@@ -653,15 +655,17 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                   controllerModel
                                                       .getAvailableTextures()
                                                       .then((textures) {
-                                                        print("Texturas disponibles para modelo inicial: $textures");
+                                                        // print("Texturas disponibles para modelo inicial: $textures");
                                                         if (textures.contains(textureName)) {
                                                           controllerModel.setTexture(textureName: textureName);
                                                         } else {
-                                                          print("Textura no disponible: $textureName");
+                                                          null;
+                                                          // print("Textura no disponible: $textureName");
                                                         }
                                                       })
                                                       .catchError((error) {
-                                                        print("Error al obtener texturas disponibles: $error");
+                                                        null;
+                                                        // print("Error al obtener texturas disponibles: $error");
                                                       });
                                                 }
                                               }
@@ -681,15 +685,18 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                 controllerModel
                                                     .getAvailableTextures()
                                                     .then((textures) {
-                                                      print("Texturas disponibles para modelo inicial: $textures");
+                                                      null;
+                                                      // print("Texturas disponibles para modelo inicial: $textures");
                                                       if (textures.contains(textureName)) {
                                                         controllerModel.setTexture(textureName: textureName);
                                                       } else {
-                                                        print("Textura no disponible: $textureName");
+                                                        null;
+                                                        // print("Textura no disponible: $textureName");
                                                       }
                                                     })
                                                     .catchError((error) {
-                                                      print("Error al obtener texturas disponibles: $error");
+                                                      null;
+                                                      // print("Error al obtener texturas disponibles: $error");
                                                     });
                                               }
                                             });
@@ -708,22 +715,25 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                 controllerModel
                                                     .getAvailableTextures()
                                                     .then((textures) {
-                                                      print("Texturas disponibles para modelo inicial: $textures");
+                                                      // print("Texturas disponibles para modelo inicial: $textures");
                                                       if (textures.contains(textureName)) {
                                                         controllerModel.setTexture(textureName: textureName);
                                                       } else {
-                                                        print("Textura no disponible: $textureName");
+                                                        null;
+                                                        // print("Textura no disponible: $textureName");
                                                       }
                                                       if (textures.contains(value.abbreviation)) {
                                                         Future.delayed(Duration(milliseconds: 100), () {
                                                           controllerModel.setTexture(textureName: value.abbreviation);
                                                         });
                                                       } else {
-                                                        print("Textura de PeelStick no disponible: ${value.abbreviation}");
+                                                        null;
+                                                        // print("Textura de PeelStick no disponible: ${value.abbreviation}");
                                                       }
                                                     })
                                                     .catchError((error) {
-                                                      print("Error al obtener texturas disponibles: $error");
+                                                      null;
+                                                      // print("Error al obtener texturas disponibles: $error");
                                                     });
                                               }
                                             });
@@ -749,15 +759,17 @@ class _DetailsProductState extends State<DetailsProduct> {
                                                 controllerModel
                                                     .getAvailableTextures()
                                                     .then((textures) {
-                                                      print("Texturas disponibles para modelo inicial: $textures");
+                                                      // print("Texturas disponibles para modelo inicial: $textures");
                                                       if (textures.contains(textureName)) {
                                                         controllerModel.setTexture(textureName: textureName);
                                                       } else {
-                                                        print("Textura no disponible: $textureName");
+                                                        null;
+                                                        // print("Textura no disponible: $textureName");
                                                       }
                                                     })
                                                     .catchError((error) {
-                                                      print("Error al obtener texturas disponibles: $error");
+                                                      null;
+                                                      // print("Error al obtener texturas disponibles: $error");
                                                     });
                                               }
                                             });
@@ -817,47 +829,46 @@ class _DetailsProductState extends State<DetailsProduct> {
                                         selectedValve: selectedValve,
                                         onLoad: (String _) {
                                           setState(() {
-                                            if (selectedColor == null) {
-                                              selectedColor = product.colors.first;
-                                            }
+                                            selectedColor ??= product.colors.first;
                                             if (selectedFinish == null && terminadosDisponibles.isNotEmpty) {
                                               selectedFinish = terminadosDisponibles.first.name;
                                             }
 
-                                            if (selectedPeelstick == null) {
-                                              selectedPeelstick = peelStickOptions.first;
-                                            }
+                                            selectedPeelstick ??= peelStickOptions.first;
                                             _modelLoaded = true;
                                             controllerModel
                                                 .getAvailableTextures()
                                                 .then((textures) {
                                                   if (selectedColor == null || selectedTerminado == null || selectedPeelstick == null) {
-                                                    print(
-                                                      "❌ Valores nulos detectados: selectedColor=$selectedColor, selectedTerminado=$selectedTerminado, selectedPeelstick=$selectedPeelstick",
-                                                    );
+                                                    // print(
+                                                    // "❌ Valores nulos detectados: selectedColor=$selectedColor, selectedTerminado=$selectedTerminado, selectedPeelstick=$selectedPeelstick",
+                                                    // );
                                                     return; // no continuar si falta algo
                                                   }
 
                                                   final textureName =
                                                       "${selectedColor!.name.replaceAll(" ", "_")}_${getFinishSuffix(selectedTerminado!)}";
-                                                  print("Texturas disponibles para modelo inicial: $textures");
+                                                  // print("Texturas disponibles para modelo inicial: $textures");
 
                                                   if (textures.contains(textureName)) {
                                                     controllerModel.setTexture(textureName: textureName);
                                                   } else {
-                                                    print("Textura no disponible para modelo inicial: $textureName");
+                                                    null;
+                                                    // print("Textura no disponible para modelo inicial: $textureName");
                                                   }
 
                                                   Future.delayed(Duration(milliseconds: 100), () {
                                                     if (textures.contains(selectedPeelstick!.abbreviation)) {
                                                       controllerModel.setTexture(textureName: selectedPeelstick!.abbreviation);
                                                     } else {
-                                                      print("Textura de PeelStick no disponible: ${selectedPeelstick!.abbreviation}");
+                                                      null;
+                                                      // print("Textura de PeelStick no disponible: ${selectedPeelstick!.abbreviation}");
                                                     }
                                                   });
                                                 })
                                                 .catchError((error) {
-                                                  print("Error al obtener texturas disponibles: $error");
+                                                  null;
+                                                  // print("Error al obtener texturas disponibles: $error");
                                                 });
                                           });
                                           _updateFinalModel();
@@ -935,15 +946,16 @@ class _DetailsProductState extends State<DetailsProduct> {
                                             controllerModel
                                                 .getAvailableTextures()
                                                 .then((textures) {
-                                                  print("Texturas disponibles para modelo inicial: $textures");
+                                                  // print("Texturas disponibles para modelo inicial: $textures");
                                                   if (textures.contains(textureName)) {
                                                     controllerModel.setTexture(textureName: textureName);
                                                   } else {
-                                                    print("Textura no disponible: $textureName");
+                                                    null;
+                                                    // print("Textura no disponible: $textureName");
                                                   }
                                                 })
                                                 .catchError((error) {
-                                                  print("Error al obtener texturas disponibles: $error");
+                                                  null; // print("Error al obtener texturas disponibles: $error");
                                                 });
                                           }
                                         }
@@ -998,15 +1010,18 @@ class _DetailsProductState extends State<DetailsProduct> {
                                           controllerModel
                                               .getAvailableTextures()
                                               .then((textures) {
-                                                print("Texturas disponibles para modelo inicial: $textures");
+                                                null;
+                                                // print("Texturas disponibles para modelo inicial: $textures");
                                                 if (textures.contains(textureName)) {
                                                   controllerModel.setTexture(textureName: textureName);
                                                 } else {
-                                                  print("Textura no disponible: $textureName");
+                                                  null;
+                                                  // print("Textura no disponible: $textureName");
                                                 }
                                               })
                                               .catchError((error) {
-                                                print("Error al obtener texturas disponibles: $error");
+                                                null;
+                                                // print("Error al obtener texturas disponibles: $error");
                                               });
                                         }
                                       }
@@ -1026,15 +1041,17 @@ class _DetailsProductState extends State<DetailsProduct> {
                                         controllerModel
                                             .getAvailableTextures()
                                             .then((textures) {
-                                              print("Texturas disponibles para modelo inicial: $textures");
+                                              // print("Texturas disponibles para modelo inicial: $textures");
                                               if (textures.contains(textureName)) {
                                                 controllerModel.setTexture(textureName: textureName);
                                               } else {
-                                                print("Textura no disponible: $textureName");
+                                                null;
+                                                // print("Textura no disponible: $textureName");
                                               }
                                             })
                                             .catchError((error) {
-                                              print("Error al obtener texturas disponibles: $error");
+                                              null;
+                                              // print("Error al obtener texturas disponibles: $error");
                                             });
                                       }
                                     });
@@ -1053,22 +1070,25 @@ class _DetailsProductState extends State<DetailsProduct> {
                                         controllerModel
                                             .getAvailableTextures()
                                             .then((textures) {
-                                              print("Texturas disponibles para modelo inicial: $textures");
+                                              // print("Texturas disponibles para modelo inicial: $textures");
                                               if (textures.contains(textureName)) {
                                                 controllerModel.setTexture(textureName: textureName);
                                               } else {
-                                                print("Textura no disponible: $textureName");
+                                                null;
+                                                // print("Textura no disponible: $textureName");
                                               }
                                               if (textures.contains(value.abbreviation)) {
                                                 Future.delayed(Duration(milliseconds: 100), () {
                                                   controllerModel.setTexture(textureName: value.abbreviation);
                                                 });
                                               } else {
-                                                print("Textura de PeelStick no disponible: ${value.abbreviation}");
+                                                null;
+                                                // print("Textura de PeelStick no disponible: ${value.abbreviation}");
                                               }
                                             })
                                             .catchError((error) {
-                                              print("Error al obtener texturas disponibles: $error");
+                                              null;
+                                              // print("Error al obtener texturas disponibles: $error");
                                             });
                                       }
                                     });
@@ -1094,15 +1114,17 @@ class _DetailsProductState extends State<DetailsProduct> {
                                         controllerModel
                                             .getAvailableTextures()
                                             .then((textures) {
-                                              print("Texturas disponibles para modelo inicial: $textures");
+                                              // print("Texturas disponibles para modelo inicial: $textures");
                                               if (textures.contains(textureName)) {
                                                 controllerModel.setTexture(textureName: textureName);
                                               } else {
-                                                print("Textura no disponible: $textureName");
+                                                null;
+                                                // print("Textura no disponible: $textureName");
                                               }
                                             })
                                             .catchError((error) {
-                                              print("Error al obtener texturas disponibles: $error");
+                                              null;
+                                              // print("Error al obtener texturas disponibles: $error");
                                             });
                                       }
                                     });
@@ -1244,7 +1266,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                           cursor: SystemMouseCursors.click,
                                           child: GestureDetector(
                                             onTap: () {
-                                              print("cotizado");
+                                              // print("cotizado");
                                             },
                                             child: Container(
                                               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
@@ -1323,21 +1345,20 @@ class _DetailsProductState extends State<DetailsProduct> {
 class Model extends StatefulWidget {
   final Product product;
   final Flutter3DController controllerModel;
-  bool autoRotate;
+  final bool autoRotate;
   final bool gestureDetector;
   final String? selectedValve;
   final dynamic onLoad;
-  final Key? key;
 
-  Model({
-    this.key,
+  const Model({
+    super.key,
     required this.product,
     required this.controllerModel,
     required this.autoRotate,
     required this.gestureDetector,
     required this.selectedValve,
     required this.onLoad,
-  }) : super(key: key);
+  });
 
   @override
   State<Model> createState() => _ModelState();
@@ -1365,16 +1386,16 @@ class _ModelState extends State<Model> {
 
     if (widget.selectedValve == null || widget.selectedValve == "Sin válvula") {
       src = "assets/3Dmodels/${widget.product.subcategorie.title}/${widget.product.subcategorie.title}.glb";
-      print("Cargando modelo: $src");
+      // print("Cargando modelo: $src");
     } else if (widget.selectedValve == "Válvula desgasificadora") {
       src = "assets/3Dmodels/${widget.product.subcategorie.title}/${widget.product.subcategorie.title}_D.glb";
-      print("Cargando modelo: $src");
+      // print("Cargando modelo: $src");
     } else if (widget.selectedValve == "Válvula dosificadora") {
       src = "assets/3Dmodels/${widget.product.subcategorie.title}/${widget.product.subcategorie.title}_V.glb";
-      print("Cargando modelo: $src");
+      // print("Cargando modelo: $src");
     } else {
       src = "assets/3Dmodels/${widget.product.subcategorie.title}/${widget.product.subcategorie.title}.glb";
-      print("Cargando modelo: $src");
+      // print("Cargando modelo: $src");
     }
 
     return Listener(
@@ -1389,7 +1410,7 @@ class _ModelState extends State<Model> {
         onLoad: widget.onLoad,
         src: src,
         onError: (error) {
-          print("Error loading 3D model: $error");
+          // print("Error loading 3D model: $error");
         },
       ),
     );
@@ -1648,15 +1669,17 @@ class FormCreateBag extends StatelessWidget {
                           controllerModel
                               .getAvailableTextures()
                               .then((textures) {
-                                print("Texturas disponibles: $textures");
+                                // print("Texturas disponibles: $textures");
                                 if (textures.contains(textureName)) {
                                   controllerModel.setTexture(textureName: textureName);
                                 } else {
-                                  print("Textura no disponible: $textureName");
+                                  null;
+                                  // print("Textura no disponible: $textureName");
                                 }
                               })
                               .catchError((error) {
-                                print("Error al obtener texturas disponibles: $error");
+                                null;
+                                // print("Error al obtener texturas disponibles: $error");
                               });
                         }
                       },

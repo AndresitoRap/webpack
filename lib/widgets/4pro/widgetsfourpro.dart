@@ -1,8 +1,10 @@
 import 'dart:math';
-
-import 'package:flutter/cupertino.dart';
+import 'dart:ui';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import 'package:webpack/class/categories.dart';
+import 'package:webpack/main.dart';
 import 'package:webpack/widgets/header.dart';
 
 class InfoCardData {
@@ -135,7 +137,7 @@ Widget buildResponsiveInfoCards(BuildContext context) {
     ),
     InfoCardData(
       isVideo: true,
-      videoPath: "assets/videos/smartbag/accesorios/accesorios.webm",
+      videoPath: "assets/videos/smartbag/4pro/accesorios.webm",
       imagePath: "assets/img/smartbag/4pro/accesorios.webp",
       title: "Agrega funcionalidad con accesorios inteligentes. ",
       description:
@@ -249,4 +251,319 @@ class _AnimatedLetterState extends State<AnimatedLetter> with SingleTickerProvid
       child: FadeTransition(opacity: _opacityAnimation, child: Text(widget.char, style: widget.textStyle)),
     );
   }
+}
+
+//Flores
+
+class LeafWithBagReveal extends StatefulWidget {
+  final String currentRoute;
+  final Subcategorie subcategorie;
+  final String section;
+  const LeafWithBagReveal({super.key, required this.currentRoute, required this.subcategorie, required this.section});
+
+  @override
+  State<LeafWithBagReveal> createState() => _LeafWithBagRevealState();
+}
+
+class _LeafWithBagRevealState extends State<LeafWithBagReveal> with TickerProviderStateMixin {
+  late AnimationController _main;
+  late AnimationController _bag;
+  late AnimationController _textController;
+  bool showText1 = false;
+  bool showText2 = false;
+
+  late AnimationController _buttonFadeController;
+  late Animation<double> _buttonOpacity;
+
+  bool started = false;
+  bool generarHojas = true;
+
+  final List<_Leaf> hojas = [];
+  final rand = Random();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _main = AnimationController(vsync: this, duration: const Duration(seconds: 7));
+
+    _bag = AnimationController(vsync: this, duration: const Duration(seconds: 2));
+
+    _textController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+
+    _buttonFadeController = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
+    _buttonOpacity = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: _buttonFadeController, curve: Curves.easeInOut));
+  }
+
+  void _iniciar() {
+    if (started) return;
+    started = true;
+
+    _main.forward(); // ⬅️ solo una vez, no loop
+    _generar();
+
+    Future.delayed(const Duration(seconds: 1), () => _bag.forward());
+    Future.delayed(const Duration(milliseconds: 1800), () => generarHojas = false);
+
+    _main.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        generarHojas = false;
+      }
+    });
+
+    Future.delayed(const Duration(seconds: 1), () => _bag.forward());
+
+    _bag.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        setState(() => showText1 = true);
+
+        // Espera el tiempo de la animación del primer texto (~1.5s)
+        Future.delayed(const Duration(milliseconds: 1500), () {
+          setState(() => showText2 = true);
+          Future.delayed(const Duration(milliseconds: 1500), () {
+            _buttonFadeController.forward();
+          });
+        });
+      }
+    });
+  }
+
+  Future<void> _generar() async {
+    while (mounted && generarHojas) {
+      await Future.delayed(const Duration(milliseconds: 10));
+
+      if (!generarHojas) break;
+
+      final now = _main.value;
+
+      setState(() {
+        hojas.add(
+          _Leaf(
+            waveMultiplier: 2 + rand.nextDouble() * 2, // entre 2 y 4 ondas
+
+            inicio: now,
+
+            dur: 0.15 + rand.nextDouble() * 0.05, // entre 0.15 y 0.2
+
+            rot: (rand.nextDouble() - .5) * pi / 2,
+            scale: .6 + rand.nextDouble() * .6,
+            offsetY: (rand.nextDouble() - 0.5) * 80,
+            curveFactor: 100 + rand.nextDouble() * 100, // entre 100 y 200
+          ),
+        );
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _main.dispose();
+    _bag.dispose();
+    _textController.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return VisibilityDetector(
+      key: const Key('leaf-reveal'),
+      onVisibilityChanged: (info) {
+        if (info.visibleFraction > .1) _iniciar();
+      },
+      child: SizedBox(
+        height: 600,
+        width: double.infinity,
+        child: ClipRect(
+          child: Stack(
+            children: [
+              // 🌿 Hojas animadas (deja como estaba)
+              AnimatedBuilder(
+                animation: _main,
+                builder: (_, __) {
+                  final tGlobal = _main.value;
+                  hojas.removeWhere((h) => (tGlobal - h.inicio) / h.dur > 1);
+
+                  const hojaAncho = 60.0;
+                  const centerY = 300.0;
+
+                  return Stack(
+                    children:
+                        hojas.map((h) {
+                          final t = ((tGlobal - h.inicio) / h.dur).clamp(0.0, 1.0);
+                          final easedT = t;
+                          final x = lerpDouble(-hojaAncho, screenWidth + hojaAncho, easedT)!;
+                          final y = centerY + -sin(easedT * pi * 2) * (h.curveFactor * 0.4) + sin(easedT * pi * 4 + h.rot) * 4 + h.offsetY;
+
+                          return Positioned(
+                            left: x,
+                            top: y,
+                            child: Transform.rotate(
+                              angle: sin(t * pi * 2) * 0.4 + h.rot,
+                              child: Transform.scale(scale: h.scale, child: Image.asset('assets/img/ecobag/hoja1.webp', width: hojaAncho)),
+                            ),
+                          );
+                        }).toList(),
+                  );
+                },
+              ),
+
+              // 👜 Bolsa + Texto como grupo centrado
+              Center(
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(-2.2, 0),
+                    end: Offset.zero,
+                  ).animate(CurvedAnimation(parent: _bag, curve: Curves.easeOut)),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min, // <- solo el ancho del contenido
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(flex: 1, child: Image.asset('assets/img/ecobag/discover1_Top.webp', fit: BoxFit.fitHeight)),
+
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(right: min(screenWidth * 0.06, 100)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // TEXTO 1 ─ Máquina de escribir + responsive
+                              if (showText1)
+                                FittedBox(
+                                  alignment: Alignment.centerLeft,
+                                  fit: BoxFit.scaleDown, // reduce si hace falta, no lo agranda de más
+                                  child: AnimatedTextKit(
+                                    isRepeatingAnimation: false,
+                                    animatedTexts: [
+                                      TypewriterAnimatedText(
+                                        '¿Qué esperas?',
+                                        textStyle: const TextStyle(
+                                          fontSize: 42, // tamaño “máximo”
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 1.3,
+                                          color: Color.fromARGB(255, 75, 141, 44),
+                                          height: 1.2, // nunca uses 0 aquí
+                                        ),
+                                        speed: const Duration(milliseconds: 100),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              else
+                                // reserva espacio con un Text invisible dentro de FittedBox
+                                FittedBox(
+                                  alignment: Alignment.centerLeft,
+                                  fit: BoxFit.scaleDown,
+                                  child: Opacity(
+                                    opacity: 0,
+                                    child: const Text(
+                                      '¿Qué esperas?',
+                                      style: TextStyle(
+                                        fontSize: 42,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 1.3,
+                                        color: Color.fromARGB(255, 75, 141, 44),
+                                        height: 1.2,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                              const SizedBox(height: 8),
+
+                              // TEXTO 2 ─ Máquina de escribir + responsive
+                              if (showText2)
+                                FittedBox(
+                                  alignment: Alignment.centerLeft,
+                                  fit: BoxFit.scaleDown,
+                                  child: AnimatedTextKit(
+                                    isRepeatingAnimation: false,
+                                    animatedTexts: [
+                                      TypewriterAnimatedText(
+                                        '¡Crea tu Ecobag®!',
+                                        textStyle: const TextStyle(
+                                          fontSize: 32,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 1.3,
+                                          color: Color.fromARGB(255, 75, 141, 44),
+                                          height: 1.2,
+                                        ),
+                                        speed: const Duration(milliseconds: 100),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              else
+                                FittedBox(
+                                  alignment: Alignment.centerLeft,
+                                  fit: BoxFit.scaleDown,
+                                  child: Opacity(
+                                    opacity: 0,
+                                    child: const Text(
+                                      '¡Crea tu Ecobag®!',
+                                      style: TextStyle(
+                                        fontSize: 32,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 1.3,
+                                        color: Color.fromARGB(255, 75, 141, 44),
+                                        height: 1.2,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                              const SizedBox(height: 16), // separación opcional
+
+                              FadeTransition(
+                                opacity: _buttonOpacity,
+                                child: TextButton.icon(
+                                  onPressed: () {
+                                    final route = '${widget.subcategorie.route}/crea-tu-empaque';
+                                    navigateWithSlide(context, route); // tu función personalizada
+                                  },
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: Colors.black,
+                                    textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                  ),
+                                  icon: const Icon(Icons.arrow_forward_rounded, size: 24, color: Colors.black),
+                                  label: const Text('Ir a crear'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _Leaf {
+  final double inicio;
+  final double dur;
+  final double rot;
+  final double scale;
+  final double offsetY;
+  final double curveFactor; // ⬅️ nuevo
+  final double waveMultiplier; // nuevo
+
+  _Leaf({
+    required this.inicio,
+    required this.dur,
+    required this.rot,
+    required this.scale,
+    required this.offsetY,
+    required this.curveFactor,
+    required this.waveMultiplier,
+  });
 }

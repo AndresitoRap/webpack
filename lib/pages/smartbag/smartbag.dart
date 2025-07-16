@@ -237,7 +237,7 @@ class _SmartBagState extends State<SmartBag> {
                             padding: EdgeInsets.symmetric(vertical: 20, horizontal: horizontalPadding),
                             child: ClipRRect(
                               borderRadius: borderRadius,
-                              child: Container(
+                              child: SizedBox(
                                 width: double.infinity,
                                 height: min(screenHeight * 0.8, 1100),
                                 child: Stack(

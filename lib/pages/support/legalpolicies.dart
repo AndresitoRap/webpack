@@ -241,8 +241,7 @@ class _GlosaryitemState extends State<Glosaryitem> {
                   text: " ${widget.about}",
                   style: TextStyle(
                     fontSize: 16,
-                    color:
-                        _isHovering ? Theme.of(context).colorScheme.primary.withOpacity(0.8) : Theme.of(context).colorScheme.tertiary.withAlpha(200),
+                    color: _isHovering ? Theme.of(context).colorScheme.primary.withAlpha(204) : Theme.of(context).colorScheme.tertiary.withAlpha(200),
                   ),
                 ),
               ],

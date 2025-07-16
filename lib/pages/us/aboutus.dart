@@ -1,6 +1,4 @@
 import 'dart:math';
-import 'dart:html' as html;
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
@@ -56,7 +54,7 @@ class _AboutUsState extends State<AboutUs> {
             },
           ),
 
-          Positioned.fill(child: Container(color: Colors.black.withOpacity((_scrollY / 900).clamp(0.1, 0.7)))),
+          Positioned.fill(child: Container(color: Colors.black.withAlpha((((_scrollY / 900).clamp(0.1, 0.7)) * 255).toInt()))),
           Positioned.fill(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

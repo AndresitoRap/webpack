@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
+
 import 'dart:html' as html;
 
 class DataProccessing extends StatefulWidget {
@@ -40,11 +41,7 @@ class _DataProccessingState extends State<DataProccessing> {
                             const SizedBox(height: 10),
                             Text(
                               "Tratamiento de datos personales",
-                              style: TextStyle(
-                                fontSize: 42,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).primaryColor,
-                              ),
+                              style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
                             ),
                             const SizedBox(height: 20),
                             const Text(
@@ -83,10 +80,7 @@ class _DataProccessingState extends State<DataProccessing> {
                                         padding: EdgeInsets.symmetric(vertical: 7, horizontal: 10),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(12),
-                                          color:
-                                              ishover
-                                                  ? Theme.of(context).colorScheme.tertiary
-                                                  : Theme.of(context).primaryColor,
+                                          color: ishover ? Theme.of(context).colorScheme.tertiary : Theme.of(context).primaryColor,
                                         ),
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
@@ -111,10 +105,7 @@ class _DataProccessingState extends State<DataProccessing> {
                       if (!isMobile)
                         Expanded(
                           flex: 2,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Image.asset("assets/img/support/dataproccesing.webp"),
-                          ),
+                          child: Padding(padding: const EdgeInsets.all(20.0), child: Image.asset("assets/img/support/dataproccesing.webp")),
                         ),
                     ],
                   ),

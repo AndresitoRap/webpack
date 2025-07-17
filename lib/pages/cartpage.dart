@@ -21,11 +21,7 @@ class CartPage extends StatelessWidget {
                     Icon(CupertinoIcons.hourglass, size: 40, color: Theme.of(context).primaryColor),
                     Text(
                       "Proximamente disponible.",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 40,
-                        color: Theme.of(context).primaryColor,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40, color: Theme.of(context).primaryColor),
                     ),
                   ],
                 ),

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:webpack/pages/cartpage.dart';
 import 'package:webpack/pages/detailsproduct.dart';
@@ -23,7 +24,12 @@ void main() {
   runApp(const MyApp());
 }
 
-void navigateWithSlide(BuildContext context, String routeName, {Widget? target}) {
+Future<void> navigateWithSlide(BuildContext context, String routeName, {Widget? target}) async {
+  final currentRoute = ModalRoute.of(context)?.settings.name;
+
+  // Si ya estás en la misma ruta, no hagas nada
+  if (currentRoute == routeName && target == null) return;
+
   transitionOverlayKey.currentState?.playTransition(() async {
     if (target == null) {
       Navigator.pushNamed(context, routeName);
@@ -41,6 +47,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final allCards = [...subcategorieSmart, ...subcategorieEco];
+    findCard(route) => allCards.firstWhereOrNull((c) => route?.contains(c.route) ?? false);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Empaques Packvisión',
@@ -58,103 +67,88 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return TransitionOverlay(key: transitionOverlayKey, child: child!);
       },
-
       initialRoute: '/',
       onGenerateRoute: (settings) {
-        final uri = Uri.parse(settings.name ?? '/');
+        final path = settings.name ?? '/';
+        final uri = path.contains('?') ? Uri.parse(path) : Uri(path: path);
+        final segments = uri.pathSegments;
+
         if (uri.path == '/') return _buildRoute(settings, const Home());
 
-        final staticRoutes = {
-          '/': const Home(),
-          '/cart': CartPage(),
-          '/SmartBag': const SmartBag(),
-          '/EcoBag': const EcoBag(),
-          '/Catalogo': const Catalog(),
-          '/Catalogo/Nuestros-Catalogos/Catalogo': const Catalog(),
-          '/Nosotros': const Us(),
-          '/Soporte': const SupportHome(),
-          '/Soporte/Ayuda-Rapida/Whatsapp': const WhatsappPage(),
-          '/Soporte/Ayuda-Rapida/Telefono': const WhatsappPage(),
-          '/Soporte/Politicas/Politicas-legales-y-reglamentarias': const LegalPolicies(),
-          '/Soporte/Politicas/Tratamiento-de-datos': const DataProccessing(),
-          '/Soporte/Tu-opinion/Encuesta-de-satisfaccion-y-PQRS': const PQRS(),
-          '/Nosotros/Quienes-somos/Identidad-corporativa': const AboutUs(),
-          '/Nosotros/Quienes-somos/Nuestros-valores': const Us(),
+        final staticRoutes = <String, Widget Function(RouteSettings)>{
+          '/': (_) => const Home(),
+          '/cart': (_) => CartPage(),
+          '/SmartBag': (_) => const SmartBag(),
+          '/EcoBag': (_) => const EcoBag(),
+          '/Catalogo': (_) => const Catalog(),
+          '/Catalogo/Nuestros-Catalogos/Catalogo': (_) => const Catalog(),
+          '/Nosotros': (_) => const Us(),
+          '/Soporte': (_) => const SupportHome(),
+          '/Soporte/Ayuda-Rapida/Whatsapp': (_) => const WhatsappPage(),
+          '/Soporte/Politicas/Politicas-Legales-Y-Reglamentarias': (_) => const LegalPolicies(),
+          '/Soporte/Politicas/Tratamiento-De-Datos': (_) => const DataProccessing(),
+          '/Soporte/Tu-Opinion/Encuesta-De-Satisfaccion-Y-PQRS': (_) => const PQRS(),
+          '/Nosotros/Quienes-Somos/Identidad-Corporativa': (_) => const AboutUs(),
+          '/Nosotros/Quienes-Somos/Nuestros-Valores': (_) => const Us(),
         };
 
         if (staticRoutes.containsKey(uri.path)) {
-          return _buildRoute(settings, staticRoutes[uri.path]!);
+          return _buildRoute(settings, staticRoutes[uri.path]!(settings));
         }
 
-        if (uri.pathSegments.length == 3 &&
-            (uri.pathSegments[0] == 'SmartBag' || uri.pathSegments[0] == 'EcoBag') &&
-            uri.pathSegments[1].toLowerCase().startsWith('explora-')) {
-          final section = uri.pathSegments[2];
-          final routeKey = '${uri.pathSegments[0]}/$section';
+        if (segments.length == 3 && (segments[0] == 'SmartBag' || segments[0] == 'EcoBag') && segments[1].toLowerCase().startsWith('explora-')) {
+          final section = segments[2];
+          final routeKey = '${segments[0]}/$section';
           final productList = productSections[routeKey];
-          final allCards = [...subcategorieSmart, ...subcategorieEco];
-          final matchedCard = allCards.firstWhere(
-            (card) => card.route == settings.name,
-            orElse: () => throw Exception('No matching Subcategorie found'),
-          );
+          final matchedCard = findCard(settings.name);
           //print("Ruta completa: ${settings.name}");
-          //print("Segmentos: ${uri.pathSegments}");
+          //print("Segmentos: ${segments}");
 
           if (productList != null) {
-            return _buildRoute(settings, Commerce(section: section, selectedSubcategorie: matchedCard));
+            if (matchedCard != null) {
+              return _buildRoute(settings, Commerce(section: section, selectedSubcategorie: matchedCard));
+            } else {
+              return _buildRoute(settings, const PageNotFound());
+            }
           }
         }
 
-        if (uri.pathSegments.length == 4 &&
-            (uri.pathSegments[0].toLowerCase() == 'smartbag' || uri.pathSegments[0].toLowerCase() == 'ecobag') &&
-            uri.pathSegments[1].toLowerCase().startsWith('explora-') &&
-            uri.pathSegments[3].toLowerCase() == 'crea-tu-empaque') {
-          final bagType = uri.pathSegments[0]; // SmartBag o EcoBag
-          final section = uri.pathSegments[2]; // 4PRO, DOYPACK, etc.
+        if (segments.length == 4 &&
+            (segments[0].toLowerCase() == 'smartbag' || segments[0].toLowerCase() == 'ecobag') &&
+            segments[1].toLowerCase().startsWith('explora-') &&
+            segments[3].toLowerCase() == 'crea-tu-empaque') {
+          final bagType = segments[0]; // SmartBag o EcoBag
+          final section = segments[2]; // 4PRO, DOYPACK, etc.
           final routeKey = '$bagType/$section'; // Ej: SmartBag/4PRO
 
           final products = productSections[routeKey];
+          final matchedCard = findCard(settings.name);
 
-          final allCards = [...subcategorieSmart, ...subcategorieEco];
-          final matchedCard = allCards.firstWhere(
-            (card) => uri.path.contains(card.route),
-            orElse: () => throw Exception('No matching Subcategorie found'),
-          );
+          if (products != null && matchedCard!.route.isNotEmpty) {
+            final allProducts = products.expand((t) => t.structures).expand((e) => e.ability).expand((a) => a.product).toList(growable: false);
 
-          if (products != null && matchedCard.route.isNotEmpty) {
-            final allProducts =
-                products
-                    .expand((terminado) => terminado.structures)
-                    .expand((estructura) => estructura.ability)
-                    .expand((ability) => ability.product)
-                    .toList();
+            final firstProduct = allProducts.firstOrNull;
 
-            if (allProducts.isNotEmpty) {
-              return _buildRoute(
-                settings,
-                DetailsProduct(
-                  product: allProducts.first, // ✅ PASA UN SOLO Product
-                  allProducts: allProducts, // ✅ Aquí sí va la lista
-                ),
-              );
+            if (firstProduct != null) {
+              return _buildRoute(settings, DetailsProduct(product: firstProduct, allProducts: allProducts));
             }
           }
 
           return _buildRoute(settings, const PageNotFound());
         }
-        return null;
+        return _buildRoute(settings, const PageNotFound());
       },
     );
   }
+}
 
-  PageRouteBuilder _buildRoute(RouteSettings settings, Widget page) {
-    return PageRouteBuilder(
-      settings: settings,
-      pageBuilder: (_, __, ___) => page,
-      transitionsBuilder: (_, __, ___, child) => child,
-      transitionDuration: Duration.zero,
-    );
-  }
+PageRouteBuilder _buildRoute(RouteSettings settings, Widget page) {
+  return PageRouteBuilder(
+    settings: settings,
+    pageBuilder: (_, __, ___) => page,
+    transitionsBuilder: (_, __, ___, child) => child,
+    transitionDuration: Duration.zero,
+  );
 }
 
 class TransitionOverlay extends StatefulWidget {
@@ -193,10 +187,16 @@ class TransitionOverlayState extends State<TransitionOverlay> with TickerProvide
     });
 
     await _controller.forward(from: 0);
-    setState(() => _showSpinner = true);
+    setState(() {
+      _showSpinner = true;
+      _isSlidingOut = false;
+    });
     await onMidCallback();
-    setState(() => _showSpinner = false);
-    setState(() => _isSlidingOut = true);
+    setState(() {
+      _showSpinner = false;
+      _isSlidingOut = true;
+    });
+
     await _controller.forward(from: 0);
 
     setState(() => _showOverlay = false);

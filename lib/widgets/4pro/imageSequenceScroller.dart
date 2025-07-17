@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 Future<ui.Image?> safeLoadImage(String path) async {
   try {
     final data = await rootBundle.load(path);
-    final codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: 1920);
+    final codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: 960);
     final frame = await codec.getNextFrame();
     return frame.image;
   } catch (e) {
@@ -83,24 +83,23 @@ class _ImageSequenceScrollerState extends State<ImageSequenceScroller> {
       final controller = _effectiveController;
       if (controller.hasClients) controller.jumpTo(0.0);
 
-      // 🔹 Cargar primer frame inmediatamente
-      final firstPath = _buildFramePath(1);
-      final firstImage = await safeLoadImage(firstPath);
-      if (firstImage != null) {
-        imageCache[1] = firstImage;
-        if (mounted) setState(() => _firstFrameReady = true);
-      }
-
-      // 🔹 Precargar el resto en segundo plano sin bloquear el UI
-      Future.microtask(() async {
-        for (int i = 2; i <= widget.totalFrames; i++) {
-          final path = _buildFramePath(i);
-          final img = await safeLoadImage(path);
-          if (img != null) imageCache[i] = img;
+      // 🔹 Precargar todos los frames antes de continuar
+      final futures = List.generate(widget.totalFrames, (index) async {
+        final i = index + 1;
+        final path = _buildFramePath(i);
+        final img = await safeLoadImage(path);
+        if (img != null) {
+          imageCache[i] = img;
         }
       });
+      await Future.wait(futures);
 
-      _checkVisibility();
+      if (mounted) {
+        setState(() {
+          _firstFrameReady = true;
+        });
+        _checkVisibility();
+      }
     });
 
     _effectiveController.addListener(_onVisibilityCheck);
@@ -166,6 +165,10 @@ class _ImageSequenceScrollerState extends State<ImageSequenceScroller> {
   void dispose() {
     if (widget.externalScrollController == null) _scrollController.dispose();
     currentFrame.dispose();
+    for (final img in imageCache.values) {
+      img.dispose();
+    }
+    imageCache.clear();
     super.dispose();
   }
 
@@ -197,12 +200,14 @@ class _ImageSequenceScrollerState extends State<ImageSequenceScroller> {
             }
 
             return RepaintBoundary(
-              child: RawImage(
-                key: ValueKey<int>(_lastRenderedFrame),
-                image: _lastRenderedImage!,
-                fit: BoxFit.cover,
-                width: widget.width,
-                height: widget.height,
+              child: SizedBox(
+                child: RawImage(
+                  key: ValueKey<int>(_lastRenderedFrame),
+                  image: _lastRenderedImage!,
+                  fit: BoxFit.cover,
+                  width: widget.width,
+                  height: widget.height,
+                ),
               ),
             );
           },

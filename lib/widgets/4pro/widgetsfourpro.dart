@@ -6,6 +6,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 import 'package:webpack/class/categories.dart';
 import 'package:webpack/main.dart';
 import 'package:webpack/widgets/header.dart';
+import 'package:webpack/widgets/htmlvideo.dart';
 
 class InfoCardData {
   final String? imagePath;
@@ -137,7 +138,7 @@ Widget buildResponsiveInfoCards(BuildContext context) {
     ),
     InfoCardData(
       isVideo: true,
-      videoPath: "assets/videos/smartbag/4pro/accesorios.webm",
+      videoPath: "assets/assets/videos/smartbag/4pro/accesorios.webm",
       imagePath: "assets/img/smartbag/4pro/accesorios.webp",
       title: "Agrega funcionalidad con accesorios inteligentes. ",
       description:
@@ -567,3 +568,70 @@ class _Leaf {
     required this.waveMultiplier,
   });
 }
+
+//Lluvia
+class SmartbagRain extends StatefulWidget {
+  const SmartbagRain({super.key});
+
+  @override
+  State<SmartbagRain> createState() => _SmartbagRainState();
+}
+
+class _SmartbagRainState extends State<SmartbagRain> with TickerProviderStateMixin {
+  final Random rand = Random();
+  final List<_RainDrop> drops = [];
+
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 10))..repeat();
+
+    // Generar gotas iniciales
+    for (int i = 0; i < 25; i++) {
+      drops.add(_RainDrop(x: rand.nextDouble() * 400, delay: rand.nextDouble(), speed: 2 + rand.nextDouble() * 3, size: 20 + rand.nextDouble() * 20));
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (_, __) {
+        return Stack(
+          children:
+              drops.map((drop) {
+                double t = (_controller.value + drop.delay) % 1.0;
+                double y = t * MediaQuery.of(context).size.height;
+                return Positioned(
+                  top: y,
+                  left: drop.x,
+                  child: Opacity(
+                    opacity: (1 - t).clamp(0.0, 1.0),
+                    child: Transform.rotate(angle: t * pi / 3, child: Icon(Icons.shopping_bag, size: drop.size, color: Colors.blue.withOpacity(0.6))),
+                  ),
+                );
+              }).toList(),
+        );
+      },
+    );
+  }
+}
+
+class _RainDrop {
+  final double x;
+  final double delay;
+  final double speed;
+  final double size;
+
+  _RainDrop({required this.x, required this.delay, required this.speed, required this.size});
+}
+
+//Finally image

@@ -71,7 +71,7 @@ class Ability {
 final Map<String, List<Terminado>> productSections = {
   // SmartBag
   'SmartBag/4PRO': fourprosmartshop,
-  // 'SmartBag/5PRO': fiveprosmartshop,
+  'SmartBag/5PRO': fiveprosmartshop,
   'SmartBag/Doypack': doypacksmartshop,
   'SmartBag/Flowpack': flowpacksmartshop,
   // 'SmartBag/Standpack': standpacksmartshop,
@@ -333,6 +333,81 @@ final Map<String, List<Terminado>> productSections = {
 //   ),
 // ];
 final List<Terminado> fourprosmartshop = [
+  Terminado(
+    name: "Mate",
+    structures: [
+      Estructura(
+        name: "115G/m²",
+        ability: [
+          Ability(
+            name: "50Gr",
+            product: [
+              Product(
+                categoria: categorieSmart,
+                subcategorie: subcategorieSmart[0],
+                name: "Unicolor",
+                description: "",
+                price: 384.08,
+                colors: [NamedColor("Blanco", Colors.white), NamedColor("Negro", Colors.black)],
+                valves: ["Sin válvula", "Válvula desgasificadora"],
+              ),
+            ],
+          ),
+          Ability(
+            name: "70Gr",
+            product: [
+              Product(
+                categoria: categorieSmart,
+                subcategorie: subcategorieSmart[0],
+                name: "Unicolor",
+                description: "",
+                price: 384.08,
+                colors: [
+                  NamedColor("Azul Institucional", Colors.blue),
+                  NamedColor("Blanco", Colors.white),
+                  NamedColor("Dorado", Colors.amber),
+                  NamedColor("Negro", Colors.amber),
+                ],
+                valves: ["Sin válvula", "Válvula desgasificadora"],
+              ),
+            ],
+          ),
+          Ability(
+            name: "125Gr",
+            product: [
+              Product(
+                categoria: categorieSmart,
+                subcategorie: subcategorieSmart[0],
+                name: "Unicolor",
+                description: "",
+                price: 384.08,
+                colors: [
+                  NamedColor("Azul aguamarina", Colors.blue),
+                  NamedColor("Azul institucional", Colors.white),
+                  NamedColor("Blanco", Colors.amber),
+                  NamedColor("Decembrina Roja", Colors.amber),
+                  NamedColor("Dorado", Colors.amber),
+                  NamedColor("Grano de cafe beige", Colors.amber),
+                  NamedColor("Grano de cafe rojo", Colors.amber),
+                  NamedColor("Metalizada", Colors.amber),
+                  NamedColor("Naranja", Colors.amber),
+                  NamedColor("Negro", Colors.amber),
+                  NamedColor("Roja lechosa", Colors.amber),
+                  NamedColor("Roja holografica", Colors.amber),
+                ],
+                valves: ["Sin válvula", "Válvula desgasificadora"],
+              ),
+            ],
+          ),
+        ],
+      ),
+      Estructura(name: "84G/m²", ability: []),
+    ],
+  ),
+  Terminado(name: "Brillante", structures: [Estructura(name: "101G/m²", ability: []), Estructura(name: "70G/m²", ability: [])]),
+];
+
+final List<Terminado> fiveprosmartshop = [
   Terminado(
     name: "Mate",
     structures: [
@@ -928,6 +1003,7 @@ final List<Terminado> doypackecoshop = [
     ],
   ),
 ];
+
 final List<Terminado> flowpackecoshop = [
   Terminado(
     name: "Papel",

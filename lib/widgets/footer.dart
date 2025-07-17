@@ -1,15 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_boxicons/flutter_boxicons.dart';
-import 'package:url_launcher/url_launcher.dart'; // Para abrir enlaces
+import 'package:url_launcher/url_launcher.dart';
 
 class Footer extends StatelessWidget {
   const Footer({super.key});
 
-  // Umbral para cambiar de layout
   static const double mobileBreakpoint = 1000;
 
-  // Datos de horarios
   static const List<Map<String, String>> schedules = [
     {'day': 'Lunes a miércoles', 'time': '7:00 a.m. a 5:00 p.m.'},
     {'day': 'Jueves', 'time': '7:00 a.m. a 4:30 p.m.'},
@@ -17,7 +15,6 @@ class Footer extends StatelessWidget {
     {'day': 'Sábado y domingo', 'time': 'No tenemos atención'},
   ];
 
-  // Datos de redes sociales
   static const List<Map<String, dynamic>> socialMedia = [
     {'icon': Boxicons.bxl_tiktok, 'url': 'https://www.tiktok.com/@packvision_sas?lang=es'},
     {'icon': Boxicons.bxl_instagram, 'url': 'https://www.instagram.com/packvision_sas/'},
@@ -26,19 +23,10 @@ class Footer extends StatelessWidget {
     {'icon': Boxicons.bxl_twitter, 'url': 'https://twitter.com/PackvisionS'},
   ];
 
-  // Función para abrir URLs
-  Future<void> _launchUrl(String url) async {
-    final Uri uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } else {
-      throw 'No se pudo abrir $url';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isWide = screenWidth >= mobileBreakpoint;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04, vertical: 20),
@@ -48,99 +36,22 @@ class Footer extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              screenWidth >= mobileBreakpoint
+              isWide
                   ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [_buildScheduleSection(context), _buildSocialMediaSection(context)],
+                    children: [_buildScheduleSection(context), _buildSocialMediaRow(context)],
                   )
                   : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [_buildScheduleSection(context), const SizedBox(height: 20), _buildSocialMediaSection(context)],
+                    children: [_buildScheduleSection(context), const SizedBox(height: 20), _buildSocialMediaRow(context)],
                   ),
-              // Correo electrónico ahora se muestra en _buildScheduleSection
               const SizedBox(height: 20),
-              screenWidth >= mobileBreakpoint
-                  ? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Stack(
-                        children: [
-                          Text(
-                            "Copyright © 2025 Packvision S.A.S Todos los derechos reservados",
-                            style: TextStyle(
-                              fontSize: 12,
-                              foreground:
-                                  Paint()
-                                    ..style = PaintingStyle.stroke
-                                    ..strokeWidth = 4
-                                    ..color = Theme.of(context).scaffoldBackgroundColor,
-                            ),
-                          ),
-                          Text(
-                            "Copyright © 2025 Packvision S.A.S Todos los derechos reservados",
-                            style: TextStyle(color: Colors.black38, fontSize: 12),
-                          ),
-                        ],
-                      ),
-                      Stack(
-                        children: [
-                          Text(
-                            "Colombia",
-                            style: TextStyle(
-                              fontSize: 12,
-                              foreground:
-                                  Paint()
-                                    ..style = PaintingStyle.stroke
-                                    ..strokeWidth = 4
-                                    ..color = Theme.of(context).scaffoldBackgroundColor,
-                            ),
-                          ),
-                          Text("Colombia", style: TextStyle(color: Colors.black38, fontSize: 12)),
-                        ],
-                      ),
-                    ],
-                  )
+              isWide
+                  ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [_buildCopyRight(context), _buildLocation(context)])
                   : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Stack(
-                        children: [
-                          Text(
-                            "Copyright © 2025 Packvision S.A.S Todos los derechos reservados",
-                            style: TextStyle(
-                              fontSize: 12,
-                              foreground:
-                                  Paint()
-                                    ..style = PaintingStyle.stroke
-                                    ..strokeWidth = 4
-                                    ..color = Theme.of(context).scaffoldBackgroundColor,
-                            ),
-                          ),
-                          Text(
-                            "Copyright © 2025 Packvision S.A.S Todos los derechos reservados",
-                            style: TextStyle(color: Colors.black38, fontSize: 12),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      Stack(
-                        children: [
-                          Text(
-                            "Colombia",
-                            style: TextStyle(
-                              fontSize: 12,
-                              foreground:
-                                  Paint()
-                                    ..style = PaintingStyle.stroke
-                                    ..strokeWidth = 4
-                                    ..color = Theme.of(context).scaffoldBackgroundColor,
-                            ),
-                          ),
-                          Text("Colombia", style: TextStyle(color: Colors.black38, fontSize: 12)),
-                        ],
-                      ),
-                    ],
+                    children: [_buildCopyRight(context), const SizedBox(height: 10), _buildLocation(context)],
                   ),
             ],
           ),
@@ -149,152 +60,103 @@ class Footer extends StatelessWidget {
     );
   }
 
-  // Widget para la sección de horarios
-  Widget _buildScheduleSection(context) {
+  Widget _buildCopyRight(BuildContext context) => _OutlinedText("Copyright © 2025 Packvision S.A.S Todos los derechos reservados");
+
+  Widget _buildLocation(BuildContext context) => _OutlinedText("Colombia");
+
+  Widget _buildScheduleSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Stack(
-          children: [
-            Text(
-              "Horarios de atención:",
-              style: TextStyle(
-                foreground:
-                    Paint()
-                      ..style = PaintingStyle.stroke
-                      ..strokeWidth = 4
-                      ..color = Theme.of(context).scaffoldBackgroundColor,
-              ),
-            ),
-            Text("Horarios de atención:", style: TextStyle(fontWeight: FontWeight.bold)),
-          ],
-        ),
-        ...schedules.map(
-          (schedule) => Stack(
-            children: [
-              // Texto con trazo (background)
-              Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: "${schedule['day']}: ",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        foreground:
-                            Paint()
-                              ..style = PaintingStyle.stroke
-                              ..strokeWidth = 3
-                              ..color = Theme.of(context).scaffoldBackgroundColor,
-                      ),
-                    ),
-                    TextSpan(
-                      text: schedule['time'],
-                      style: TextStyle(
-                        foreground:
-                            Paint()
-                              ..style = PaintingStyle.stroke
-                              ..strokeWidth = 3
-                              ..color = Theme.of(context).scaffoldBackgroundColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Texto normal (foreground)
-              Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(text: "${schedule['day']}: ", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
-                    TextSpan(text: schedule['time'], style: TextStyle(color: Colors.black)),
-                  ],
-                ),
-              ),
-            ],
+        _OutlinedText("Horarios de atención:", bold: true),
+        ...schedules.map((s) {
+          final String day = s['day']!;
+          final String time = s['time']!;
+          return _OutlinedText.rich([TextSpan(text: "$day: ", style: const TextStyle(fontWeight: FontWeight.bold)), TextSpan(text: time)]);
+        }),
+        _OutlinedText.rich([
+          const TextSpan(text: "Correo: ", style: TextStyle(fontWeight: FontWeight.bold)),
+          TextSpan(
+            text: "info@empaquespackvision.com",
+            style: const TextStyle(decoration: TextDecoration.underline),
+            recognizer: TapGestureRecognizer()..onTap = () => launchUrl(Uri.parse("mailto:info@empaquespackvision.com")),
           ),
-        ),
-        Stack(
-          children: [
-            Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
-                    text: "Correo: ",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      foreground:
-                          Paint()
-                            ..style = PaintingStyle.stroke
-                            ..strokeWidth = 3
-                            ..color = Theme.of(context).scaffoldBackgroundColor,
-                    ),
-                  ),
-                  TextSpan(
-                    text: "info@empaquespackvision.com",
-                    style: TextStyle(
-                      foreground:
-                          Paint()
-                            ..style = PaintingStyle.stroke
-                            ..strokeWidth = 3
-                            ..color = Theme.of(context).scaffoldBackgroundColor,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(text: "Correo: ", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
-                  TextSpan(
-                    text: "info@empaquespackvision.com",
-                    style: TextStyle(color: Colors.black),
-                    recognizer:
-                        TapGestureRecognizer()
-                          ..onTap = () async {
-                            final Uri emailUri = Uri(scheme: 'mailto', path: 'info@empaquespackvision.com');
-                            if (await canLaunchUrl(emailUri)) {
-                              await launchUrl(emailUri);
-                            }
-                          },
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+        ]),
       ],
     );
   }
 
-  // Widget para la sección de redes sociales
-  Widget _buildSocialMediaSection(BuildContext context) {
-    Color getPrimaryColor(BuildContext context) {
-      final route = ModalRoute.of(context)?.settings.name ?? '';
-
-      if (route.toLowerCase().contains('ecobag')) {
-        return const Color.fromARGB(255, 75, 141, 44);
-      }
-
-      return Theme.of(context).primaryColor;
-    }
+  Widget _buildSocialMediaRow(BuildContext context) {
+    final route = ModalRoute.of(context)?.settings.name?.toLowerCase() ?? '';
+    final color = route.contains('ecobag') ? const Color(0xFF4B8D2C) : Theme.of(context).primaryColor;
 
     return Row(
       children:
           socialMedia.map((social) {
-            return MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () => _launchUrl(social['url']),
-                child: Container(
-                  margin: const EdgeInsets.only(right: 10),
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(color: getPrimaryColor(context), borderRadius: BorderRadius.circular(8)),
-                  child: Icon(social['icon'], color: Colors.white),
+            return Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () => launchUrl(Uri.parse(social['url']), mode: LaunchMode.externalApplication),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(8)),
+                    child: Icon(social['icon'], color: Colors.white),
+                  ),
                 ),
               ),
             );
           }).toList(),
+    );
+  }
+}
+
+class _OutlinedText extends StatelessWidget {
+  final String? text;
+  final List<InlineSpan>? spans;
+  final bool bold;
+
+  const _OutlinedText(this.text, {this.bold = false, super.key}) : spans = null;
+  const _OutlinedText.rich(this.spans, {super.key}) : text = null, bold = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final baseStyle = TextStyle(fontWeight: bold ? FontWeight.bold : FontWeight.normal, fontSize: 14);
+
+    return Stack(
+      children: [
+        Text.rich(
+          spans != null
+              ? TextSpan(
+                children:
+                    spans!.map((span) {
+                      return TextSpan(
+                        text: (span as TextSpan).text,
+                        style: (span.style ?? baseStyle).copyWith(
+                          foreground:
+                              Paint()
+                                ..style = PaintingStyle.stroke
+                                ..strokeWidth = 3
+                                ..color = Theme.of(context).scaffoldBackgroundColor,
+                        ),
+                        recognizer: span.recognizer,
+                      );
+                    }).toList(),
+              )
+              : TextSpan(
+                text: text,
+                style: baseStyle.copyWith(
+                  foreground:
+                      Paint()
+                        ..style = PaintingStyle.stroke
+                        ..strokeWidth = 3
+                        ..color = Theme.of(context).scaffoldBackgroundColor,
+                ),
+              ),
+        ),
+        Text.rich(spans != null ? TextSpan(children: spans) : TextSpan(text: text, style: baseStyle.copyWith(color: Colors.black))),
+      ],
     );
   }
 }

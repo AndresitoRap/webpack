@@ -10,6 +10,7 @@ import 'package:lottie/lottie.dart';
 import 'package:webpack/class/products.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
+import 'package:webpack/widgets/htmlvideo.dart';
 
 class DetailsProduct extends StatefulWidget {
   final Product product;

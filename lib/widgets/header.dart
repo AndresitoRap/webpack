@@ -1,968 +1,605 @@
-import 'dart:html' as html;
-
-import 'dart:ui_web' as ui_web show platformViewRegistry;
-import 'dart:ui' as ui;
+import 'dart:ui' as ui show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:webpack/class/menu_data.dart';
-import 'package:delayed_display/delayed_display.dart';
-import 'package:webpack/main.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:webpack/main.dart';
 
-//blur para los videos (HTML incrustado)
 final ValueNotifier<bool> videoBlurNotifier = ValueNotifier(false);
-final ValueNotifier<bool> htmlIncrustbool = ValueNotifier(false);
+
+// Normaliza el texto para crear rutas amigables
+String normalizePath(String input) {
+  const diacritics = {'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u', 'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U', 'ñ': 'n', 'Ñ': 'N'};
+
+  final withoutDiacritics = input.split('').map((char) => diacritics[char] ?? char).join();
+
+  return withoutDiacritics
+      .replaceAll(RegExp(r'[^\w\s-]'), '') // elimina símbolos especiales
+      .replaceAll(' ', '-') // espacios por guiones
+      .replaceAllMapped(
+        RegExp(r'(^|-)(\w)'), // capitaliza después de inicio o guion
+        (match) => '${match.group(1)}${match.group(2)!.toUpperCase()}',
+      );
+}
 
 class Header extends StatefulWidget {
-  final void Function(bool)? onHoverChange;
-  const Header({super.key, this.onHoverChange});
+  const Header({super.key});
 
   @override
   State<Header> createState() => _HeaderState();
 }
 
 class _HeaderState extends State<Header> {
-  bool isHover = false;
-  bool justOpened = false;
-  int? hoveredIndex;
-  String? ishoverother = "";
-  bool showMobileMenu = false;
-  int? hoveredMobileIndex;
+  bool isLogoHovered = false;
+  bool isBagHovered = false;
+  bool isMenuOpen = false;
   int? selectedMenuIndex;
-  bool showSubmenu = false;
 
-  String normalizeRoute(String input) {
-    final replacements = {
-      'á': 'a',
-      'é': 'e',
-      'í': 'i',
-      'ó': 'o',
-      'ú': 'u',
-      'Á': 'A',
-      'É': 'E',
-      'Í': 'I',
-      'Ó': 'O',
-      'Ú': 'U',
-      'ñ': 'n',
-      'Ñ': 'N',
-      ' ': '-',
-      '¿': '',
-      '?': '',
-      '¡': '',
-      '!': '',
-      '®': '',
-    };
-
-    String result = input;
-    replacements.forEach((key, value) {
-      result = result.replaceAll(key, value);
+  void toggleMenu() async {
+    await Future.delayed(Duration(milliseconds: 300));
+    setState(() {
+      isMenuOpen = !isMenuOpen;
+      selectedMenuIndex = null;
+      videoBlurNotifier.value = isMenuOpen;
     });
+  }
 
-    return result;
+  void navigateTo(BuildContext context, String menuTitle, {String? subTitle, String? sectionTitle}) {
+    // Normaliza cada segmento si existe
+    final segments = [
+      normalizePath(menuTitle),
+      if (subTitle != null && subTitle.isNotEmpty) normalizePath(subTitle),
+      if (sectionTitle != null && sectionTitle.isNotEmpty) normalizePath(sectionTitle),
+    ];
+
+    // Construye ruta
+    final route = '/${segments.join('/')}';
+    navigateWithSlide(context, route);
   }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final currentRoute = ModalRoute.of(context)?.settings.name ?? '';
+    final screenHeight = MediaQuery.of(context).size.height;
+    final routeName = ModalRoute.of(context)?.settings.name ?? '';
+    final colorheader =
+        routeName.toLowerCase().contains('ecobag')
+            ? const Color.fromARGB(255, 75, 141, 44) // Verde
+            : Theme.of(context).primaryColor; // Azul
 
-    if (showMobileMenu && screenWidth >= 850) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        setState(() {
-          showMobileMenu = false;
-        });
-      });
-    }
+    final isMobile = screenWidth < 850;
+    final heightContainer = isMenuOpen ? screenHeight : 45.0;
 
     return Stack(
       children: [
-        TweenAnimationBuilder<double>(
-          tween: Tween<double>(begin: 0.0, end: isHover ? 10.0 : 0.0),
-          duration: Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          builder: (context, value, child) {
-            return SizedBox(
-              width: double.infinity,
-              height: double.infinity,
-              child: BackdropFilter(filter: ui.ImageFilter.blur(sigmaX: value, sigmaY: value), child: Container()),
-            );
-          },
-        ),
-        Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          child: MouseRegion(
-            onExit: (_) {
-              setState(() {
-                isHover = false;
-                hoveredIndex = null;
-                ishoverother = "";
-                videoBlurNotifier.value = false;
-              });
-            },
-            child:
-                screenWidth <= 850
-                    ? GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          showMobileMenu = true;
-                        });
-                      },
-                      child: AnimatedContainer(
-                        duration: Duration(milliseconds: 300),
-                        width: double.infinity,
-                        height:
-                            isHover && screenWidth <= 850
-                                ? MediaQuery.of(context).size.height
-                                : isHover && screenWidth > 850
-                                ? 340
-                                : 48,
-                        child: ClipRRect(
-                          child: BackdropFilter(
-                            filter: ui.ImageFilter.blur(sigmaX: 40, sigmaY: 40),
-                            child: Stack(
-                              children: [
-                                SingleChildScrollView(
-                                  child: AnimatedContainer(
-                                    duration: Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                    height: isHover ? MediaQuery.of(context).size.height : 48,
-                                    color:
-                                        currentRoute.contains("EcoBag")
-                                            ? Color.fromARGB(255, 41, 112, 9).withAlpha(170)
-                                            : Theme.of(context).primaryColor.withAlpha(200),
-
-                                    child: Align(
-                                      alignment: Alignment.topCenter,
-                                      child: ConstrainedBox(
-                                        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
-                                        child: SingleChildScrollView(
-                                          physics: NeverScrollableScrollPhysics(),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                  top: 10,
-                                                  bottom: isHover ? MediaQuery.of(context).size.height : 12,
-                                                  left: 15,
-                                                  right: 15,
-                                                ),
-                                                child: Center(
-                                                  child: ConstrainedBox(
-                                                    constraints: BoxConstraints(maxWidth: 1024),
-                                                    child: Column(
-                                                      children: [
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                          children: [
-                                                            MouseRegion(
-                                                              cursor: SystemMouseCursors.click,
-                                                              onEnter: (_) {
-                                                                setState(() {
-                                                                  if (showMobileMenu) {
-                                                                    isHover = false;
-                                                                    videoBlurNotifier.value = false;
-                                                                  }
-                                                                  ishoverother = "logo";
-                                                                });
-                                                              },
-                                                              onExit: (_) {
-                                                                setState(() {
-                                                                  ishoverother = "";
-                                                                });
-                                                              },
-                                                              child: TweenAnimationBuilder<double>(
-                                                                tween: Tween<double>(begin: 210, end: ishoverother == "logo" ? 255 : 210),
-                                                                duration: Duration(milliseconds: 200),
-                                                                builder: (context, value, child) {
-                                                                  return GestureDetector(
-                                                                    onTap: () {
-                                                                      if (ModalRoute.of(context)?.settings.name != '/') {
-                                                                        navigateWithSlide(context, '/');
-                                                                      }
-                                                                    },
-                                                                    child:
-                                                                        showSubmenu
-                                                                            ? GestureDetector(
-                                                                              onTap: () {
-                                                                                setState(() {
-                                                                                  showSubmenu = false;
-                                                                                  selectedMenuIndex = null;
-                                                                                });
-                                                                              },
-                                                                              child: MouseRegion(
-                                                                                cursor: SystemMouseCursors.click,
-
-                                                                                child: TweenAnimationBuilder<double>(
-                                                                                  tween: Tween<double>(
-                                                                                    begin: 200,
-                                                                                    end: ishoverother == "back" ? 255 : 200,
-                                                                                  ),
-                                                                                  duration: Duration(milliseconds: 200),
-                                                                                  builder: (context, value, child) {
-                                                                                    return Icon(
-                                                                                      CupertinoIcons.chevron_back,
-                                                                                      key: ValueKey<bool>(showSubmenu),
-                                                                                      color: Colors.white.withAlpha(value.toInt()),
-                                                                                      size: 26,
-                                                                                    );
-                                                                                  },
-                                                                                ),
-                                                                              ),
-                                                                            )
-                                                                            : AnimatedOpacity(
-                                                                              opacity: isHover ? 0.0 : 1.0,
-                                                                              duration: Duration(milliseconds: 300),
-                                                                              child: SvgPicture.asset(
-                                                                                "assets/img/WIsotipo.svg",
-                                                                                height: 23,
-                                                                                colorFilter: ColorFilter.mode(
-                                                                                  Colors.white.withAlpha(value.toInt()),
-                                                                                  BlendMode.srcIn,
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                  );
-                                                                },
-                                                              ),
-                                                            ),
-
-                                                            Row(
-                                                              children: [
-                                                                // MouseRegion(
-                                                                //   onEnter: (_) {
-                                                                //     setState(() {
-                                                                //       if (showMobileMenu) {
-                                                                //         isHover = false;
-                                                                //         videoBlurNotifier.value = false;
-                                                                //       }
-                                                                //       ishoverother = "search";
-                                                                //     });
-                                                                //   },
-                                                                //   onExit: (_) {
-                                                                //     setState(() {
-                                                                //       ishoverother = "";
-                                                                //     });
-                                                                //   },
-                                                                //   child: TweenAnimationBuilder<double>(
-                                                                //     tween: Tween<double>(
-                                                                //       begin: 200,
-                                                                //       end: ishoverother == "search" ? 255 : 200,
-                                                                //     ),
-                                                                //     duration: Duration(milliseconds: 200),
-                                                                //     builder: (context, value, child) {
-                                                                //       return AnimatedOpacity(
-                                                                //         opacity: isHover ? 0.0 : 1.0,
-                                                                //         duration: Duration(milliseconds: 300),
-                                                                //         child: Icon(
-                                                                //           CupertinoIcons.search,
-                                                                //           color: Colors.white.withAlpha(value.toInt()),
-                                                                //           size: 20,
-                                                                //         ),
-                                                                //       );
-                                                                //     },
-                                                                //   ),
-                                                                // ),
-                                                                // SizedBox(width: screenWidth * 0.04),
-                                                                GestureDetector(
-                                                                  onTap: () {
-                                                                    navigateWithSlide(context, "/cart");
-                                                                  },
-                                                                  child: MouseRegion(
-                                                                    onEnter: (_) {
-                                                                      setState(() {
-                                                                        if (showMobileMenu) {
-                                                                          isHover = false;
-                                                                          videoBlurNotifier.value = false;
-                                                                        }
-                                                                        ishoverother = "bag";
-                                                                      });
-                                                                    },
-                                                                    onExit: (_) {
-                                                                      setState(() {
-                                                                        ishoverother = "";
-                                                                      });
-                                                                    },
-                                                                    cursor: SystemMouseCursors.click,
-                                                                    child: TweenAnimationBuilder<double>(
-                                                                      tween: Tween<double>(begin: 200, end: ishoverother == "bag" ? 255 : 200),
-                                                                      duration: Duration(milliseconds: 200),
-                                                                      builder: (context, value, child) {
-                                                                        return AnimatedOpacity(
-                                                                          opacity: isHover ? 0.0 : 1.0,
-                                                                          duration: Duration(milliseconds: 300),
-                                                                          child: Icon(
-                                                                            CupertinoIcons.bag,
-                                                                            color: Colors.white.withAlpha(value.toInt()),
-                                                                            size: 20,
-                                                                          ),
-                                                                        );
-                                                                      },
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Row(
-                                                                  children: [
-                                                                    SizedBox(width: screenWidth * 0.03),
-                                                                    GestureDetector(
-                                                                      onTap: () {
-                                                                        setState(() {
-                                                                          if (isHover) {
-                                                                            isHover = false;
-                                                                            hoveredIndex = null;
-                                                                            showSubmenu = false;
-                                                                            videoBlurNotifier.value = false;
-                                                                          } else {
-                                                                            isHover = true;
-                                                                            videoBlurNotifier.value = true;
-                                                                            hoveredIndex = null;
-                                                                          }
-                                                                        });
-                                                                      },
-                                                                      child: MouseRegion(
-                                                                        cursor: SystemMouseCursors.click,
-
-                                                                        child: TweenAnimationBuilder<double>(
-                                                                          tween: Tween<double>(begin: 200, end: ishoverother == "line" ? 255 : 200),
-                                                                          duration: Duration(milliseconds: 200),
-                                                                          builder: (context, value, child) {
-                                                                            return AnimatedSwitcher(
-                                                                              duration: Duration(milliseconds: 300),
-
-                                                                              transitionBuilder: (child, animation) {
-                                                                                return ScaleTransition(scale: animation, child: child);
-                                                                              },
-                                                                              child: Icon(
-                                                                                isHover ? CupertinoIcons.xmark : CupertinoIcons.equal,
-                                                                                key: ValueKey<bool>(isHover),
-                                                                                color: Colors.white.withAlpha(value.toInt()),
-                                                                                size: 26,
-                                                                              ),
-                                                                            );
-                                                                          },
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-
-                                                        AnimatedSwitcher(
-                                                          duration: Duration(milliseconds: 300),
-                                                          transitionBuilder: (child, animation) {
-                                                            return FadeTransition(
-                                                              opacity: animation,
-                                                              child: SizeTransition(sizeFactor: animation, axisAlignment: -1.0, child: child),
-                                                            );
-                                                          },
-                                                          child:
-                                                              isHover
-                                                                  ? Align(
-                                                                    key: ValueKey("hover_menu"),
-                                                                    alignment: Alignment.topLeft,
-                                                                    child: Padding(
-                                                                      padding: EdgeInsets.only(top: 20, left: 15, right: 15),
-                                                                      child:
-                                                                          showSubmenu
-                                                                              ? Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                children: [
-                                                                                  Padding(
-                                                                                    padding: const EdgeInsets.only(bottom: 24.0),
-                                                                                    child: MouseRegion(
-                                                                                      cursor: SystemMouseCursors.click,
-                                                                                      child: GestureDetector(
-                                                                                        onTap: () {
-                                                                                          final path =
-                                                                                              "/${MenuData.navbarItems[selectedMenuIndex!].replaceAll("®", "").replaceAll(" ", "")}";
-                                                                                          if (ModalRoute.of(context)?.settings.name != path) {
-                                                                                            navigateWithSlide(context, path);
-                                                                                          }
-                                                                                        },
-                                                                                        child: Text(
-                                                                                          'Descubre todo de ${MenuData.navbarItems[selectedMenuIndex!]}',
-                                                                                          style: const TextStyle(
-                                                                                            fontSize: 24,
-                                                                                            fontWeight: FontWeight.bold,
-                                                                                            color: Colors.white,
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                  ...MenuData.submenus[selectedMenuIndex!].expand((section) {
-                                                                                    return [
-                                                                                      Padding(
-                                                                                        padding: EdgeInsets.symmetric(vertical: 10),
-                                                                                        child: Text(
-                                                                                          section['title'],
-                                                                                          style: TextStyle(
-                                                                                            color: Colors.white.withAlpha(200),
-                                                                                            fontSize: 18,
-                                                                                            fontWeight: FontWeight.bold,
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                      const SizedBox(height: 8),
-                                                                                      ...List<Widget>.from(
-                                                                                        section['items'].map<Widget>((item) {
-                                                                                          return MouseRegion(
-                                                                                            cursor: SystemMouseCursors.click,
-                                                                                            child: GestureDetector(
-                                                                                              onTap: () {
-                                                                                                String path = normalizeRoute(
-                                                                                                  MenuData.navbarItems[selectedMenuIndex!],
-                                                                                                );
-                                                                                                String sectionTitle = normalizeRoute(
-                                                                                                  section["title"],
-                                                                                                );
-                                                                                                String itemPath = normalizeRoute(item);
-
-                                                                                                String fullRoute = "/$path/$sectionTitle/$itemPath";
-
-                                                                                                if (ModalRoute.of(context)?.settings.name !=
-                                                                                                    fullRoute) {
-                                                                                                  navigateWithSlide(context, fullRoute);
-                                                                                                }
-                                                                                              },
-                                                                                              child: Padding(
-                                                                                                padding: const EdgeInsets.symmetric(vertical: 4),
-                                                                                                child: Text(
-                                                                                                  item,
-                                                                                                  style: TextStyle(
-                                                                                                    color: Colors.white,
-                                                                                                    fontWeight: FontWeight.bold,
-                                                                                                    fontSize: 20,
-                                                                                                  ),
-                                                                                                ),
-                                                                                              ),
-                                                                                            ),
-                                                                                          );
-                                                                                        }),
-                                                                                      ),
-                                                                                    ];
-                                                                                  }),
-                                                                                ],
-                                                                              )
-                                                                              : Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                children: List.generate(MenuData.navbarItems.length, (index) {
-                                                                                  return DelayedDisplay(
-                                                                                    slidingCurve: Curves.easeInOut,
-                                                                                    delay: Duration(milliseconds: 40 * index),
-                                                                                    fadingDuration: Duration(milliseconds: 300),
-                                                                                    slidingBeginOffset: const Offset(0.0, 0.1),
-                                                                                    child: Padding(
-                                                                                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                                                                      child: MouseRegion(
-                                                                                        cursor: SystemMouseCursors.click,
-                                                                                        onEnter: (_) {
-                                                                                          setState(() {
-                                                                                            hoveredMobileIndex =
-                                                                                                hoveredMobileIndex == index ? null : index;
-                                                                                          });
-                                                                                        },
-                                                                                        onExit: (_) {
-                                                                                          setState(() {
-                                                                                            hoveredMobileIndex =
-                                                                                                hoveredMobileIndex == index ? null : index;
-                                                                                          });
-                                                                                        },
-                                                                                        child: GestureDetector(
-                                                                                          onTap: () {
-                                                                                            setState(() {
-                                                                                              selectedMenuIndex = index;
-                                                                                              showSubmenu = true;
-                                                                                            });
-                                                                                          },
-
-                                                                                          child: Row(
-                                                                                            children: [
-                                                                                              Text(
-                                                                                                MenuData.navbarItems[index],
-                                                                                                style: TextStyle(
-                                                                                                  fontSize: 26,
-                                                                                                  fontWeight: FontWeight.w600,
-                                                                                                  color: Colors.white,
-                                                                                                ),
-                                                                                              ),
-                                                                                              Spacer(),
-                                                                                              AnimatedOpacity(
-                                                                                                opacity: hoveredMobileIndex == index ? 1.0 : 0.0,
-                                                                                                duration: Duration(milliseconds: 300),
-                                                                                                child: Icon(
-                                                                                                  CupertinoIcons.chevron_right,
-                                                                                                  color: Colors.white,
-                                                                                                ),
-                                                                                              ),
-                                                                                            ],
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  );
-                                                                                }),
-                                                                              ),
-                                                                    ),
-                                                                  )
-                                                                  : SizedBox(key: ValueKey("empty")),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                    : AnimatedContainer(
-                      duration: Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                      width: double.infinity,
-
-                      height: isHover ? 387 : 46,
-                      child: ClipRRect(
-                        child: BackdropFilter(
-                          filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                          child: AnimatedContainer(
-                            duration: Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                            color:
-                                (ModalRoute.of(context)?.settings.name?.toLowerCase().contains("ecobag") ?? false)
-                                    ? Color.fromARGB(255, 41, 112, 9).withAlpha(170)
-                                    : Theme.of(context).primaryColor.withAlpha(200),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                              child: SingleChildScrollView(
-                                physics: NeverScrollableScrollPhysics(),
-                                child: Center(
-                                  child: ConstrainedBox(
-                                    constraints: BoxConstraints(maxWidth: 1024),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            MouseRegion(
-                                              cursor: SystemMouseCursors.click,
-                                              onEnter: (_) {
-                                                setState(() {
-                                                  isHover = false;
-                                                  ishoverother = "logo";
-                                                  videoBlurNotifier.value = false;
-                                                });
-                                              },
-                                              onExit: (_) {
-                                                setState(() {
-                                                  ishoverother = "";
-                                                });
-                                              },
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  if (ModalRoute.of(context)?.settings.name != '/') {
-                                                    navigateWithSlide(context, "/");
-                                                  }
-                                                },
-                                                child: TweenAnimationBuilder<double>(
-                                                  tween: Tween<double>(begin: 210, end: ishoverother == "logo" ? 255 : 210),
-                                                  duration: Duration(milliseconds: 200),
-                                                  curve: Curves.easeInOut,
-                                                  builder: (context, value, child) {
-                                                    return SvgPicture.asset(
-                                                      "assets/img/WIsotipo.svg",
-                                                      height: 23,
-                                                      color: Colors.white.withAlpha(value.toInt()),
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                            ...List.generate(MenuData.navbarItems.length, (index) {
-                                              return MouseRegion(
-                                                cursor: SystemMouseCursors.click,
-                                                onEnter: (_) {
-                                                  setState(() {
-                                                    isHover = true;
-                                                    hoveredIndex = index;
-                                                    videoBlurNotifier.value = true;
-                                                  });
-                                                },
-                                                child: TweenAnimationBuilder<double>(
-                                                  tween: Tween<double>(begin: 200, end: hoveredIndex == index ? 255 : 200),
-                                                  duration: Duration(milliseconds: 200),
-                                                  curve: Curves.easeInOut,
-                                                  builder: (context, value, child) {
-                                                    return GestureDetector(
-                                                      onTap: () async {
-                                                        String currentPath = normalizeRoute("/${MenuData.navbarItems[index].replaceAll("®", "")}");
-                                                        final currentRoute = ModalRoute.of(context)?.settings.name;
-
-                                                        if (hoveredIndex != index) {
-                                                          setState(() {
-                                                            hoveredIndex = index;
-                                                            isHover = true;
-                                                            videoBlurNotifier.value = true;
-                                                          });
-                                                        } else {
-                                                          if (currentRoute != currentPath) {
-                                                            setState(() {
-                                                              isHover = false;
-                                                              videoBlurNotifier.value = false;
-                                                              hoveredIndex = null;
-                                                            });
-                                                            await Future.delayed(Duration(milliseconds: 400));
-                                                            navigateWithSlide(context, currentPath);
-                                                          }
-                                                        }
-                                                      },
-                                                      child: Text(
-                                                        MenuData.navbarItems[index],
-                                                        style: TextStyle(fontSize: 12, color: Colors.white.withAlpha(value.toInt())),
-                                                      ),
-                                                    );
-                                                  },
-                                                ),
-                                              );
-                                            }),
-                                            Row(
-                                              children: [
-                                                // MouseRegion(
-                                                //   onEnter: (_) {
-                                                //     setState(() {
-                                                //       isHover = false;
-                                                //       ishoverother = "search";
-                                                //       videoBlurNotifier.value = false;
-                                                //     });
-                                                //   },
-                                                //   onExit: (_) {
-                                                //     setState(() {
-                                                //       ishoverother = "";
-                                                //     });
-                                                //   },
-                                                //   child: TweenAnimationBuilder<double>(
-                                                //     tween: Tween<double>(
-                                                //       begin: 200,
-                                                //       end: ishoverother == "search" ? 255 : 200,
-                                                //     ),
-                                                //     duration: Duration(milliseconds: 200),
-                                                //     curve: Curves.easeInOut,
-                                                //     builder: (context, value, child) {
-                                                //       return Icon(
-                                                //         CupertinoIcons.search,
-                                                //         color: Colors.white.withAlpha(value.toInt()),
-                                                //         size: 20,
-                                                //       );
-                                                //     },
-                                                //   ),
-                                                // ),
-                                                // SizedBox(width: screenWidth * 0.04),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    navigateWithSlide(context, "/cart");
-                                                  },
-                                                  child: MouseRegion(
-                                                    onEnter: (_) {
-                                                      setState(() {
-                                                        isHover = false;
-                                                        ishoverother = "bag";
-                                                        videoBlurNotifier.value = false;
-                                                      });
-                                                    },
-                                                    onExit: (_) {
-                                                      setState(() {
-                                                        ishoverother = "";
-                                                      });
-                                                    },
-                                                    cursor: SystemMouseCursors.click,
-                                                    child: TweenAnimationBuilder<double>(
-                                                      tween: Tween<double>(begin: 200, end: ishoverother == "bag" ? 255 : 200),
-                                                      duration: Duration(milliseconds: 200),
-                                                      curve: Curves.easeInOut,
-                                                      builder: (context, value, child) {
-                                                        return Icon(CupertinoIcons.bag, color: Colors.white.withAlpha(value.toInt()), size: 20);
-                                                      },
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        AnimatedSwitcher(
-                                          duration: Duration(milliseconds: 300),
-                                          transitionBuilder: (Widget child, Animation<double> animation) {
-                                            return FadeTransition(
-                                              opacity: animation,
-                                              child: SizeTransition(sizeFactor: animation, axisAlignment: -1.0, child: child),
-                                            );
-                                          },
-                                          child:
-                                              isHover && hoveredIndex != null
-                                                  ? Padding(
-                                                    key: ValueKey<int>(hoveredIndex!),
-                                                    padding: EdgeInsets.only(top: 50, bottom: 50, left: 50),
-                                                    child: Row(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children:
-                                                          MenuData.submenus[hoveredIndex!].asMap().entries.map((entry) {
-                                                            int idx = entry.key;
-                                                            Map<String, dynamic> section = entry.value;
-                                                            bool isFirstColumn = idx == 0;
-
-                                                            return Padding(
-                                                              padding: EdgeInsets.only(right: isFirstColumn ? 100 : 50),
-                                                              child: Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                children: [
-                                                                  Text(
-                                                                    section["title"],
-                                                                    style: TextStyle(fontSize: 12, color: Colors.white.withAlpha(200)),
-                                                                  ),
-                                                                  SizedBox(height: 25),
-                                                                  ...section["items"].asMap().entries.map<Widget>((entry) {
-                                                                    int itemIndex = entry.key;
-                                                                    String item = entry.value;
-                                                                    return DelayedDisplay(
-                                                                      delay: Duration(milliseconds: itemIndex * 100),
-                                                                      fadingDuration: Duration(milliseconds: 300),
-                                                                      slidingBeginOffset: const Offset(0.0, 0.2),
-                                                                      child: Padding(
-                                                                        padding: EdgeInsets.only(bottom: 3),
-                                                                        child: MouseRegion(
-                                                                          cursor: SystemMouseCursors.click,
-                                                                          child: GestureDetector(
-                                                                            onTap: () {
-                                                                              String path = normalizeRoute(MenuData.navbarItems[hoveredIndex!]);
-                                                                              String sectionTitle = normalizeRoute(section["title"]);
-                                                                              String itemPath = normalizeRoute(item);
-
-                                                                              String fullRoute = "/$path/$sectionTitle/$itemPath";
-
-                                                                              if (ModalRoute.of(context)?.settings.name != fullRoute) {
-                                                                                navigateWithSlide(context, fullRoute);
-                                                                              }
-                                                                            },
-                                                                            child: Text(
-                                                                              item,
-                                                                              style: TextStyle(
-                                                                                fontSize: isFirstColumn ? 22 : 12,
-                                                                                fontWeight: FontWeight.bold,
-                                                                                color: Colors.white.withAlpha(isFirstColumn ? 255 : 250),
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                    );
-                                                                  }).toList(),
-                                                                ],
-                                                              ),
-                                                            );
-                                                          }).toList(),
-                                                    ),
-                                                  )
-                                                  : SizedBox.shrink(),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+        if (isMenuOpen == true)
+          SizedBox(
+            width: double.infinity,
+            height: double.infinity,
+            child: BackdropFilter(filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10), child: Container()),
+          ),
+        ClipRRect(
+          child: BackdropFilter(
+            filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: MouseRegion(
+              onExit: (_) {
+                setState(() {
+                  isMenuOpen = false;
+                  selectedMenuIndex = null;
+                  videoBlurNotifier.value = false;
+                });
+              },
+              child: AnimatedContainer(
+                alignment: Alignment.topCenter,
+                duration: const Duration(milliseconds: 600),
+                curve: Curves.fastEaseInToSlowEaseOut,
+                width: screenWidth,
+                height:
+                    isMobile
+                        ? heightContainer
+                        : isMenuOpen
+                        ? 300
+                        : 45,
+                decoration: BoxDecoration(color: colorheader.withAlpha(200)),
+                child: MouseRegion(
+                  onExit: (_) {
+                    if (isMobile) {
+                      setState(() {
+                        isMenuOpen = false;
+                        selectedMenuIndex = null;
+                        videoBlurNotifier.value = false;
+                      });
+                    }
+                  },
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 1100),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                      child:
+                          isMobile
+                              //CELULAR Y TABLET
+                              ? _buildMobile(screenWidth, isMobile)
+                              //ESCRITORIO
+                              : _buildDesktop(screenWidth, isMobile),
                     ),
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ],
     );
   }
-}
 
-class HtmlBackgroundVideo extends StatefulWidget {
-  final String src;
-  final bool blur;
-  final bool loop;
-  final bool showControls;
-  final BoxFit? fit;
-  final double? height;
-  final VoidCallback? onEnded;
-  final bool isPause;
-  final bool retry;
-
-  const HtmlBackgroundVideo({
-    super.key,
-    required this.src,
-    this.blur = false,
-    required this.loop,
-    this.onEnded,
-    this.showControls = false,
-    this.fit,
-    this.height,
-    this.isPause = true,
-    this.retry = false,
-  });
-
-  @override
-  State<HtmlBackgroundVideo> createState() => _HtmlBackgroundVideoState();
-}
-
-class _HtmlBackgroundVideoState extends State<HtmlBackgroundVideo> {
-  late final String _viewId;
-  late html.VideoElement _videoElement;
-  bool isPlaying = true;
-  double _retryRotationTurns = 0;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _viewId = 'html-video-${widget.src.hashCode}-${DateTime.now().millisecondsSinceEpoch}';
-
-    _videoElement =
-        html.VideoElement()
-          ..id = _viewId
-          ..src = widget.src
-          ..autoplay = true
-          ..loop = widget.loop
-          ..muted = true
-          ..style.border = 'none'
-          ..style.width = '100%'
-          ..style.height = '100%'
-          ..style.objectFit = (widget.fit ?? BoxFit.cover).name
-          ..style.transition = 'filter 0.5s ease-in-out'
-          ..style.backgroundColor = 'transparent'
-          ..style.filter = widget.blur ? 'blur(30px)' : 'none';
-
-    if (widget.height != null) {
-      _videoElement.style.height = '${widget.height}px';
-    }
-
-    // ignore: undefined_prefixed_name
-    ui_web.platformViewRegistry.registerViewFactory(_viewId, (int viewId) => _videoElement);
-
-    _videoElement.onClick.listen((_) {
-      if (!widget.isPause) return;
-      if (_videoElement.paused) {
-        _videoElement.play();
-      } else {
-        _videoElement.pause();
-      }
-    });
-
-    _videoElement.onEnded.listen((event) {
-      widget.onEnded?.call();
-    });
-
-    _videoElement.onPlay.listen((event) {
-      if (!mounted) return;
-      setState(() {
-        isPlaying = true;
-      });
-    });
-
-    _videoElement.onPause.listen((event) {
-      if (!mounted) return;
-      setState(() {
-        isPlaying = false;
-      });
-    });
-  }
-
-  @override
-  void didUpdateWidget(covariant HtmlBackgroundVideo oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.blur != widget.blur) {
-      _videoElement.style.filter = widget.blur ? 'blur(30px)' : 'none';
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
+  Widget _buildDesktop(double screenWidth, bool isMobile) {
+    return ListView(
       children: [
-        // El video con GestureDetector
-        GestureDetector(
-          onTap: () {
-            if (!widget.isPause) return;
-            setState(() {
-              if (_videoElement.paused) {
-                _videoElement.play();
-              } else {
-                _videoElement.pause();
-              }
-            });
-          },
-          child: HtmlElementView(viewType: _viewId),
+        Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  onEnter: (_) {
+                    setState(() {
+                      isMenuOpen = false;
+                      selectedMenuIndex = null;
+                      isLogoHovered = true;
+                      videoBlurNotifier.value = true;
+                    });
+                  },
+                  onExit: (_) {
+                    setState(() {
+                      isLogoHovered = false;
+                      videoBlurNotifier.value = false;
+                    });
+                  },
+                  child: GestureDetector(
+                    onTap: () {
+                      navigateWithSlide(context, '/');
+                    },
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 250),
+                      curve: Curves.easeOut,
+                      opacity: isLogoHovered ? 1.0 : 0.7,
+                      child: SvgPicture.asset(
+                        "assets/img/home/WIsotipo.svg",
+                        height: 23,
+                        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                      ),
+                    ),
+                  ),
+                ),
+                ...List.generate(menu.length, (index) {
+                  final isSelected = selectedMenuIndex == index;
+                  return MouseRegion(
+                    onEnter: (_) {
+                      setState(() {
+                        isMenuOpen = true;
+                        selectedMenuIndex = index;
+                        videoBlurNotifier.value = true;
+                      });
+                    },
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isMenuOpen = !isMenuOpen;
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: GestureDetector(
+                            onTap: () {
+                              navigateTo(context, menu[index].title);
+                            },
+                            child: AnimatedDefaultTextStyle(
+                              duration: const Duration(milliseconds: 250),
+                              style: TextStyle(
+                                color: isSelected ? Colors.white : Colors.white70,
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                fontSize: (screenWidth * 0.03).clamp(14, 16),
+                              ),
+                              child: Text(menu[index].title),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  onEnter: (_) {
+                    setState(() {
+                      isMenuOpen = false;
+                      selectedMenuIndex = null;
+                      isBagHovered = true;
+                    });
+                  },
+                  onExit: (_) {
+                    setState(() {
+                      isBagHovered = false;
+                      videoBlurNotifier.value = false;
+                    });
+                  },
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 250),
+                    switchInCurve: Curves.easeOut,
+                    child: IconButton(
+                      key: ValueKey(isBagHovered),
+                      icon: Icon(CupertinoIcons.bag, color: isBagHovered ? Colors.white : Colors.white70, size: (screenWidth * 0.05).clamp(20, 26)),
+                      onPressed: () {
+                        navigateWithSlide(context, '/cart');
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            if (isMenuOpen && selectedMenuIndex != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 20, left: 20),
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 1000),
+                  switchInCurve: Curves.easeOut,
+                  layoutBuilder: (currentChild, previousChildren) => currentChild!,
+                  child: Row(
+                    key: ValueKey(menu[selectedMenuIndex!].title),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children:
+                        menu[selectedMenuIndex!].items.map((sub) {
+                          final columnIndex = menu[selectedMenuIndex!].items.indexOf(sub);
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 16),
+                                  child: Text(
+                                    sub.title,
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: (screenWidth * 0.025).clamp(12, 14),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                ...List.generate(sub.sections.length, (i) {
+                                  final section = sub.sections[i];
+                                  return MouseRegion(
+                                    cursor: SystemMouseCursors.click,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        navigateTo(context, menu[selectedMenuIndex!].title, subTitle: sub.title, sectionTitle: section);
+                                      },
+                                      child: DelayedMenuItem(
+                                        title: section,
+                                        delayMilliseconds: (columnIndex * 100) + (i * 80),
+                                        screenWidth: screenWidth,
+                                        isMobile: isMobile,
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMobile(double screenWidth, bool isMobile) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                AnimatedOpacity(
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.decelerate,
+                  opacity: isMenuOpen ? 0.0 : 1.0,
+                  child: SvgPicture.asset(
+                    "assets/img/home/wisotipo.svg",
+                    height: 23,
+                    colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                  ),
+                ),
+                AnimatedOpacity(
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.decelerate,
+                  opacity: selectedMenuIndex != null ? 1.0 : 0.0,
+                  child: IconButton(
+                    icon: Icon(CupertinoIcons.chevron_left, color: Colors.white),
+                    onPressed: () {
+                      setState(() {
+                        selectedMenuIndex = null;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AnimatedOpacity(
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.decelerate,
+                  opacity: isMenuOpen ? 0.0 : 1.0,
+                  child: IconButton(
+                    icon: Icon(CupertinoIcons.bag, color: Colors.white, size: (screenWidth * 0.05).clamp(20, 26)),
+                    onPressed: () {
+                      navigateWithSlide(context, '/cart');
+                    },
+                  ),
+                ),
+                HamburgerIcon(isOpen: isMenuOpen, onTap: toggleMenu),
+              ],
+            ),
+          ],
         ),
 
-        // Botón de control de reproducción
-        if (widget.showControls)
-          Positioned(
-            bottom: 20,
-            right: 20,
-            child: GestureDetector(
-              onTap: () {
-                if (!widget.isPause) return;
-                setState(() {
-                  if (_videoElement.paused) {
-                    _videoElement.play();
-                  } else {
-                    _videoElement.pause();
-                  }
-                });
-              },
-              child: FloatingActionButton(
-                shape: const CircleBorder(),
-                backgroundColor: const Color(0xffb1b0b4),
-                mini: true,
-                child: Icon(isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white),
-                onPressed: () {},
-              ),
-            ),
-          ),
-        if (widget.retry)
-          Positioned(
-            bottom: 20,
-            left: 20,
-            child: FloatingActionButton(
-              shape: const CircleBorder(),
-              backgroundColor: const Color(0xffb1b0b4),
-              mini: true,
-              onPressed: () {
-                _videoElement.pause();
-                _videoElement.currentTime = 0;
-                _videoElement.play();
-                setState(() {
-                  _retryRotationTurns += 0.50; // 90 grados = 1/4 vuelta
-                });
-              },
-              child: AnimatedRotation(
-                turns: _retryRotationTurns,
-                duration: const Duration(milliseconds: 100),
-                child: const Icon(Icons.restart_alt_outlined, color: Colors.white),
+        if (isMenuOpen)
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 20, left: 20),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 400),
+                transitionBuilder: (child, animation) {
+                  final offsetAnimation = Tween<Offset>(
+                    begin: const Offset(0.2, 0),
+                    end: Offset.zero,
+                  ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut));
+                  final fadeAnimation = CurvedAnimation(parent: animation, curve: Curves.easeOut);
+                  return SlideTransition(position: offsetAnimation, child: FadeTransition(opacity: fadeAnimation, child: child));
+                },
+                child:
+                    selectedMenuIndex == null
+                        ? ListView(
+                          key: const ValueKey('mainMenuList'),
+                          children: List.generate(menu.length, (index) {
+                            return MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedMenuIndex = index;
+                                  });
+                                },
+                                child: DelayedMenuItem(
+                                  title: menu[index].title,
+                                  delayMilliseconds: index * 100,
+                                  screenWidth: screenWidth,
+                                  isMobile: isMobile,
+                                ),
+                              ),
+                            );
+                          }),
+                        )
+                        : ListView(
+                          key: const ValueKey('subMenuList'),
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 16),
+                              child: GestureDetector(
+                                onTap: () {
+                                  navigateTo(context, menu[selectedMenuIndex!].title);
+                                },
+                                child: Text(
+                                  "Explora todo sobre ${menu[selectedMenuIndex!].title}",
+                                  style: TextStyle(color: Colors.white, fontSize: (screenWidth * 0.045).clamp(18, 22)),
+                                ),
+                              ),
+                            ),
+                            ...menu[selectedMenuIndex!].items.expand((sub) {
+                              return sub.sections.map(
+                                (section) => MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      navigateTo(context, menu[selectedMenuIndex!].title, subTitle: sub.title, sectionTitle: section);
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Text(
+                                        section,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: (screenWidth * 0.04).clamp(16, 20),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }),
+                          ],
+                        ),
               ),
             ),
           ),
       ],
+    );
+  }
+}
+
+//CLASE PARA EL MENU
+class Menu {
+  final String title;
+  final List<SubMenu> items;
+
+  Menu({required this.title, required this.items});
+}
+
+//CLASE PARA EL SUBMENU
+class SubMenu {
+  final String title;
+  final List<String> sections;
+
+  SubMenu({required this.title, required this.sections});
+}
+
+//LISTA DE LOS MENUS Y SUBMENUS
+final List<Menu> menu = [
+  Menu(
+    title: "SmartBag®",
+    items: [
+      SubMenu(title: "Explora SmartBag®", sections: ["4PRO", "5PRO", "Doypack", "Flowpack"]),
+      SubMenu(title: "Especiales SmartBag®", sections: ["Standpack", "Accesorios"]),
+    ],
+  ),
+  Menu(
+    title: "EcoBag®",
+    items: [
+      SubMenu(title: "Explora EcoBag®", sections: ["4PRO", "5PRO", "Doypack", "Flowpack"]),
+      SubMenu(title: "Especial EcoBag®", sections: ["Standpack", "Accesorios"]),
+    ],
+  ),
+  Menu(
+    title: "Catálogo",
+    items: [
+      SubMenu(title: "Nuestros Catálogos", sections: ["Catálogo"]),
+    ],
+  ),
+  Menu(
+    title: "Nosotros",
+    items: [
+      SubMenu(title: "Quienes somos?", sections: ["Identidad corporativa", "Nuestros valores"]),
+    ],
+  ),
+  Menu(
+    title: "Soporte",
+    items: [
+      SubMenu(title: "Ayuda Rápida", sections: ["Whatsapp"]),
+      SubMenu(title: "Politicas", sections: ["Politicas legales y reglamentarias", "Tratamiento de datos"]),
+      SubMenu(title: "Tú opinion", sections: ["Encuesta de satisfacción y PQRS"]),
+    ],
+  ),
+];
+
+//ICONO DE MENU
+class HamburgerIcon extends StatelessWidget {
+  final bool isOpen;
+  final VoidCallback onTap;
+
+  const HamburgerIcon({super.key, required this.isOpen, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    const double lineWidth = 20;
+    const double lineHeight = 2;
+    const Duration duration = Duration(milliseconds: 300);
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 30,
+          height: 24,
+          color: Colors.transparent,
+          child: Center(
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                // Línea superior
+                AnimatedPositioned(
+                  duration: duration,
+                  top: isOpen ? 11 : 6,
+                  child: AnimatedRotation(
+                    turns: isOpen ? 0.125 : 0, // 45° = 1/8
+                    duration: duration,
+                    child: Container(
+                      width: lineWidth,
+                      height: lineHeight,
+                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(2)),
+                    ),
+                  ),
+                ),
+                // Línea inferior
+                AnimatedPositioned(
+                  duration: duration,
+                  bottom: isOpen ? 11 : 6,
+                  child: AnimatedRotation(
+                    turns: isOpen ? -0.125 : 0, // -45° = -1/8
+                    duration: duration,
+                    child: Container(
+                      width: lineWidth,
+                      height: lineHeight,
+                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(2)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+//WIDGET PARA LOS ITEMS DEL MENU CON ANIMACION
+class DelayedMenuItem extends StatefulWidget {
+  final String title;
+  final int delayMilliseconds;
+  final double screenWidth;
+  final bool isMobile;
+
+  const DelayedMenuItem({super.key, required this.title, required this.delayMilliseconds, required this.screenWidth, required this.isMobile});
+
+  @override
+  State<DelayedMenuItem> createState() => _DelayedMenuItemState();
+}
+
+class _DelayedMenuItemState extends State<DelayedMenuItem> {
+  double _opacity = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(milliseconds: widget.delayMilliseconds), () {
+      if (mounted) {
+        setState(() {
+          _opacity = 1;
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedOpacity(
+      opacity: _opacity,
+      duration: const Duration(milliseconds: 200),
+      child: Transform.translate(
+        offset: Offset(0, _opacity == 1 ? 0 : 20),
+        child: Padding(
+          padding: EdgeInsets.only(bottom: widget.isMobile ? 16 : 5),
+          child: Text(
+            widget.title,
+            style: TextStyle(color: Colors.white, fontSize: (widget.screenWidth * 0.04).clamp(widget.isMobile ? 16 : 14, widget.isMobile ? 20 : 18)),
+          ),
+        ),
+      ),
     );
   }
 }

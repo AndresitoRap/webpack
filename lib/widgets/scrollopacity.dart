@@ -7,7 +7,7 @@ class ScrollAnimatedWrapper extends StatefulWidget {
   final Duration delay;
   final Offset startOffset;
   final Key visibilityKey;
-  final VoidCallback? onVisible; // 👈 NUEVO
+  final VoidCallback? onVisible;
 
   const ScrollAnimatedWrapper({
     super.key,
@@ -16,7 +16,7 @@ class ScrollAnimatedWrapper extends StatefulWidget {
     this.duration = const Duration(milliseconds: 800),
     this.delay = Duration.zero,
     this.startOffset = const Offset(0, 0.1),
-    this.onVisible, // 👈 NUEVO
+    this.onVisible,
   });
 
   @override
@@ -27,6 +27,22 @@ class _ScrollAnimatedWrapperState extends State<ScrollAnimatedWrapper> {
   bool _visible = false;
   bool _hasTriggered = false;
 
+  void _triggerVisibility() {
+    if (_visible) return;
+
+    callback() {
+      if (!mounted) return;
+      setState(() => _visible = true);
+      widget.onVisible?.call();
+    }
+
+    if (widget.delay > Duration.zero) {
+      Future.delayed(widget.delay, callback);
+    } else {
+      callback();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return VisibilityDetector(
@@ -34,14 +50,7 @@ class _ScrollAnimatedWrapperState extends State<ScrollAnimatedWrapper> {
       onVisibilityChanged: (info) {
         if (info.visibleFraction >= 0.4 && !_hasTriggered) {
           _hasTriggered = true;
-          Future.delayed(widget.delay, () {
-            if (mounted) {
-              setState(() {
-                _visible = true;
-              });
-              widget.onVisible?.call(); // 👈 Disparar callback
-            }
-          });
+          _triggerVisibility();
         }
       },
       child: AnimatedOpacity(

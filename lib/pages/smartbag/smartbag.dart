@@ -6,6 +6,7 @@ import 'package:webpack/class/categories.dart';
 import 'package:webpack/widgets/discover.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
+import 'package:webpack/widgets/htmlvideo.dart';
 import 'package:webpack/widgets/ourlines.dart';
 
 class SmartBag extends StatefulWidget {

@@ -35,7 +35,7 @@ class _CommerceState extends State<Commerce> with TickerProviderStateMixin {
           break;
 
         case '5pro':
-          content = const FivePro();
+          content = FivePro(currentRoute: currentRoute, subcategorie: widget.selectedSubcategorie, section: widget.section);
         default:
           content = const Center(child: Text('En construcción'));
       }

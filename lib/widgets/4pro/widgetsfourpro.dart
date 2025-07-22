@@ -6,7 +6,8 @@ import 'package:visibility_detector/visibility_detector.dart';
 import 'package:webpack/class/categories.dart';
 import 'package:webpack/main.dart';
 import 'package:webpack/widgets/header.dart';
-import 'package:webpack/widgets/htmlvideo.dart';
+
+import 'package:webpack/widgets/video.dart';
 
 class InfoCardData {
   final String? imagePath;
@@ -42,7 +43,7 @@ class _InfoCardState extends State<InfoCard> {
               ValueListenableBuilder<bool>(
                 valueListenable: videoBlurNotifier,
                 builder: (context, isBlur, _) {
-                  return HtmlBackgroundVideo(
+                  return VideoFlutter(
                     src: widget.data.videoPath!,
                     blur: isBlur,
                     loop: false,

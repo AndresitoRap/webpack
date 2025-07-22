@@ -7,8 +7,9 @@ import 'package:webpack/main.dart';
 import 'package:webpack/widgets/4pro/widgetsfourpro.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
-import 'package:webpack/widgets/htmlvideo.dart';
+
 import 'package:webpack/widgets/scrollopacity.dart';
+import 'package:webpack/widgets/video.dart';
 
 class FourProEco extends StatefulWidget {
   final double screenWidth;
@@ -750,7 +751,7 @@ class _FourProEcoState extends State<FourProEco> with TickerProviderStateMixin {
                             ValueListenableBuilder<bool>(
                               valueListenable: videoBlurNotifier,
                               builder: (context, isBlur, _) {
-                                return HtmlBackgroundVideo(
+                                return VideoFlutter(
                                   src: 'assets/assets/videos/smartbag/SmartbagInicio.webm',
                                   blur: isBlur,
                                   loop: true,

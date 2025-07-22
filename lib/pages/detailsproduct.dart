@@ -10,7 +10,8 @@ import 'package:lottie/lottie.dart';
 import 'package:webpack/class/products.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
-import 'package:webpack/widgets/htmlvideo.dart';
+
+import 'package:webpack/widgets/video.dart';
 
 class DetailsProduct extends StatefulWidget {
   final Product product;
@@ -387,7 +388,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                             child: ValueListenableBuilder<bool>(
                               valueListenable: videoBlurNotifier,
                               builder: (context, isBlur, _) {
-                                return HtmlBackgroundVideo(
+                                return VideoFlutter(
                                   src:
                                       product.categoria.name == "SmartBag"
                                           ? 'assets/assets/videos/smartbag/smartbag_products.webm'

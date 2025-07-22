@@ -6,8 +6,9 @@ import 'package:webpack/class/categories.dart';
 import 'package:webpack/widgets/discover.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
-import 'package:webpack/widgets/htmlvideo.dart';
+
 import 'package:webpack/widgets/ourlines.dart';
+import 'package:webpack/widgets/video.dart';
 
 class SmartBag extends StatefulWidget {
   const SmartBag({super.key});
@@ -247,7 +248,7 @@ class _SmartBagState extends State<SmartBag> {
                                     ValueListenableBuilder<bool>(
                                       valueListenable: videoBlurNotifier,
                                       builder: (context, isBlur, _) {
-                                        return HtmlBackgroundVideo(
+                                        return VideoFlutter(
                                           src: 'assets/assets/videos/smartbag/SmartbagInicio.webm',
                                           blur: isBlur,
                                           loop: true,

@@ -2,7 +2,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
-import 'package:webpack/widgets/htmlvideo.dart';
+
+import 'package:webpack/widgets/video.dart';
 
 class AboutUs extends StatefulWidget {
   const AboutUs({super.key});
@@ -50,7 +51,7 @@ class _AboutUsState extends State<AboutUs> {
             valueListenable: videoBlurNotifier,
             builder: (context, isBlur, _) {
               return Positioned.fill(
-                child: HtmlBackgroundVideo(src: 'assets/assets/videos/us/backgroundus.webm', blur: isBlur, loop: true, showControls: true),
+                child: VideoFlutter(src: 'assets/assets/videos/us/backgroundus.webm', blur: isBlur, loop: true, showControls: true),
               );
             },
           ),

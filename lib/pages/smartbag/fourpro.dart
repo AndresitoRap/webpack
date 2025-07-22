@@ -8,8 +8,9 @@ import 'package:webpack/pages/commerce.dart';
 import 'package:webpack/widgets/4pro/imageSequenceScroller.dart';
 import 'package:webpack/widgets/4pro/widgetsfourpro.dart';
 import 'package:webpack/widgets/footer.dart';
-import 'package:webpack/widgets/htmlvideo.dart';
+
 import 'package:webpack/widgets/scrollopacity.dart';
+import 'package:webpack/widgets/video.dart';
 
 double computeYOffset({
   required BuildContext context,
@@ -252,7 +253,7 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
                                             flex: 40,
                                             child: AspectRatio(
                                               aspectRatio: 16 / 9, // o el ratio real de tu video
-                                              child: HtmlBackgroundVideo(
+                                              child: VideoFlutter(
                                                 src: 'assets/videos/smartbag/4pro/4pro.webm',
                                                 loop: false,
                                                 isPause: false,

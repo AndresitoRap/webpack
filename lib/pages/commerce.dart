@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webpack/class/categories.dart';
+import 'package:webpack/pages/ecobag/fivepro.dart';
 import 'package:webpack/pages/ecobag/fourpro.dart';
 import 'package:webpack/pages/smartbag/fivepro.dart';
 import 'package:webpack/pages/smartbag/fourpro.dart';
@@ -50,6 +51,9 @@ class _CommerceState extends State<Commerce> with TickerProviderStateMixin {
           );
           break;
 
+        case '5pro':
+          content = FiveProEco();
+
         default:
           content = const Center(child: Text('En construcción'));
       }
@@ -58,6 +62,7 @@ class _CommerceState extends State<Commerce> with TickerProviderStateMixin {
     return Scaffold(body: Stack(children: [content, Header()]));
   }
 }
+
 
 
 //Ecobag

@@ -468,9 +468,45 @@ class _ArrowButton extends StatelessWidget {
   }
 }
 
-class AnimatedCardDeck extends StatefulWidget {
-  const AnimatedCardDeck({super.key});
+class _ArrowButtonContinue extends StatelessWidget {
+  final bool enabled;
+  final VoidCallback onPrevious;
+  final VoidCallback onNext;
 
+  const _ArrowButtonContinue({required this.enabled, required this.onPrevious, required this.onNext});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 80,
+      width: 180,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: const Color.fromARGB(31, 158, 158, 158)),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              alignment: Alignment.centerLeft,
+              onPressed: enabled ? onPrevious : null,
+              icon: Icon(Icons.arrow_back_ios_new, color: Colors.grey[600]),
+              style: ButtonStyle(backgroundColor: WidgetStateProperty.all(enabled ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80))),
+            ),
+            IconButton(
+              alignment: Alignment.centerRight,
+              onPressed: enabled ? onNext : null,
+              icon: Icon(Icons.arrow_forward_ios, color: Colors.grey[600]),
+              style: ButtonStyle(backgroundColor: WidgetStateProperty.all(enabled ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80))),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class AnimatedCardDeck extends StatefulWidget {
   @override
   State<AnimatedCardDeck> createState() => _AnimatedCardDeckState();
 }
@@ -514,6 +550,7 @@ class _AnimatedCardDeckState extends State<AnimatedCardDeck> with TickerProvider
   int? currentCenterId;
   bool _isTransitioning = false;
   bool _isCenterExiting = false;
+  bool _isMovingBackward = false;
 
   @override
   void initState() {
@@ -523,34 +560,60 @@ class _AnimatedCardDeckState extends State<AnimatedCardDeck> with TickerProvider
   }
 
   void _startAutoSlide() {
-    _scheduleNextCard();
+    _timer = Timer.periodic(Duration(seconds: 8), (timer) {
+      if (!_isTransitioning) {
+        _moveToNextCard();
+      }
+    });
   }
 
-  void _scheduleNextCard() async {
+  void _resetTimer() {
+    _timer.cancel();
+    _startAutoSlide();
+  }
+
+  void _moveToNextCard() async {
     if (_isTransitioning) return;
     _isTransitioning = true;
+    _isMovingBackward = false;
 
     int nextCenterIndex = (currentIndex + 1) % items.length;
 
-    // Inicia salida de la tarjeta central
-    await Future.delayed(Duration(milliseconds: 0));
     setState(() {
       _isCenterExiting = true;
     });
 
-    // Espera a que la tarjeta salga con animación
-    await Future.delayed(Duration(milliseconds: 600));
+    await Future.delayed(Duration(milliseconds: 400));
     setState(() {
       _isCenterExiting = false;
       currentIndex = nextCenterIndex;
       currentCenterId = items[currentIndex]['id'];
     });
 
-    // Espera antes de rotar la siguiente
-    await Future.delayed(Duration(seconds: 6));
     _isTransitioning = false;
+    _resetTimer(); // Reinicia el temporizador después de cada transición
+  }
 
-    _scheduleNextCard();
+  void _moveToPreviousCard() async {
+    if (_isTransitioning) return;
+    _isTransitioning = true;
+    _isMovingBackward = true;
+
+    int previousCenterIndex = (currentIndex - 1 + items.length) % items.length;
+
+    setState(() {
+      _isCenterExiting = true;
+    });
+
+    await Future.delayed(Duration(milliseconds: 400));
+    setState(() {
+      _isCenterExiting = false;
+      currentIndex = previousCenterIndex;
+      currentCenterId = items[currentIndex]['id'];
+    });
+
+    _isTransitioning = false;
+    _resetTimer(); // Reinicia el temporizador después de cada transición
   }
 
   @override
@@ -562,16 +625,15 @@ class _AnimatedCardDeckState extends State<AnimatedCardDeck> with TickerProvider
   @override
   Widget build(BuildContext context) {
     final double cardWidth = 400;
-    final double cardHeight = 500;
+    final double cardHeight = 600;
     final double centerX = MediaQuery.of(context).size.width / 2 - cardWidth / 2;
 
-    // Orden circular personalizado
     final positions = [
       {'left': centerX, 'top': 0.0, 'scale': 1.0, 'opacity': 1.0}, // Centro arriba (frente)
-      {'left': centerX + 200, 'top': 0.0, 'scale': 0.9, 'opacity': .3}, // Derecha cercana
+      {'left': centerX + 200, 'top': 0.0, 'scale': 0.9, 'opacity': .2}, // Derecha cercana
       {'left': centerX + 300, 'top': 0.0, 'scale': 0.7, 'opacity': .001}, // Derecha lejana
       {'left': centerX - 300, 'top': 0.0, 'scale': 0.7, 'opacity': .001}, // Izquierda lejana
-      {'left': centerX - 200, 'top': 0.0, 'scale': 0.9, 'opacity': .3}, // Izquierda cercana
+      {'left': centerX - 200, 'top': 0.0, 'scale': 0.9, 'opacity': .2}, // Izquierda cercana
     ];
 
     final Map<int, int> zIndexOrder = {
@@ -607,22 +669,20 @@ class _AnimatedCardDeckState extends State<AnimatedCardDeck> with TickerProvider
       }
       var pos = positions[displayPosIndex];
 
-      // Justo antes de construir AnimatedPositioned, modifica pos si la tarjeta está saliendo del centro
       if (_isCenterExiting && posIndex == 0) {
         pos = {
-          'left': centerX - 450, // más a la izquierda
-          'top': 80.0, // sube un poco para simular movimiento curvo
+          'left': _isMovingBackward ? centerX + 450 : centerX - 450, // Derecha si retrocede, izquierda si avanza
+          'top': 10.0, // Sube un poco para simular movimiento curvo
           'scale': 0.9,
           'opacity': 1.0,
         };
       }
 
-      // Controlar la opacidad de la tarjeta central durante la salida
       double targetOpacity = pos['opacity']!;
 
       final card = AnimatedPositioned(
         key: ValueKey(items[i]['id']),
-        duration: Duration(milliseconds: _isCenterExiting ? 1500 : 2000),
+        duration: Duration(milliseconds: displayPosIndex == 0 ? (_isCenterExiting ? 800 : 1000) : 1000),
         curve: Curves.easeInOut,
         top: pos['top']!,
         left: pos['left']!,
@@ -631,7 +691,7 @@ class _AnimatedCardDeckState extends State<AnimatedCardDeck> with TickerProvider
           scale: pos['scale']!,
           curve: Curves.easeInOut,
           child: AnimatedOpacity(
-            duration: Duration(milliseconds: displayPosIndex == 0 ? 2000 : 1000),
+            duration: Duration(milliseconds: displayPosIndex == 0 ? 1000 : 800),
             opacity: targetOpacity,
             curve: Curves.easeInOut,
             child: IgnorePointer(
@@ -648,13 +708,20 @@ class _AnimatedCardDeckState extends State<AnimatedCardDeck> with TickerProvider
 
     return SizedBox(
       width: double.infinity,
-      height: 800,
-      child: Stack(clipBehavior: Clip.none, children: cards.map<Widget>((e) => e['widget'] as Widget).toList()),
+      height: 980,
+      child: Column(
+        children: [
+          SizedBox(height: 650, child: Stack(clipBehavior: Clip.none, children: cards.map<Widget>((e) => e['widget'] as Widget).toList())),
+          const SizedBox(height: 0),
+          _ArrowButtonContinue(enabled: true, onPrevious: _moveToPreviousCard, onNext: _moveToNextCard),
+        ],
+      ),
     );
   }
 
   Widget _buildCard(String text, String info, double width, double height, bool isCenter) {
-    final w = MediaQuery.of(context).size.width;
+    final widthText = MediaQuery.of(context).size.width;
+
     return Material(
       elevation: isCenter ? 12 : 4,
       borderRadius: BorderRadius.circular(20),
@@ -665,13 +732,21 @@ class _AnimatedCardDeckState extends State<AnimatedCardDeck> with TickerProvider
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(height: 200, width: double.infinity, decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(16))),
-              const SizedBox(height: 20),
-              Text(text, style: TextStyle(fontSize: (w * 0.03).clamp(20, 26), fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-              const SizedBox(height: 20),
-              Text(info, style: TextStyle(fontSize: (w * 0.03).clamp(16, 23), fontWeight: FontWeight.bold, height: 0.9), textAlign: TextAlign.center),
+              const SizedBox(height: 30),
+              Text(
+                text,
+                style: TextStyle(fontSize: (widthText * 0.03).clamp(20, 26), fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 40),
+              Text(
+                info,
+                style: TextStyle(fontSize: (widthText * 0.02).clamp(15, 22), fontWeight: FontWeight.bold, height: 0.9, color: Colors.grey[600]),
+                textAlign: TextAlign.center,
+              ),
             ],
           ),
         ),

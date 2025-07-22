@@ -904,7 +904,7 @@ class _FourProEcoState extends State<FourProEco> with TickerProviderStateMixin {
                         SizedBox(height: screenWidth >= 1000 ? 50 : 100),
                         Text(
                           textAlign: TextAlign.center,
-                          "Desde empaques como 4PRO®, diseñados para proteger tu producto y destacar tu marca, hasta soluciones como Ecobag, que combinan funcionalidad con conciencia ambiental. Usamos materiales reciclables, desarrollamos opciones versátiles como válvulas y cierres herméticos, y te ofrecemos formatos pensados para cada necesidad, siempre con una visión sustentable. Porque cada detalle cuenta cuando quieres hacer las cosas bien.",
+                          "Desde empaques como 4PRO Ecobag®, diseñados para proteger tu producto y destacar tu marca, hasta soluciones como Ecobag, que combinan funcionalidad con conciencia ambiental. Usamos materiales reciclables, desarrollamos opciones versátiles como válvulas y cierres herméticos, y te ofrecemos formatos pensados para cada necesidad, siempre con una visión sustentable. Porque cada detalle cuenta cuando quieres hacer las cosas bien.",
                           style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black87, fontSize: min(screenWidth * 0.026, 25), height: 0),
                         ),
                         SizedBox(height: screenWidth >= 1000 ? 50 : 100),

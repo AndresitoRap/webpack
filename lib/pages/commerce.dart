@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:webpack/class/categories.dart';
+import 'package:webpack/pages/ecobag/doypack.dart';
 import 'package:webpack/pages/ecobag/fivepro.dart';
 import 'package:webpack/pages/ecobag/fourpro.dart';
+import 'package:webpack/pages/smartbag/flowpack.dart';
+import 'package:webpack/pages/smartbag/doypack.dart';
 import 'package:webpack/pages/smartbag/fivepro.dart';
 import 'package:webpack/pages/smartbag/fourpro.dart';
 import 'package:webpack/widgets/header.dart';
@@ -37,6 +40,11 @@ class _CommerceState extends State<Commerce> with TickerProviderStateMixin {
 
         case '5pro':
           content = FivePro(currentRoute: currentRoute, subcategorie: widget.selectedSubcategorie, section: widget.section);
+
+        case 'doypack':
+          content = DoypackSmart();
+        case 'flowpack':
+          content = Flowpack();
         default:
           content = const Center(child: Text('En construcción'));
       }
@@ -54,6 +62,9 @@ class _CommerceState extends State<Commerce> with TickerProviderStateMixin {
         case '5pro':
           content = FiveProEco();
 
+        case 'doypack':
+          content = DoypackEco();
+
         default:
           content = const Center(child: Text('En construcción'));
       }
@@ -62,6 +73,8 @@ class _CommerceState extends State<Commerce> with TickerProviderStateMixin {
     return Scaffold(body: Stack(children: [content, Header()]));
   }
 }
+
+
 
 
 

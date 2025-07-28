@@ -463,14 +463,20 @@ final List<Menu> menu = [
     title: "SmartBag®",
     items: [
       SubMenu(title: "Explora SmartBag®", sections: ["4PRO", "5PRO", "Doypack", "Flowpack"]),
-      SubMenu(title: "Especiales SmartBag®", sections: ["Standpack", "Accesorios"]),
+      SubMenu(title: "Especiales SmartBag®", sections: ["Cojín", "Piramidal", "Standpack"]),
     ],
   ),
   Menu(
     title: "EcoBag®",
     items: [
       SubMenu(title: "Explora EcoBag®", sections: ["4PRO", "5PRO", "Doypack", "Flowpack"]),
-      SubMenu(title: "Especial EcoBag®", sections: ["Standpack", "Accesorios"]),
+      SubMenu(title: "Especial EcoBag®", sections: ["Cojín", "Piramidal"]),
+    ],
+  ),
+  Menu(
+    title: "Accesorios",
+    items: [
+      SubMenu(title: "Accesorios Destacados", sections: ["Peel & Stick", "Válvula"]),
     ],
   ),
   Menu(

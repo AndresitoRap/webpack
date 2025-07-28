@@ -117,8 +117,8 @@ class _OutlinedText extends StatelessWidget {
   final List<InlineSpan>? spans;
   final bool bold;
 
-  const _OutlinedText(this.text, {this.bold = false, super.key}) : spans = null;
-  const _OutlinedText.rich(this.spans, {super.key}) : text = null, bold = false;
+  const _OutlinedText(this.text, {this.bold = false}) : spans = null;
+  const _OutlinedText.rich(this.spans) : text = null, bold = false;
 
   @override
   Widget build(BuildContext context) {

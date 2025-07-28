@@ -80,7 +80,7 @@ final Map<String, List<Terminado>> productSections = {
   'EcoBag/4PRO': fourproecoshop,
   'EcoBag/5PRO': fourproecoshop,
   'EcoBag/Doypack': doypackecoshop,
-  'EcoBag/Flowpack': flowpackecoshop,
+  // 'EcoBag/Flowpack': flowpackecoshop,
 };
 
 // final List<Product> fourprosmartshop = [

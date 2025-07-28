@@ -48,7 +48,6 @@ final List<Subcategorie> subcategorieSmart = [
         "🌟 La 4PRO es una bolsa de alta gama diseñada para productos que exigen elegancia, funcionalidad y conservación superior. Su estructura multilaminada le brinda una resistencia excepcional, ideal para cafés premium, superfoods, productos gourmet o suplementos nutricionales. 💪 Cuenta con un diseño de base estable que permite que se mantenga en pie, facilitando su exhibición en estanterías. Puede incorporar válvula desgasificadora, zipper resellable y acabados mate o brillantes que proyectan una imagen sofisticada y moderna. Gracias a su excelente barrera contra humedad, oxígeno y luz, la 4PRO mantiene la frescura y propiedades del contenido por más tiempo. Es la opción perfecta para marcas que buscan diferenciarse con un empaque funcional y visualmente impactante. ✨",
     route: "/SmartBag/Explora-SmartBag/4PRO",
     dimentions: "7,5 × 0,5 × 32 cm",
-    enabledPS: true,
   ),
   Subcategorie(
     category: categorieSmart,
@@ -59,7 +58,6 @@ final List<Subcategorie> subcategorieSmart = [
     infoBuild: "",
     dimentions: "7,5 × 0,5 × 32 cm",
     route: "/SmartBag/Explora-SmartBag/5PRO",
-    enabled: false,
   ),
   Subcategorie(
     category: categorieSmart,
@@ -73,18 +71,7 @@ final List<Subcategorie> subcategorieSmart = [
     dimentions: "7,5 × 0,5 × 32 cm",
     route: "/SmartBag/Explora-SmartBag/Doypack",
   ),
-  Subcategorie(
-    category: categorieSmart,
-    img: "assets/img/smartbag/cojin.webp",
-    title: "Cojín",
-    description: "Ligereza y eficiencia en cada empaque.",
-    sdescription: "Ideal para empaques de alta rotación: fácil de producir, fácil de usar, siempre efectiva.",
-    infoBuild: "",
-    dimentions: "7,5 × 0,5 × 32 cm",
-    route: "/SmartBag/Explora-SmartBag/Cojín",
 
-    enabled: false,
-  ),
   Subcategorie(
     category: categorieSmart,
     img: "assets/img/smartbag/flowpack.webp",
@@ -95,7 +82,21 @@ final List<Subcategorie> subcategorieSmart = [
         "✨ Flowpack es un empaque flexible, laminado y metalizado, pensado para líneas de producción automáticas que requieren velocidad, precisión y eficiencia. Gracias a su diseño estilizado y acabado brillante, ofrece una presencia visual impactante que realza cualquier producto en el punto de venta. 💡 Este tipo de empaque es perfecto para snacks, barras energéticas, productos cosméticos, suplementos y más, ya que protege contra la humedad, el aire y la luz, conservando la frescura y calidad por más tiempo. Además, su estructura facilita el sellado hermético y asegura un proceso fluido en máquinas de envasado horizontales de alta velocidad. Flowpack no solo envuelve tu producto, lo eleva. Ideal para marcas que quieren destacar en anaquel y transmitir innovación y calidad desde el primer vistazo. 🚀",
     dimentions: "7,5 × 0,5 × 32 cm",
     route: "/SmartBag/Explora-SmartBag/Flowpack",
+    enabled: false,
   ),
+  Subcategorie(
+    category: categorieSmart,
+    img: "assets/img/smartbag/piramide.webp",
+    title: "Piramidal",
+    description: "Forma única, presencia inconfundible.",
+    sdescription: "El empaque triangular que destaca en anaquel y comunica innovación y sofisticación.",
+    infoBuild:
+        "El empaque piramidal ofrece una solución moderna y distintiva para productos premium. Gracias a su forma triangular, no solo maximiza la atención en el punto de venta, sino que también optimiza el espacio interno para productos sólidos o en polvo. 💼 Su estructura laminada y sellado hermético garantizan protección contra la humedad y el oxígeno, lo que lo hace ideal para productos delicados como té, café gourmet, especias, o suplementos. Además, su geometría permite apilado eficiente y diferenciación visual frente a empaques tradicionales. Piramidal es más que forma: es una declaración de marca. ✨",
+    dimentions: "7,5 × 0,5 × 32 cm",
+    route: "/SmartBag/Explora-SmartBag/Piramidal",
+    enabled: false,
+  ),
+
   Subcategorie(
     category: categorieSmart,
     img: "assets/img/smartbag/standpack.webp",
@@ -105,6 +106,18 @@ final List<Subcategorie> subcategorieSmart = [
     infoBuild: "",
     dimentions: "7,5 × 0,5 × 32 cm",
     route: "/SmartBag/Explora-SmartBag/Standpack",
+    enabled: false,
+  ),
+  Subcategorie(
+    category: categorieSmart,
+    img: "assets/img/smartbag/cojin.webp",
+    title: "Cojín",
+    description: "Ligereza y eficiencia en cada empaque.",
+    sdescription: "Ideal para empaques de alta rotación: fácil de producir, fácil de usar, siempre efectiva.",
+    infoBuild: "",
+    dimentions: "7,5 × 0,5 × 32 cm",
+    route: "/SmartBag/Explora-SmartBag/Cojín",
+    enabled: false,
   ),
   Subcategorie(
     category: categorieSmart,
@@ -129,7 +142,6 @@ final List<Subcategorie> subcategorieEco = [
     infoBuild: "",
     dimentions: "7,5 × 0,5 × 32 cm",
     route: "/EcoBag/Explora-EcoBag/4PRO",
-    enabledPS: true,
   ),
   Subcategorie(
     category: categorieEco,
@@ -140,7 +152,6 @@ final List<Subcategorie> subcategorieEco = [
     infoBuild: "",
     dimentions: "7,5 × 0,5 × 32 cm",
     route: "/EcoBag/Explora-EcoBag/5PRO",
-    enabled: false,
   ),
   Subcategorie(
     category: categorieEco,
@@ -162,9 +173,22 @@ final List<Subcategorie> subcategorieEco = [
     sdescription: "Ideal para procesos productivos responsables y empaques de bajo impacto.",
     infoBuild: "",
     dimentions: "7,5 × 0,5 × 32 cm",
-    enabled: false,
     route: "/EcoBag/Explora-EcoBag/Cojín",
+    enabled: false,
   ),
+  Subcategorie(
+    category: categorieEco,
+    img: "assets/img/ecobag/piramidal.webp",
+    title: "Piramidal",
+    description: "Diseño ecológico con formato innovador.",
+    sdescription: "Ideal para infusiones, productos gourmet y porciones individuales con bajo impacto ambiental.",
+    infoBuild:
+        "🍃 El empaque Piramidal EcoBag combina diseño innovador con compromiso ambiental. Su forma permite una distribución eficiente del contenido, mientras utiliza materiales sostenibles que reducen el impacto ecológico. 💧 Perfecto para productos como té, suplementos o snacks gourmet en porciones individuales. Además de su funcionalidad, ofrece una presentación atractiva que comunica conciencia y calidad. 🧩 Compatible con procesos automatizados y opciones de sellado ecológicas. Elige Piramidal para destacar y cuidar el planeta al mismo tiempo.",
+    dimentions: "7,5 × 0,5 × 32 cm",
+    route: "/EcoBag/Explora-EcoBag/Piramidal",
+    enabled: false,
+  ),
+
   Subcategorie(
     category: categorieEco,
     img: "assets/img/ecobag/flowpack.webp",
@@ -176,5 +200,6 @@ final List<Subcategorie> subcategorieEco = [
 
     dimentions: "7,5 × 0,5 × 32 cm",
     route: "/EcoBag/Explora-EcoBag/Flowpack",
+    enabled: false,
   ),
 ];

@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:math' as math;
-import 'dart:ui' as ui show ImageFilter;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:webpack/class/categories.dart';
 import 'package:webpack/main.dart';
+import 'package:webpack/widgets/footer.dart';
+import 'package:webpack/widgets/header.dart';
 import 'package:webpack/widgets/scrollopacity.dart';
+import 'package:webpack/widgets/video.dart';
 
 class FivePro extends StatelessWidget {
   final String currentRoute;
@@ -20,12 +22,20 @@ class FivePro extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final blue = Theme.of(context).primaryColor;
     final isMobile = screenWidth < 850;
+    final isTable = screenWidth < 1024;
     return Scaffold(
       body: Stack(
         children: [
           CustomScrollView(
             slivers: [
-              SilverStart(screenHeight: screenHeight, screenWidth: screenWidth, blue: blue, isMobile: isMobile, subcategorie: subcategorie),
+              SilverStart(
+                screenHeight: screenHeight,
+                screenWidth: screenWidth,
+                blue: blue,
+                isMobile: isMobile,
+                isTable: isTable,
+                subcategorie: subcategorie,
+              ),
               SliverAboutFivePro(screenWidth: screenWidth, blue: blue, isMobile: isMobile),
               SliverWithValvula(screenWidth: screenWidth, blue: blue, isMobile: isMobile),
               SliverAboutMoreInfo5Pro(screenWidth: screenWidth, blue: blue, isMobile: isMobile),
@@ -47,6 +57,7 @@ class SilverStart extends StatelessWidget {
   final double screenWidth;
   final Color blue;
   final bool isMobile;
+  final bool isTable;
   final Subcategorie subcategorie;
   const SilverStart({
     super.key,
@@ -54,24 +65,25 @@ class SilverStart extends StatelessWidget {
     required this.screenWidth,
     required this.blue,
     required this.isMobile,
+    required this.isTable,
     required this.subcategorie,
   });
 
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 45),
-        child: SizedBox(
-          height: screenHeight - 45,
-          width: screenWidth,
-          child: Stack(
-            children: [
-              Positioned(
-                bottom: 180,
-                right: -170,
-                child: Transform.rotate(
-                  angle: math.pi * 1.5,
+      child: SizedBox(
+        height: screenHeight,
+        width: screenWidth,
+        child: Stack(
+          children: [
+            Positioned(
+              bottom: 180,
+              right: -170,
+              child: Transform.rotate(
+                angle: math.pi * 1.5,
+                child: ScrollAnimatedWrapper(
+                  visibilityKey: Key('lateral-5pro'),
                   child: Stack(
                     children: [
                       // Texto con borde rojo
@@ -102,14 +114,59 @@ class SilverStart extends StatelessWidget {
                   ),
                 ),
               ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 60),
-                  child: Image.asset('assets/img/smartbag/5pro.webp', width: screenWidth * 0.8, height: screenHeight * 0.6, fit: BoxFit.cover),
+            ),
+            isTable
+                ? ScrollAnimatedWrapper(
+                  visibilityKey: Key('image-5pro'),
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Image.asset(
+                      alignment: Alignment.bottomCenter,
+                      'assets/img/smartbag/5pro/5proStart.webp',
+                      width: (screenHeight * .6).clamp(420, 420),
+                      height: (screenHeight * .6).clamp(420, 420),
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                )
+                : Row(
+                  children: [
+                    SizedBox(width: screenWidth / 2, height: screenHeight),
+                    Center(
+                      child: Builder(
+                        builder: (context) {
+                          return SizedBox(
+                            width: screenWidth / 2.5,
+                            height: screenHeight,
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                ValueListenableBuilder<bool>(
+                                  valueListenable: videoBlurNotifier,
+                                  builder: (context, isBlur, _) {
+                                    return ScrollAnimatedWrapper(
+                                      visibilityKey: Key('video-soluciones-5pro'),
+                                      child: VideoFlutter(
+                                        src: 'assets/videos/smartbag/5pro/inicio.webm',
+                                        blur: isBlur,
+                                        loop: false,
+                                        showControls: false,
+                                        fit: BoxFit.contain,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              ScrollAnimatedWrapper(
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 45),
+              child: ScrollAnimatedWrapper(
                 visibilityKey: Key('soluciones-5pro'),
                 child: Align(
                   alignment: Alignment.topLeft,
@@ -186,8 +243,8 @@ class SilverStart extends StatelessWidget {
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -245,12 +302,57 @@ class _SliverAboutFiveProState extends State<SliverAboutFivePro> {
                 0.9 // cuadrado en mobile
             : (widget.screenWidth * 0.5).clamp(0, 500);
 
-    final List<String> nuestra5pro = [
-      'Protección superior para todo tipo de producto',
-      'Diseño que realza tu marca y cautiva al cliente',
-      'Materiales sostenibles y compromiso ecológico',
-      'Tecnología de sellado y cierre avanzada',
-      'Adaptabilidad total: múltiples formatos y capacidades',
+    final List<Map<String, dynamic>> nuestra5pro = [
+      {
+        'text': 'Protección superior \npara todo tipo de producto',
+        'image': 'assets/img/smartbag/5pro/cardLarge1.webp',
+
+        'TextStyle': TextStyle(color: Colors.grey[100], fontSize: (widget.screenWidth * 0.04).clamp(0, 26), fontWeight: FontWeight.bold),
+        'alignment': Alignment.topLeft,
+
+        'textAlign': null,
+      },
+      {
+        'text': 'Empaque que se destaca \nen cualquier entorno',
+        'image': 'assets/img/smartbag/5pro/cardLarge2.webp',
+
+        'TextStyle': TextStyle(
+          color: Colors.white,
+          fontSize: (widget.screenWidth * 0.04).clamp(0, 26),
+          fontWeight: FontWeight.bold,
+          shadows: [Shadow(blurRadius: 8.0, color: Colors.black.withOpacity(0.7), offset: Offset(2, 2))],
+        ),
+        'alignment': Alignment.centerLeft,
+        'textAlign': TextAlign.left,
+      },
+      {
+        'text': 'Materiales sostenibles \ny compromiso ecológico',
+        'image': 'assets/img/smartbag/5pro/cardLarge3.webp',
+
+        'TextStyle': TextStyle(
+          color: Colors.white,
+          fontSize: (widget.screenWidth * 0.04).clamp(0, 26),
+          fontWeight: FontWeight.bold,
+          shadows: [Shadow(blurRadius: 8.0, color: Colors.black.withAlpha(130), offset: Offset(2, 2))],
+        ),
+        'alignment': Alignment.topCenter,
+        'textAlign': TextAlign.center,
+      },
+      {
+        'text': 'Tecnología de sellado \ny cierre avanzada',
+        'image': 'assets/img/smartbag/5pro/cardLarge4.webp',
+
+        'TextStyle': TextStyle(color: Colors.black, fontSize: (widget.screenWidth * 0.04).clamp(0, 26), fontWeight: FontWeight.bold),
+        'alignment': Alignment.bottomLeft,
+        'textAlign': null,
+      },
+      {
+        'text': 'Adaptabilidad total: múltiples \nformatos y capacidades',
+        'image': 'assets/img/smartbag/5pro/cardLarge5.webp',
+        'TextStyle': TextStyle(color: Colors.black, fontSize: (widget.screenWidth * 0.04).clamp(0, 26), fontWeight: FontWeight.bold),
+        'alignment': Alignment.centerLeft,
+        'textAlign': null,
+      },
     ];
 
     return SliverToBoxAdapter(
@@ -290,22 +392,34 @@ class _SliverAboutFiveProState extends State<SliverAboutFivePro> {
                           left: index == 0 ? widget.screenWidth * 0.06 : 0,
                           right: index == 4 ? widget.screenWidth * 0.06 : 20,
                           bottom: 50,
+                          top: 50,
                         ),
                         child: Container(
-                          padding: const EdgeInsets.all(16),
                           height: cardHeight,
                           width: cardWidth,
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.grey),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(color: Color.fromRGBO(50, 50, 105, 0.15), blurRadius: 5, spreadRadius: 0, offset: Offset(0, 2)),
+                              BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.05), blurRadius: 1, spreadRadius: 0, offset: Offset(0, 1)),
+                            ],
+                          ),
+                          child: Stack(
+                            fit: StackFit.expand,
                             children: [
-                              Text(
-                                nuestra5pro[index],
-                                style: TextStyle(
-                                  fontSize: (widget.screenWidth * 0.04).clamp(0, 26),
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.asset(nuestra5pro[index]['image'], fit: BoxFit.cover, filterQuality: FilterQuality.high),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Align(
+                                  alignment: nuestra5pro[index]["alignment"],
+                                  child: Text(
+                                    nuestra5pro[index]["text"],
+                                    textAlign: nuestra5pro[index]["textAlign"],
+                                    style: nuestra5pro[index]["TextStyle"],
+                                  ),
                                 ),
                               ),
                             ],
@@ -381,60 +495,47 @@ class _SliverAboutFiveProState extends State<SliverAboutFivePro> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Expanded(
-                                        child: Container(color: Colors.red, child: Image.asset("assets/img/smartbag/5pro.webp", fit: BoxFit.contain)),
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          color: Colors.blue,
-                                          child: Image.asset("assets/img/smartbag/5pro.webp", fit: BoxFit.contain),
-                                        ),
-                                      ),
+                                      Expanded(child: Image.asset("assets/img/smartbag/5pro/cardshort1.webp", fit: BoxFit.contain)),
+                                      Expanded(child: Image.asset("assets/img/smartbag/5pro/cardshort2.webp", fit: BoxFit.contain)),
                                     ],
                                   ),
                                   SizedBox(height: 10),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Expanded(
-                                        child: Container(
-                                          color: Colors.amber,
-                                          child: Image.asset("assets/img/smartbag/5pro.webp", fit: BoxFit.contain),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          color: Colors.green,
-                                          child: Image.asset("assets/img/smartbag/5pro.webp", fit: BoxFit.contain),
-                                        ),
-                                      ),
+                                      Expanded(child: Image.asset("assets/img/smartbag/5pro/cardshort3.webp", fit: BoxFit.contain)),
+                                      Expanded(child: Image.asset("assets/img/smartbag/5pro/cardshort4.webp", fit: BoxFit.contain)),
                                     ],
                                   ),
                                   SizedBox(height: 10),
 
-                                  Container(color: Colors.blue, child: Image.asset("assets/img/smartbag/5pro.webp", fit: BoxFit.contain)),
+                                  Image.asset("assets/img/smartbag/5pro/cardshort5.webp", fit: BoxFit.contain),
                                 ],
                               ),
-                              Text.rich(
-                                style: TextStyle(
-                                  color: Colors.black.withAlpha(200),
-                                  fontSize: (widget.screenWidth * 0.04).clamp(20, 26),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                TextSpan(
-                                  children: [
-                                    TextSpan(text: 'Diseño que comunica', style: TextStyle(color: widget.blue)),
-                                    TextSpan(text: ', una '),
-                                    TextSpan(text: 'Estructura protectora', style: TextStyle(color: widget.blue)),
-                                    TextSpan(text: ' que conserva, y una '),
-                                    TextSpan(text: 'Sostenibilidad real', style: TextStyle(color: widget.blue)),
-                                    TextSpan(text: ' que respalda tu compromiso ambiental.\n\n'),
-                                    TextSpan(text: 'Con '),
-                                    TextSpan(text: 'Versatilidad de formatos', style: TextStyle(color: widget.blue)),
-                                    TextSpan(text: ' y una '),
-                                    TextSpan(text: 'Tecnología de 5 selles', style: TextStyle(color: widget.blue)),
-                                    TextSpan(text: ', 5PRO se adapta a cada necesidad.'),
-                                  ],
+                              Padding(
+                                padding: EdgeInsets.only(top: (MediaQuery.of(context).size.width * 0.08).clamp(20.0, 50.0)),
+                                child: Text.rich(
+                                  textAlign: TextAlign.justify,
+                                  style: TextStyle(
+                                    color: Colors.black.withAlpha(200),
+                                    fontSize: (widget.screenWidth * 0.04).clamp(20, 26),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  TextSpan(
+                                    children: [
+                                      TextSpan(text: 'Diseño que comunica', style: TextStyle(color: widget.blue)),
+                                      TextSpan(text: ', una gran '),
+                                      TextSpan(text: 'Estructura protectora', style: TextStyle(color: widget.blue)),
+                                      TextSpan(text: ' que conserva, y una '),
+                                      TextSpan(text: 'Sostenibilidad real', style: TextStyle(color: widget.blue)),
+                                      TextSpan(text: ' que respalda tu compromiso ambiental.\n\n'),
+                                      TextSpan(text: 'Con '),
+                                      TextSpan(text: 'Versatilidad de formatos', style: TextStyle(color: widget.blue)),
+                                      TextSpan(text: ' y una '),
+                                      TextSpan(text: 'Tecnología de 5 selles', style: TextStyle(color: widget.blue)),
+                                      TextSpan(text: ', 5PRO se adapta a cada necesidad.'),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
@@ -515,30 +616,35 @@ class _AnimatedCardDeckState extends State<AnimatedCardDeck> with TickerProvider
   final List<Map<String, dynamic>> items = [
     {
       'id': 1,
+      'image': 'assets/img/smartbag/5pro/cardshort1.webp',
       'text': 'Diseño que comunica',
       'info':
           'Un empaque atractivo transmite la personalidad de tu marca y capta la atención en segundos. Nuestro diseño está pensado para conectar con tu cliente desde el primer vistazo.',
     },
     {
       'id': 2,
+      'image': 'assets/img/smartbag/5pro/cardshort2.webp',
       'text': 'Estructura protectora',
       'info':
           'La estructura multicapa protege tu producto de la humedad, el oxígeno y la luz, alargando su vida útil y manteniéndolo en óptimas condiciones.',
     },
     {
       'id': 3,
+      'image': 'assets/img/smartbag/5pro/cardshort3.webp',
       'text': 'Sostenibilidad real',
       'info':
           'Usamos materiales reciclables y procesos eficientes para reducir el impacto ambiental, sin comprometer la calidad ni la funcionalidad del empaque.',
     },
     {
       'id': 4,
+      'image': 'assets/img/smartbag/5pro/cardshort4.webp',
       'text': 'Versatilidad de formatos',
       'info':
           'Ofrecemos múltiples presentaciones: doypack, sachet, bottom, 4 sellos, con zipper, válvula o ventana. Adaptamos el empaque a tu producto y tu mercado.',
     },
     {
       'id': 5,
+      'image': 'assets/img/smartbag/5pro/cardshort5.webp',
       'text': 'Tecnología 5 capas',
       'info':
           'Nuestro sistema de 5 capas combina materiales de alta barrera que brindan máxima resistencia, sellado perfecto y una excelente presentación en góndola.',
@@ -624,7 +730,7 @@ class _AnimatedCardDeckState extends State<AnimatedCardDeck> with TickerProvider
 
   @override
   Widget build(BuildContext context) {
-    final double cardWidth = 400;
+    final double cardWidth = 500;
     final double cardHeight = 600;
     final double centerX = MediaQuery.of(context).size.width / 2 - cardWidth / 2;
 
@@ -708,7 +814,7 @@ class _AnimatedCardDeckState extends State<AnimatedCardDeck> with TickerProvider
 
     return SizedBox(
       width: double.infinity,
-      height: 980,
+      height: 1000,
       child: Column(
         children: [
           SizedBox(height: 650, child: Stack(clipBehavior: Clip.none, children: cards.map<Widget>((e) => e['widget'] as Widget).toList())),
@@ -734,7 +840,10 @@ class _AnimatedCardDeckState extends State<AnimatedCardDeck> with TickerProvider
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(height: 200, width: double.infinity, decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(16))),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.asset(items.firstWhere((e) => e['text'] == text)['image'], fit: BoxFit.cover, height: 300, width: double.infinity),
+              ),
               const SizedBox(height: 30),
               Text(
                 text,
@@ -767,7 +876,7 @@ class SliverWithValvula extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Container(
         width: screenWidth,
-        padding: EdgeInsets.symmetric(vertical: 100, horizontal: screenWidth * 0.06),
+        padding: EdgeInsets.symmetric(vertical: 50, horizontal: screenWidth * 0.06),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -790,62 +899,88 @@ class SliverWithValvula extends StatelessWidget {
             ScrollAnimatedWrapper(
               visibilityKey: Key('video-valvula'),
               child: Container(
-                padding: EdgeInsets.symmetric(vertical: 40),
-                margin: EdgeInsets.symmetric(vertical: 40),
+                padding: EdgeInsets.only(top: 40),
                 width: screenWidth * 0.9,
                 height: (screenWidth * 0.9).clamp(0, 600),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.grey),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.asset("assets/img/smartbag/5pro/large.webp", fit: BoxFit.cover),
+                ),
               ),
             ),
             ScrollAnimatedWrapper(
               visibilityKey: Key('text-about-valvula'),
               child:
-                  isMobile
-                      ? Text.rich(
-                        style: TextStyle(
-                          fontSize: (screenWidth * 0.04).clamp(18, 22),
-                          fontWeight: FontWeight.w800,
-                          color: Colors.black.withAlpha(160),
-                        ),
-                        TextSpan(
-                          children: [
-                            TextSpan(text: "La precisión de una válvula. Integrada sin esfuerzo. "),
-                            TextSpan(text: "La válvula de desgasificación ", style: TextStyle(color: blue)),
-                            TextSpan(
-                              text:
-                                  "de 5PRO permite que el empaque libere gases internos sin comprometer el contenido, ideal para productos como café o granos recién tostados. Este pequeño componente evita la acumulación de presión, alarga la vida útil y mantiene la experiencia sensorial intacta. Un sistema discreto, automático y seguro, que convierte a la 5PRO en un empaque inteligente, pensado para productos que respiran.",
-                            ),
-                          ],
+                  screenWidth < 1180
+                      ? Padding(
+                        padding: EdgeInsets.symmetric(vertical: 40),
+                        child: Text.rich(
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                            fontSize: (screenWidth * 0.04).clamp(18, 22),
+                            fontWeight: FontWeight.w800,
+                            color: Colors.black.withAlpha(160),
+                          ),
+                          TextSpan(
+                            children: [
+                              TextSpan(text: "La precisión de una válvula. Integrada sin esfuerzo. "),
+                              TextSpan(text: "La válvula de desgasificación ", style: TextStyle(color: blue)),
+                              TextSpan(
+                                text:
+                                    "de 5PRO permite que el empaque libere gases internos sin comprometer el contenido, ideal para productos como café o granos recién tostados. Este pequeño componente evita la acumulación de presión, alarga la vida útil y mantiene la experiencia sensorial intacta. Un sistema discreto, automático y seguro, que convierte a la 5PRO en un empaque inteligente, pensado para productos que respiran.",
+                              ),
+                            ],
+                          ),
                         ),
                       )
-                      : Container(
-                        padding: EdgeInsets.symmetric(vertical: 60),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Text.rich(
-                                style: TextStyle(
-                                  fontSize: (screenWidth * 0.04).clamp(20, 24),
-                                  fontWeight: FontWeight.w800,
-                                  color: Colors.black.withAlpha(160),
-                                  height: 1.5,
-                                ),
-                                TextSpan(
-                                  children: [
-                                    TextSpan(text: "La precisión de una válvula. Integrada sin esfuerzo. "),
-                                    TextSpan(text: "La válvula de desgasificación ", style: TextStyle(color: blue)),
-                                    TextSpan(
-                                      text:
-                                          "de 5PRO permite que el empaque libere gases internos sin comprometer el contenido, ideal para productos como café o granos recién tostados. Este pequeño componente evita la acumulación de presión, alarga la vida útil y mantiene la experiencia sensorial intacta. Un sistema discreto, automático y seguro, que convierte a la 5PRO en un empaque inteligente, pensado para productos que respiran.",
-                                    ),
-                                  ],
-                                ),
+                      : Row(
+                        children: [
+                          Expanded(
+                            child: Text.rich(
+                              textAlign: TextAlign.justify,
+                              style: TextStyle(
+                                fontSize: (screenWidth * 0.04).clamp(20, 24),
+                                fontWeight: FontWeight.w800,
+                                color: Colors.black.withAlpha(160),
+                                height: 1.5,
+                              ),
+                              TextSpan(
+                                children: [
+                                  TextSpan(text: "La precisión de una válvula. Integrada sin esfuerzo. "),
+                                  TextSpan(text: "La válvula de desgasificación ", style: TextStyle(color: blue)),
+                                  TextSpan(
+                                    text:
+                                        "de 5PRO permite que el empaque libere gases internos sin comprometer el contenido, ideal para productos como café o granos recién tostados. Este pequeño componente evita la acumulación de presión, alarga la vida útil y mantiene la experiencia sensorial intacta. Un sistema discreto, automático y seguro, que convierte a la 5PRO en un empaque inteligente, pensado para productos que respiran.",
+                                  ),
+                                ],
                               ),
                             ),
-                            Expanded(child: Image.asset("assets/img/smartbag/5pro.webp", fit: BoxFit.fitHeight)),
-                          ],
-                        ),
+                          ),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: SizedBox(
+                              width: screenWidth / 2.3,
+                              height: (MediaQuery.of(context).size.width * 0.2).clamp(800, 900),
+                              child: Stack(
+                                fit: StackFit.expand,
+                                children: [
+                                  ValueListenableBuilder<bool>(
+                                    valueListenable: videoBlurNotifier,
+                                    builder: (context, isBlur, _) {
+                                      return VideoFlutter(
+                                        src: 'assets/videos/smartbag/5pro/rotacion_5pro.webm',
+                                        blur: isBlur,
+                                        loop: false,
+                                        showControls: false,
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
             ),
           ],
@@ -895,15 +1030,71 @@ class _SliverAboutMoreInfo5ProState extends State<SliverAboutMoreInfo5Pro> {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> nuestra5pro = [
-      'BOPP, PET, Metalizado y Transparente. Cada una diseñada para un propósito específico: desde barreras de luz hasta visibilidad del contenido.',
-      'Sistema de válvula desgasificadora opcional, ideal para productos que requieren liberar gases sin perder frescura. Perfecta para café, granos y snacks gourmet.',
-      'Cierre seguro y hermético, compatible con sistemas automáticos. Mantiene la integridad del producto durante transporte y almacenamiento.',
-      'Mate, brillante o soft-touch. Elige el look & feel perfecto para tu marca, desde elegancia minimalista hasta alto impacto visual.',
-      'Diseño con ventanas opcionales que permiten ver el producto interior. Transparente, con formas y tamaños a medida para destacar tu contenido.',
+    final List<Map<String, dynamic>> nuestra5pro = [
+      {
+        'isVideo': true,
+        'video': 'assets/videos/smartbag/5pro/lamina.webm',
+        'textSpans': [
+          TextSpan(text: "Estructuras como ", style: TextStyle(color: Colors.grey[600])),
+          TextSpan(text: "BOPP, PET, Metalizado y Transparente", style: TextStyle(color: widget.blue.withAlpha(180))),
+          TextSpan(
+            text: ", cada una diseñada para un propósito específico: desde barreras de luz hasta permitir visibilidad del contenido. ",
+            style: TextStyle(color: Colors.grey[600]),
+          ),
+          TextSpan(text: "Flexibilidad y protección", style: TextStyle(color: widget.blue.withAlpha(180))),
+          TextSpan(text: " en cada capa.", style: TextStyle(color: Colors.grey[600])),
+        ],
+      },
+      {
+        'isVideo': false,
+        'image': 'assets/img/smartbag/5pro/cardmin2.webp',
+        'textSpans': [
+          TextSpan(text: "Sistema de ", style: TextStyle(color: Colors.grey[600])),
+          TextSpan(text: "válvula desgasificadora opcional", style: TextStyle(color: widget.blue.withAlpha(180))),
+          TextSpan(text: ", ideal para productos que liberan gases sin perder frescura. Perfecta para ", style: TextStyle(color: Colors.grey[600])),
+          TextSpan(text: "café, granos y snacks gourmet", style: TextStyle(color: widget.blue.withAlpha(180))),
+          TextSpan(text: ".", style: TextStyle(color: Colors.grey[600])),
+        ],
+      },
+      {
+        'isVideo': false,
+        'image': 'assets/img/smartbag/5pro/cardmin3.webp',
+        'textSpans': [
+          TextSpan(text: "Ofrece un ", style: TextStyle(color: Colors.grey[600])),
+          TextSpan(text: "cierre seguro y hermético", style: TextStyle(color: widget.blue.withAlpha(180))),
+          TextSpan(text: ", compatible con sistemas automáticos. ", style: TextStyle(color: Colors.grey[600])),
+          TextSpan(text: "Mantiene la integridad", style: TextStyle(color: widget.blue.withAlpha(180))),
+          TextSpan(text: " del producto durante transporte y almacenamiento.", style: TextStyle(color: Colors.grey[600])),
+        ],
+      },
+      {
+        'isVideo': false,
+        'image': 'assets/img/smartbag/5pro/cardmin4.webp',
+        'textSpans': [
+          TextSpan(text: "Acabados ", style: TextStyle(color: Colors.grey[600])),
+          TextSpan(text: "mate, brillante o soft-touch", style: TextStyle(color: widget.blue.withAlpha(180))),
+          TextSpan(text: ": elige el ", style: TextStyle(color: Colors.grey[600])),
+          TextSpan(text: "look & feel", style: TextStyle(color: widget.blue.withAlpha(180))),
+          TextSpan(
+            text: " perfecto para tu marca, desde la elegancia minimalista hasta el alto impacto visual.",
+            style: TextStyle(color: Colors.grey[600]),
+          ),
+        ],
+      },
+      {
+        'isVideo': false,
+        'image': 'assets/img/smartbag/5pro/cardmin5.webp',
+        'textSpans': [
+          TextSpan(text: "Diseño con ", style: TextStyle(color: Colors.grey[600])),
+          TextSpan(text: "ventanas opcionales", style: TextStyle(color: widget.blue.withAlpha(180))),
+          TextSpan(text: " que permiten ver el producto interior. ", style: TextStyle(color: Colors.grey[600])),
+          TextSpan(text: "Transparente, con formas y tamaños personalizados", style: TextStyle(color: widget.blue.withAlpha(180))),
+          TextSpan(text: " para destacar tu contenido.", style: TextStyle(color: Colors.grey[600])),
+        ],
+      },
     ];
 
-    final cardSize = (widget.screenWidth * 0.450).clamp(0, 450).toDouble();
+    final cardSize = (widget.screenWidth * 0.550).clamp(0, 550).toDouble();
     final paddingSide = widget.screenWidth * 0.06;
 
     return SliverToBoxAdapter(
@@ -944,23 +1135,40 @@ class _SliverAboutMoreInfo5ProState extends State<SliverAboutMoreInfo5Pro> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              padding: const EdgeInsets.all(16),
                               height: cardSize,
                               width: cardSize,
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.grey),
-                              child: Image.asset("assets/img/smartbag/5pro.webp"),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                color: const Color.fromARGB(255, 227, 231, 241),
+                                boxShadow: [
+                                  BoxShadow(color: Color.fromRGBO(60, 64, 67, 0.3), blurRadius: 2, spreadRadius: 0, offset: Offset(0, 1)),
+                                  BoxShadow(color: Color.fromRGBO(60, 64, 67, 0.15), blurRadius: 3, spreadRadius: 1, offset: Offset(0, 1)),
+                                ],
+                              ),
+                              child:
+                                  nuestra5pro[index]['isVideo']
+                                      ? VideoFlutter(
+                                        src: nuestra5pro[index]['video'],
+                                        loop: false,
+                                        retry: true,
+                                        showControls: false,
+                                        fit: BoxFit.cover,
+                                      )
+                                      : ClipRRect(borderRadius: BorderRadius.circular(16), child: Image.asset(nuestra5pro[index]['image'])),
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 26),
                             ConstrainedBox(
                               constraints: const BoxConstraints(maxWidth: 400),
-                              child: Text(
-                                nuestra5pro[index],
-                                style: TextStyle(
-                                  fontSize: (widget.screenWidth * 0.03).clamp(12, 18),
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black.withAlpha(180),
-                                ),
+                              child: RichText(
                                 textAlign: TextAlign.start,
+                                text: TextSpan(
+                                  style: TextStyle(
+                                    fontSize: (widget.screenWidth * 0.03).clamp(12, 18),
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black.withAlpha(180),
+                                  ),
+                                  children: List<TextSpan>.from(nuestra5pro[index]['textSpans']),
+                                ),
                               ),
                             ),
                           ],
@@ -1043,29 +1251,34 @@ class SliverWithGrandesSoluciones extends StatelessWidget {
                   ),
                   const SizedBox(height: 30),
 
-                  Text.rich(
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: (screenWidth * 0.03).clamp(16, 22),
-                      fontWeight: FontWeight.bold,
-                      height: 1.4,
-                      color: Colors.black.withAlpha(180),
-                    ),
-                    TextSpan(
-                      children: [
-                        TextSpan(text: "5PRO está diseñada para superar los estándares de empaque flexible, "),
-                        TextSpan(text: "integrando soluciones", style: TextStyle(color: blue)),
-                        TextSpan(
-                          text: "como válvulas funcionales, terminados premium y estructuras de alta protección. Cada detalle ha sido pensado para ",
-                        ),
-                        TextSpan(text: "combinar diseño, tecnología y eficiencia, sin comprometer la calidad.", style: TextStyle(color: blue)),
-                        TextSpan(
-                          text:
-                              "Gracias a su estructura multicapa, 5PRO mantiene el producto en condiciones óptimas, con opciones como acabado mate o brillante. Todo esto, pensado para adaptarse a diferentes industrias, formatos personalizados y exigencias del mercado actual. ",
-                        ),
-                      ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                    child: Text.rich(
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: (screenWidth * 0.03).clamp(16, 22),
+                        fontWeight: FontWeight.bold,
+                        height: 1.4,
+                        color: Colors.black.withAlpha(180),
+                      ),
+                      TextSpan(
+                        children: [
+                          TextSpan(text: "5PRO está diseñada para superar los estándares de empaque flexible, "),
+                          TextSpan(text: "integrando soluciones", style: TextStyle(color: blue)),
+                          TextSpan(
+                            text:
+                                "como válvulas funcionales, terminados premium y estructuras de alta protección. Cada detalle ha sido pensado para ",
+                          ),
+                          TextSpan(text: "combinar diseño, tecnología y eficiencia, sin comprometer la calidad.", style: TextStyle(color: blue)),
+                          TextSpan(
+                            text:
+                                "Gracias a su estructura multicapa, 5PRO mantiene el producto en condiciones óptimas, con opciones como acabado mate o brillante. Todo esto, pensado para adaptarse a diferentes industrias, formatos personalizados y exigencias del mercado actual. ",
+                          ),
+                        ],
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 30),
                 ],
               ),
             ),
@@ -1106,8 +1319,8 @@ class SliverWithOtherThings extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: 50),
                 child: _buildRow(
                   false,
-                  "Diseñada para destacar. Hecha para proteger.",
-                  "5PRO no es solo una bolsa, es una declaración de calidad. Con válvulas inteligentes que preservan la frescura, acabados premium que elevan tu marca, y estructuras multicapa que resisten todo, 5PRO combina estética, tecnología y funcionalidad en un solo empaque. Ideal para quienes buscan impactar sin comprometer la protección.",
+                  "Diseñada para destacar. \nHecha para proteger.",
+                  "5PRO no es solo una bolsa, es una declaración de calidad. Con acabados premium que elevan tu marca, y estructuras multicapa que resisten todo, 5PRO combina estética, tecnología y funcionalidad en un solo empaque. Ideal para quienes buscan impactar sin comprometer la protección.",
                 ),
               ),
             ),
@@ -1122,7 +1335,46 @@ class SliverWithOtherThings extends StatelessWidget {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(child: Container(height: 400, width: 400, decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.grey))),
+          Expanded(
+            child: Container(
+              height: 400,
+              width: 400,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: const Color.fromARGB(255, 231, 234, 244),
+                boxShadow: [
+                  BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.1), blurRadius: 6, spreadRadius: -1, offset: Offset(0, 4)),
+                  BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.06), blurRadius: 4, spreadRadius: -1, offset: Offset(0, 2)),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: SizedBox(
+                  width: double.infinity,
+
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      /*  ValueListenableBuilder<bool>(
+                        valueListenable: videoBlurNotifier,
+                        builder: (context, isBlur, _) {
+                          return VideoFlutter(
+                            src: 'assets/videos/smartbag/5pro/5pro_destaca.webm',
+                            blur: isBlur,
+                            loop: false,
+                            showControls: false,
+                            isPause: false,
+                            retry: true,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      ),*/
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
           SizedBox(width: screenWidth * 0.1),
           Expanded(
             child: Column(
@@ -1149,7 +1401,46 @@ class SliverWithOtherThings extends StatelessWidget {
             ),
           ),
           SizedBox(width: screenWidth * 0.1),
-          Expanded(child: Container(height: 400, width: 400, decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.grey))),
+          Expanded(
+            child: Container(
+              height: 400,
+              width: 400,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: const Color.fromARGB(255, 231, 234, 244),
+                boxShadow: [
+                  BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.1), blurRadius: 6, spreadRadius: -1, offset: Offset(0, 4)),
+                  BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.06), blurRadius: 4, spreadRadius: -1, offset: Offset(0, 2)),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: SizedBox(
+                  width: double.infinity,
+
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      ValueListenableBuilder<bool>(
+                        valueListenable: videoBlurNotifier,
+                        builder: (context, isBlur, _) {
+                          return VideoFlutter(
+                            src: 'assets/videos/smartbag/5pro/5pro_destaca.webm',
+                            blur: isBlur,
+                            loop: false,
+                            showControls: false,
+                            isPause: false,
+                            retry: true,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       );
     }
@@ -1190,6 +1481,11 @@ class _SliverWhyPakcivisionWith5proState extends State<SliverWhyPakcivisionWith5
       icon: CupertinoIcons.layers,
       title: "5PRO: Tecnología multicapa",
       text: "Hasta 5 selles de protección. Conservación avanzada, resistencia superior y una imagen inigualable.",
+    ),
+    (
+      icon: CupertinoIcons.star_circle,
+      title: "Diseño con propósito",
+      text: "5PRO es elegancia en cada pliegue. Diseñada para marcas exigentes que valoran la estética tanto como la funcionalidad.",
     ),
   ];
 
@@ -1360,48 +1656,69 @@ class SliverFinalFivePro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 100),
-        width: screenWidth,
-        color: Colors.white,
-        child: Column(
-          children: [
-            ScrollAnimatedWrapper(
-              visibilityKey: Key('unete-5pro'),
-              child: Text("Unete a la familia 5PRO", style: TextStyle(fontWeight: FontWeight.bold, fontSize: (screenWidth * 0.07).clamp(30, 60))),
-            ),
-            SizedBox(height: 50),
-            ScrollAnimatedWrapper(
-              visibilityKey: Key('comunidad-5pro'),
-              child: SizedBox(
-                width: (screenWidth * 0.6).clamp(400, 1000),
-                child: Center(
-                  child: Text(
-                    textAlign: TextAlign.center,
-                    "Una comunidad que transforma empaques en experiencias. Donde innovación, diseño y sostenibilidad se encuentran para elevar tu marca.",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: (screenWidth * 0.03).clamp(21, 30)),
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 100),
+            width: screenWidth,
+            color: Colors.white,
+            child: Column(
+              children: [
+                ScrollAnimatedWrapper(
+                  visibilityKey: Key('unete-5pro'),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Unete a la familia",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: (screenWidth * 0.07).clamp(30, 60), color: Colors.grey[700]),
+                      ),
+                      Text(
+                        " 5PRO",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: (screenWidth * 0.07).clamp(30, 60),
+                          color: Theme.of(context).primaryColor.withAlpha(180),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ),
-            SizedBox(height: 50),
-            ScrollAnimatedWrapper(visibilityKey: Key('orbita-5pro'), child: OvalOrbitAnimation(blue: blue, screenWidth: screenWidth)),
-            ScrollAnimatedWrapper(
-              visibilityKey: Key('butotn-create-5pro-finally'),
-              child: ElevatedButton(
-                onPressed: () {
-                  final route = '${subcategorie.route}/crea-tu-empaque';
-                  navigateWithSlide(context, route); // tu función personalizada
-                },
-                style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(blue), foregroundColor: WidgetStatePropertyAll(Colors.white)),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  child: Text("Armar mi 5PRO", style: TextStyle(fontWeight: FontWeight.bold, fontSize: (screenWidth * 0.03).clamp(20, 25))),
+                SizedBox(height: 50),
+                ScrollAnimatedWrapper(
+                  visibilityKey: Key('comunidad-5pro'),
+                  child: SizedBox(
+                    width: (screenWidth * 0.6).clamp(400, 1000),
+                    child: Center(
+                      child: Text(
+                        textAlign: TextAlign.center,
+                        "Una comunidad que transforma empaques en experiencias. Donde innovación, diseño y sostenibilidad se encuentran para elevar tu marca.",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: (screenWidth * 0.03).clamp(21, 30), color: Colors.grey[700]),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                SizedBox(height: 50),
+                ScrollAnimatedWrapper(visibilityKey: Key('orbita-5pro'), child: OvalOrbitAnimation(blue: blue, screenWidth: screenWidth)),
+                ScrollAnimatedWrapper(
+                  visibilityKey: Key('butotn-create-5pro-finally'),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      final route = '${subcategorie.route}/crea-tu-empaque';
+                      navigateWithSlide(context, route); // tu función personalizada
+                    },
+                    style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(blue), foregroundColor: WidgetStatePropertyAll(Colors.white)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      child: Text("Armar mi 5PRO", style: TextStyle(fontWeight: FontWeight.bold, fontSize: (screenWidth * 0.03).clamp(20, 25))),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Footer(),
+        ],
       ),
     );
   }
@@ -1509,6 +1826,11 @@ class _OvalOrbitAnimationState extends State<OvalOrbitAnimation> with TickerProv
                     child: Image.asset("assets/img/smartbag/5pro/bags.png", fit: BoxFit.cover),
                   ),
                 ),
+
+                CustomPaint(
+                  size: Size(size, size),
+                  painter: FrontDashedEllipsePainter(a: 300, b: 50, dashLength: 10, gapLength: 1, color: widget.blue.withAlpha(140)),
+                ),
                 // Íconos en frente de la bolsa
                 ...inFrontBag,
               ],
@@ -1551,6 +1873,50 @@ class DashedEllipsePainter extends CustomPainter {
       final p2 = Offset(a * math.cos(nextT), b * math.sin(nextT)) + center;
 
       if ((drawnLength ~/ (dashLength + gapLength)) % 2 == 0) {
+        canvas.drawLine(p1, p2, paint);
+      }
+
+      drawnLength += (p2 - p1).distance;
+      t = nextT;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// Painter para dibujar solo la mitad frontal de una línea punteada elíptica
+class FrontDashedEllipsePainter extends CustomPainter {
+  final double a; // radio horizontal
+  final double b; // radio vertical
+  final double dashLength;
+  final double gapLength;
+  final Color color;
+
+  FrontDashedEllipsePainter({required this.a, required this.b, required this.dashLength, required this.gapLength, required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = color
+          ..strokeWidth = 1.5
+          ..style = PaintingStyle.stroke;
+
+    final center = Offset(size.width / 2, size.height / 2);
+    final totalLength = math.pi * math.sqrt((a * a + b * b) / 2); // solo media elipse
+
+    double t = 45;
+    double drawnLength = 0;
+
+    while (drawnLength < totalLength) {
+      final p1 = Offset(a * math.cos(t), b * math.sin(t)) + center;
+      final dt = 0.01;
+      final nextT = t + dt;
+      final p2 = Offset(a * math.cos(nextT), b * math.sin(nextT)) + center;
+
+      // Solo dibujar la parte frontal (cuando sin(t) >= 0)
+      if (math.sin(t) >= 0 && ((drawnLength ~/ (dashLength + gapLength)) % 2 == 0)) {
         canvas.drawLine(p1, p2, paint);
       }
 

@@ -27,6 +27,8 @@ dependencies:
   # Animacion para el header
   animations: ^2.0.0
   web: ^1.1.1
+  model_viewer_plus: ^1.9.3
+  webview_flutter: ^4.13.0
 
 
 dev_dependencies:
@@ -80,10 +82,13 @@ flutter:
     - assets/img/ecobag/
     - assets/img/ecobag/4pro/
     - assets/img/ecobag/5pro/
+    - assets/img/ecobag/doypack/
     - assets/img/smartbag/
     - assets/img/smartbag/4pro/
     - assets/img/smartbag/4pro/frames/
+    - assets/img/smartbag/doypack/
     - assets/img/smartbag/5pro/
+    - assets/img/smartbag/flowpack/
     - assets/img/support/
     - assets/img/us/
     - assets/fonts/
@@ -93,6 +98,7 @@ flutter:
     - assets/videos/ecobag/
     - assets/videos/smartbag/
     - assets/videos/smartbag/4pro/
+    - assets/videos/smartbag/5pro/
     - assets/videos/us/
       
       

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:webpack/class/categories.dart';
 import 'package:webpack/main.dart';
-import 'package:webpack/pages/commerce.dart';
 import 'package:webpack/widgets/4pro/imageSequenceScroller.dart';
 import 'package:webpack/widgets/4pro/widgetsfourpro.dart';
 import 'package:webpack/widgets/footer.dart';
@@ -176,12 +175,12 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
       {
         "title":
             "El empaque que entiende tu producto.\nVersatilidad para alimentos, cosméticos, suplementos y mucho más. Siempre listo para destacar.",
-        "image": "assets/img/home/eco.webp",
+        "image": "assets/img/smartbag/4pro/card3.webp",
         "colorText": Colors.white,
       },
       {
         "title": "Tecnología en cada detalle.\nLa 4PRO SmartBag combina innovación, presencia visual y sostenibilidad, en una sola solución.",
-        "image": "assets/img/home/eco.webp",
+        "image": "assets/img/smartbag/4pro/card4.webp",
         "colorText": Colors.white,
       },
     ];
@@ -302,8 +301,8 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
                                           ),
                                         ),
                                         elevation: WidgetStateProperty.all(6),
-                                        shadowColor: WidgetStateProperty.all(Theme.of(context).primaryColor.withOpacity(0.3)),
-                                        overlayColor: WidgetStateProperty.all(Colors.white.withOpacity(0.1)),
+                                        shadowColor: WidgetStateProperty.all(Theme.of(context).primaryColor.withAlpha(70)),
+                                        overlayColor: WidgetStateProperty.all(Colors.white.withAlpha(40)),
                                       ),
                                       child: Text("Armar mi 4PRO", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, letterSpacing: 1.2)),
                                     ),
@@ -725,7 +724,7 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              Padding(padding: EdgeInsets.only(top: redPaddingTop - 100), child: Container(key: redKey, height: 100, width: double.infinity)),
+              Padding(padding: EdgeInsets.only(top: redPaddingTop - 100), child: SizedBox(key: redKey, height: 100, width: double.infinity)),
             ] else ...[
               // 👉 Móvil → mostrar 4 imágenes fijas en columna
               Padding(
@@ -844,121 +843,64 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
               ),
             ),
             SizedBox(height: 100),
-            Center(
-              child: SizedBox(
-                width: min(screenWidth, 1000),
-                child: Column(
-                  children: [
-                    // FILA DE IMÁGENES (niveladas)
-                    ScrollAnimatedWrapper(
-                      visibilityKey: Key('Image-valv-y-ps'),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+            ScrollAnimatedWrapper(
+              visibilityKey: Key('image-text-valv-y-ps'),
+              child:
+                  screenWidth >= 1000
+                      ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: min(screenWidth * 0.3, 300),
-                                  height: min(screenWidth * 0.3, 300),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: Colors.grey[200],
-                                    image: DecorationImage(
-                                      image: AssetImage("assets/img/404.webp"), // tu imagen
-                                      fit: BoxFit.contain,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                          buildFeatureCard(
+                            context,
+                            height: screenHeight * 0.45,
+                            width: screenWidth * 0.27,
+                            title: "Peel Stick. ",
+                            description:
+                                "Práctico y versátil, este accesorio se adhiere fácilmente a cualquier superficie plana, ofreciendo funcionalidad sin comprometer el diseño.",
+                            imagePath: "assets/img/smartbag/4pro/peel.webp",
+                            isDowntext: false,
                           ),
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: min(screenWidth * 0.3, 300),
-                                  height: min(screenWidth * 0.3, 300),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: Colors.grey[200],
-                                    image: DecorationImage(
-                                      image: AssetImage("assets/img/404.webp"), // tu imagen
-                                      fit: BoxFit.contain,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                          SizedBox(width: 20),
+                          buildFeatureCard(
+                            context,
+                            height: screenHeight * 0.45,
+                            width: screenWidth * 0.27,
+                            title: "Valvula. ",
+                            description:
+                                "Diseñada para ofrecer un flujo controlado de aire o producto, la válvula mantiene la frescura y protege el contenido con cada uso.",
+                            imagePath: "assets/img/smartbag/4pro/valvulas.webp",
                           ),
                         ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 30),
-
-                    // FILA DE TEXTOS (independiente, no afecta el alineado de arriba)
-                    ScrollAnimatedWrapper(
-                      visibilityKey: Key('image-text-valv-y-ps'),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
-                              child: Text.rich(
-                                textAlign: TextAlign.center,
-                                TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: "Peel Stick. ",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: min(screenWidth * 0.03, 18),
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text:
-                                          "Práctico y versátil, este accesorio se adhiere fácilmente a cualquier superficie plana, ofreciendo funcionalidad sin comprometer el diseño.",
-                                      style: TextStyle(fontSize: min(screenWidth * 0.03, 18), color: Colors.black87, fontWeight: FontWeight.w400),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                      )
+                      : Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            buildFeatureCard(
+                              context,
+                              height: screenHeight * 0.45,
+                              width: screenWidth * 0.9,
+                              title: "Peel Stick. ",
+                              description:
+                                  "Práctico y versátil, este accesorio se adhiere fácilmente a cualquier superficie plana, ofreciendo funcionalidad sin comprometer el diseño.",
+                              imagePath: "assets/img/smartbag/4pro/peel.webp",
+                              isDowntext: false,
                             ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
-                              child: Text.rich(
-                                textAlign: TextAlign.center,
-                                TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: "Valvula. ",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: min(screenWidth * 0.03, 18),
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text:
-                                          "Diseñada para ofrecer un flujo controlado de aire o producto, la válvula mantiene la frescura y protege el contenido con cada uso.",
-                                      style: TextStyle(fontSize: min(screenWidth * 0.03, 18), color: Colors.black87, fontWeight: FontWeight.w400),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                            SizedBox(height: 30),
+                            buildFeatureCard(
+                              context,
+                              height: screenHeight * 0.45,
+                              width: screenWidth * 0.9,
+                              title: "Valvula. ",
+                              description:
+                                  "Diseñada para ofrecer un flujo controlado de aire o producto, la válvula mantiene la frescura y protege el contenido con cada uso.",
+                              imagePath: "assets/img/smartbag/4pro/valvulas.webp",
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
             ),
+
             SizedBox(height: 100),
 
             const Footer(),
@@ -967,4 +909,93 @@ class _FourProState extends State<FourPro> with TickerProviderStateMixin {
       ),
     );
   }
+}
+
+Widget buildFeatureCard(
+  BuildContext context, {
+  required double height,
+  required double width,
+  required String title,
+  required String description,
+  required String imagePath,
+  bool? isDowntext = true,
+}) {
+  final screenWidth = MediaQuery.of(context).size.width;
+  return Container(
+    height: height,
+    width: width,
+    decoration: BoxDecoration(color: const Color.fromARGB(161, 238, 238, 238), borderRadius: BorderRadius.circular(20)),
+    child:
+        isDowntext == true
+            ? Column(
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      width: min(screenWidth * 0.8, 400),
+                      height: min(screenWidth * 0.8, 400),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        image: DecorationImage(alignment: Alignment.bottomCenter, image: AssetImage(imagePath), fit: BoxFit.contain),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 40),
+                  child: Text.rich(
+                    textAlign: TextAlign.center,
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: title,
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenWidth * 0.03, 18), color: Theme.of(context).primaryColor),
+                        ),
+                        TextSpan(
+                          text: description,
+                          style: TextStyle(fontSize: min(screenWidth * 0.03, 18), color: Colors.black87, fontWeight: FontWeight.w400),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            )
+            : Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 40),
+                  child: Text.rich(
+                    textAlign: TextAlign.center,
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: title,
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenWidth * 0.03, 18), color: Theme.of(context).primaryColor),
+                        ),
+                        TextSpan(
+                          text: description,
+                          style: TextStyle(fontSize: min(screenWidth * 0.03, 18), color: Colors.black87, fontWeight: FontWeight.w400),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      width: min(screenWidth * 0.8, 400),
+                      height: min(screenWidth * 0.8, 400),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        image: DecorationImage(alignment: Alignment.bottomCenter, image: AssetImage(imagePath), fit: BoxFit.contain),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+  );
 }

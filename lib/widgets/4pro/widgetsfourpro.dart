@@ -616,7 +616,7 @@ class _SmartbagRainState extends State<SmartbagRain> with TickerProviderStateMix
                   left: drop.x,
                   child: Opacity(
                     opacity: (1 - t).clamp(0.0, 1.0),
-                    child: Transform.rotate(angle: t * pi / 3, child: Icon(Icons.shopping_bag, size: drop.size, color: Colors.blue.withOpacity(0.6))),
+                    child: Transform.rotate(angle: t * pi / 3, child: Icon(Icons.shopping_bag, size: drop.size, color: Colors.blue.withAlpha(180))),
                   ),
                 );
               }).toList(),

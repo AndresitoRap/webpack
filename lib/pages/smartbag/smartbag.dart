@@ -91,6 +91,16 @@ class _SmartBagState extends State<SmartBag> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+
+    List ListHeader = [
+      "assets/img/smartbag/4pro_ilustration.png",
+      "assets/img/smartbag/4pro_ilustration.png",
+      "assets/img/smartbag/4pro_ilustration.png",
+      "assets/img/smartbag/4pro_ilustration.png",
+      "assets/img/smartbag/4pro_ilustration.png",
+      "assets/img/smartbag/4pro_ilustration.png",
+      "assets/img/smartbag/4pro_ilustration.png",
+    ];
     return Scaffold(
       body: Stack(
         children: [
@@ -101,7 +111,21 @@ class _SmartBagState extends State<SmartBag> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(height: 200, width: screenWidth, color: Colors.grey),
+                  Container(
+                    height: 150,
+                    width: screenWidth,
+                    color: Colors.grey,
+                    child: Row(
+                      children: List.generate(ListHeader.length, (index) {
+                        return Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                            child: Image.asset(ListHeader[index], height: 150, fit: BoxFit.contain),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
 
                   SizedBox(height: 50),
                   screenWidth >= 1000

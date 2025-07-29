@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:webpack/widgets/footer.dart';
+import 'package:webpack/widgets/header.dart';
 import 'package:webpack/widgets/scrollopacity.dart';
+import 'package:webpack/widgets/video.dart';
 
 class DoypackSmart extends StatelessWidget {
   const DoypackSmart({super.key});
@@ -154,25 +156,6 @@ class _SliverToStartState extends State<SliverToStart> with TickerProviderStateM
             ),
             //Texto después de video
             Positioned(
-              top: 60,
-              left: 0,
-              right: 0,
-              child: FadeTransition(
-                opacity: _doypackFade,
-                child: Text(
-                  textAlign: TextAlign.center,
-                  "Doypack",
-                  style: TextStyle(fontWeight: FontWeight.bold, color: widget.blue, fontSize: (widget.screenWidth * 0.2).clamp(80, 120)),
-                ),
-              ),
-            ),
-            // Cubierta que sube y tapa el texto
-            SlideTransition(
-              position: _coverSlide,
-              child: Container(height: widget.screenHeight + 25, width: widget.screenWidth, color: Colors.grey.withAlpha(100)),
-            ),
-
-            Positioned(
               bottom: 0,
               left: 0,
               right: 0,
@@ -197,6 +180,34 @@ class _SliverToStartState extends State<SliverToStart> with TickerProviderStateM
                       ),
                     ),
                   ],
+                ),
+              ),
+            ),
+            // Cubierta que sube y tapa el texto
+            SlideTransition(
+              position: _coverSlide,
+              child: Container(
+                height: widget.screenHeight + 25,
+                width: widget.screenWidth,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: SizedBox(
+                    width: double.infinity,
+
+                    child: ValueListenableBuilder<bool>(
+                      valueListenable: videoBlurNotifier,
+                      builder: (context, isBlur, _) {
+                        return VideoFlutter(
+                          src: 'assets/videos/smartbag/doypack/inicio_doypack.webm',
+                          blur: isBlur,
+                          loop: false,
+                          showControls: false,
+                          isPause: false,
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -246,10 +257,25 @@ class _SliverInfoDoypackState extends State<SliverInfoDoypack> {
 
   @override
   Widget build(BuildContext context) {
-    final List<dynamic> nuestraDoypack = [
-      {"title": "Smartbag® Doypack:\npresentación moderna\ny profesional.", "image": "assets/img/home/eco.webp"},
-      {"title": "Diseñada para destacar\ntu producto en estantería,\ny proteger su contenido.", "image": "assets/img/home/eco.webp"},
-      {"title": "Zipper resellable,\nválvula desgasificadora\ny múltiples capacidades\npara cada necesidad.", "image": "assets/img/home/eco.webp"},
+    final List<Map<String, dynamic>> nuestraDoypack = [
+      {
+        "title": "Smartbag® Doypack:\npresentación moderna\ny profesional.",
+        "image": "assets/img/smartbag/doypack/cardLarge1.webp",
+        "isVideo": false,
+        "video": "",
+      },
+      {
+        "title": "Diseñada para destacar\ntu producto en estantería,\ny proteger su contenido.",
+        "image": "assets/img/home/eco.webp",
+        "isVideo": false,
+        "video": "",
+      },
+      {
+        "title": "Zipper resellable,\nválvula desgasificadora\ny múltiples capacidades\npara cada necesidad.",
+        "image": "assets/img/smartbag/doypack/cardLarge2.webp",
+        "isVideo": false,
+        "video": "",
+      },
     ];
 
     return SliverToBoxAdapter(

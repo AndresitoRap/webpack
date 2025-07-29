@@ -30,20 +30,24 @@ class _FiveProEcoState extends State<FiveProEco> {
     final isMobile = screenWidth < 850;
     final green = Color.fromARGB(255, 75, 141, 44);
 
-    return CustomScrollView(
-      controller: _controller,
-      slivers: [
-        SliverToStartFiveProEco(screenHeight: screenHeight, screenWidth: screenWidth, isMobile: isMobile, green: green),
-        SliverWithNewStandar(green: green, screenWidth: screenWidth),
-        SliverAboutFiveProEco(screenWidth: screenWidth, green: green, isMobile: isMobile),
-        SliverWithProteccionEcobag5pro(screenWidth: screenWidth, green: green, isMobile: isMobile),
-        SliverVideo5ProEcobag(screenWidth: screenWidth, green: green, isMobile: isMobile),
-        SliverAboutMoreInfo5ProEco(screenWidth: screenWidth, green: green, isMobile: isMobile),
-        SliverWithVideoScrollabe(isMobile: isMobile, screenWidth: screenWidth, green: green),
-        SliverWithCareUs(screenWidth: screenWidth),
-        SliverWithParallax(screenHeight: screenHeight, screenWidth: screenWidth, green: green, scrollController: _controller, isMobile: isMobile),
-        SliverToBoxAdapter(child: Footer()),
-      ],
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 253, 255, 252),
+
+      body: CustomScrollView(
+        controller: _controller,
+        slivers: [
+          SliverToStartFiveProEco(screenHeight: screenHeight, screenWidth: screenWidth, isMobile: isMobile, green: green),
+          SliverWithNewStandar(green: green, screenWidth: screenWidth),
+          SliverAboutFiveProEco(screenWidth: screenWidth, green: green, isMobile: isMobile),
+          SliverWithProteccionEcobag5pro(screenWidth: screenWidth, green: green, isMobile: isMobile),
+          SliverVideo5ProEcobag(screenWidth: screenWidth, green: green, isMobile: isMobile),
+          SliverAboutMoreInfo5ProEco(screenWidth: screenWidth, green: green, isMobile: isMobile),
+          SliverWithVideoScrollabe(isMobile: isMobile, screenWidth: screenWidth, green: green),
+          SliverWithCareUs(screenWidth: screenWidth),
+          SliverWithParallax(screenHeight: screenHeight, screenWidth: screenWidth, green: green, scrollController: _controller, isMobile: isMobile),
+          SliverToBoxAdapter(child: Footer()),
+        ],
+      ),
     );
   }
 }

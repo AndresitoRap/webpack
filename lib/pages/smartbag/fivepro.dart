@@ -1355,20 +1355,20 @@ class SliverWithOtherThings extends StatelessWidget {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      /*  ValueListenableBuilder<bool>(
+                      ValueListenableBuilder<bool>(
                         valueListenable: videoBlurNotifier,
                         builder: (context, isBlur, _) {
                           return VideoFlutter(
-                            src: 'assets/videos/smartbag/5pro/5pro_destaca.webm',
+                            src: 'assets/videos/smartbag/5pro/loop.webm',
                             blur: isBlur,
-                            loop: false,
+                            loop: true,
                             showControls: false,
                             isPause: false,
-                            retry: true,
+                            retry: false,
                             fit: BoxFit.cover,
                           );
                         },
-                      ),*/
+                      ),
                     ],
                   ),
                 ),

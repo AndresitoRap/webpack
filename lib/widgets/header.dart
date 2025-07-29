@@ -470,7 +470,7 @@ final List<Menu> menu = [
     title: "EcoBag®",
     items: [
       SubMenu(title: "Explora EcoBag®", sections: ["4PRO", "5PRO", "Doypack", "Flowpack"]),
-      SubMenu(title: "Especial EcoBag®", sections: ["Cojín", "Piramidal"]),
+      SubMenu(title: "Especiales EcoBag®", sections: ["Cojín", "Piramidal"]),
     ],
   ),
   Menu(

@@ -93,7 +93,7 @@ final List<Subcategorie> subcategorieSmart = [
     infoBuild:
         "El empaque piramidal ofrece una solución moderna y distintiva para productos premium. Gracias a su forma triangular, no solo maximiza la atención en el punto de venta, sino que también optimiza el espacio interno para productos sólidos o en polvo. 💼 Su estructura laminada y sellado hermético garantizan protección contra la humedad y el oxígeno, lo que lo hace ideal para productos delicados como té, café gourmet, especias, o suplementos. Además, su geometría permite apilado eficiente y diferenciación visual frente a empaques tradicionales. Piramidal es más que forma: es una declaración de marca. ✨",
     dimentions: "7,5 × 0,5 × 32 cm",
-    route: "/SmartBag/Explora-SmartBag/Piramidal",
+    route: "/SmartBag/Especiales-SmartBag/Piramidal",
     enabled: false,
   ),
 
@@ -105,7 +105,7 @@ final List<Subcategorie> subcategorieSmart = [
     sdescription: "Diseño estable y vistoso que destaca en estanterías y ferias. Ideal para cafés y snacks gourmet.",
     infoBuild: "",
     dimentions: "7,5 × 0,5 × 32 cm",
-    route: "/SmartBag/Explora-SmartBag/Standpack",
+    route: "/SmartBag/Especiales-SmartBag/Standpack",
     enabled: false,
   ),
   Subcategorie(
@@ -116,7 +116,7 @@ final List<Subcategorie> subcategorieSmart = [
     sdescription: "Ideal para empaques de alta rotación: fácil de producir, fácil de usar, siempre efectiva.",
     infoBuild: "",
     dimentions: "7,5 × 0,5 × 32 cm",
-    route: "/SmartBag/Explora-SmartBag/Cojín",
+    route: "/SmartBag/Especiales-SmartBag/Cojin",
     enabled: false,
   ),
   Subcategorie(
@@ -173,7 +173,7 @@ final List<Subcategorie> subcategorieEco = [
     sdescription: "Ideal para procesos productivos responsables y empaques de bajo impacto.",
     infoBuild: "",
     dimentions: "7,5 × 0,5 × 32 cm",
-    route: "/EcoBag/Explora-EcoBag/Cojín",
+    route: "/EcoBag/Especiales-EcoBag/Cojin",
     enabled: false,
   ),
   Subcategorie(
@@ -185,7 +185,7 @@ final List<Subcategorie> subcategorieEco = [
     infoBuild:
         "🍃 El empaque Piramidal EcoBag combina diseño innovador con compromiso ambiental. Su forma permite una distribución eficiente del contenido, mientras utiliza materiales sostenibles que reducen el impacto ecológico. 💧 Perfecto para productos como té, suplementos o snacks gourmet en porciones individuales. Además de su funcionalidad, ofrece una presentación atractiva que comunica conciencia y calidad. 🧩 Compatible con procesos automatizados y opciones de sellado ecológicas. Elige Piramidal para destacar y cuidar el planeta al mismo tiempo.",
     dimentions: "7,5 × 0,5 × 32 cm",
-    route: "/EcoBag/Explora-EcoBag/Piramidal",
+    route: "/EcoBag/Especiales-EcoBag/Piramidal",
     enabled: false,
   ),
 

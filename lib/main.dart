@@ -73,6 +73,10 @@ class MyApp extends StatelessWidget {
         final uri = path.contains('?') ? Uri.parse(path) : Uri(path: path);
         final segments = uri.pathSegments;
 
+        // print(path);
+        // print(uri);
+        // print(segments);
+
         if (uri.path == '/') return _buildRoute(settings, const Home());
 
         final staticRoutes = <String, Widget Function(RouteSettings)>{
@@ -96,13 +100,15 @@ class MyApp extends StatelessWidget {
           return _buildRoute(settings, staticRoutes[uri.path]!(settings));
         }
 
-        if (segments.length == 3 && (segments[0] == 'SmartBag' || segments[0] == 'EcoBag') && segments[1].toLowerCase().startsWith('explora-')) {
+        if (segments.length == 3 &&
+            (segments[0] == 'SmartBag' || segments[0] == 'EcoBag') &&
+            (segments[1].toLowerCase().startsWith('explora-') || segments[1].toLowerCase().startsWith('especiales-'))) {
           final section = segments[2];
           final routeKey = '${segments[0]}/$section';
           final productList = productSections[routeKey];
           final matchedCard = findCard(settings.name);
-          //print("Ruta completa: ${settings.name}");
-          //print("Segmentos: ${segments}");
+          // print("Ruta completa: ${settings.name}");
+          // print("Segmentos: ${segments}");
 
           if (productList != null) {
             if (matchedCard != null) {

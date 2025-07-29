@@ -74,13 +74,17 @@ final Map<String, List<Terminado>> productSections = {
   'SmartBag/5PRO': fiveprosmartshop,
   'SmartBag/Doypack': doypacksmartshop,
   'SmartBag/Flowpack': flowpacksmartshop,
-  // 'SmartBag/Standpack': standpacksmartshop,
+  'SmartBag/Cojin': flowpacksmartshop,
+  'SmartBag/Piramidal': flowpacksmartshop,
+  'SmartBag/Standpack': flowpacksmartshop,
 
   // EcoBag
   'EcoBag/4PRO': fourproecoshop,
   'EcoBag/5PRO': fourproecoshop,
   'EcoBag/Doypack': doypackecoshop,
-  // 'EcoBag/Flowpack': flowpackecoshop,
+  'EcoBag/Flowpack': flowpackecoshop,
+  'EcoBag/Cojin': flowpacksmartshop,
+  'EcoBag/Piramidal': flowpacksmartshop,
 };
 
 // final List<Product> fourprosmartshop = [

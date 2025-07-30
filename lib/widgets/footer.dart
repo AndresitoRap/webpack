@@ -4,7 +4,8 @@ import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Footer extends StatelessWidget {
-  const Footer({super.key});
+  final bool isDark;
+  const Footer({super.key, this.isDark = false});
 
   static const double mobileBreakpoint = 1000;
 
@@ -27,6 +28,7 @@ class Footer extends StatelessWidget {
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isWide = screenWidth >= mobileBreakpoint;
+    final Color strokeColor = isDark ? Theme.of(context).scaffoldBackgroundColor : Color(0xff1d1d1f);
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04, vertical: 20),

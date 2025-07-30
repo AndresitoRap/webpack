@@ -56,7 +56,6 @@ class _SliverToStartState extends State<SliverToStart> with TickerProviderStateM
 
   //Texto arriba del video
   late final AnimationController _doypackController;
-  late final Animation<double> _doypackFade;
 
   //Boton de abajo
   late final AnimationController _buttonController;
@@ -90,8 +89,6 @@ class _SliverToStartState extends State<SliverToStart> with TickerProviderStateM
     ).animate(CurvedAnimation(parent: _coverController, curve: Curves.fastEaseInToSlowEaseOut));
 
     _doypackController = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
-
-    _doypackFade = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(parent: _doypackController, curve: Curves.easeIn));
 
     _buttonController = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
 
@@ -186,7 +183,7 @@ class _SliverToStartState extends State<SliverToStart> with TickerProviderStateM
             // Cubierta que sube y tapa el texto
             SlideTransition(
               position: _coverSlide,
-              child: Container(
+              child: SizedBox(
                 height: widget.screenHeight + 25,
                 width: widget.screenWidth,
                 child: ClipRRect(

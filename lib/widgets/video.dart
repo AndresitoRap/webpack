@@ -60,6 +60,8 @@ class _VideoFlutterState extends State<VideoFlutter> {
           ..style.transition = 'filter 0.5s ease-in-out'
           ..style.filter = widget.blur ? 'blur(30px)' : 'none';
 
+    _video.onClick.listen((_) => _togglePlayPause());
+
     _video.onEnded.listen((_) => widget.onEnded?.call());
 
     _video.onPlay.listen((_) {
@@ -104,14 +106,14 @@ class _VideoFlutterState extends State<VideoFlutter> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        GestureDetector(onTap: _togglePlayPause, child: HtmlElementView(viewType: _viewId)),
+        HtmlElementView(viewType: _viewId),
 
         if (widget.showControls)
           Positioned(
             bottom: 20,
             right: 20,
             child: GestureDetector(
-              onTap: _togglePlayPause,
+              onDoubleTap: _togglePlayPause,
               child: FloatingActionButton(
                 mini: true,
                 shape: const CircleBorder(),

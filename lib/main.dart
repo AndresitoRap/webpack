@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:webpack/pages/accesorios/accesorios.dart';
 import 'package:webpack/pages/cartpage.dart';
 import 'package:webpack/pages/detailsproduct.dart';
 import 'package:webpack/pages/home.dart';
@@ -94,6 +95,9 @@ class MyApp extends StatelessWidget {
           '/Soporte/Tu-Opinion/Encuesta-De-Satisfaccion-Y-PQRS': (_) => const PQRS(),
           '/Nosotros/Quienes-Somos/Identidad-Corporativa': (_) => const AboutUs(),
           '/Nosotros/Quienes-Somos/Nuestros-Valores': (_) => const Us(),
+          '/Accesorios': (_) => const Accesorios(),
+          '/Accesorios/Explora-Accesorios/Peel': (_) => const Us(),
+          '/Accesorios/Explora-Accesorios/Valvula': (_) => const Us(),
         };
 
         if (staticRoutes.containsKey(uri.path)) {

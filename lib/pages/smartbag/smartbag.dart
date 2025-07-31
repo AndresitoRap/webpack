@@ -92,7 +92,7 @@ class _SmartBagState extends State<SmartBag> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    List ListHeader = [
+    List listHeader = [
       "assets/img/smartbag/4pro_ilustration.png",
       "assets/img/smartbag/4pro_ilustration.png",
       "assets/img/smartbag/4pro_ilustration.png",
@@ -116,11 +116,11 @@ class _SmartBagState extends State<SmartBag> {
                     width: screenWidth,
                     color: Colors.grey,
                     child: Row(
-                      children: List.generate(ListHeader.length, (index) {
+                      children: List.generate(listHeader.length, (index) {
                         return Expanded(
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                            child: Image.asset(ListHeader[index], height: 150, fit: BoxFit.contain),
+                            child: Image.asset(listHeader[index], height: 150, fit: BoxFit.contain),
                           ),
                         );
                       }),

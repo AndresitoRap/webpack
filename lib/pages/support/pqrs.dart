@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
-import 'dart:ui' as ui;
+import 'dart:ui_web';
 import 'dart:html' as html;
 
 class PQRS extends StatefulWidget {
@@ -71,7 +71,7 @@ class _HtmlBlurIframeState extends State<HtmlBlurIframe> {
     _viewId = 'iframe-${widget.url.hashCode}-${widget.blur}-${DateTime.now().millisecondsSinceEpoch}';
 
     // ignore: undefined_prefixed_name
-    ui.platformViewRegistry.registerViewFactory(_viewId, (int viewId) {
+    platformViewRegistry.registerViewFactory(_viewId, (int viewId) {
       final iframe =
           html.IFrameElement()
             ..src = widget.url

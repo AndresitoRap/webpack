@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:webpack/class/categories.dart';
 import 'package:webpack/main.dart';
-import 'package:webpack/widgets/4pro/imageSequenceScroller.dart';
+import 'package:webpack/widgets/4pro/imagesequencescroller.dart';
 import 'package:webpack/widgets/4pro/widgetsfourpro.dart';
 import 'package:webpack/widgets/footer.dart';
 

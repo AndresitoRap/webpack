@@ -60,7 +60,7 @@ class _VideoFlutterState extends State<VideoFlutter> {
           ..style.transition = 'filter 0.5s ease-in-out'
           ..style.filter = widget.blur ? 'blur(30px)' : 'none';
 
-    _video.onClick.listen((_) => _togglePlayPause());
+    if (widget.retry == true) _video.onClick.listen((_) => _togglePlayPause());
 
     _video.onEnded.listen((_) => widget.onEnded?.call());
 

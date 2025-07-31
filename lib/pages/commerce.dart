@@ -1068,7 +1068,7 @@ class SliverWithThisIsMoemnt extends StatelessWidget {
               padding: const EdgeInsets.only(top: 100),
               child: Stack(
                 children: [
-                  Container(height: 1000, width: screenWidth),
+                  SizedBox(height: 1000, width: screenWidth),
                   Positioned(
                     bottom: 0,
                     left: 0,

@@ -18,11 +18,12 @@ import 'package:webpack/widgets/page_not_found.dart';
 import 'package:webpack/class/categories.dart';
 import 'package:webpack/class/products.dart';
 import 'package:webpack/pages/commerce.dart';
+import 'package:device_preview_plus/device_preview_plus.dart';
 
 final GlobalKey<TransitionOverlayState> transitionOverlayKey = GlobalKey();
 
 void main() {
-  runApp(const MyApp());
+  runApp(DevicePreview(enabled: true, tools: const [...DevicePreview.defaultTools], builder: (context) => const MyApp()));
 }
 
 Future<void> navigateWithSlide(BuildContext context, String routeName, {Widget? target}) async {

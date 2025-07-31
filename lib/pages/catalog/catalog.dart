@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:ui' as ui;
-import 'package:flutter/material.dart';
-import 'package:webpack/widgets/footer.dart';
+import 'dart:ui_web';
 // Solo disponible para Web
 import 'dart:html' as html;
-import 'dart:ui' as ui;
 
 import 'package:webpack/widgets/header.dart';
 
@@ -15,7 +12,7 @@ class Catalog extends StatelessWidget {
   Widget build(BuildContext context) {
     // Registramos el view para Web
     // ignore: undefined_prefixed_name
-    ui.platformViewRegistry.registerViewFactory(
+    platformViewRegistry.registerViewFactory(
       'fliphtml5-frame',
       (int viewId) =>
           html.IFrameElement()
@@ -24,12 +21,7 @@ class Catalog extends StatelessWidget {
     );
 
     return const Scaffold(
-      body: Stack(
-        children: [
-          Padding(padding: EdgeInsets.only(top: 45), child: HtmlElementView(viewType: 'fliphtml5-frame')),
-          Header(),
-        ],
-      ),
+      body: Stack(children: [Padding(padding: EdgeInsets.only(top: 45), child: HtmlElementView(viewType: 'fliphtml5-frame')), Header()]),
     );
   }
 }

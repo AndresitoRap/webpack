@@ -6,13 +6,13 @@ class ScrollAnimatedWrapper extends StatefulWidget {
   final Duration duration;
   final Duration delay;
   final Offset startOffset;
-  final Key visibilityKey;
+  final Key? visibilityKey;
   final VoidCallback? onVisible;
 
   const ScrollAnimatedWrapper({
     super.key,
     required this.child,
-    required this.visibilityKey,
+    this.visibilityKey,
     this.duration = const Duration(milliseconds: 800),
     this.delay = Duration.zero,
     this.startOffset = const Offset(0, 0.1),
@@ -46,9 +46,9 @@ class _ScrollAnimatedWrapperState extends State<ScrollAnimatedWrapper> {
   @override
   Widget build(BuildContext context) {
     return VisibilityDetector(
-      key: widget.visibilityKey,
+      key: widget.visibilityKey ?? Key('ScrollWrapper_${widget.child.hashCode}'),
       onVisibilityChanged: (info) {
-        if (info.visibleFraction >= 0.4 && !_hasTriggered) {
+        if (info.visibleFraction >= 0.3 && !_hasTriggered) {
           _hasTriggered = true;
           _triggerVisibility();
         }

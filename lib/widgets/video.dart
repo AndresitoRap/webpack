@@ -13,6 +13,7 @@ class VideoFlutter extends StatefulWidget {
   final VoidCallback? onEnded;
   final bool isPause;
   final bool retry;
+  final Duration delay;
 
   const VideoFlutter({
     super.key,
@@ -26,13 +27,14 @@ class VideoFlutter extends StatefulWidget {
     this.onEnded,
     this.isPause = true,
     this.retry = false,
+    this.delay = Duration.zero,
   });
 
   @override
-  State<VideoFlutter> createState() => _VideoFlutterState();
+  State<VideoFlutter> createState() => VideoFlutterState();
 }
 
-class _VideoFlutterState extends State<VideoFlutter> {
+class VideoFlutterState extends State<VideoFlutter> {
   late final String _viewId;
   late final web.HTMLVideoElement _video;
   bool isPlaying = true;
@@ -47,7 +49,7 @@ class _VideoFlutterState extends State<VideoFlutter> {
     _video =
         web.HTMLVideoElement()
           ..src = widget.src
-          ..autoplay = widget.autoplay
+          ..autoplay = widget.delay == Duration.zero && widget.autoplay
           ..loop = widget.loop
           ..muted = true
           ..controls =
@@ -60,7 +62,7 @@ class _VideoFlutterState extends State<VideoFlutter> {
           ..style.transition = 'filter 0.5s ease-in-out'
           ..style.filter = widget.blur ? 'blur(30px)' : 'none';
 
-    if (widget.retry == true) _video.onClick.listen((_) => _togglePlayPause());
+    _video.onClick.listen((_) => _togglePlayPause());
 
     _video.onEnded.listen((_) => widget.onEnded?.call());
 
@@ -76,7 +78,22 @@ class _VideoFlutterState extends State<VideoFlutter> {
 
     // Registro de la vista
     platformViewRegistry.registerViewFactory(_viewId, (int _) => _video);
+
+    if (widget.delay > Duration.zero) {
+      Future.delayed(widget.delay, () {
+        if (mounted && widget.autoplay) _video.play();
+      });
+    }
   }
+
+  /// Permite pausar el video desde el widget padre.
+  void pause() => _video.pause();
+
+  /// Permite reproducir el video desde el widget padre.
+  void play() => _video.play();
+
+  /// Permite volver el video al inicio desde el widget padre.
+  void seekToStart() => _video.currentTime = 0;
 
   @override
   void didUpdateWidget(VideoFlutter oldWidget) {
@@ -101,6 +118,8 @@ class _VideoFlutterState extends State<VideoFlutter> {
     _video.play();
     setState(() => _retryRotationTurns += 0.5);
   }
+
+  void retry() => _retryVideo();
 
   @override
   Widget build(BuildContext context) {

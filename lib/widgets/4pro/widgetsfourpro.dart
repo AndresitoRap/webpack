@@ -139,7 +139,7 @@ Widget buildResponsiveInfoCards(BuildContext context) {
     ),
     InfoCardData(
       isVideo: true,
-      videoPath: "assets/assets/videos/smartbag/4pro/accesorios.webm",
+      videoPath: "assets/videos/smartbag/4pro/accesorios.webm",
       imagePath: "assets/img/smartbag/4pro/accesorios.webp",
       title: "Agrega funcionalidad con accesorios inteligentes. ",
       description:

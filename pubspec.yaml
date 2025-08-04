@@ -29,8 +29,8 @@ dependencies:
   web: ^1.1.1
   model_viewer_plus: ^1.9.3
   webview_flutter: ^4.13.0
-  #Para la simulación
-  device_preview_plus: ^2.4.7
+  #Cachear imagen
+  cached_network_image: ^3.4.1
 
 
 dev_dependencies:
@@ -43,6 +43,7 @@ flutter:
 
   assets:
     - assets/
+    # Modelos
     - assets/3Dmodels/
     - assets/3Dmodels/4PRO/
     - assets/3Dmodels/4PRO/Barroco/
@@ -70,6 +71,7 @@ flutter:
     - assets/3Dmodels/STANDPACK/
     - assets/3Dmodels/STANDPACK/Fruta/
     - assets/3Dmodels/STANDPACK/Pollo/
+    # Imagenes
     - assets/img/
     - assets/img/3DM/EcoBag/4PRO/
     - assets/img/3DM/EcoBag/5PRO/
@@ -86,6 +88,7 @@ flutter:
     - assets/img/ecobag/5pro/
     - assets/img/ecobag/doypack/
     - assets/img/smartbag/
+    - assets/img/smartbag/clipart/
     - assets/img/smartbag/4pro/
     - assets/img/smartbag/4pro/frames/
     - assets/img/smartbag/doypack/
@@ -93,15 +96,20 @@ flutter:
     - assets/img/smartbag/flowpack/
     - assets/img/support/
     - assets/img/us/
+    # Fuentes
     - assets/fonts/
+    # PDF's
     - assets/pdf/
+    # Gifts
     - assets/gifts/
+    # Videos
     - assets/videos/
     - assets/videos/ecobag/
     - assets/videos/smartbag/
     - assets/videos/smartbag/4pro/
     - assets/videos/smartbag/5pro/
     - assets/videos/smartbag/doypack/
+    - assets/videos/smartbag/flowpack/
     - assets/videos/us/
       
       

@@ -50,9 +50,7 @@ class _AboutUsState extends State<AboutUs> {
           ValueListenableBuilder<bool>(
             valueListenable: videoBlurNotifier,
             builder: (context, isBlur, _) {
-              return Positioned.fill(
-                child: VideoFlutter(src: 'assets/assets/videos/us/backgroundus.webm', blur: isBlur, loop: true, showControls: true),
-              );
+              return Positioned.fill(child: VideoFlutter(src: 'assets/videos/us/backgroundus.webm', blur: isBlur, loop: true, showControls: true));
             },
           ),
 

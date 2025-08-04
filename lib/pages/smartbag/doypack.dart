@@ -56,6 +56,7 @@ class _SliverToStartState extends State<SliverToStart> with TickerProviderStateM
 
   //Texto arriba del video
   late final AnimationController _doypackController;
+  late final Animation<double> _doypackFade;
 
   //Boton de abajo
   late final AnimationController _buttonController;
@@ -89,6 +90,8 @@ class _SliverToStartState extends State<SliverToStart> with TickerProviderStateM
     ).animate(CurvedAnimation(parent: _coverController, curve: Curves.fastEaseInToSlowEaseOut));
 
     _doypackController = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
+
+    _doypackFade = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(parent: _doypackController, curve: Curves.easeIn));
 
     _buttonController = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
 
@@ -183,7 +186,7 @@ class _SliverToStartState extends State<SliverToStart> with TickerProviderStateM
             // Cubierta que sube y tapa el texto
             SlideTransition(
               position: _coverSlide,
-              child: SizedBox(
+              child: Container(
                 height: widget.screenHeight + 25,
                 width: widget.screenWidth,
                 child: ClipRRect(
@@ -263,9 +266,9 @@ class _SliverInfoDoypackState extends State<SliverInfoDoypack> {
       },
       {
         "title": "Diseñada para destacar\ntu producto en estantería,\ny proteger su contenido.",
-        "image": "assets/img/home/eco.webp",
-        "isVideo": false,
-        "video": "",
+        "image": "",
+        "isVideo": true,
+        "video": "assets/videos/smartbag/doypack/VideoCard.webm",
       },
       {
         "title": "Zipper resellable,\nválvula desgasificadora\ny múltiples capacidades\npara cada necesidad.",
@@ -309,38 +312,61 @@ class _SliverInfoDoypackState extends State<SliverInfoDoypack> {
                       child: Container(
                         width: widget.isMobile ? 450 : (widget.screenWidth * 0.6).clamp(650, 1200),
                         height: widget.isMobile ? 700 : (widget.screenWidth * 0.1).clamp(500, 900),
-                        padding: EdgeInsets.only(top: 22, left: 22),
+                        // padding: EdgeInsets.only(top: 22, left: 22),
                         margin: EdgeInsets.only(top: 20, bottom: 20, right: 20),
                         decoration: BoxDecoration(
+                          color: Colors.amber,
                           borderRadius: BorderRadius.circular(26),
-                          image: DecorationImage(image: AssetImage(card['image']), fit: BoxFit.cover),
+                          // image: DecorationImage(image: AssetImage(card['image']), fit: BoxFit.cover),
                         ),
                         child: Stack(
                           children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(left: widget.screenWidth * 0.02, top: widget.screenWidth * 0.01),
-                                        child: Text(
-                                          card['title'],
-                                          style: TextStyle(
-                                            height: 0,
-                                            color: card['colorText'] ?? Colors.white,
-                                            fontSize: (widget.screenWidth * 0.04).clamp(16, 24),
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                            if (!card['isVideo'])
+                              Positioned.fill(
+                                child: ClipRRect(borderRadius: BorderRadius.circular(26), child: Image.asset(card['image'], fit: BoxFit.cover)),
+                              ),
+                            if (card['isVideo'])
+                              Positioned.fill(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(26),
+                                  child: VideoFlutter(
+                                    src: card['video'],
+                                    loop: false,
+                                    autoplay: true,
+                                    isPause: false,
+                                    retry: true,
+                                    showControls: false,
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
-                                Expanded(flex: 1, child: SizedBox(width: 100)),
-                              ],
+                              ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 22, left: 22),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(left: widget.screenWidth * 0.02, top: widget.screenWidth * 0.01),
+                                          child: Text(
+                                            card['title'],
+                                            style: TextStyle(
+                                              height: 0,
+                                              color: card['colorText'] ?? Colors.white,
+                                              fontSize: (widget.screenWidth * 0.04).clamp(16, 24),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(flex: 1, child: SizedBox(width: 100)),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -423,7 +449,19 @@ class SliverWithGramaje extends StatefulWidget {
 
 class _SliverWithGramajeState extends State<SliverWithGramaje> {
   int selectedIndex = 0;
-  final List<String> options = ["500Gr", "2500Gr"];
+  final List<Map<String, String>> options = [
+    {"text": "500Gr", "video": "assets/videos/smartbag/doypack/rotacion1.webm"},
+    {"text": "2500Gr", "video": "assets/videos/smartbag/doypack/rotacion2.webm"},
+  ];
+
+  late List<GlobalKey<VideoFlutterState>> _videoKeys;
+
+  @override
+  void initState() {
+    super.initState();
+    _videoKeys = List.generate(options.length, (_) => GlobalKey<VideoFlutterState>());
+  }
+
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
@@ -448,7 +486,6 @@ class _SliverWithGramajeState extends State<SliverWithGramaje> {
                 textAlign: TextAlign.center,
               ),
             ),
-
             ScrollAnimatedWrapper(
               visibilityKey: Key('video-imagen-tamano'),
               child:
@@ -458,11 +495,13 @@ class _SliverWithGramajeState extends State<SliverWithGramaje> {
                           Row(
                             children: [
                               Container(
-                                margin: EdgeInsets.symmetric(vertical: 50),
+                                margin: EdgeInsets.only(top: 50),
                                 width: (widget.screenWidth * 0.6).clamp(0, 800),
                                 height: (widget.screenWidth * 0.6).clamp(0, 800),
-                                decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(16)),
-                                child: Center(child: Text("Foto")),
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(image: AssetImage("assets/img/smartbag/doypack/twobags1.webp")),
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
                               ),
                             ],
                           ),
@@ -470,11 +509,12 @@ class _SliverWithGramajeState extends State<SliverWithGramaje> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Container(
-                                margin: EdgeInsets.symmetric(vertical: 50),
                                 width: (widget.screenWidth * 0.6).clamp(0, 800),
                                 height: (widget.screenWidth * 0.6).clamp(0, 800),
-                                decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(16)),
-                                child: Center(child: Text("Foto")),
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(image: AssetImage("assets/img/smartbag/doypack/twobags2.webp")),
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
                               ),
                             ],
                           ),
@@ -482,12 +522,34 @@ class _SliverWithGramajeState extends State<SliverWithGramaje> {
                       )
                       : Column(
                         children: [
+                          // Nueva implementación con Stack + Visibility + GlobalKey + autoplay: true solo en seleccionado, isPause: false solo en seleccionado
                           Container(
                             margin: EdgeInsets.symmetric(vertical: 50),
                             width: (widget.screenWidth * 0.6).clamp(0, 800),
                             height: (widget.screenWidth * 0.6).clamp(0, 800),
-                            decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(16)),
-                            child: Center(child: Text("Video")),
+                            child: Stack(
+                              children: List.generate(options.length, (index) {
+                                return Visibility(
+                                  visible: selectedIndex == index,
+                                  maintainState: true,
+                                  maintainAnimation: true,
+                                  maintainSize: true,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: VideoFlutter(
+                                      key: _videoKeys[index],
+                                      src: options[index]['video']!,
+                                      loop: false,
+                                      autoplay: true,
+                                      delay: Duration.zero,
+                                      isPause: false,
+                                      showControls: false,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                );
+                              }),
+                            ),
                           ),
                           Container(
                             height: 40,
@@ -511,15 +573,32 @@ class _SliverWithGramajeState extends State<SliverWithGramaje> {
                                     return Expanded(
                                       child: GestureDetector(
                                         onTap: () {
+                                          final previousIndex = selectedIndex;
+
                                           setState(() {
                                             selectedIndex = index;
+                                          });
+
+                                          // Reinicia el video anterior en segundo plano
+                                          final prevVideo = _videoKeys[previousIndex].currentState;
+                                          if (prevVideo != null) {
+                                            prevVideo.pause();
+                                            prevVideo.seekToStart();
+                                          }
+
+                                          // Espera y luego reproduce el nuevo
+                                          Future.delayed(Duration(milliseconds: 20), () {
+                                            final newVideo = _videoKeys[index].currentState;
+                                            if (newVideo != null) {
+                                              newVideo.play();
+                                            }
                                           });
                                         },
                                         child: Center(
                                           child: MouseRegion(
                                             cursor: SystemMouseCursors.click,
                                             child: Text(
-                                              options[index],
+                                              options[index]['text']!,
                                               style: TextStyle(
                                                 color: selectedIndex == index ? Colors.white : Colors.black,
                                                 fontWeight: FontWeight.bold,
@@ -614,13 +693,13 @@ class _SliverWithMoreInfoDoypackState extends State<SliverWithMoreInfoDoypack> w
     _controller3 = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000));
 
     _offset3 = Tween<Offset>(
-      begin: const Offset(-0.9, 1.0), // desde abajo derecha
+      begin: const Offset(0.9, 1.0), // inicia desde la derecha
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _controller3, curve: Curves.easeOutCubic));
 
     _rotation3 = Tween<double>(
-      begin: 0.40, // más rotado al inicio (en sentido reloj)
-      end: 0.16, // termina ligeramente inclinado hacia arriba derecha
+      begin: 0.40, // rotación hacia la derecha
+      end: 0.16,
     ).animate(CurvedAnimation(parent: _controller3, curve: Curves.easeOut));
   }
 
@@ -691,7 +770,7 @@ class _SliverWithMoreInfoDoypackState extends State<SliverWithMoreInfoDoypack> w
                   padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.06, vertical: 100),
                   child: Column(
                     children: [
-                      Image.asset(height: 400, "assets/img/smartbag/doypack.webp", fit: BoxFit.contain),
+                      Image.asset(height: 400, "assets/img/smartbag/doypack/aloneBag.webp", fit: BoxFit.contain),
                       const SizedBox(height: 24),
                       Text.rich(
                         TextSpan(
@@ -722,8 +801,8 @@ class _SliverWithMoreInfoDoypackState extends State<SliverWithMoreInfoDoypack> w
                           ],
                         ),
                       ),
-                      const SizedBox(height: 50),
-                      Image.asset(height: 400, "assets/img/smartbag/doypack.webp", fit: BoxFit.contain),
+                      // const SizedBox(height: 50),
+                      //  Image.asset(height: 400, "assets/img/smartbag/doypack/aloneBag.webp", fit: BoxFit.contain),
                       const SizedBox(height: 24),
                       Text.rich(
                         TextSpan(
@@ -798,7 +877,7 @@ class _SliverWithMoreInfoDoypackState extends State<SliverWithMoreInfoDoypack> w
                                         ),
                                       );
                                     },
-                                    child: Image.asset("assets/img/smartbag/doypack.webp", fit: BoxFit.contain),
+                                    child: Image.asset("assets/img/smartbag/doypack/aloneBag2.webp", fit: BoxFit.contain),
                                   ),
                                 ),
 
@@ -812,13 +891,25 @@ class _SliverWithMoreInfoDoypackState extends State<SliverWithMoreInfoDoypack> w
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          "Zipper inteligente",
-                                          style: TextStyle(
-                                            fontSize: (widget.screenWidth * 0.03).clamp(22, 28),
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black,
-                                          ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "Zipper ",
+                                              style: TextStyle(
+                                                fontSize: (widget.screenWidth * 0.03).clamp(22, 28),
+                                                fontWeight: FontWeight.w600,
+                                                color: Theme.of(context).primaryColor,
+                                              ),
+                                            ),
+                                            Text(
+                                              "inteligente",
+                                              style: TextStyle(
+                                                fontSize: (widget.screenWidth * 0.03).clamp(22, 28),
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                         const SizedBox(height: 24),
                                         Text.rich(
@@ -892,13 +983,25 @@ class _SliverWithMoreInfoDoypackState extends State<SliverWithMoreInfoDoypack> w
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          "Válvula inteligente",
-                                          style: TextStyle(
-                                            fontSize: (widget.screenWidth * 0.03).clamp(22, 28),
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black,
-                                          ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "Válvula ",
+                                              style: TextStyle(
+                                                fontSize: (widget.screenWidth * 0.03).clamp(22, 28),
+                                                fontWeight: FontWeight.w600,
+                                                color: Theme.of(context).primaryColor,
+                                              ),
+                                            ),
+                                            Text(
+                                              "inteligente",
+                                              style: TextStyle(
+                                                fontSize: (widget.screenWidth * 0.03).clamp(22, 28),
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                         const SizedBox(height: 24),
                                         Text.rich(
@@ -956,7 +1059,7 @@ class _SliverWithMoreInfoDoypackState extends State<SliverWithMoreInfoDoypack> w
                                         ),
                                       );
                                     },
-                                    child: Image.asset("assets/img/smartbag/doypack.webp", fit: BoxFit.contain),
+                                    child: Image.asset("assets/img/smartbag/doypack/aloneBag.webp", fit: BoxFit.contain),
                                   ),
                                 ),
                               ],
@@ -1112,11 +1215,30 @@ class SliverWithVentanaInfo extends StatelessWidget {
             ScrollAnimatedWrapper(
               visibilityKey: Key('foto-video-revela-0tu-sad'),
               child: Container(
-                margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: 50),
+                margin: EdgeInsets.symmetric(vertical: 50),
                 height: 800,
                 width: screenWidth,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.grey),
-                child: Center(child: Text(isMobile ? "Foto" : "Video")),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+                child:
+                    isMobile
+                        ? Image.asset("assets/img/smartbag/doypack/3ventanas.webp", fit: BoxFit.contain)
+                        : SizedBox(
+                          width: double.infinity,
+
+                          child: ValueListenableBuilder<bool>(
+                            valueListenable: videoBlurNotifier,
+                            builder: (context, isBlur, _) {
+                              return VideoFlutter(
+                                src: 'assets/videos/smartbag/doypack/Tresventanas.webm',
+                                blur: isBlur,
+                                loop: false,
+                                showControls: false,
+                                isPause: false,
+                                fit: BoxFit.contain,
+                              );
+                            },
+                          ),
+                        ),
               ),
             ),
             Container(
@@ -1397,8 +1519,28 @@ class _SliverWithResumenState extends State<SliverWithResumen> {
                     Container(
                       width: widget.screenWidth,
                       height: 600,
-                      decoration: BoxDecoration(color: Colors.grey),
-                      child: Text(widget.isMobile ? "Foto" : "Video"),
+
+                      child:
+                          widget.isMobile
+                              ? Image.asset("assets/img/smartbag/doypack/cardsloop.webp", fit: BoxFit.cover)
+                              : SizedBox(
+                                width: double.infinity,
+
+                                child: ValueListenableBuilder<bool>(
+                                  valueListenable: videoBlurNotifier,
+                                  builder: (context, isBlur, _) {
+                                    return VideoFlutter(
+                                      src: 'assets/videos/smartbag/doypack/loop.webm',
+                                      blur: isBlur,
+                                      loop: false,
+                                      showControls: false,
+                                      isPause: false,
+                                      retry: true,
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
+                                ),
+                              ),
                     ),
                   ],
                 ),
@@ -1407,7 +1549,7 @@ class _SliverWithResumenState extends State<SliverWithResumen> {
           ),
 
           ScrollAnimatedWrapper(
-            visibilityKey: Key('crear-mi-4por'),
+            visibilityKey: Key('crear-mi-doypackpor'),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 50),
               child: ElevatedButton(
@@ -1415,7 +1557,7 @@ class _SliverWithResumenState extends State<SliverWithResumen> {
                 onPressed: () {},
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-                  child: Text("Crear mi 4pro", style: TextStyle(fontWeight: FontWeight.bold, fontSize: (widget.screenWidth * 0.06).clamp(18, 24))),
+                  child: Text("Crear mi DoyPack", style: TextStyle(fontWeight: FontWeight.bold, fontSize: (widget.screenWidth * 0.06).clamp(18, 24))),
                 ),
               ),
             ),

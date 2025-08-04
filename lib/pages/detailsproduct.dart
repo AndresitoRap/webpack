@@ -391,8 +391,8 @@ class _DetailsProductState extends State<DetailsProduct> {
                                 return VideoFlutter(
                                   src:
                                       product.categoria.name == "SmartBag"
-                                          ? 'assets/assets/videos/smartbag/smartbag_products.webm'
-                                          : 'assets/assets/assets/videos/ecobag/ecobag.webm',
+                                          ? 'assets/videos/smartbag/smartbag_products.webm'
+                                          : 'assets/assets/videos/ecobag/ecobag.webm',
                                   blur: isBlur,
                                   loop: true,
                                   showControls: true,

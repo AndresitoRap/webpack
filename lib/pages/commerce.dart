@@ -781,7 +781,7 @@ class _SliverWithOtherThingPlantillaState extends State<SliverWithOtherThingPlan
                               valueListenable: videoBlurNotifier,
                               builder: (context, isBlur, _) {
                                 return VideoFlutter(
-                                  src: 'assets/assets/videos/smartbag/SmartbagInicio.webm',
+                                  src: 'assets/videos/smartbag/SmartbagInicio.webm',
                                   blur: isBlur,
                                   loop: true,
                                   showControls: true,

@@ -33,13 +33,13 @@ class Home extends StatelessWidget {
               PackagingWithConscienceSliver(r: r, isMobile: isMobile, blue: blue),
 
               //El futuro esta en un empaque
-              TheFutureSliver(r: r),
-
-              //Por que packvision
-              WhyPackvisionSliver(r: r, blue: blue),
+              TheFutureSliver(r: r, green: green, blue: blue),
 
               //Video/Foto SmartBag y Ecobag
-              SmartAndEcoSliver(r: r, isMobile: isMobile),
+              SmartAndEcoSliver(r: r, isMobile: isMobile, blue: blue, green: green),
+
+              //Por que packvision
+              WhyPackvisionSliver(r: r, blue: blue, isMobile: isMobile),
 
               //Productos
               ProductsSliver(r: r, blue: blue, green: green),
@@ -102,6 +102,7 @@ class _IntroVideoSliverState extends State<IntroVideoSliver> {
                   blur: isBlur,
                   loop: false,
                   retry: false,
+                  isPause: false,
                   onEnded: () => setState(() => _videoEnded = true),
                 );
               },
@@ -123,167 +124,70 @@ class _IntroVideoSliverState extends State<IntroVideoSliver> {
 }
 
 //---------Empaques con conciencia------------
-class PackagingWithConscienceSliver extends StatefulWidget {
-  final Responsive r;
-  final bool isMobile;
-  final Color blue;
-  const PackagingWithConscienceSliver({super.key, required this.r, required this.isMobile, required this.blue});
 
-  @override
-  State<PackagingWithConscienceSliver> createState() => _PackagingWithConscienceSliverState();
-}
+final List<Map<String, dynamic>> cardPWC = [
+  {
+    'title': "Asesoría",
+    'description':
+        "Le ofrecemos una asesoría personalizada y especializada para cada etapa de su proyecto. Desde la conceptualización hasta la implementación, nuestro equipo de expertos le proporciona soluciones a la medida, un soporte constante y recomendaciones estratégicas que garantizan el éxito de sus metas.",
+    'image': "assets/img/home/asesoria.webp",
+  },
+  {
+    'title': "Calidad",
+    'description':
+        "Garantizamos los más altos estándares de calidad en todos nuestros productos y servicios. Supervisamos y controlamos cada proceso meticulosamente para asegurar resultados consistentes, duraderos y que superen sus expectativas.",
+    'image': "assets/img/home/calidad.webp",
+  },
+  {
+    'title': "Cumplimiento",
+    'description':
+        "Sabemos que el tiempo es un activo invaluable para su negocio, por eso garantizamos la puntualidad en cada entrega. Nuestro compromiso se basa en una planificación eficiente, tiempos claros y un seguimiento riguroso que asegura el cumplimiento de cada plazo acordado, brindándole total confianza y seguridad.",
+    'image': "assets/img/home/cumplimiento.webp",
+  },
+  {
+    'title': "Servicios",
+    'description':
+        "Nuestro portafolio de servicios integrales está diseñado para ser su socio estratégico. Desde la conceptualización y el desarrollo de soluciones hasta el soporte postventa, trabajamos de cerca con usted para ofrecerle un servicio adaptado a sus necesidades y enfocado en el crecimiento sostenible de su empresa.",
+    'image': "assets/img/home/servicios.webp",
+  },
+];
 
-class _PackagingWithConscienceSliverState extends State<PackagingWithConscienceSliver> with SingleTickerProviderStateMixin {
-  final List<Map<String, dynamic>> cards = [
-    {
-      "id": 0,
-      "title": "Asesoría",
-      "description":
-          "Ofrecemos asesoría personalizada y especializada para cada etapa de tu proyecto. Nuestro equipo de expertos te acompaña desde la conceptualización hasta la implementación, brindándote soluciones a medida, soporte constante y recomendaciones estratégicas para que tomes las mejores decisiones y logres tus objetivos con éxito.",
-      "image": "assets/img/home/asesoria.webp",
-    },
-    {
-      "id": 1,
-      "title": "Calidad",
-      "description":
-          "Nos comprometemos con los más altos estándares de calidad en cada detalle de nuestros productos y servicios. Cada proceso es cuidadosamente supervisado y controlado para garantizar resultados consistentes, duraderos y a la altura de tus expectativas, porque sabemos que la excelencia marca la diferencia.",
-      "image": "assets/img/home/calidad.webp",
-    },
-    {
-      "id": 2,
-      "title": "Cumplimiento",
-      "description":
-          "Sabemos lo importante que es el tiempo para ti y tu negocio, por eso garantizamos cumplimiento puntual en cada entrega. Nuestro compromiso es brindarte confianza y seguridad a través de una planificación eficiente, tiempos claros y un seguimiento riguroso que asegure el respeto por los plazos acordados.",
-      "image": "assets/img/home/cumplimiento.webp",
-    },
-    {
-      "id": 3,
-      "title": "Servicios",
-      "description":
-          "Contamos con un portafolio de servicios integrales diseñados para impulsar tu negocio. Desde consultoría técnica y desarrollo de soluciones hasta soporte postventa, trabajamos contigo para ofrecerte un acompañamiento completo, adaptado a tus necesidades y enfocado en el crecimiento sostenible de tus proyectos.",
-      "image": "assets/img/home/servicios.webp",
-    },
-  ];
-
-  int? _expandedIndex;
-  late final AnimationController _textAnimationController;
-  late final Animation<double> _textFadeAnimation;
-  late final Animation<Offset> _textSlideAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _textAnimationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 400));
-    _textFadeAnimation = CurvedAnimation(parent: _textAnimationController, curve: Curves.easeInOut);
-    _textSlideAnimation = Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero).animate(_textFadeAnimation);
-  }
-
-  @override
-  void dispose() {
-    _textAnimationController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Container(
-        width: widget.r.wp(100),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [widget.blue, widget.blue.withAlpha(200)]),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6), vertical: widget.r.hp(5)),
-              child: ScrollAnimatedWrapper(
-                child: Text(
-                  "Empaques con conciencia.",
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: widget.r.fs(3, 80)),
-                ),
-              ),
-            ),
-            ScrollAnimatedWrapper(child: widget.isMobile ? _buildMobileCards() : _buildDesktopCards()),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMobileCards() {
-    return Column(children: cards.map((card) => _ExpandableCard(card: card, r: widget.r, blue: widget.blue)).toList());
-  }
-
-  Widget _buildDesktopCards() {
-    final screenWidth = widget.r.wp(100);
-
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: screenWidth * 0.05),
-      child: SizedBox(
-        height: screenWidth * 0.3,
-        child: Stack(
-          children: List.generate(cards.length, (index) {
-            final card = cards[index];
-            final isExpanded = _expandedIndex == index;
-            double leftPosition =
-                _expandedIndex == null
-                    ? index * (screenWidth * 0.21 + screenWidth * 0.012)
-                    : isExpanded
-                    ? 0
-                    : screenWidth * 0.5 + screenWidth * 0.02 + (index - 1) * 20.0;
-
-            return AnimatedPositioned(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeIn,
-              left: leftPosition,
-              child: AnimatedPositionedCard(
-                index: index,
-                isAnotherExpanded: _expandedIndex != null && _expandedIndex != index,
-                isExpanded: isExpanded,
-                screenWidth: screenWidth,
-                card: card,
-                blue: widget.blue,
-                r: widget.r,
-                onExpand: () {
-                  setState(() {
-                    _expandedIndex = index;
-                    _textAnimationController.forward(from: 0);
-                  });
-                },
-                onCollapse: () {
-                  setState(() {
-                    _textAnimationController.reverse();
-                    _expandedIndex = null;
-                  });
-                },
-                textFadeAnimation: _textFadeAnimation,
-                textSlideAnimation: _textSlideAnimation,
-              ),
-            );
-          }),
-        ),
-      ),
-    );
-  }
-}
-
-class _ExpandableCard extends StatefulWidget {
+//Animacion y posicionamiento de las cards
+class AnimatedPositionedCard extends StatefulWidget {
+  final int index;
+  final bool isExpanded;
+  final bool isAnotherExpanded;
+  final double screenWidth;
   final Map<String, dynamic> card;
-  final Responsive r;
   final Color blue;
+  final Responsive r;
+  final VoidCallback onExpand;
+  final int durationOffset;
+  final bool hideText;
 
-  const _ExpandableCard({required this.card, required this.r, required this.blue});
+  const AnimatedPositionedCard({
+    super.key,
+    required this.index,
+    required this.isExpanded,
+    required this.isAnotherExpanded,
+    required this.screenWidth,
+    required this.card,
+    required this.onExpand,
+    required this.blue,
+    required this.r,
+    required this.durationOffset,
+    required this.hideText,
+  });
 
   @override
-  State<_ExpandableCard> createState() => _ExpandableCardState();
+  State<AnimatedPositionedCard> createState() => _AnimatedPositionedCardState();
 }
 
-class _ExpandableCardState extends State<_ExpandableCard> with SingleTickerProviderStateMixin {
+class _AnimatedPositionedCardState extends State<AnimatedPositionedCard> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fade;
   late Animation<Offset> _slide;
-  bool _isExpanded = false;
+  bool _wasExpanded = false;
 
   @override
   void initState() {
@@ -291,13 +195,19 @@ class _ExpandableCardState extends State<_ExpandableCard> with SingleTickerProvi
     _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 400));
     _fade = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
     _slide = Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero).animate(_fade);
+    if (widget.isExpanded) {
+      _controller.value = 1;
+    }
   }
 
-  void _toggle() {
-    setState(() {
-      _isExpanded = !_isExpanded;
-      _isExpanded ? _controller.forward(from: 0) : _controller.reverse();
-    });
+  @override
+  void didUpdateWidget(covariant AnimatedPositionedCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isExpanded && !oldWidget.isExpanded) {
+      _controller.forward(from: 0);
+    } else if (!widget.isExpanded && oldWidget.isExpanded) {
+      _controller.reverse();
+    }
   }
 
   @override
@@ -308,152 +218,33 @@ class _ExpandableCardState extends State<_ExpandableCard> with SingleTickerProvi
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: widget.r.hp(2), horizontal: widget.r.wp(6)),
-      child: GestureDetector(
-        onTap: _toggle,
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 400),
-            curve: Curves.easeInOut,
-
-            height: _isExpanded ? widget.r.hp(40) : widget.r.hp(30),
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                Positioned.fill(child: Image.asset(widget.card['image'], fit: BoxFit.cover)),
-                Positioned(
-                  top: 16,
-                  left: 0,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor.withAlpha(230),
-                      borderRadius: const BorderRadius.only(topRight: Radius.circular(8), bottomRight: Radius.circular(8)),
-                    ),
-                    child: Text(widget.card['title'], style: const TextStyle(color: Colors.white)),
-                  ),
-                ),
-                if (_isExpanded)
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: FadeTransition(
-                      opacity: _fade,
-                      child: Container(
-                        padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            stops: [0.0, 0.12, 0.3],
-                            colors: [Color.fromARGB(0, 255, 255, 255), Colors.white70, Colors.white],
-                          ),
-                        ),
-                        child: SlideTransition(
-                          position: _slide,
-                          child: Text(
-                            widget.card['description'],
-                            style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                Positioned(
-                  bottom: 10,
-                  right: 10,
-                  child: TweenAnimationBuilder<double>(
-                    tween: Tween<double>(begin: _isExpanded ? 0.0 : 0.125, end: _isExpanded ? 0.125 : 0.0),
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeInOut,
-                    builder: (context, turns, child) {
-                      return TweenAnimationBuilder<Color?>(
-                        tween: ColorTween(begin: _isExpanded ? Colors.white : widget.blue, end: _isExpanded ? widget.blue : Colors.white),
-                        duration: const Duration(milliseconds: 400),
-                        builder: (context, color, _) {
-                          return Transform.rotate(
-                            angle: turns * 2 * 3.1416, // turns → radians
-                            child: Icon(CupertinoIcons.add_circled_solid, color: color, size: widget.r.dp(3, max: 30)),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class AnimatedPositionedCard extends StatelessWidget {
-  final int index;
-  final bool isExpanded;
-  final bool isAnotherExpanded;
-  final double screenWidth;
-  final Map<String, dynamic> card;
-  final Color blue;
-  final Responsive r;
-  final VoidCallback onExpand;
-  final VoidCallback onCollapse;
-  final Animation<double> textFadeAnimation;
-  final Animation<Offset> textSlideAnimation;
-
-  const AnimatedPositionedCard({
-    super.key,
-    required this.index,
-    required this.isExpanded,
-    required this.isAnotherExpanded,
-    required this.screenWidth,
-    required this.card,
-    required this.onExpand,
-    required this.onCollapse,
-    required this.textFadeAnimation,
-    required this.textSlideAnimation,
-    required this.blue,
-    required this.r,
-  });
-
-  @override
-  Widget build(BuildContext context) {
     final double width =
-        isExpanded
-            ? screenWidth * 0.5
-            : isAnotherExpanded
-            ? screenWidth * 0.32
-            : screenWidth * 0.21;
+        widget.isExpanded
+            ? widget.screenWidth * 0.5
+            : widget.isAnotherExpanded
+            ? widget.screenWidth * 0.32
+            : widget.screenWidth * 0.21;
 
-    final double padding = screenWidth * 0.01;
-    final double fontSizeTitle = screenWidth * 0.012;
-    final double fontSizeDescription = screenWidth * 0.013;
-    final double iconSize = screenWidth * 0.03;
+    final double padding = widget.screenWidth * 0.01;
+    final double fontSizeTitle = widget.screenWidth * 0.012;
+    final double fontSizeDescription = widget.screenWidth * 0.013;
+    final double iconSize = widget.screenWidth * 0.03;
 
     return AnimatedContainer(
       clipBehavior: Clip.antiAlias,
-      duration: const Duration(milliseconds: 500),
+      duration: Duration(milliseconds: widget.durationOffset),
       curve: Curves.linear,
       width: width,
-      height: screenWidth * 0.3,
+      height: widget.screenWidth * 0.3,
       margin: const EdgeInsets.only(right: 20),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // ✅ Reutilizable y estable
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: Image.asset(card['image'], fit: BoxFit.cover, gaplessPlayback: true, filterQuality: FilterQuality.low),
+            child: Image.asset(widget.card['image'], fit: BoxFit.cover, gaplessPlayback: true, filterQuality: FilterQuality.low),
           ),
-
-          // Título fijo
           Positioned(
             top: 20,
             left: 0,
@@ -470,63 +261,73 @@ class AnimatedPositionedCard extends StatelessWidget {
                   ),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(card['title'], style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: fontSizeTitle)),
+                    child: Text(widget.card['title'], style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: fontSizeTitle)),
                   ),
                 ),
               ),
             ),
           ),
-
-          // Descripción solo si está expandido
-          if (isExpanded)
+          if (widget.isExpanded)
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
-              child: FadeTransition(
-                opacity: textFadeAnimation,
-                child: Container(
-                  padding: EdgeInsets.only(top: screenWidth * 0.13),
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      stops: [0.0, 0.5, 0.7],
-                      colors: [Color.fromARGB(0, 255, 255, 255), Colors.white54, Colors.white],
+              child: AnimatedOpacity(
+                opacity: widget.hideText ? 0.0 : 1.0,
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeInOut,
+                child: FadeTransition(
+                  opacity: _fade,
+                  child: Container(
+                    padding: EdgeInsets.only(top: widget.screenWidth * 0.13),
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        stops: [0.0, 0.5, 0.7],
+                        colors: [Color.fromARGB(0, 255, 255, 255), Colors.white54, Colors.white],
+                      ),
                     ),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.only(right: padding + 40, left: padding, top: screenWidth * 0.01, bottom: screenWidth * 0.01),
-                    child: SlideTransition(
-                      position: textSlideAnimation,
-                      child: Text(
-                        card['description'],
-                        style: TextStyle(color: Theme.of(context).primaryColor, fontSize: fontSizeDescription, fontWeight: FontWeight.bold),
+                    child: Padding(
+                      padding: EdgeInsets.only(right: padding + 40, left: padding, top: widget.screenWidth * 0.01, bottom: widget.screenWidth * 0.01),
+                      child: SlideTransition(
+                        position: _slide,
+                        child: Text(
+                          widget.card['description'],
+                          style: TextStyle(color: Theme.of(context).primaryColor, fontSize: fontSizeDescription, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
             ),
-
-          // Botón de acción
           Positioned(
             bottom: 10,
             right: 10,
             child: TweenAnimationBuilder<double>(
-              tween: Tween<double>(begin: isExpanded ? 0.0 : 0.125, end: isExpanded ? 0.125 : 0.0),
+              tween: Tween<double>(begin: widget.isExpanded ? 0.0 : 0.125, end: widget.isExpanded ? 0.125 : 0.0),
               duration: const Duration(milliseconds: 400),
               curve: Curves.easeInOut,
               builder: (context, turns, child) {
                 return TweenAnimationBuilder<Color?>(
-                  tween: ColorTween(begin: isExpanded ? Colors.white : blue, end: isExpanded ? blue : Colors.white),
+                  tween: ColorTween(begin: widget.isExpanded ? Colors.white : widget.blue, end: widget.isExpanded ? widget.blue : Colors.white),
                   duration: const Duration(milliseconds: 400),
                   builder: (context, color, _) {
                     return Transform.rotate(
                       angle: turns * 2 * 3.1416, // turns → radians
                       child: IconButton(
-                        onPressed: isExpanded ? onCollapse : onExpand,
-                        icon: Icon(CupertinoIcons.add_circled_solid, color: color, size: r.dp(5, max: 40)),
+                        onPressed:
+                            widget.isExpanded
+                                ? () {
+                                  // Contraer
+                                  if (mounted) {
+                                    final state = context.findAncestorStateOfType<_PackagingWithConscienceSliverState>();
+                                    state?._onExpandCard(widget.index);
+                                  }
+                                }
+                                : widget.onExpand,
+                        icon: Icon(CupertinoIcons.add_circled_solid, color: color, size: widget.r.dp(5, max: 40)),
                       ),
                     );
                   },
@@ -540,10 +341,275 @@ class AnimatedPositionedCard extends StatelessWidget {
   }
 }
 
+//Seccion "Empaques con conciencia"
+class PackagingWithConscienceSliver extends StatefulWidget {
+  final bool isMobile;
+  final Responsive r;
+  final Color blue;
+  const PackagingWithConscienceSliver({super.key, required this.isMobile, required this.r, required this.blue});
+
+  @override
+  State<PackagingWithConscienceSliver> createState() => _PackagingWithConscienceSliverState();
+}
+
+class _PackagingWithConscienceSliverState extends State<PackagingWithConscienceSliver> with TickerProviderStateMixin {
+  int? _expandedIndex;
+  bool _hideText = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void _onExpandCard(int index) async {
+    if (_expandedIndex == index) {
+      // Colapsar tarjeta actualmente expandida
+      setState(() {
+        _hideText = true;
+      });
+      await Future.delayed(const Duration(milliseconds: 210));
+      if (!mounted) return;
+      setState(() {
+        _expandedIndex = null;
+        _hideText = false;
+      });
+    } else {
+      // Calcula el durationOffset igual que en _buildDesktopCards
+      final int baseDuration = 300;
+      final int offsetFactor = index.abs() * 50;
+      final int durationOffset = (baseDuration + offsetFactor).round();
+      setState(() {
+        _expandedIndex = index;
+        _hideText = true;
+      });
+      await Future.delayed(Duration(milliseconds: durationOffset));
+      if (!mounted) return;
+      setState(() {
+        _hideText = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Container(
+        width: widget.r.wp(100),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Theme.of(context).colorScheme.tertiary, Theme.of(context).primaryColor],
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6), vertical: widget.r.hp(5)),
+              child: ScrollAnimatedWrapper(
+                visibilityKey: const Key('empaques_con_conciencia_title'),
+                child: Text(
+                  "Empaques con conciencia.",
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: widget.r.fs(3, 80)),
+                ),
+              ),
+            ),
+            ScrollAnimatedWrapper(
+              visibilityKey: const Key('empaques_con_conciencia_cards'),
+              child: widget.isMobile ? _buildMobileCards() : _buildDesktopCards(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMobileCards() {
+    return Column(
+      children: List.generate(cardPWC.length, (index) {
+        final card = cardPWC[index];
+        final isExpanded = _expandedIndex == index;
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: widget.r.hp(2), horizontal: widget.r.wp(6)),
+          child: _MobileExpandableCardConsistent(
+            card: card,
+            r: widget.r,
+            blue: widget.blue,
+            isExpanded: isExpanded,
+            onExpand: () => _onExpandCard(index),
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _buildDesktopCards() {
+    final screenWidth = widget.r.wp(100);
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: screenWidth * 0.05),
+      child: SizedBox(
+        height: screenWidth * 0.3,
+        child: Stack(
+          children: List.generate(cardPWC.length, (index) {
+            final card = cardPWC[index];
+            final isExpanded = _expandedIndex == index;
+            double leftPosition =
+                _expandedIndex == null
+                    ? index * (screenWidth * 0.21 + screenWidth * 0.012)
+                    : isExpanded
+                    ? 0
+                    : screenWidth * 0.5 + screenWidth * 0.02 + (index - 1) * 20.0;
+
+            // Calculate durationOffset based on distance from left
+            final int baseDuration = 300;
+            final int offsetFactor = index.abs() * 50; // más lejos = más duración
+            final int durationOffset = (baseDuration + offsetFactor).round();
+
+            return AnimatedPositioned(
+              duration: Duration(milliseconds: durationOffset),
+              curve: Curves.easeIn,
+              left: leftPosition,
+              child: AnimatedPositionedCard(
+                key: ValueKey(card['title']),
+                index: index,
+                isAnotherExpanded: _expandedIndex != null && _expandedIndex != index,
+                isExpanded: isExpanded,
+                screenWidth: screenWidth,
+                card: card,
+                blue: widget.blue,
+                r: widget.r,
+                durationOffset: durationOffset,
+                hideText: isExpanded ? _hideText : false,
+                onExpand: () {
+                  _onExpandCard(index);
+                },
+              ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+}
+
+// Consistent mobile card using AnimatedRotation button as in desktop
+class _MobileExpandableCardConsistent extends StatelessWidget {
+  final Map<String, dynamic> card;
+  final Responsive r;
+  final Color blue;
+  final bool isExpanded;
+  final VoidCallback onExpand;
+
+  const _MobileExpandableCardConsistent({required this.card, required this.r, required this.blue, required this.isExpanded, required this.onExpand});
+
+  @override
+  Widget build(BuildContext context) {
+    final double iconSize = r.dp(5, max: 40);
+    return GestureDetector(
+      onTap: onExpand,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          height: isExpanded ? r.hp(40) : r.hp(30),
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Positioned.fill(child: Image.asset(card['image'], fit: BoxFit.cover)),
+              Positioned(
+                top: 16,
+                left: 0,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor.withAlpha(230),
+                    borderRadius: const BorderRadius.only(topRight: Radius.circular(8), bottomRight: Radius.circular(8)),
+                  ),
+                  child: Text(card['title'], style: const TextStyle(color: Colors.white)),
+                ),
+              ),
+              // Expansion content
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: IgnorePointer(
+                  ignoring: !isExpanded,
+                  child: AnimatedSlide(
+                    offset: isExpanded ? Offset.zero : const Offset(0, 0.2),
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeOutExpo,
+                    child: AnimatedOpacity(
+                      opacity: isExpanded ? 1.0 : 0.0,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeOutExpo,
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            stops: [0.0, 0.12, 0.3],
+                            colors: [Color.fromARGB(0, 255, 255, 255), Colors.white70, Colors.white],
+                          ),
+                        ),
+                        child: Text(card['description'], style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w600)),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              // Consistent circular expand/collapse button with AnimatedRotation
+              Positioned(
+                bottom: 10,
+                right: 10,
+                child: Container(
+                  margin: const EdgeInsets.all(12),
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))],
+                  ),
+                  child: Center(
+                    child: AnimatedRotation(
+                      turns: isExpanded ? 0.75 : 0.0,
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.easeInOut,
+                      child: IconButton(
+                        onPressed: onExpand,
+                        icon: Icon(CupertinoIcons.add_circled_solid, color: !isExpanded ? Colors.white : blue, size: iconSize),
+                        splashRadius: 22,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 //---------El futuro esta en el empaque------------
 class TheFutureSliver extends StatelessWidget {
   final Responsive r;
-  const TheFutureSliver({super.key, required this.r});
+  final Color green, blue;
+  const TheFutureSliver({super.key, required this.r, required this.green, required this.blue});
 
   @override
   Widget build(BuildContext context) {
@@ -559,10 +625,9 @@ class TheFutureSliver extends StatelessWidget {
                 ScrollAnimatedWrapper(child: Image.asset('assets/img/home/home1.webp', width: r.wp(90))),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 10),
-
                   child: ScrollAnimatedWrapper(
                     child: Text(
-                      "El futuro está en el empaque.",
+                      "El futuro de su marca está en el empaque.",
                       textAlign: TextAlign.center,
                       style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor, fontSize: r.fs(4, 50)),
                     ),
@@ -573,7 +638,7 @@ class TheFutureSliver extends StatelessWidget {
                   child: ScrollAnimatedWrapper(
                     child: Text(
                       textAlign: TextAlign.center,
-                      "Convierte tu producto en una experiencia inolvidable. Con Packvision, llevas tu marca al siguiente nivel con empaques que combinan innovación, sostenibilidad y diseño de alto impacto. Elige SmartBag si buscas elegancia, funcionalidad y presencia premium en el punto de venta. Opta por EcoBag si tu marca apuesta por lo ecológico, con materiales sostenibles y una menor huella ambiental.",
+                      "Transforme su producto en una experiencia memorable. En Packvision, elevamos su marca al siguiente nivel con empaques que combinan innovación, sostenibilidad y un diseño de alto impacto.",
                       style: TextStyle(fontSize: r.fs(2, 26), height: 1, color: Colors.black54),
                     ),
                   ),
@@ -587,10 +652,164 @@ class TheFutureSliver extends StatelessWidget {
   }
 }
 
+//---------SmartBag® y EcoBag®------------
+class SmartAndEcoSliver extends StatelessWidget {
+  final Responsive r;
+  final bool isMobile;
+  final Color blue, green;
+  const SmartAndEcoSliver({super.key, required this.r, required this.isMobile, required this.blue, required this.green});
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: r.wp(6), vertical: r.dp(5, max: 50)),
+        child: ScrollAnimatedWrapper(child: isMobile ? _mobile(r) : _desktop()),
+      ),
+    );
+  }
+
+  Widget _desktop() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+
+        return SizedBox(
+          height: width * 0.5,
+          width: width,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: ValueListenableBuilder<bool>(
+                  valueListenable: videoBlurNotifier,
+                  builder: (context, isBlur, _) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+
+                      mainAxisSize: MainAxisSize.min,
+
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.horizontal(left: Radius.circular(24)),
+                          child: SizedBox(
+                            height: width * 0.3,
+                            child: VideoFlutter(
+                              src: 'assets/videos/smartbag/smart1.webm',
+                              blur: isBlur,
+                              loop: true,
+                              showControls: false,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          textAlign: TextAlign.center,
+                          "La opción ideal si busca elegancia, funcionalidad y una presencia premium en el punto de venta.",
+                          style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: r.fs(1.2, 35)),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(width: 5),
+              Expanded(
+                child: ValueListenableBuilder<bool>(
+                  valueListenable: videoBlurNotifier,
+                  builder: (context, isBlur, _) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.horizontal(right: Radius.circular(24)),
+                          child: SizedBox(
+                            height: width * 0.3,
+                            child: VideoFlutter(
+                              src: 'assets/videos/ecobag/eco1.webm',
+                              blur: isBlur,
+                              loop: true,
+                              showControls: false,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          textAlign: TextAlign.center,
+                          'La solución para marcas comprometidas con el medio ambiente, con materiales sostenibles y una menor huella ecológica.',
+                          style: TextStyle(fontWeight: FontWeight.bold, color: green, fontSize: r.fs(1.2, 35)),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _mobile(Responsive r) {
+    return SizedBox(
+      height: r.dp(40),
+      width: r.dp(40),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Expanded(
+            child: ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              child: Image.asset('assets/img/home/smart.webp', fit: BoxFit.cover),
+            ),
+          ),
+          const SizedBox(height: 3.5),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24)),
+              child: Image.asset('assets/img/home/eco.webp', fit: BoxFit.cover),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: r.dp(40),
+
+              child: Text(
+                textAlign: TextAlign.center,
+                'La solución para marcas comprometidas con el medio ambiente, con materiales sostenibles y una menor huella ecológica.',
+                style: TextStyle(fontWeight: FontWeight.bold, color: green, fontSize: r.fs(1.2, 35)),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: r.dp(40),
+
+              child: Text(
+                textAlign: TextAlign.center,
+                "La opción ideal si busca elegancia, funcionalidad y una presencia premium en el punto de venta.",
+                style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: r.fs(1.2, 35)),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 //---------Por qué Packvision------------
 class WhyPackvisionSliver extends StatelessWidget {
-  const WhyPackvisionSliver({super.key, required this.r, required this.blue});
-
+  const WhyPackvisionSliver({super.key, required this.r, required this.blue, required this.isMobile});
+  final bool isMobile;
   final Responsive r;
   final ui.Color blue;
 
@@ -598,39 +817,46 @@ class WhyPackvisionSliver extends StatelessWidget {
   Widget build(BuildContext context) {
     final items = const [
       (
-        icon: CupertinoIcons.car,
-        title: "Empaque que trasciende",
-        description: "Diseñamos experiencias, no solo empaques. Cada detalle potencia tu producto desde el primer contacto.",
+        icon: CupertinoIcons.gift_alt,
+        title: "Empaques de alto impacto.",
+        description:
+            "Creamos experiencias a través de cada empaque. Cuidamos cada detalle para potenciar la percepción de su producto desde el primer contacto.",
+      ),
+      (
+        icon: CupertinoIcons.leaf_arrow_circlepath,
+        title: "Integridad y frescura.",
+        description:
+            "Protegemos la esencia de su producto. Garantizamos la conservación del aroma, sabor y textura para que su calidad permanezca intacta.",
+      ),
+      (
+        icon: CupertinoIcons.tree,
+        title: "Compromiso sostenible.",
+        description:
+            "Reducimos el impacto ambiental con empaques EcoBag. Utilizamos materiales compostables y estructuras sostenibles que reflejan su compromiso con el planeta.",
+      ),
+      (
+        icon: CupertinoIcons.paintbrush,
+        title: "Diseño ilimitado",
+        description:
+            "Su marca habla por sí misma. Desarrollamos texturas, formas y acabados exclusivos que comunican calidad y valor sin necesidad de una sola palabra.",
       ),
       (
         icon: CupertinoIcons.cube_box,
-        title: "Hecho para lo esencial",
-        description: "Cuidamos lo que hace único a tu producto. Protección, aroma, sabor y forma garantizados.",
-      ),
-      (
-        icon: CupertinoIcons.paperplane,
-        title: "Pensado para el planeta",
-        description: "EcoBag reduce el impacto ambiental con materiales compostables y estructuras sostenibles.",
-      ),
-      (
-        icon: CupertinoIcons.star,
-        title: "Diseño sin límites",
-        description: "descriptionuras, formas y acabados que hablan por tu marca. Comunica calidad sin decir una palabra.",
-      ),
-      (
-        icon: CupertinoIcons.arrow_2_circlepath,
         title: "Tecnología multicapa",
-        description: "SmartBag ofrece hasta 5 capas de protección para frescura, resistencia y elegancia superior.",
+        description:
+            "SmartBag ofrece una protección superior. Su innovadora estructura de hasta 5 capas garantiza la frescura, resistencia y elegancia que su producto merece.",
       ),
       (
-        icon: CupertinoIcons.arrowshape_turn_up_right_fill,
-        title: "Listo para alta velocidad",
-        description: "Flowpack: solución perfecta para líneas automáticas. Rápido, preciso y visualmente impactante.",
+        icon: CupertinoIcons.gear,
+        title: "Eficiencia en producción",
+        description:
+            "Optimizamos sus líneas de producción. Nuestra solución Flowpack es rápida, precisa y visualmente impactante, diseñada para un envasado de alta velocidad.",
       ),
       (
-        icon: CupertinoIcons.doc_on_doc,
+        icon: CupertinoIcons.slider_horizontal_3,
         title: "Personalización total",
-        description: "Desde válvulas y zipper hasta ventanas y tintas. Tu empaque refleja tu identidad.",
+        description:
+            "Transformamos su empaque para que refleje la identidad de su marca. Ofrecemos opciones de personalización completas, desde válvulas y cierres (zipper) hasta ventanas y tintas, para que cada detalle cuente su historia.",
       ),
     ];
 
@@ -642,10 +868,10 @@ class WhyPackvisionSliver extends StatelessWidget {
           ScrollAnimatedWrapper(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: r.wp(6), vertical: r.hp(3)),
-              child: Text("¿Por qué Packvision?", style: TextStyle(color: blue, fontWeight: FontWeight.bold, fontSize: r.dp(3))),
+              child: Text("¿Por qué elegirnos?", style: TextStyle(color: blue, fontWeight: FontWeight.bold, fontSize: r.dp(3))),
             ),
           ),
-          ScrollAnimatedWrapper(child: ScrollWhyPv(r: r, blue: blue, items: items)),
+          ScrollAnimatedWrapper(child: ScrollWhyPv(r: r, blue: blue, items: items, isMobile: isMobile)),
         ],
       ),
     );
@@ -653,8 +879,8 @@ class WhyPackvisionSliver extends StatelessWidget {
 }
 
 class ScrollWhyPv extends StatefulWidget {
-  const ScrollWhyPv({super.key, required this.r, required this.items, required this.blue});
-
+  const ScrollWhyPv({super.key, required this.r, required this.items, required this.blue, required this.isMobile});
+  final bool isMobile;
   final Responsive r;
   final Color blue;
   final List<({String description, IconData icon, String title})> items;
@@ -694,7 +920,7 @@ class _ScrollWhyPvState extends State<ScrollWhyPv> {
     return Column(
       children: [
         SizedBox(
-          height: widget.r.dp(30, max: 550),
+          height: widget.r.dp(40, max: widget.isMobile ? 700 : 600),
           child: ListView.separated(
             controller: _scrollController,
             scrollDirection: Axis.horizontal,
@@ -783,88 +1009,6 @@ class _ArrowButton extends StatelessWidget {
       onPressed: enabled ? onTap : null,
       icon: Icon(icon),
       style: ButtonStyle(backgroundColor: WidgetStateProperty.all(enabled ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80))),
-    );
-  }
-}
-
-//---------SmartBag® y EcoBag®------------
-class SmartAndEcoSliver extends StatelessWidget {
-  final Responsive r;
-  final bool isMobile;
-  const SmartAndEcoSliver({super.key, required this.r, required this.isMobile});
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: EdgeInsetsGeometry.symmetric(horizontal: r.wp(6), vertical: r.dp(5, max: 50)),
-        child: ScrollAnimatedWrapper(child: isMobile ? _mobile(r) : _desktop()),
-      ),
-    );
-  }
-
-  Widget _desktop() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final width = constraints.maxWidth;
-
-        return SizedBox(
-          height: width * 0.3,
-          width: width,
-          child: Row(
-            children: [
-              Expanded(
-                child: ValueListenableBuilder<bool>(
-                  valueListenable: videoBlurNotifier,
-                  builder: (context, isBlur, _) {
-                    return ClipRRect(
-                      borderRadius: const BorderRadius.horizontal(left: Radius.circular(24)),
-                      child: VideoFlutter(src: 'assets/videos/smartbag/smart1.webm', blur: isBlur, loop: true, showControls: false, fit: BoxFit.fill),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(width: 5),
-              Expanded(
-                child: ValueListenableBuilder<bool>(
-                  valueListenable: videoBlurNotifier,
-                  builder: (context, isBlur, _) {
-                    return ClipRRect(
-                      borderRadius: const BorderRadius.horizontal(right: Radius.circular(24)),
-                      child: VideoFlutter(src: 'assets/videos/ecobag/eco1.webm', blur: isBlur, loop: true, showControls: false, fit: BoxFit.fill),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _mobile(Responsive r) {
-    return SizedBox(
-      height: r.dp(40),
-      width: r.dp(40),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Expanded(
-            child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-              child: Image.asset('assets/img/home/smart.webp', fit: BoxFit.cover),
-            ),
-          ),
-          const SizedBox(height: 3.5),
-          Expanded(
-            child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24)),
-              child: Image.asset('assets/img/home/eco.webp', fit: BoxFit.cover),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -1224,13 +1368,11 @@ class _ServiceSlideItem extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 10),
-        Expanded(
-          child: Text(
-            list['text']!,
-            maxLines: 2,
-            softWrap: true,
-            style: TextStyle(fontSize: (screenWidth * 0.025).clamp(0, 20), fontWeight: FontWeight.bold, color: Colors.white),
-          ),
+        Text(
+          list['text']!,
+          maxLines: 2,
+          softWrap: true,
+          style: TextStyle(fontSize: (screenWidth * 0.025).clamp(0, 20), fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ],
     );
@@ -1343,7 +1485,7 @@ class SliverHeadquarters extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Expanded(child: Image.asset(sede['img'])),
+        Image.asset(sede['img'], height: 200),
         const SizedBox(height: 24),
         Text("${sede['name']}.", style: TextStyle(fontWeight: FontWeight.bold, fontSize: r.dp(2, max: 30))),
         const SizedBox(height: 8),

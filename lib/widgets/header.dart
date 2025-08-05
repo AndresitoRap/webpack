@@ -63,7 +63,7 @@ class _HeaderState extends State<Header> {
     final routeName = ModalRoute.of(context)?.settings.name ?? '';
     final colorheader =
         routeName.toLowerCase().contains('ecobag')
-            ? const Color.fromARGB(255, 75, 141, 44) // Verde
+            ? const Color(0xFF4B8D2C) // Verde
             : Theme.of(context).primaryColor; // Azul
 
     final isMobile = screenWidth < 850;

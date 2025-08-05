@@ -94,6 +94,7 @@ flutter:
     - assets/img/smartbag/doypack/
     - assets/img/smartbag/5pro/
     - assets/img/smartbag/flowpack/
+    - assets/img/smartbag/piramidal/
     - assets/img/support/
     - assets/img/us/
     # Fuentes
@@ -110,6 +111,7 @@ flutter:
     - assets/videos/smartbag/5pro/
     - assets/videos/smartbag/doypack/
     - assets/videos/smartbag/flowpack/
+    - assets/videos/smartbag/piramidal/
     - assets/videos/us/
       
       

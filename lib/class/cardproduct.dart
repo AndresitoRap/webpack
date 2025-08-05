@@ -1,7 +1,10 @@
 class CardProduct {
   final String title;
   final String body;
+  final String? onTitle;
+  final String? onBody;
   final String descriptionTop;
+  final String? descriptionTitleDown;
   final String descriptionDown;
   final String imageTop;
   final String imageDown;
@@ -11,6 +14,9 @@ class CardProduct {
   CardProduct({
     required this.title,
     required this.body,
+    this.onTitle,
+    this.onBody,
+    this.descriptionTitleDown,
     required this.descriptionTop,
     required this.descriptionDown,
     required this.imageTop,
@@ -22,111 +28,133 @@ class CardProduct {
 
 final List<CardProduct> cardFindS = [
   CardProduct(
-    title: "Innovación envuelta en elegancia",
-    body: "Diseño para experiencias extraordinarias.",
+    title: "Impacto con ligereza.",
+    body: "Llamativo, ligero y altamente protector en el punto de venta.",
+    onTitle: 'Innovación en cada detalle. Elegancia en cada curva.',
+    onBody: 'Diseño para experiencias extraordinarias.',
     image: "assets/img/smartbag/discover1.webp",
     descriptionTop:
-        "Eso sí que es inteligente. SmartBag Visos Dorados redefine el empaque con diseño avanzado, materiales premium y una estética que habla por sí sola. Creada para elevar la experiencia, no solo protege tu producto, sino que lo presenta con una elegancia que marca la diferencia.",
+        "Esto es más que una simple bolsa; es una declaración de intenciones. La SmartBag Visos Dorados redefine el empaque, fusionando un diseño vanguardista con materiales premium para crear una estética que impacta.\n\nNo se limita a proteger tu producto, lo eleva a un nuevo nivel. Cada curva, cada brillo dorado, ha sido concebido para envolver la experiencia del consumidor en un aura de lujo y exclusividad, marcando una diferencia audaz en cualquier estantería y comunicando, sin palabras, la excelencia de tu marca.",
     descriptionDown:
-        "Encuentra el equilibrio perfecto entre funcionalidad y belleza. Cada detalle ha sido pensado para impresionar, con acabados dorados que capturan la luz y despiertan emociones. Así es como luce el futuro del empaque, ahora al alcance de tu marca.",
+        "El arte de la presentación. La ciencia de la protección. Encuentra el equilibrio perfecto entre funcionalidad y belleza.\n\nEste empaque es una obra maestra de ingeniería y arte. Hemos logrado el equilibrio perfecto, donde cada detalle ha sido minuciosamente diseñado para cautivar e impresionar. Los acabados dorados no son solo un adorno, son un juego de luz que despierta emociones, un reflejo de la calidad inigualable que contiene. ",
     imageTop: "assets/img/smartbag/discover1_Top.webp",
     imageDown: "assets/img/smartbag/discover1_Down.webp",
   ),
   CardProduct(
-    title: "Elegancia que se siente.",
-    body: "El arte de empacar café con distinción.",
+    title: "Equilibrio entre estética y funcionalidad.",
+    body: "Equilibrio perfecto entre diseño y función para destacar su producto.",
     image: "assets/img/smartbag/discover2.webp",
+    onTitle: 'Elegancia que se siente. Un legado de distinción en cada empaque.',
+    onBody: 'El arte de empacar café con distinción.',
     descriptionTop:
-        "Una fusión de lo clásico y lo moderno. Esta presentación eleva el empaque de café a una pieza de diseño atemporal, con detalles que capturan la esencia del grano y el arte de tostarlo.",
+        "Más que un simple envoltorio, esta presentación es una oda al arte del café. Fusionamos la riqueza de la tradición con la sofisticación del diseño moderno para crear un empaque atemporal.\n\nCada detalle, desde la textura que evoca la tierra donde nace el grano hasta los sutiles elementos visuales, ha sido cuidadosamente seleccionado para capturar la esencia misma del café y la pasión que reside en cada etapa de su tostado.\n\nEste empaque no solo preserva la frescura, sino que también cuenta la historia de un café excepcional, elevando la experiencia desde el primer contacto visual.",
     descriptionDown:
-        "Desde el grano hasta el pedestal. Cada bolsa representa una declaración de carácter, donde el minimalismo y la textura dialogan para proyectar una experiencia visual sofisticada y auténtica.",
+        "Elevando la esencia. Un diseño que inspira. Desde el grano hasta el pedestal. Cada bolsa es una declaración de carácter, una pieza que trasciende la funcionalidad para convertirse en un símbolo de sofisticación y autenticidad.\n\nEn su minimalismo reside una fuerza expresiva donde la textura y la forma dialogan para proyectar una experiencia visual única y memorable. Este empaque no es un simple contenedor, es una plataforma que eleva tu producto, presentándolo con la dignidad y el cuidado que merece, como una verdadera joya en su pedestal.",
     imageTop: "assets/img/smartbag/discover2_Top.webp",
     imageDown: "assets/img/smartbag/discover2_Down.webp",
   ),
   CardProduct(
-    title: "El origen toma protagonismo.",
-    body: "Diseño pensado para destacar lo esencial.",
+    title: "Elegancia y carácter.",
+    body: "Empaque elegante que refleja la sofisticación de su marca en cada detalle.",
     image: "assets/img/smartbag/discover3.webp",
+    onTitle: 'El origen toma protagonismo. Un diseño que celebra la esencia.',
+    onBody: 'Diseño pensado para destacar lo esencial.',
     descriptionTop:
-        "La bolsa 5PRO está diseñada para resaltar el contenido con distinción. Su estructura firme y detalles únicos convierten el empaque en una experiencia visual que combina funcionalidad y estética de alto nivel.",
+        "La bolsa 5PRO ha sido concebida con una clara misión: resaltar la calidad excepcional de su contenido con una distinción inigualable. Su estructura firme y sus detalles únicos convergen en una experiencia visual que trasciende lo ordinario, fusionando a la perfección funcionalidad y una estética de alto nivel.\n\nCada elemento ha sido cuidadosamente considerado para poner en valor el origen y las características únicas de su producto, convirtiendo el empaque en una poderosa herramienta de comunicación que habla directamente a los sentidos y al espíritu del consumidor exigente.",
     descriptionDown:
-        "Más que una bolsa, la 5PRO es una herramienta de presentación sofisticada. Perfecta para productos que requieren una imagen impecable, reciclabilidad y un impacto visual que hable por sí solo.",
+        "Más que un empaque, una declaración de principios. Más que una bolsa, la 5PRO es una herramienta de presentación sofisticada. Este no es simplemente un empaque, es una extensión de la filosofía de tu marca.\n\nLa 5PRO ha sido diseñada para aquellos productos que demandan una imagen impecable, ofreciendo además un compromiso tangible con la sostenibilidad gracias a su reciclabilidad. Su impacto visual es innegable, una declaración de sofisticación y atención al detalle que comunica calidad y cuidado sin necesidad de palabras.\n\nEs la elección perfecta para quienes buscan una presentación que hable por sí sola, dejando una impresión duradera y positiva en cada cliente.",
     imageTop: "assets/img/smartbag/discover3_Top.webp",
     imageDown: "assets/img/smartbag/discover3_Down.webp",
   ),
   CardProduct(
-    title: "Diseño que impone presencia.",
-    body: "4PRO es estructura, contraste y precisión.",
+    title: "Estructura y contraste 4PRO.",
+    body: "Diseño 4PRO: imponente, preciso y estructurado para resaltar su producto.",
     image: "assets/img/smartbag/discover4.webp",
+    onTitle: 'Diseño que impone presencia. La perfección en cada línea.',
+    onBody: '4PRO es estructura, contraste y precisión.',
     descriptionTop:
-        "Con líneas firmes y detalles metálicos, la bolsa 4PRO transmite carácter desde cualquier ángulo. Su forma vertical estilizada está diseñada para destacar en entornos premium.",
+        "Más allá de ser un empaque, la bolsa 4PRO es una declaración de poder y sofisticación. Con líneas firmes y detalles metálicos que captan la atención, irradia un carácter inconfundible desde cualquier perspectiva.\n\nSu forma vertical estilizada no es un accidente, sino una decisión de diseño estratégica para dominar y destacar en los entornos más exclusivos y premium.\n\nEste empaque proyecta una imagen de calidad superior, eficiencia y modernidad, convirtiéndose en el aliado perfecto para las marcas que buscan una presencia inolvidable.",
     descriptionDown:
-        "La 4PRO no solo protege, también comunica. Su acabado refinado y su diseño simétrico la convierten en una opción ideal para productos que buscan diferenciarse con elegancia y autoridad.",
+        "Más que un empaque, una comunicación sutil y poderosa. La 4PRO no solo protege, también comunica. Este empaque es una obra de arte funcional, una fusión de refinamiento y estrategia.\n\nSu acabado pulcro y su diseño simétrico no solo garantizan una protección óptima, sino que también envían un mensaje claro de elegancia y autoridad.\n\nLa bolsa 4PRO se convierte en la opción ideal para productos que aspiran a diferenciarse en el mercado, utilizando su estética para transmitir un mensaje de calidad intransigente y un gusto impecable. Es la herramienta definitiva para marcas que entienden que el empaque es la primera y más importante conversación con el cliente.",
     imageTop: "assets/img/smartbag/discover4_Top.webp",
     imageDown: "assets/img/smartbag/discover4_Down.webp",
     isblack: true,
   ),
   CardProduct(
-    title: "Poder y precisión.",
-    body: "Diseñada para entornos que exigen más.",
+    title: "Diseño robusto y preciso.",
+    body: "Diseñado para entornos exigentes, ofrece fuerza y precisión para proteger su producto en todo momento.",
     image: "assets/img/smartbag/discover5.webp",
+    onTitle: 'Poder y precisión. El empaque que no conoce límites.',
+    onBody: 'Diseñada para entornos que exigen más.',
     descriptionTop:
-        "Inspirada en la fuerza del contraste, esta bolsa destaca por su estructura imponente y acabados técnicos. Su presencia proyecta eficiencia y control, incluso en las condiciones más exigentes.",
+        "Esta bolsa es el resultado de un diseño audaz, concebido a partir de la fuerza del contraste. Su estructura imponente y sus acabados técnicos no solo garantizan una protección superior, sino que también proyectan una imagen de eficiencia, control y robustez.\n\nEs un empaque que se desenvuelve con maestría en los escenarios más exigentes, demostrando que la funcionalidad y la estética pueden coexistir en perfecta armonía. La elección ideal para marcas que buscan transmitir confianza y durabilidad.",
     descriptionDown:
-        "Un diseño que domina el entorno. Funcionalidad, protección y una estética contundente se fusionan en esta pieza pensada para liderar con fuerza y exactitud.",
+        "Un diseño que domina el entorno. La fusión perfecta de estética y resistencia. Funcionalidad, protección y una estética contundente convergen en esta pieza magistral.\n\nCada aspecto ha sido pensado para liderar con una fuerza y exactitud inquebrantables. Es un empaque que no se limita a contener, sino que se apodera del espacio, proyectando una imagen de solidez, innovación y liderazgo.\n\nCon este diseño, tu producto no solo estará protegido, sino que se convertirá en un punto de referencia de calidad y buen gusto.",
     imageTop: "assets/img/smartbag/discover5_Top.webp",
     imageDown: "assets/img/smartbag/discover5_Down.webp",
   ),
   CardProduct(
-    title: "Ligereza que impacta.",
-    body: "Diseñada para flotar, destacar y proteger.",
+    title: "Innovación y elegancia.",
+    body: "Diseño innovador y estético que crea experiencias extraordinarias.",
     image: "assets/img/smartbag/discover6.webp",
-    descriptionTop: "La SmartBag® combina estructura y fluidez. Su diseño ergonómico se adapta a las exigencias del producto y del entorno.",
+    onTitle: 'Ligereza que impacta.',
+    onBody: 'La libertad de un diseño superior.',
+    descriptionTop:
+        "Diseñada para una presencia ligera, para destacar y proteger.La SmartBag® es la perfecta simbiosis de estructura y fluidez. Su diseño ergonómico no solo se adapta a las exigencias más rigurosas de tu producto, sino que también interactúa con el entorno de manera natural y elegante.\n\nEsta bolsa está concebida para una presencia visual ligera que la hace destacar, proyectando una imagen de innovación y modernidad sin sacrificar ni un ápice de su capacidad de protección.",
     descriptionDown:
-        "Su resistencia no compromete la elegancia. En cada detalle, funcionalidad y estética se funden para crear una experiencia superior.",
+        "La fuerza de la elegancia. Resistencia sin compromisos. Su resistencia no compromete la elegancia. Este empaque es un testimonio de la ingeniería de diseño, donde cada detalle ha sido concebido para fusionar funcionalidad y estética en una experiencia superior.\n\nLa solidez de sus materiales y la sofisticación de su diseño se combinan para ofrecer una protección inquebrantable, al tiempo que presentan tu producto de la manera más refinada y atractiva posible. Es la elección definitiva para quienes buscan un equilibrio perfecto entre durabilidad y estilo.",
     imageTop: "assets/img/smartbag/discover6_Top.webp",
     imageDown: "assets/img/smartbag/discover6_Down.webp",
   ),
   CardProduct(
-    title: "Equilibrio perfecto.",
-    body: "Dualidad en forma y función.",
+    title: "Empaques con distinción.",
+    body: "Sofisticación en cada detalle, elevando su marca con elegancia.",
     image: "assets/img/smartbag/discover7.webp",
-    descriptionTop: "Cada bolsa refleja una intención: blanco y negro, claro y oscuro, funcional y estético. Todo en armonía.",
+    onTitle: 'Equilibrio perfecto. La armonía entre ser y hacer.',
+    onBody: 'Dualidad en forma y función.',
+    descriptionTop:
+        "Cada bolsa es la manifestación de una intención clara: blanco y negro, claro y oscuro, funcional y estético. No se trata de opuestos, sino de complementos que convergen en una armonía perfecta.\n\nEste diseño representa la dualidad esencial de un producto excepcional, donde la belleza de su forma se une intrínsecamente a la excelencia de su función. Es un equilibrio cuidadosamente logrado para ofrecer una experiencia completa y satisfactoria.",
     descriptionDown:
-        "Desde el rollo hasta el resultado final, SmartBag® es precisión suspendida en movimiento. Un balance entre tecnología y belleza.",
+        "Precisión en movimiento. La tecnología al servicio de la estética.Desde el rollo hasta el resultado final, SmartBag® es precisión suspendida en movimiento. Representa un balance sofisticado entre la innovación tecnológica y la belleza del diseño.\n\nCada etapa, cada detalle, está imbuido de una precisión que garantiza tanto la funcionalidad impecable como una estética cautivadora. Es la perfecta demostración de cómo la tecnología más avanzada puede dar forma a productos de una belleza singular y atemporal.",
     imageTop: "assets/img/smartbag/discover7_Top.webp",
     imageDown: "assets/img/smartbag/discover7_Down.webp",
   ),
   CardProduct(
-    title: "Amor que se envuelve en flores.",
-    body: "Una declaración de estilo en cada detalle.",
+    title: "Diseño que resalta la esencia.",
+    body: "Diseño minimalista y estratégico que destaca el origen y lo esencial de su producto.",
     image: "assets/img/smartbag/discover8.webp",
+    onTitle: 'Amor que se envuelve en flores. Un lenguaje visual que inspira.',
+    onBody: 'Una declaración de estilo en cada detalle.',
     descriptionTop:
-        "Rosa Sharon no es solo empaque, es una puesta en escena. Su estética floral y sus tonos serenos elevan la presentación del producto a un lenguaje visual propio.",
+        "Rosa Sharon no es solo un empaque, es una cuidada puesta en escena. Su estética floral, con delicadas ilustraciones, y sus tonos serenos se unen para elevar la presentación de tu producto a un lenguaje visual propio, lleno de encanto y distinción.\n\nCada detalle ha sido pensado para evocar sentimientos de delicadeza y belleza natural, transformando el acto de descubrir el producto en una experiencia sensorial única y memorable. Este empaque no solo contiene, sino que también enamora.",
     descriptionDown:
-        "Diseñada para marcas que entienden el valor de lo bello, esta colección transforma lo cotidiano en una experiencia sofisticada, elegante y memorable.",
+        "Belleza que perdura. Transformando lo ordinario en extraordinario. Diseñada para marcas que entienden el valor de lo bello, esta colección transforma lo cotidiano en una experiencia sofisticada, elegante y memorable.\n\nEsta línea de empaques ha sido concebida para aquellas marcas que reconocen el poder de la estética como un valor fundamental. Cada diseño, con sus sutiles motivos florales y su paleta de colores suaves, está pensado para trascender la funcionalidad y convertir cada producto en una experiencia visual sofisticada y elegante.\n\nEsta colección transforma lo ordinario en algo memorable, añadiendo un toque de distinción y refinamiento que cautiva y fideliza al consumidor. Es la elección perfecta para quienes buscan comunicar la belleza intrínseca de su marca en cada presentación.",
     imageTop: "assets/img/smartbag/discover8_Top.webp",
     imageDown: "assets/img/smartbag/discover8_Down.webp",
   ),
   CardProduct(
-    title: "Presencia que impone silencio.",
-    body: "Diseño inteligente, impacto absoluto.",
+    title: "Presencia dominante.",
+    body: "Diseño inteligente y visualmente impactante que destaca su producto sin decir una palabra.",
     image: "assets/img/smartbag/discover9.webp",
+    onTitle: 'Presencia que impone silencio. La elocuencia del minimalismo.',
+    onBody: 'Diseño inteligente, impacto absoluto.',
     descriptionTop:
-        "SmartBag® redefine la forma de comunicar. Su presencia minimalista habla de precisión, control y carácter sin necesidad de palabras.",
+        "SmartBag® redefine la forma de comunicar. Su presencia minimalista, despojada de adornos innecesarios, habla con una fuerza silenciosa de precisión, control y un carácter inconfundible.\n\nCada línea, cada superficie, transmite una sensación de sofisticación y eficiencia, capturando la atención y dejando una impresión duradera sin necesidad de palabras. Este diseño inteligente demuestra que, en ocasiones, la mayor elocuencia reside en la simplicidad.",
     descriptionDown:
-        "Cada línea, cada sombra y cada textura han sido cuidadosamente orquestadas para entregar un empaque que es, en sí mismo, una declaración de diseño.",
+        "Una sinfonía visual. El diseño como lenguaje universal. Cada línea, cada sombra y cada textura han sido cuidadosamente orquestadas para entregar un empaque que es, en sí mismo, una declaración de diseño.",
     imageTop: "assets/img/smartbag/discover9_Top.webp",
     imageDown: "assets/img/smartbag/discover9_Down.webp",
   ),
   CardProduct(
-    title: "Texturas que hablan por ti.",
+    title: "Texturas que comunican.",
     body: "Elegancia y carácter en cada superficie.",
     image: "assets/img/smartbag/discover10.webp",
+    onTitle: 'El color como declaración de intenciones. ',
+    onBody: 'Un lenguaje de identidad. Pensada para marcas exigentes, combina distinción visual con un tacto memorable.',
     descriptionTop:
-        "Esta línea de SmartBag® se expresa con firmeza: acabados tipo cuero, tonos intensos y una presencia que deja huella desde el primer vistazo.",
+        "Esta línea de SmartBag® va más allá de lo visual para ofrecer una experiencia táctil memorable. Se expresa con una firmeza distintiva, gracias a sus acabados tipo cuero y sus tonos intensos, que comunican una presencia que deja huella desde el primer vistazo.\n\nCada superficie es un lienzo que transmite calidad, sofisticación y un carácter inconfundible, invitando al consumidor a interactuar con el producto y a percibir su excelencia con cada toque.",
     descriptionDown:
-        "Pensada para marcas exigentes, combina distinción visual con un tacto memorable. Un empaque que imprime identidad sin necesidad de palabras.",
+        "Un empaque que imprime identidad sin necesidad de palabras. Esta colección ha sido meticulosamente diseñada para las marcas que no se conforman con lo común. Cada color vibrante y cada textura cuidadosamente seleccionada se combinan para crear un empaque que no solo es visualmente distintivo, sino también memorable al tacto.\n\nEs una herramienta poderosa para imprimir la identidad de tu marca de manera sutil y elegante, comunicando una historia de calidad y personalidad sin necesidad de una sola palabra. Es la elección perfecta para dejar una impresión duradera y auténtica.",
     imageTop: "assets/img/smartbag/discover10_Top.webp",
     imageDown: "assets/img/smartbag/discover10_Down.webp",
   ),

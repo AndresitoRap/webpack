@@ -558,9 +558,9 @@ class _SliverInfoPlantillaState extends State<SliverInfoPlantilla> {
           {'image': 'assets/img/smartbag/discover1.webp', 'text': 'EcoBag® Piramidal 3...'},
         ],
         'smart': [
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'SmartBag® Piramidal 1...'},
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'SmartBag® Piramidal 2...'},
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'SmartBag® Piramidal 3...'},
+          {'image': 'assets/img/smartbag/piramidal/CardLarge1.webp', 'text': 'SmartBag® Piramidal 1...'},
+          {'image': 'assets/img/smartbag/piramidal/CardLarge2.webp', 'text': 'SmartBag® Piramidal 2...'},
+          {'image': 'assets/img/smartbag/piramidal/CardLarge3.webp', 'text': 'SmartBag® Piramidal 3...'},
         ],
       },
       'standpack': {
@@ -727,6 +727,42 @@ class _SliverWithOtherThingPlantillaState extends State<SliverWithOtherThingPlan
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
+    final route = ModalRoute.of(context)?.settings.name?.toLowerCase() ?? '';
+    final isEco = route.contains("ecobag");
+    final String tipoBolsa =
+        route.contains('cojin')
+            ? 'cojin'
+            : route.contains('piramidal')
+            ? 'piramidal'
+            : route.contains('standpack')
+            ? 'standpack'
+            : '';
+
+    final Map<String, Map<String, List<Map<String, String>>>> video = {
+      'cojin': {
+        'eco': [
+          {'Video': 'assets/videos/smartbag/piramidal/videoCojinEco.webm'},
+        ],
+        'smart': [
+          {'Video': 'assets/videos/smartbag/piramidal/videoCojinSmart.webm'},
+        ],
+      },
+      'piramidal': {
+        'eco': [
+          {'Video': 'assets/videos/smartbag/piramidal/videoPiramidalEco.webm'},
+        ],
+        'smart': [
+          {'Video': 'assets/videos/smartbag/piramidal/videoPiramidalSmart.webm'},
+        ],
+      },
+      'standpack': {
+        'smart': [
+          {'Video': 'assets/videos/smartbag/piramidal/videoPiramidalSmart.webm'},
+        ],
+      },
+    };
+    final videoMostrar = video[tipoBolsa]?[isEco ? 'eco' : 'smart'] ?? [];
+
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 40),
@@ -780,13 +816,8 @@ class _SliverWithOtherThingPlantillaState extends State<SliverWithOtherThingPlan
                             ValueListenableBuilder<bool>(
                               valueListenable: videoBlurNotifier,
                               builder: (context, isBlur, _) {
-                                return VideoFlutter(
-                                  src: 'assets/videos/smartbag/SmartbagInicio.webm',
-                                  blur: isBlur,
-                                  loop: true,
-                                  showControls: true,
-                                  fit: BoxFit.cover,
-                                );
+                                final videoSrc = videoMostrar.isNotEmpty ? videoMostrar.first['Video'] ?? '' : '';
+                                return VideoFlutter(src: videoSrc, blur: isBlur, loop: true, showControls: true, fit: BoxFit.cover);
                               },
                             ),
                           ],
@@ -1041,7 +1072,8 @@ class SliverWithThisIsMoemnt extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Container(
         width: double.infinity,
-        color: Colors.black,
+        decoration: BoxDecoration(image: DecorationImage(image: AssetImage("assets/img/smartbag/piramidal/BIG.webp"), fit: BoxFit.contain)),
+        //color: Colors.black,
         padding: const EdgeInsets.symmetric(vertical: 100),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -1178,9 +1210,9 @@ class _SliverWithScrollState extends State<SliverWithScroll> {
           {'image': 'assets/img/smartbag/discover1.webp', 'text': 'EcoBag® Piramidal 3...'},
         ],
         'smart': [
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'SmartBag® Piramidal 1...'},
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'SmartBag® Piramidal 2...'},
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'SmartBag® Piramidal 3...'},
+          {'image': 'assets/img/smartbag/piramidal/CardShort1.webp', 'text': 'SmartBag® Piramidal 1...'},
+          {'image': 'assets/img/smartbag/piramidal/CardShort2.webp', 'text': 'SmartBag® Piramidal 2...'},
+          {'image': 'assets/img/smartbag/piramidal/CardShort3.webp', 'text': 'SmartBag® Piramidal 3...'},
         ],
       },
       'standpack': {
@@ -1439,7 +1471,7 @@ class SliverWithLoDudas extends StatelessWidget {
               TextSpan(text: "Ideal para tés y productos gourmet que buscan una experiencia única."),
             ],
           ),
-          'image': "assets/img/smartbag/discover9_Down.webp",
+          'image': "assets/img/smartbag/piramidal/end.webp",
         },
         'cojín': {
           'text': TextSpan(
@@ -1470,48 +1502,60 @@ class SliverWithLoDudas extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
+              padding: EdgeInsets.symmetric(horizontal: isMobile ? 0 : screenWidth * 0.06),
               child: Container(
                 width: 1200,
-                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: 50),
-                decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(22)),
+                padding: EdgeInsets.symmetric(horizontal: isMobile ? 0 : screenWidth * 0.06, vertical: isMobile ? 0 : 50),
+                decoration: BoxDecoration(
+                  image:
+                      !isMobile
+                          ? DecorationImage(image: AssetImage("assets/img/smartbag/piramidal/end.webp"), alignment: Alignment.bottomRight)
+                          : null,
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(22),
+                ),
                 child: Center(
                   child:
                       isMobile
                           ? Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(
-                                height: 400,
-                                width: screenWidth,
-                                child: Image.asset(datos['image'], fit: BoxFit.contain, height: isMobile ? 300 : 500),
-                              ),
-                              Text(
-                                "Lo dudas?",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey.shade500,
-                                  fontSize: (screenWidth * 0.05).clamp(18, 22),
+                              Padding(
+                                padding: EdgeInsets.only(left: screenWidth * 0.06, right: screenWidth * 0.06, top: 50),
+                                child: Text(
+                                  "Lo dudas?",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey.shade500,
+                                    fontSize: (screenWidth * 0.05).clamp(18, 22),
+                                  ),
                                 ),
                               ),
                               SizedBox(height: 20),
-                              Text(
-                                "Es la ${widget.name} que esperabas!",
-                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: (screenWidth * 0.08).clamp(24, 32)),
-                              ),
-                              SizedBox(height: 20),
-
-                              Text.rich(
-                                datos['text'],
-                                style: TextStyle(
-                                  color: Colors.grey.shade500,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: (screenWidth * 0.035).clamp(14, 18),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
+                                child: Text(
+                                  "Es la ${widget.name} que esperabas!",
+                                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: (screenWidth * 0.08).clamp(24, 32)),
                                 ),
                               ),
                               SizedBox(height: 20),
 
-                              ElevatedButton(onPressed: () {}, child: Text("Comprar")),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
+                                child: Text.rich(
+                                  datos['text'],
+                                  style: TextStyle(
+                                    color: Colors.grey.shade500,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: (screenWidth * 0.035).clamp(14, 18),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 20),
+
+                              Padding(padding: const EdgeInsets.all(8.0), child: ElevatedButton(onPressed: () {}, child: Text("Comprar"))),
+                              Image.asset("assets/img/smartbag/piramidal/end.webp"),
                             ],
                           )
                           : Row(
@@ -1554,9 +1598,7 @@ class SliverWithLoDudas extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              Expanded(
-                                child: SizedBox(height: 500, child: Image.asset(datos['image'], fit: BoxFit.contain, height: isMobile ? 300 : 500)),
-                              ),
+                              Expanded(child: SizedBox(height: 500)),
                             ],
                           ),
                 ),

@@ -5,8 +5,7 @@ import 'package:webpack/pages/cartpage.dart';
 import 'package:webpack/pages/detailsproduct.dart';
 import 'package:webpack/pages/home.dart';
 import 'package:webpack/pages/catalog/catalog.dart';
-import 'package:webpack/pages/ecobag/ecobag.dart';
-import 'package:webpack/pages/smartbag/smartbag.dart';
+import 'package:webpack/pages/smartandeco.dart';
 import 'package:webpack/pages/support/dataproccessing.dart';
 import 'package:webpack/pages/support/legalpolicies.dart';
 import 'package:webpack/pages/support/pqrs.dart';
@@ -55,7 +54,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Empaques Packvisión',
       theme: ThemeData(
-        scaffoldBackgroundColor: const Color.fromARGB(255, 241, 245, 255),
+        scaffoldBackgroundColor: const Color(0xFFF1F5FF),
         primaryColor: const Color(0xFF004F9E),
         fontFamily: 'D-DINExp',
         colorScheme: ColorScheme.fromSeed(
@@ -83,8 +82,8 @@ class MyApp extends StatelessWidget {
         final staticRoutes = <String, Widget Function(RouteSettings)>{
           '/': (_) => const Home(),
           '/cart': (_) => CartPage(),
-          '/SmartBag': (_) => const SmartBag(),
-          '/EcoBag': (_) => const EcoBag(),
+          '/SmartBag': (_) => SmartAndEco(isEcobag: false),
+          '/EcoBag': (_) => SmartAndEco(isEcobag: true),
           '/Catalogo': (_) => const Catalog(),
           '/Catalogo/Nuestros-Catalogos/Catalogo': (_) => const Catalog(),
           '/Nosotros': (_) => const Us(),

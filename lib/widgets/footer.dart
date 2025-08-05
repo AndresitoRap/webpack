@@ -124,7 +124,8 @@ class _OutlinedText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final baseStyle = TextStyle(fontWeight: bold ? FontWeight.bold : FontWeight.normal, fontSize: 14);
-
+    final routeName = ModalRoute.of(context)?.settings.name ?? '';
+    final color = routeName.toLowerCase().contains('ecobag') ? const Color(0xFFFBFFF8) : Theme.of(context).scaffoldBackgroundColor;
     return Stack(
       children: [
         Text.rich(
@@ -139,7 +140,7 @@ class _OutlinedText extends StatelessWidget {
                               Paint()
                                 ..style = PaintingStyle.stroke
                                 ..strokeWidth = 3
-                                ..color = Theme.of(context).scaffoldBackgroundColor,
+                                ..color = color,
                         ),
                         recognizer: span.recognizer,
                       );
@@ -152,7 +153,7 @@ class _OutlinedText extends StatelessWidget {
                       Paint()
                         ..style = PaintingStyle.stroke
                         ..strokeWidth = 3
-                        ..color = Theme.of(context).scaffoldBackgroundColor,
+                        ..color = color,
                 ),
               ),
         ),

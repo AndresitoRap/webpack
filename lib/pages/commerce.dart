@@ -41,7 +41,7 @@ class _CommerceState extends State<Commerce> with TickerProviderStateMixin {
     if (categoryName == 'smartbag') {
       switch (section) {
         case '4pro':
-          content = FourPro(screenWidth: screenWidth, currentRoute: currentRoute, subcategorie: widget.selectedSubcategorie, section: widget.section);
+          content = FourPro(currentRoute: currentRoute, subcategorie: widget.selectedSubcategorie, section: widget.section);
           break;
 
         case '5pro':

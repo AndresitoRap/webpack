@@ -5,36 +5,23 @@ import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:webpack/class/categories.dart';
 import 'package:webpack/main.dart';
+import 'package:webpack/utils/responsive.dart';
 import 'package:webpack/widgets/header.dart';
 
 import 'package:webpack/widgets/video.dart';
 
-class InfoCardData {
-  final String? imagePath;
-  final String title;
-  final String description;
-  final bool isVideo;
-  final String? videoPath;
-
-  InfoCardData({this.imagePath, this.isVideo = false, this.videoPath, required this.title, required this.description});
-}
-
-class InfoCard extends StatefulWidget {
-  final InfoCardData data;
-  final double maxFontSize;
+class InfoCard extends StatelessWidget {
+  final Map<String, dynamic> data;
+  final Responsive r;
   final bool isup;
+  final Color blue;
 
-  const InfoCard({super.key, required this.data, required this.maxFontSize, this.isup = false});
+  const InfoCard({super.key, required this.data, required this.r, this.isup = false, required this.blue});
 
-  @override
-  State<InfoCard> createState() => _InfoCardState();
-}
-
-class _InfoCardState extends State<InfoCard> {
   Widget _buildMediaContent() {
-    if (widget.data.isVideo && widget.data.videoPath != null) {
+    if (data['isVideo'] == true && data['videoPath'] != null) {
       return AspectRatio(
-        aspectRatio: 16 / 9, // puedes ajustar el aspecto según tu diseño
+        aspectRatio: 16 / 9,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
           child: Stack(
@@ -44,7 +31,7 @@ class _InfoCardState extends State<InfoCard> {
                 valueListenable: videoBlurNotifier,
                 builder: (context, isBlur, _) {
                   return VideoFlutter(
-                    src: widget.data.videoPath!,
+                    src: data['videoPath'],
                     blur: isBlur,
                     loop: false,
                     showControls: false,
@@ -59,18 +46,20 @@ class _InfoCardState extends State<InfoCard> {
         ),
       );
     } else {
-      return ClipRRect(borderRadius: BorderRadius.circular(16), child: Image.asset(widget.data.imagePath!, fit: BoxFit.contain));
+      return ClipRRect(borderRadius: BorderRadius.circular(16), child: Image.asset(data['imagePath'], fit: BoxFit.contain));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final title = data['title'] ?? '';
+    final description = data['description'] ?? '';
 
     return Container(
       decoration: BoxDecoration(color: const Color.fromARGB(255, 237, 243, 255), borderRadius: BorderRadius.circular(16)),
       child:
-          widget.isup
+          isup
               ? Column(
                 children: [
                   const SizedBox(height: 20),
@@ -78,21 +67,10 @@ class _InfoCardState extends State<InfoCard> {
                     textAlign: TextAlign.center,
                     TextSpan(
                       children: [
-                        TextSpan(
-                          text: widget.data.title,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: min(screenWidth * 0.015, 15),
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                        TextSpan(
-                          text: widget.data.description,
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenWidth * 0.015, 15), color: Colors.grey[700]),
-                        ),
+                        TextSpan(text: title, style: TextStyle(fontSize: r.fs(1.3, 26), color: blue)),
+                        TextSpan(text: description, style: TextStyle(fontSize: r.fs(1.3, 26), color: Colors.grey[700])),
                       ],
                     ),
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenWidth * 0.015, 15), color: Colors.grey[700]),
                   ),
                   const SizedBox(height: 20),
                   Expanded(child: _buildMediaContent()),
@@ -106,95 +84,16 @@ class _InfoCardState extends State<InfoCard> {
                     textAlign: TextAlign.center,
                     TextSpan(
                       children: [
-                        TextSpan(
-                          text: widget.data.title,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: min(screenWidth * 0.015, 15),
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                        TextSpan(
-                          text: widget.data.description,
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenWidth * 0.015, 15), color: Colors.grey[700]),
-                        ),
+                        TextSpan(text: title, style: TextStyle(fontSize: r.fs(1.3, 26), color: blue)),
+                        TextSpan(text: description, style: TextStyle(fontSize: r.fs(1.3, 26), color: Colors.grey[700])),
                       ],
                     ),
-                    style: TextStyle(fontSize: max(10, screenWidth * 0.015)),
                   ),
                   const SizedBox(height: 12),
                 ],
               ),
     );
   }
-}
-
-Widget buildResponsiveInfoCards(BuildContext context) {
-  final List<InfoCardData> items = [
-    InfoCardData(
-      imagePath: "assets/img/smartbag/4pro/cuatrilamina.webp",
-      title: "Cuatro capas ",
-      description:
-          "una protección total. La 4PRO combina PET, BOPP y PE \npara ofrecer una barrera contra la humedad, la luz y el oxígeno,\n con una presentación elegante y segura.",
-    ),
-    InfoCardData(
-      isVideo: true,
-      videoPath: "assets/videos/smartbag/4pro/accesorios.webm",
-      imagePath: "assets/img/smartbag/4pro/accesorios.webp",
-      title: "Agrega funcionalidad con accesorios inteligentes. ",
-      description:
-          "\nEl sistema Peel Stick permite abrir y cerrar la bolsa fácilmente.\n Las válvulas desgasificadoras conservan productos frescos por más tiempo.",
-    ),
-    InfoCardData(
-      imagePath: "assets/img/smartbag/4pro/terminacion.webp",
-      title: "Tu decides la terminación ",
-      description:
-          "brillante para un acabado \nmás reflectivo, Mate para una apariencia elegante y sobria, \ny Ventana para mostrar el producto sin perder protección.\n ",
-    ),
-  ];
-
-  return LayoutBuilder(
-    builder: (context, constraints) {
-      final isMobile = constraints.maxWidth < 700;
-
-      if (isMobile) {
-        return Column(
-          children:
-              items
-                  .map(
-                    (data) => SizedBox(
-                      height: 300,
-                      width: MediaQuery.of(context).size.width,
-                      child: Padding(padding: const EdgeInsets.all(8.0), child: InfoCard(data: data, maxFontSize: 30)),
-                    ),
-                  )
-                  .toList(),
-        );
-      } else {
-        return SizedBox(
-          width: min(constraints.maxWidth, 1300),
-          height: 950, // Fuerza altura consistente en ambos lados
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-
-            children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    SizedBox(height: 468, child: InfoCard(data: items[0], maxFontSize: 16, isup: true)),
-                    SizedBox(height: 14),
-                    SizedBox(height: 468, child: InfoCard(data: items[1], maxFontSize: 16, isup: true)),
-                  ],
-                ),
-              ),
-              SizedBox(width: 16), // ← control explícito del espacio horizontal
-              Expanded(child: SizedBox(height: 950, child: InfoCard(data: items[2], maxFontSize: 16))),
-            ],
-          ),
-        );
-      }
-    },
-  );
 }
 
 //Letras 4pro ecobag

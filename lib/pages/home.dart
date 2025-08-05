@@ -124,7 +124,6 @@ class _IntroVideoSliverState extends State<IntroVideoSliver> {
 }
 
 //---------Empaques con conciencia------------
-
 final List<Map<String, dynamic>> cardPWC = [
   {
     'title': "Asesoría",
@@ -1429,25 +1428,22 @@ class SliverHeadquarters extends StatelessWidget {
           }
 
           final sede = cardHQ[index - 1];
-          return ScrollAnimatedWrapper(
-            visibilityKey: Key('headquarter_card_${sede['name']}'),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: () {
-                    _showHeadquarterDialog(context, sede);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: r.wp(6), vertical: r.dp(5, max: 50)),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 5, offset: Offset(0, 2))],
-                    ),
-                    child: isMobile ? _buildMobile(sede) : _buildDesktop(sede),
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () {
+                  _showHeadquarterDialog(context, sede);
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: r.wp(6), vertical: r.dp(5, max: 50)),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 5, offset: Offset(0, 2))],
                   ),
+                  child: isMobile ? _buildMobile(sede) : _buildDesktop(sede),
                 ),
               ),
             ),

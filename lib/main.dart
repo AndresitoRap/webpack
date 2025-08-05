@@ -13,6 +13,7 @@ import 'package:webpack/pages/support/whatsapppage.dart';
 import 'package:webpack/pages/support/support.dart';
 import 'package:webpack/pages/us/aboutUs.dart';
 import 'package:webpack/pages/us/us.dart';
+import 'package:webpack/utils/precacheimg.dart';
 import 'package:webpack/widgets/page_not_found.dart';
 import 'package:webpack/class/categories.dart';
 import 'package:webpack/class/products.dart';
@@ -24,13 +25,22 @@ void main() {
   runApp(const MyApp());
 }
 
+Future<void> preloadAllParallel(List<String> paths, BuildContext context) async {
+  await Future.wait(paths.map((path) => precacheImage(AssetImage(path), context)));
+}
+
 Future<void> navigateWithSlide(BuildContext context, String routeName, {Widget? target}) async {
   final currentRoute = ModalRoute.of(context)?.settings.name;
-
-  // Si ya estás en la misma ruta, no hagas nada
   if (currentRoute == routeName && target == null) return;
 
+  final preloadImageList = routeImagePreloads[routeName] ?? [];
+
+  // 🔄 Precarga asincrónica en paralelo
+
+  // 👉 Inicia la animación de transición
   transitionOverlayKey.currentState?.playTransition(() async {
+    await preloadAllParallel(preloadImageList, context);
+
     if (target == null) {
       Navigator.pushNamed(context, routeName);
     } else {

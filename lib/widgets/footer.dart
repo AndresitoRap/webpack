@@ -61,19 +61,22 @@ class Footer extends StatelessWidget {
     );
   }
 
-  Widget _buildCopyRight(BuildContext context) => _OutlinedText("Copyright © 2025 Packvision S.A.S Todos los derechos reservados");
+  Widget _buildCopyRight(BuildContext context) => _OutlinedText("Copyright © 2025 Packvision S.A.S Todos los derechos reservados", isDark: isDark);
 
-  Widget _buildLocation(BuildContext context) => _OutlinedText("Colombia");
+  Widget _buildLocation(BuildContext context) => _OutlinedText("Colombia", isDark: isDark);
 
   Widget _buildScheduleSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _OutlinedText("Horarios de atención:", bold: true),
+        _OutlinedText("Horarios de atención:", bold: true, isDark: isDark),
         ...schedules.map((s) {
           final String day = s['day']!;
           final String time = s['time']!;
-          return _OutlinedText.rich([TextSpan(text: "$day: ", style: const TextStyle(fontWeight: FontWeight.bold)), TextSpan(text: time)]);
+          return _OutlinedText.rich([
+            TextSpan(text: "$day: ", style: const TextStyle(fontWeight: FontWeight.bold)),
+            TextSpan(text: time),
+          ], isDark: isDark);
         }),
         _OutlinedText.rich([
           const TextSpan(text: "Correo: ", style: TextStyle(fontWeight: FontWeight.bold)),
@@ -82,7 +85,7 @@ class Footer extends StatelessWidget {
             style: const TextStyle(decoration: TextDecoration.underline),
             recognizer: TapGestureRecognizer()..onTap = () => launchUrl(Uri.parse("mailto:info@empaquespackvision.com")),
           ),
-        ]),
+        ], isDark: isDark),
       ],
     );
   }
@@ -116,18 +119,24 @@ class Footer extends StatelessWidget {
 class _OutlinedText extends StatelessWidget {
   final String? text;
   final List<InlineSpan>? spans;
-  final bool bold;
+  final bool bold, isDark;
 
-  const _OutlinedText(this.text, {this.bold = false}) : spans = null;
-  const _OutlinedText.rich(this.spans) : text = null, bold = false;
+  const _OutlinedText(this.text, {this.bold = false, required this.isDark}) : spans = null;
+  const _OutlinedText.rich(this.spans, {required this.isDark}) : text = null, bold = false;
 
   @override
   Widget build(BuildContext context) {
     final baseStyle = TextStyle(fontWeight: bold ? FontWeight.bold : FontWeight.normal, fontSize: 14);
+
     final routeName = ModalRoute.of(context)?.settings.name ?? '';
-    final color = routeName.toLowerCase().contains('ecobag') ? const Color(0xFFFBFFF8) : Theme.of(context).scaffoldBackgroundColor;
+    final bgColor = routeName.toLowerCase().contains('ecobag') ? const Color(0xFFFBFFF8) : Theme.of(context).scaffoldBackgroundColor;
+
+    final strokeColor = isDark ? const Color(0xff1d1d1f) : bgColor;
+    final fillColor = isDark ? Colors.white : Colors.black;
+
     return Stack(
       children: [
+        // Borde
         Text.rich(
           spans != null
               ? TextSpan(
@@ -140,7 +149,7 @@ class _OutlinedText extends StatelessWidget {
                               Paint()
                                 ..style = PaintingStyle.stroke
                                 ..strokeWidth = 3
-                                ..color = color,
+                                ..color = strokeColor,
                         ),
                         recognizer: span.recognizer,
                       );
@@ -153,11 +162,25 @@ class _OutlinedText extends StatelessWidget {
                       Paint()
                         ..style = PaintingStyle.stroke
                         ..strokeWidth = 3
-                        ..color = color,
+                        ..color = strokeColor,
                 ),
               ),
         ),
-        Text.rich(spans != null ? TextSpan(children: spans) : TextSpan(text: text, style: baseStyle.copyWith(color: Colors.black))),
+        // Relleno
+        Text.rich(
+          spans != null
+              ? TextSpan(
+                children:
+                    spans!.map((span) {
+                      return TextSpan(
+                        text: (span as TextSpan).text,
+                        style: (span.style ?? baseStyle).copyWith(color: fillColor),
+                        recognizer: span.recognizer,
+                      );
+                    }).toList(),
+              )
+              : TextSpan(text: text, style: baseStyle.copyWith(color: fillColor)),
+        ),
       ],
     );
   }

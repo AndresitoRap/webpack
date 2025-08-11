@@ -90,7 +90,7 @@ class _HeaderState extends State<Header> {
               },
               child: AnimatedContainer(
                 alignment: Alignment.topCenter,
-                duration: const Duration(milliseconds: 600),
+                duration: const Duration(milliseconds: 400),
                 curve: Curves.fastEaseInToSlowEaseOut,
                 width: screenWidth,
                 height:
@@ -164,7 +164,7 @@ class _HeaderState extends State<Header> {
                       curve: Curves.easeOut,
                       opacity: isLogoHovered ? 1.0 : 0.7,
                       child: SvgPicture.asset(
-                        "assets/img/home/WIsotipo.svg",
+                        "img/home/wisotipo.svg",
                         height: 23,
                         colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
                       ),
@@ -315,11 +315,7 @@ class _HeaderState extends State<Header> {
                   duration: const Duration(milliseconds: 400),
                   curve: Curves.decelerate,
                   opacity: isMenuOpen ? 0.0 : 1.0,
-                  child: SvgPicture.asset(
-                    "assets/img/home/wisotipo.svg",
-                    height: 23,
-                    colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                  ),
+                  child: SvgPicture.asset("img/home/wisotipo.svg", height: 23, colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn)),
                 ),
                 AnimatedOpacity(
                   duration: const Duration(milliseconds: 400),

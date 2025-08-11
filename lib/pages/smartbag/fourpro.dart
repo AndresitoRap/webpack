@@ -15,16 +15,16 @@ import 'package:webpack/widgets/scrollopacity.dart';
 import 'package:webpack/widgets/video.dart';
 
 class FourPro extends StatelessWidget {
+  final Responsive r;
   final String currentRoute;
   final Subcategorie subcategorie;
   final String section;
 
-  const FourPro({super.key, required this.currentRoute, required this.subcategorie, required this.section});
+  const FourPro({super.key, required this.currentRoute, required this.subcategorie, required this.section, required this.r});
 
   // final de secuencia
   @override
   Widget build(BuildContext context) {
-    final Responsive r = Responsive.of(context);
     final blue = Theme.of(context).primaryColor;
     final isMobile = r.wp(100) < 850;
     final route = '${subcategorie.route}/crea-tu-empaque';
@@ -97,7 +97,7 @@ class Start4PROSliver extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(22),
                       color: const Color.fromARGB(161, 255, 255, 255),
-                      image: isMobile ? DecorationImage(image: AssetImage("assets/img/smartbag/4Pro/prueba.png"), fit: BoxFit.cover) : null,
+                      image: isMobile ? DecorationImage(image: AssetImage("img/smartbag/4Pro/prueba.png"), fit: BoxFit.cover) : null,
                     ),
                     child: isMobile ? _buildPhone(context) : _buildDesktop(context),
                   ),
@@ -232,7 +232,7 @@ class Start4PROSliver extends StatelessWidget {
           child: IgnorePointer(
             child:
                 isMobile
-                    ? Image.asset("assets/img/smartbag/4Pro/prueba.png", cacheWidth: 800, fit: BoxFit.cover, alignment: Alignment.centerLeft)
+                    ? Image.asset("img/smartbag/4Pro/prueba.png", cacheWidth: 800, fit: BoxFit.cover, alignment: Alignment.centerLeft)
                     : Row(
                       children: [
                         Expanded(
@@ -349,28 +349,28 @@ class _Scroll4FunctionsSliverState extends State<Scroll4FunctionsSliver> {
       {
         "title": "4 Funciones, 4PRO.",
         "subtitle": "El empaque 4PRO SmartBag®: seguro, funcional y diseñado para la visión de tu marca.",
-        "image": "assets/img/smartbag/4pro/card1.webp",
+        "image": "img/smartbag/4pro/card1.webp",
         "down": false,
       },
       {
         "title": "Sella. Protege. Impacta.",
         "subtitle":
             "El zipper hermético, los materiales de alta calidad y los acabados que cautivan, aseguran que tu producto no solo se conserve, sino que domine la atención en cualquier estantería.",
-        "image": "assets/img/smartbag/4pro/card2.webp",
+        "image": "img/smartbag/4pro/card2.webp",
         "down": true,
       },
       {
         "title": "El empaque que se adapta a tu visión.",
         "subtitle":
             "Una versatilidad sin límites para alimentos, cosméticos, suplementos y más. Porque tu producto no solo merece protección, sino la oportunidad de destacar en cualquier lugar.",
-        "image": "assets/img/smartbag/4pro/card3.webp",
+        "image": "img/smartbag/4pro/card3.webp",
         "down": false,
       },
       {
         "title": "Innovación que se ve y se siente.",
         "subtitle":
             "4PRO SmartBag® la tecnología que fusiona un diseño impactante con un compromiso real por la sostenibilidad. Todo en un solo empaque.",
-        "image": "assets/img/smartbag/4pro/card4.webp",
+        "image": "img/smartbag/4pro/card4.webp",
         "down": true,
       },
     ];
@@ -520,7 +520,7 @@ class MultipleFunctionsSliver extends StatelessWidget {
 
   List<Widget> _buildPhone(BuildContext context) {
     return [
-      SlideFadeIn(fromLeft: true, child: Image.asset("assets/img/smartbag/4pro/top.webp")),
+      SlideFadeIn(fromLeft: true, child: Image.asset("img/smartbag/4pro/top.webp")),
       SizedBox(height: r.dp(4)),
 
       ScrollAnimatedWrapper(
@@ -536,7 +536,7 @@ class MultipleFunctionsSliver extends StatelessWidget {
         ),
       ),
       SizedBox(height: r.dp(4)),
-      SlideFadeIn(fromLeft: false, child: Image.asset("assets/img/smartbag/4pro/down.webp")),
+      SlideFadeIn(fromLeft: false, child: Image.asset("img/smartbag/4pro/down.webp")),
       SizedBox(height: r.dp(4)),
 
       ScrollAnimatedWrapper(
@@ -571,13 +571,13 @@ class MultipleFunctionsSliver extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(child: SlideFadeIn(fromLeft: false, child: Image.asset("assets/img/smartbag/4pro/top.webp"))),
+          Expanded(child: SlideFadeIn(fromLeft: false, child: Image.asset("img/smartbag/4pro/top.webp"))),
         ],
       ),
       SizedBox(height: r.dp(5, max: 100)),
       Row(
         children: [
-          Expanded(child: SlideFadeIn(fromLeft: true, child: Image.asset("assets/img/smartbag/4pro/down.webp"))),
+          Expanded(child: SlideFadeIn(fromLeft: true, child: Image.asset("img/smartbag/4pro/down.webp"))),
 
           Expanded(
             child: ScrollAnimatedWrapper(
@@ -685,7 +685,7 @@ class ValvePeelAndLeafSliver extends StatelessWidget {
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: const Color(0xFFEDF3FF)),
             child: Column(
               children: [
-                Image.asset("assets/img/smartbag/4pro/cuatrilamina.webp"),
+                Image.asset("img/smartbag/4pro/cuatrilamina.webp"),
                 SizedBox(height: r.hp(1, max: 40)),
 
                 Text(
@@ -761,7 +761,7 @@ class ValvePeelAndLeafSliver extends StatelessWidget {
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: const Color(0xFFEDF3FF)),
             child: Column(
               children: [
-                Image.asset("assets/img/smartbag/4pro/terminacion.webp"),
+                Image.asset("img/smartbag/4pro/terminacion.webp"),
                 SizedBox(height: r.hp(1, max: 40)),
 
                 Text("Tú decides la terminación", style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: r.dp(1.4, max: 28))),
@@ -782,7 +782,7 @@ class ValvePeelAndLeafSliver extends StatelessWidget {
   Container _buildDesktop() {
     final List<Map<String, String>> cards = [
       {
-        "image": "assets/img/smartbag/4pro/cuatrilamina.webp",
+        "image": "img/smartbag/4pro/cuatrilamina.webp",
         "video": "",
         "title": "Protección superior con cuatro capas.",
         "text":
@@ -796,7 +796,7 @@ class ValvePeelAndLeafSliver extends StatelessWidget {
             "El sistema Peel Stick permite abrir y cerrar la bolsa de forma sencilla, mientras que las válvulas desgasificadoras conservan tus productos frescos por más tiempo, maximizando su vida útil.",
       },
       {
-        "image": "assets/img/smartbag/4pro/terminacion.webp",
+        "image": "img/smartbag/4pro/terminacion.webp",
         "video": "",
         "title": "Tú decides la terminación",
         "text":
@@ -978,7 +978,7 @@ class _VideoScrollableSliverState extends State<VideoScrollableSliver> {
               transform: Matrix4.translationValues(0, greenYOffset, 0),
               width: screenHeight * 1.1,
               child: ImageSequenceScroller(
-                framePrefix: 'assets/img/smartbag/4pro/frames/frame',
+                framePrefix: 'img/smartbag/4pro/frames/frame',
                 frameExtension: 'webp',
                 totalFrames: 294,
                 width: double.infinity,
@@ -1005,7 +1005,7 @@ class _VideoScrollableSliverState extends State<VideoScrollableSliver> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: Image.asset(
-                  'assets/img/smartbag/4pro/frames/frame$frame.webp',
+                  'img/smartbag/4pro/frames/frame$frame.webp',
                   width: double.infinity,
                   fit: BoxFit.contain,
                   cacheWidth: 1920,
@@ -1056,7 +1056,7 @@ class Finally4PROSliver extends StatelessWidget {
                       child: Text("UNICA E INIGUALABLE", style: TextStyle(color: blue, fontSize: r.fs(3, 50), fontWeight: FontWeight.bold)),
                     ),
 
-                    ScrollAnimatedWrapper(child: Image.asset("assets/img/smartbag/4pro.webp", fit: BoxFit.cover, cacheWidth: 800, height: 400)),
+                    ScrollAnimatedWrapper(child: Image.asset("img/smartbag/4pro.webp", fit: BoxFit.cover, cacheWidth: 800, height: 400)),
                   ],
                 ),
               ),
@@ -1123,7 +1123,7 @@ class Finally4PROSliver extends StatelessWidget {
                     ),
                   ),
                 ),
-                Image.asset("assets/img/smartbag/4pro/peel.webp"),
+                Image.asset("img/smartbag/4pro/peel.webp"),
               ],
             ),
           ),
@@ -1135,7 +1135,7 @@ class Finally4PROSliver extends StatelessWidget {
             decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
             child: Column(
               children: [
-                Image.asset("assets/img/smartbag/4pro/valvulas.webp"),
+                Image.asset("img/smartbag/4pro/valvulas.webp"),
 
                 Text.rich(
                   style: TextStyle(fontSize: r.fs(1.7, 30)),
@@ -1187,7 +1187,7 @@ class Finally4PROSliver extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Expanded(child: Image.asset("assets/img/smartbag/4pro/peel.webp")),
+                    Expanded(child: Image.asset("img/smartbag/4pro/peel.webp")),
                   ],
                 ),
               ),
@@ -1201,7 +1201,7 @@ class Finally4PROSliver extends StatelessWidget {
                 decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
                 child: Column(
                   children: [
-                    Expanded(child: Image.asset("assets/img/smartbag/4pro/valvulas.webp")),
+                    Expanded(child: Image.asset("img/smartbag/4pro/valvulas.webp")),
 
                     Text.rich(
                       style: TextStyle(fontSize: r.fs(1.2, 24)),

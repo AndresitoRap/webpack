@@ -103,10 +103,7 @@ class _DataProccessingState extends State<DataProccessing> {
                         ),
                       ),
                       if (!isMobile)
-                        Expanded(
-                          flex: 2,
-                          child: Padding(padding: const EdgeInsets.all(20.0), child: Image.asset("assets/img/support/dataproccesing.webp")),
-                        ),
+                        Expanded(flex: 2, child: Padding(padding: const EdgeInsets.all(20.0), child: Image.asset("img/support/dataproccesing.webp"))),
                     ],
                   ),
                 ),

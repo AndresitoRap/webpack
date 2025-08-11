@@ -1,52 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-
-  <!-- <script>
-    window.flutterWebRenderer = "html";
-  </script> -->
-  
-
   <base href="$FLUTTER_BASE_HREF">
-
+  
   <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
   <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-
-  <!-- iOS meta tags & icons -->
+  <meta name="description" content="Empaques Packvisión - Innovación en empaques flexibles">
+  
+  <!-- PWA y iOS -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="packvision">
+  <meta name="apple-mobile-web-app-title" content="Packvisión">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
-  <!-- FAVICONS E ÍCONOS PARA DISPOSITIVOS -->
-  <link rel="icon" href="icons/favicon.png" type="image/png" sizes="32x32" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="192x19∏2" href="icons/icon-192.png" />
-  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png" />
-  <link rel="manifest" href="manifest.json" />
+  <!-- Favicon -->
+  <link rel="icon" href="icons/favicon.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
 
+  <!-- Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Preload Flutter core -->
+  <link rel="preload" href="flutter.js" as="script">
+  <link rel="preload" href="flutter_bootstrap.js" as="script">
 
   <title>Empaques Packvisión</title>
-  <link rel="manifest" href="manifest.json">
 </head>
 <body>
   <div id="flutter_container"></div>
-  <script src='https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.min.mjs' type='module'></script>
-  <script type='module'>
-  var { pdfjsLib } = globalThis;
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.worker.mjs';
 
-  var pdfRenderOptions = {
-    cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/cmaps/',
-    cMapPacked: true,
-  }
+  <!-- Flutter -->
+  <script src="flutter.js" defer data-renderer="html"></script>
+  <script src="flutter_bootstrap.js" defer></script>
+
+  <!-- Lazy load scripts no críticos -->
+  <script>
+    window.addEventListener('load', () => {
+      // PDF.js módulo moderno
+      const pdfModule = document.createElement('script');
+      pdfModule.type = 'module';
+      pdfModule.src = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.min.mjs';
+      document.body.appendChild(pdfModule);
+
+      // PDF.js legacy
+      const pdfLegacy = document.createElement('script');
+      pdfLegacy.src = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/build/pdf.min.js';
+      pdfLegacy.defer = true;
+      document.body.appendChild(pdfLegacy);
+
+      // Model Viewer
+      const modelViewer = document.createElement('script');
+      modelViewer.type = 'module';
+      modelViewer.src = './assets/packages/flutter_3d_controller/assets/model_viewer.min.js';
+      modelViewer.defer = true;
+      document.body.appendChild(modelViewer);
+    });
   </script>
-  <script src="flutter_bootstrap.js" async></script>
-  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/build/pdf.min.js"></script>
-  <script type="module" src="./assets/packages/flutter_3d_controller/assets/model_viewer.min.js" defer></script>
+
+  <!-- Prevent autoplay issues in iOS -->
   <video style="display:none" playsinline></video>
 </body>
 </html>

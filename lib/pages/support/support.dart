@@ -28,12 +28,7 @@ class SupportHome extends StatelessWidget {
                     color: const Color.fromARGB(255, 209, 218, 237),
                     child: Stack(
                       children: [
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Image.asset("assets/img/support/support_home.webp", height: 300),
-                        ),
+                        Positioned(bottom: 0, left: 0, right: 0, child: Image.asset("img/support/support_home.webp", height: 300)),
                         Center(
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -99,29 +94,18 @@ class SupportHome extends StatelessWidget {
                                       color: Colors.white,
                                       border: Border.all(color: Colors.grey.shade300),
                                       borderRadius: BorderRadius.circular(12),
-                                      boxShadow: [
-                                        BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4)),
-                                      ],
+                                      boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4))],
                                     ),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Icon(card.icon, size: 36, color: Theme.of(context).primaryColor),
                                         const SizedBox(height: 12),
-                                        Text(
-                                          card.title,
-                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                                        ),
+                                        Text(card.title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                                         const SizedBox(height: 8),
                                         Text(card.description),
                                         const SizedBox(height: 12),
-                                        Text(
-                                          card.linkText,
-                                          style: TextStyle(
-                                            color: Theme.of(context).primaryColor,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
+                                        Text(card.linkText, style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold)),
                                       ],
                                     ),
                                   ),
@@ -152,13 +136,7 @@ class SupportCardData {
   final String linkText;
   final String route;
 
-  SupportCardData({
-    required this.icon,
-    required this.title,
-    required this.description,
-    required this.linkText,
-    required this.route,
-  });
+  SupportCardData({required this.icon, required this.title, required this.description, required this.linkText, required this.route});
 }
 
 // Lista de tarjetas
@@ -166,8 +144,7 @@ final List<SupportCardData> _supportCards = [
   SupportCardData(
     icon: CupertinoIcons.chat_bubble_text,
     title: "Ayuda Rápida",
-    description:
-        "¿Tienes una pregunta rápida o necesitas asistencia inmediata? Aquí puedes encontrar respuestas al instante.",
+    description: "¿Tienes una pregunta rápida o necesitas asistencia inmediata? Aquí puedes encontrar respuestas al instante.",
     linkText: "Contactarme con un asesor",
     route: "/Soporte/Ayuda-Rapida/Whatsapp",
   ),
@@ -181,8 +158,7 @@ final List<SupportCardData> _supportCards = [
   SupportCardData(
     icon: CupertinoIcons.heart_circle,
     title: "Tu Opinión",
-    description:
-        "Tu experiencia es fundamental para seguir mejorando. Déjanos tus comentarios, responde la encuesta o registra una PQRS fácilmente.",
+    description: "Tu experiencia es fundamental para seguir mejorando. Déjanos tus comentarios, responde la encuesta o registra una PQRS fácilmente.",
     linkText: "Compartir mi experiencia",
     route: "/Soporte/Tu-opinion/Encuesta-de-satisfaccion-y-PQRS",
   ),

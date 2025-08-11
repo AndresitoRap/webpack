@@ -159,12 +159,7 @@ class SliverWithSostenible extends StatelessWidget {
                   width: 60,
                   height: 60,
                   decoration: BoxDecoration(shape: BoxShape.circle),
-                  child: Image.asset(
-                    "assets/img/ecobag/doypack/o_with_flowers.png",
-                    fit: BoxFit.cover,
-                    color: green,
-                    colorBlendMode: BlendMode.srcIn,
-                  ),
+                  child: Image.asset("img/ecobag/doypack/o_with_flowers.png", fit: BoxFit.cover, color: green, colorBlendMode: BlendMode.srcIn),
                 ),
                 Text(
                   "DOYPACK",

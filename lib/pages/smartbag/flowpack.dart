@@ -63,17 +63,17 @@ class _SliverStartFlowpackState extends State<SliverStartFlowpack> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
+          SizedBox(
             height: widget.screenHeight,
             width: widget.screenWidth,
 
             child: Stack(
               children: [
                 widget.isMobile
-                    ? Container(
+                    ? SizedBox(
                       height: widget.screenHeight,
                       width: widget.screenWidth,
-                      child: Image.asset("assets/img/smartbag/flowpack/inicio.webp", fit: BoxFit.cover),
+                      child: Image.asset("img/smartbag/flowpack/inicio.webp", fit: BoxFit.cover),
                     )
                     : ValueListenableBuilder<bool>(
                       valueListenable: videoBlurNotifier,
@@ -206,9 +206,9 @@ class _SliverAboutFlowpackState extends State<SliverAboutFlowpack> {
             : (widget.screenWidth * 0.5).clamp(0, 500);
 
     final List<Map<String, dynamic>> nuestraFlowpackSmartbag = [
-      {"title": "Flowpack Smartbag:\ninnovación en cada detalle", "image": "assets/img/smartbag/flowpack/cardLarge1.webp"},
-      {"title": "Diseño elegante, opciones\navanzadas como válvula y Peel & Stick", "image": "assets/img/smartbag/flowpack/cardLarge2.webp"},
-      {"title": "Empaque ideal para destacar\ntu producto con estilo y eficiencia.", "image": "assets/img/smartbag/flowpack/cardLarge3.webp"},
+      {"title": "Flowpack Smartbag:\ninnovación en cada detalle", "image": "img/smartbag/flowpack/cardLarge1.webp"},
+      {"title": "Diseño elegante, opciones\navanzadas como válvula y Peel & Stick", "image": "img/smartbag/flowpack/cardLarge2.webp"},
+      {"title": "Empaque ideal para destacar\ntu producto con estilo y eficiencia.", "image": "img/smartbag/flowpack/cardLarge3.webp"},
     ];
     return SliverToBoxAdapter(
       child: Container(
@@ -376,7 +376,7 @@ class SliverWithInfoFast extends StatelessWidget {
                       ).createShader(bounds);
                     },
                     blendMode: BlendMode.dstIn,
-                    child: Image.asset("assets/img/smartbag/flowpack/cruzado.webp"),
+                    child: Image.asset("img/smartbag/flowpack/cruzado.webp"),
                   ),
                 ),
               ),
@@ -427,21 +427,9 @@ class _SliverWithCardsState extends State<SliverWithCards> {
 
   @override
   Widget build(BuildContext context) {
-    final double cardWidth =
-        widget.isMobile
-            ? widget.screenWidth *
-                0.7 // más ancho en mobile
-            : (widget.screenWidth * 0.3).clamp(500, 800);
-
-    final double cardHeight =
-        widget.isMobile
-            ? widget.screenWidth *
-                0.7 // cuadrado en mobile
-            : (widget.screenWidth * 0.3).clamp(500, 800);
-
     final List<Map<String, dynamic>> nuestraFlowpackSmartbag = [
       {
-        'image': 'assets/img/smartbag/flowpack/shortCard1.webp',
+        'image': 'img/smartbag/flowpack/shortCard1.webp',
         'textSpans': [
           TextSpan(text: "Flowpack Smartbag: ", style: TextStyle(color: widget.blue.withAlpha(180))),
           TextSpan(
@@ -452,7 +440,7 @@ class _SliverWithCardsState extends State<SliverWithCards> {
         ],
       },
       {
-        'image': 'assets/img/smartbag/flowpack/shortCard2.webp',
+        'image': 'img/smartbag/flowpack/shortCard2.webp',
         'textSpans': [
           TextSpan(text: "Estructuras multicapa de 3 y 4 láminas, ", style: TextStyle(color: widget.blue.withAlpha(180))),
           TextSpan(
@@ -462,7 +450,7 @@ class _SliverWithCardsState extends State<SliverWithCards> {
         ],
       },
       {
-        'image': 'assets/img/smartbag/flowpack/shortCard3.webp',
+        'image': 'img/smartbag/flowpack/shortCard3.webp',
         'textSpans': [
           TextSpan(text: "Sistemas como válvula desgasificadora y ", style: TextStyle(color: Colors.grey[600])),
           TextSpan(text: "tecnología Peel & Stick se integran ", style: TextStyle(color: widget.blue.withAlpha(180))),
@@ -610,13 +598,13 @@ class _SliverWithModelsState extends State<SliverWithModels> {
   @override
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> colors = [
-      //{"name": "Azul Holografica", "color": const Color(0xE01261A1), "image": "assets/img/ecobag/4pro.webp"},
-      //{"name": "Metalizada Holografica", "color": const Color(0xFFC7C7C7), "image": "assets/img/smartbag/flowpack/colorMetalizada.webp"},
-      {"name": "Naranja Holografica", "color": const Color.fromARGB(255, 233, 111, 41), "image": "assets/img/smartbag/flowpack/colorNaranja.webp"},
-      {"name": "Blanco", "color": const Color.fromARGB(255, 210, 210, 210), "image": "assets/img/smartbag/flowpack/colorBlanco.webp"},
-      {"name": "Negro", "color": const Color.fromARGB(221, 70, 70, 70), "image": "assets/img/smartbag/flowpack/ColorNegro.webp"},
-      {"name": "Dorado", "color": const Color.fromARGB(255, 232, 204, 63), "image": "assets/img/smartbag/flowpack/ColorDorado.webp"},
-      {"name": "Naranja Lechosa", "color": const Color.fromARGB(255, 204, 110, 39), "image": "assets/img/smartbag/flowpack/colorNaranjaLechosa.webp"},
+      //{"name": "Azul Holografica", "color": const Color(0xE01261A1), "image": "img/ecobag/4pro.webp"},
+      //{"name": "Metalizada Holografica", "color": const Color(0xFFC7C7C7), "image": "img/smartbag/flowpack/colorMetalizada.webp"},
+      {"name": "Naranja Holografica", "color": const Color.fromARGB(255, 233, 111, 41), "image": "img/smartbag/flowpack/colorNaranja.webp"},
+      {"name": "Blanco", "color": const Color.fromARGB(255, 210, 210, 210), "image": "img/smartbag/flowpack/colorBlanco.webp"},
+      {"name": "Negro", "color": const Color.fromARGB(221, 70, 70, 70), "image": "img/smartbag/flowpack/ColorNegro.webp"},
+      {"name": "Dorado", "color": const Color.fromARGB(255, 232, 204, 63), "image": "img/smartbag/flowpack/ColorDorado.webp"},
+      {"name": "Naranja Lechosa", "color": const Color.fromARGB(255, 204, 110, 39), "image": "img/smartbag/flowpack/colorNaranjaLechosa.webp"},
     ];
     final selectedItem = colors.firstWhere((item) => item["name"] == selectedColor, orElse: () => colors.first);
 
@@ -924,7 +912,7 @@ class _SliverWithMoreFlowState extends State<SliverWithMoreFlow> {
                           children: [
                             containerFlow(
                               widget.blue,
-                              imagen: "assets/img/smartbag/flowpack/cortina.webp",
+                              imagen: "img/smartbag/flowpack/cortina.webp",
                               alignment: Alignment.topLeft,
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -945,7 +933,7 @@ class _SliverWithMoreFlowState extends State<SliverWithMoreFlow> {
                               ),
                             ),
                             containerFlow(
-                              imagen: "assets/img/smartbag/flowpack/splash.webp",
+                              imagen: "img/smartbag/flowpack/splash.webp",
                               widget.blue,
                               alignment: Alignment.topCenter,
                               child: Padding(
@@ -967,7 +955,7 @@ class _SliverWithMoreFlowState extends State<SliverWithMoreFlow> {
                               ),
                             ),
                             containerFlow(
-                              imagen: "assets/img/smartbag/flowpack/perlas.webp",
+                              imagen: "img/smartbag/flowpack/perlas.webp",
                               widget.blue,
                               alignment: Alignment.topCenter,
                               child: Padding(
@@ -995,7 +983,7 @@ class _SliverWithMoreFlowState extends State<SliverWithMoreFlow> {
                         : Row(
                           children: [
                             containerFlow(
-                              imagen: "assets/img/smartbag/flowpack/cortina.webp",
+                              imagen: "img/smartbag/flowpack/cortina.webp",
                               widget.blue,
                               alignment: Alignment.topLeft,
                               child: Padding(
@@ -1020,7 +1008,7 @@ class _SliverWithMoreFlowState extends State<SliverWithMoreFlow> {
                               child: Column(
                                 children: [
                                   containerFlow(
-                                    imagen: "assets/img/smartbag/flowpack/splash.webp",
+                                    imagen: "img/smartbag/flowpack/splash.webp",
                                     widget.blue,
                                     alignment: Alignment.centerRight,
                                     child: Padding(
@@ -1042,7 +1030,7 @@ class _SliverWithMoreFlowState extends State<SliverWithMoreFlow> {
                                     ),
                                   ),
                                   containerFlow(
-                                    imagen: "assets/img/smartbag/flowpack/perlas.webp",
+                                    imagen: "img/smartbag/flowpack/perlas.webp",
                                     widget.blue,
                                     alignment: Alignment.centerLeft,
                                     child: Padding(
@@ -1151,7 +1139,7 @@ class SliverWithComparacion extends StatelessWidget {
                     Expanded(
                       child: Column(
                         children: [
-                          Image.asset("assets/img/smartbag/flowpack/flowpackBlancoNegro.webp", fit: BoxFit.contain),
+                          Image.asset("img/smartbag/flowpack/flowpackBlancoNegro.webp", fit: BoxFit.contain),
                           const SizedBox(height: 12),
                           Text("Flowpack Smart", style: TextStyle(fontWeight: FontWeight.bold, fontSize: titleFontSize, color: blue)),
                         ],
@@ -1160,7 +1148,7 @@ class SliverWithComparacion extends StatelessWidget {
                     Expanded(
                       child: Column(
                         children: [
-                          Image.asset("assets/img/smartbag/flowpack/flowpackVs4proBlancoNegro.webp", fit: BoxFit.contain),
+                          Image.asset("img/smartbag/flowpack/flowpackVs4proBlancoNegro.webp", fit: BoxFit.contain),
                           const SizedBox(height: 12),
                           Text(
                             "4PRO Smart",
@@ -1407,7 +1395,7 @@ class _SliverFinalFlowpackState extends State<SliverFinalFlowpack> with TickerPr
                                         // Solo mostrar mientras no se haya activado la nueva bolsa
                                         return _newBagController.status == AnimationStatus.dismissed ? transformed : const SizedBox.shrink();
                                       },
-                                      child: Image.asset("assets/img/smartbag/flowpack/flowpack_blanco.webp"),
+                                      child: Image.asset("img/smartbag/flowpack/flowpack_blanco.webp"),
                                     ),
                                   ),
 
@@ -1427,7 +1415,7 @@ class _SliverFinalFlowpackState extends State<SliverFinalFlowpack> with TickerPr
                                           child: Transform.rotate(angle: _newBagRotation.value, child: child),
                                         );
                                       },
-                                      child: Image.asset("assets/img/smartbag/flowpack.webp"),
+                                      child: Image.asset("img/smartbag/flowpack.webp"),
                                     ),
                                   ),
                                 ],
@@ -1503,7 +1491,7 @@ class _SliverFinalFlowpackState extends State<SliverFinalFlowpack> with TickerPr
                                         // Solo mostrar mientras no se haya activado la nueva bolsa
                                         return _newBagController.status == AnimationStatus.dismissed ? transformed : const SizedBox.shrink();
                                       },
-                                      child: Image.asset("assets/img/smartbag/flowpack/flowpack_blanco.webp"),
+                                      child: Image.asset("img/smartbag/flowpack/flowpack_blanco.webp"),
                                     ),
 
                                     // Segunda bolsa (la que aparece al final)
@@ -1519,7 +1507,7 @@ class _SliverFinalFlowpackState extends State<SliverFinalFlowpack> with TickerPr
                                           child: Transform.rotate(angle: _newBagRotation.value, child: child),
                                         );
                                       },
-                                      child: Image.asset("assets/img/smartbag/flowpack.webp"),
+                                      child: Image.asset("img/smartbag/flowpack.webp"),
                                     ),
                                   ],
                                 ),

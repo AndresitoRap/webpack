@@ -39,6 +39,7 @@ class VideoFlutterState extends State<VideoFlutter> {
   late final web.HTMLVideoElement _video;
   bool isPlaying = true;
   double _retryRotationTurns = 0;
+  bool _lastBlur = false;
 
   @override
   void initState() {
@@ -62,6 +63,10 @@ class VideoFlutterState extends State<VideoFlutter> {
           ..style.transition = 'filter 0.5s ease-in-out'
           ..style.filter = widget.blur ? 'blur(30px)' : 'none';
 
+    if (!widget.showControls) {
+      _video.style.pointerEvents = 'none';
+    }
+
     _video.onClick.listen((_) => _togglePlayPause());
 
     _video.onEnded.listen((_) => widget.onEnded?.call());
@@ -84,6 +89,8 @@ class VideoFlutterState extends State<VideoFlutter> {
         if (mounted && widget.autoplay) _video.play();
       });
     }
+
+    _lastBlur = widget.blur;
   }
 
   /// Permite pausar el video desde el widget padre.
@@ -98,7 +105,9 @@ class VideoFlutterState extends State<VideoFlutter> {
   @override
   void didUpdateWidget(VideoFlutter oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.blur != widget.blur) {
+    // Solo aplica blur si cambió realmente
+    if (_lastBlur != widget.blur) {
+      _lastBlur = widget.blur;
       _video.style.filter = widget.blur ? 'blur(30px)' : 'none';
     }
   }

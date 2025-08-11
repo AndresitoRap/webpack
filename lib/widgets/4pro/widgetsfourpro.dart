@@ -303,7 +303,7 @@ class _LeafWithBagRevealState extends State<LeafWithBagReveal> with TickerProvid
                             top: y,
                             child: Transform.rotate(
                               angle: sin(t * pi * 2) * 0.4 + h.rot,
-                              child: Transform.scale(scale: h.scale, child: Image.asset('assets/img/ecobag/hoja1.webp', width: hojaAncho)),
+                              child: Transform.scale(scale: h.scale, child: Image.asset('img/ecobag/hoja1.webp', width: hojaAncho)),
                             ),
                           );
                         }).toList(),
@@ -322,7 +322,7 @@ class _LeafWithBagRevealState extends State<LeafWithBagReveal> with TickerProvid
                     mainAxisSize: MainAxisSize.min, // <- solo el ancho del contenido
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Expanded(flex: 1, child: Image.asset('assets/img/ecobag/discover1_Top.webp', fit: BoxFit.fitHeight)),
+                      Expanded(flex: 1, child: Image.asset('img/ecobag/discover1_Top.webp', fit: BoxFit.fitHeight)),
 
                       Expanded(
                         child: Padding(

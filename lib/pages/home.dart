@@ -113,7 +113,7 @@ class _IntroVideoSliverState extends State<IntroVideoSliver> {
               child: Container(
                 color: Colors.white60,
                 alignment: Alignment.center,
-                child: Image.asset('assets/img/home/packvision.webp', width: widget.r.wp(70)),
+                child: Image.asset('img/home/packvision.webp', width: widget.r.wp(70)),
               ),
             ),
           ],
@@ -129,25 +129,25 @@ final List<Map<String, dynamic>> cardPWC = [
     'title': "Asesoría",
     'description':
         "Le ofrecemos una asesoría personalizada y especializada para cada etapa de su proyecto. Desde la conceptualización hasta la implementación, nuestro equipo de expertos le proporciona soluciones a la medida, un soporte constante y recomendaciones estratégicas que garantizan el éxito de sus metas.",
-    'image': "assets/img/home/asesoria.webp",
+    'image': "img/home/asesoria.webp",
   },
   {
     'title': "Calidad",
     'description':
         "Garantizamos los más altos estándares de calidad en todos nuestros productos y servicios. Supervisamos y controlamos cada proceso meticulosamente para asegurar resultados consistentes, duraderos y que superen sus expectativas.",
-    'image': "assets/img/home/calidad.webp",
+    'image': "img/home/calidad.webp",
   },
   {
     'title': "Cumplimiento",
     'description':
         "Sabemos que el tiempo es un activo invaluable para su negocio, por eso garantizamos la puntualidad en cada entrega. Nuestro compromiso se basa en una planificación eficiente, tiempos claros y un seguimiento riguroso que asegura el cumplimiento de cada plazo acordado, brindándole total confianza y seguridad.",
-    'image': "assets/img/home/cumplimiento.webp",
+    'image': "img/home/cumplimiento.webp",
   },
   {
     'title': "Servicios",
     'description':
         "Nuestro portafolio de servicios integrales está diseñado para ser su socio estratégico. Desde la conceptualización y el desarrollo de soluciones hasta el soporte postventa, trabajamos de cerca con usted para ofrecerle un servicio adaptado a sus necesidades y enfocado en el crecimiento sostenible de su empresa.",
-    'image': "assets/img/home/servicios.webp",
+    'image': "img/home/servicios.webp",
   },
 ];
 
@@ -186,7 +186,6 @@ class _AnimatedPositionedCardState extends State<AnimatedPositionedCard> with Si
   late AnimationController _controller;
   late Animation<double> _fade;
   late Animation<Offset> _slide;
-  bool _wasExpanded = false;
 
   @override
   void initState() {
@@ -227,7 +226,6 @@ class _AnimatedPositionedCardState extends State<AnimatedPositionedCard> with Si
     final double padding = widget.screenWidth * 0.01;
     final double fontSizeTitle = widget.screenWidth * 0.012;
     final double fontSizeDescription = widget.screenWidth * 0.013;
-    final double iconSize = widget.screenWidth * 0.03;
 
     return AnimatedContainer(
       clipBehavior: Clip.antiAlias,
@@ -354,16 +352,6 @@ class PackagingWithConscienceSliver extends StatefulWidget {
 class _PackagingWithConscienceSliverState extends State<PackagingWithConscienceSliver> with TickerProviderStateMixin {
   int? _expandedIndex;
   bool _hideText = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   void _onExpandCard(int index) async {
     if (_expandedIndex == index) {
@@ -621,7 +609,7 @@ class TheFutureSliver extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                ScrollAnimatedWrapper(child: Image.asset('assets/img/home/home1.webp', width: r.wp(90))),
+                ScrollAnimatedWrapper(child: Image.asset('img/home/home1.webp', width: r.wp(90))),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 10),
                   child: ScrollAnimatedWrapper(
@@ -765,14 +753,14 @@ class SmartAndEcoSliver extends StatelessWidget {
           Expanded(
             child: ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-              child: Image.asset('assets/img/home/smart.webp', fit: BoxFit.cover),
+              child: Image.asset('img/home/smart.webp', fit: BoxFit.cover),
             ),
           ),
           const SizedBox(height: 3.5),
           Expanded(
             child: ClipRRect(
               borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24)),
-              child: Image.asset('assets/img/home/eco.webp', fit: BoxFit.cover),
+              child: Image.asset('img/home/eco.webp', fit: BoxFit.cover),
             ),
           ),
           Padding(
@@ -1021,12 +1009,12 @@ class ProductsSliver extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> cards = [
-      {'title': '4PRO', 'subtitle': 'Variedad de colores.', 'image': 'assets/img/ecobag/4pro.webp', 'isEcobag': true},
-      {'title': '5PRO', 'subtitle': 'Evolución para tí.', 'image': 'assets/img/smartbag/5pro.webp', 'isEcobag': false},
-      {'title': 'Flowpack', 'subtitle': 'Alto estilo, alta presencia.', 'image': 'assets/img/ecobag/flowpack.webp', 'isEcobag': true},
-      {'title': 'Cojín', 'subtitle': 'Compacto y perfecto.', 'image': 'assets/img/smartbag/cojin.webp', 'isEcobag': false},
-      {'title': 'DoyPack', 'subtitle': 'No hay mejor selle que este.', 'image': 'assets/img/ecobag/doypack.webp', 'isEcobag': true},
-      {'title': 'Accesorios', 'subtitle': 'Válvulas y peel.', 'image': 'assets/img/smartbag/valvula.webp', 'isEcobag': false},
+      {'title': '4PRO', 'subtitle': 'Variedad de colores.', 'image': 'img/ecobag/4pro.webp', 'isEcobag': true},
+      {'title': '5PRO', 'subtitle': 'Evolución para tí.', 'image': 'img/smartbag/5pro.webp', 'isEcobag': false},
+      {'title': 'Flowpack', 'subtitle': 'Alto estilo, alta presencia.', 'image': 'img/ecobag/flowpack.webp', 'isEcobag': true},
+      {'title': 'Cojín', 'subtitle': 'Compacto y perfecto.', 'image': 'img/smartbag/cojin.webp', 'isEcobag': false},
+      {'title': 'DoyPack', 'subtitle': 'No hay mejor selle que este.', 'image': 'img/ecobag/doypack.webp', 'isEcobag': true},
+      {'title': 'Accesorios', 'subtitle': 'Válvulas y peel.', 'image': 'img/smartbag/valvula.webp', 'isEcobag': false},
     ];
 
     final crossAxisCount = r.wp(100) > 800 ? 2 : 1;
@@ -1190,10 +1178,10 @@ class _SliverCarrouselServicesState extends State<SliverCarrouselServices> with 
   final CarouselSliderController _carouselController = CarouselSliderController();
 
   final List<Map<String, String>> services = [
-    {'title': 'Publicidad', 'text': 'Campañas visuales que conectan con tu audiencia', 'image': 'assets/img/home/cumplimiento.webp'},
-    {'title': 'Fotografía', 'text': 'Capturamos la esencia de tu marca en cada imagen', 'image': 'assets/img/home/cumplimiento.webp'},
-    {'title': 'Diseño', 'text': 'Creatividad que comunica y deja huella', 'image': 'assets/img/home/cumplimiento.webp'},
-    {'title': 'Modelado 3D', 'text': 'Visualizaciones realistas para productos impactantes', 'image': 'assets/img/home/cumplimiento.webp'},
+    {'title': 'Publicidad', 'text': 'Campañas visuales que conectan con tu audiencia', 'image': 'img/home/cumplimiento.webp'},
+    {'title': 'Fotografía', 'text': 'Capturamos la esencia de tu marca en cada imagen', 'image': 'img/home/cumplimiento.webp'},
+    {'title': 'Diseño', 'text': 'Creatividad que comunica y deja huella', 'image': 'img/home/cumplimiento.webp'},
+    {'title': 'Modelado 3D', 'text': 'Visualizaciones realistas para productos impactantes', 'image': 'img/home/cumplimiento.webp'},
   ];
 
   @override
@@ -1389,7 +1377,7 @@ class SliverHeadquarters extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> cardHQ = [
       {
-        "img": "assets/img/home/carvajal.webp",
+        "img": "img/home/carvajal.webp",
         "name": "Carvajal - Bogotá D.C",
         "latitude": 4.60971,
         "longitude": -74.08175,
@@ -1397,7 +1385,7 @@ class SliverHeadquarters extends StatelessWidget {
             "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1988.4503945679396!2d-74.1391054034424!3d4.611774599445512!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3f776877ed45bf%3A0x126f76b8116c49e3!2sPACKVISI%C3%93N%20SAS%20SEDE%20CARVAJAL!5e0!3m2!1ses!2sco!4v1744147530535!5m2!1ses!2sco",
       },
       {
-        "img": "assets/img/home/norte.webp",
+        "img": "img/home/norte.webp",
         "name": "Nogal - Bogotá D.C",
         "latitude": 4.6610239150862025,
         "longitude": -74.05414093434182,
@@ -1405,7 +1393,7 @@ class SliverHeadquarters extends StatelessWidget {
             "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1988.4503945679396!2d-74.1391054034424!3d4.611774599445512!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3f776877ed45bf%3A0x126f76b8116c49e3!2sPACKVISI%C3%93N%20SAS%20SEDE%20CARVAJAL!5e0!3m2!1ses!2sco!4v1744147530535!5m2!1ses!2sco",
       },
       {
-        "img": "assets/img/home/mosquera.webp",
+        "img": "img/home/mosquera.webp",
         "name": "Mosquera - Cundinamarca",
         "latitude": 4.695486,
         "longitude": -74.190506,

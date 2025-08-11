@@ -162,13 +162,13 @@ class _SliverWithStartFlowPacEcoState extends State<SliverWithStartFlowPacEco> w
                   // Izquierda
                   SlideTransition(
                     position: _leftImageSlide,
-                    child: Opacity(opacity: 0.6, child: Image.asset("assets/img/ecobag/flowpack.webp", height: widget.screenHeight * 0.3)),
+                    child: Opacity(opacity: 0.6, child: Image.asset("img/ecobag/flowpack.webp", height: widget.screenHeight * 0.3)),
                   ),
 
                   // Derecha
                   SlideTransition(
                     position: _rightImageSlide,
-                    child: Opacity(opacity: 0.6, child: Image.asset("assets/img/ecobag/flowpack.webp", height: widget.screenHeight * 0.3)),
+                    child: Opacity(opacity: 0.6, child: Image.asset("img/ecobag/flowpack.webp", height: widget.screenHeight * 0.3)),
                   ),
 
                   // Central
@@ -178,7 +178,7 @@ class _SliverWithStartFlowPacEcoState extends State<SliverWithStartFlowPacEco> w
                       scale: _scaleAnimation,
                       child: FadeTransition(
                         opacity: _fadeAnimationimg,
-                        child: Image.asset("assets/img/ecobag/flowpack.webp", height: widget.screenHeight * 0.45),
+                        child: Image.asset("img/ecobag/flowpack.webp", height: widget.screenHeight * 0.45),
                       ),
                     ),
                   ),
@@ -219,12 +219,7 @@ class SliverWithTextFlowPackEco extends StatelessWidget {
                         width: 60,
                         height: 60,
                         decoration: const BoxDecoration(shape: BoxShape.circle),
-                        child: Image.asset(
-                          "assets/img/ecobag/doypack/o_with_flowers.png",
-                          fit: BoxFit.cover,
-                          color: green,
-                          colorBlendMode: BlendMode.srcIn,
-                        ),
+                        child: Image.asset("img/ecobag/doypack/o_with_flowers.png", fit: BoxFit.cover, color: green, colorBlendMode: BlendMode.srcIn),
                       ),
                       const SizedBox(width: 12),
                       Text(
@@ -367,30 +362,30 @@ class _SliverWithImageState extends State<SliverWithImage> with TickerProviderSt
 
     String title = "";
     String description = "";
-    String img = 'assets/img/smartbag/4pro/valvulas.webp';
+    String img = 'img/smartbag/4pro/valvulas.webp';
 
     switch (selectedDot) {
       case 0:
         title = "Peel & Stick";
         description =
             "Ideal para abrir y cerrar el empaque múltiples veces sin perder hermeticidad. Perfecto para productos que requieren facilidad de acceso y conservación.";
-        img = 'assets/img/smartbag/4pro/valvulas.webp';
+        img = 'img/smartbag/4pro/valvulas.webp';
         break;
       case 1:
         title = "Válvula";
         description =
             "Permite la salida de gases sin permitir la entrada de aire, ideal para productos como café recién tostado. Mejora la conservación y frescura del contenido.";
-        img = 'assets/img/smartbag/4pro/valvulas.webp';
+        img = 'img/smartbag/4pro/valvulas.webp';
         break;
       case 2:
         title = "Ventana";
         description = "Una sección del empaque que permite ver el producto en su interior sin abrirlo. Añade valor visual y confianza al consumidor.";
-        img = 'assets/img/smartbag/4pro/valvulas.webp';
+        img = 'img/smartbag/4pro/valvulas.webp';
         break;
       default:
         title = "";
         description = "Una sección del empaque que permite ver el producto en su interior sin abrirlo. Añade valor visual y confianza al consumidor.";
-        img = 'assets/img/smartbag/4pro/valvulas.webp';
+        img = 'img/smartbag/4pro/valvulas.webp';
     }
 
     return Align(
@@ -463,7 +458,7 @@ class _SliverWithImageState extends State<SliverWithImage> with TickerProviderSt
                             child: Stack(
                               children: [
                                 // PANEL DESLIZANTE
-                                Image.asset("assets/img/ecobag/flowpack.webp", fit: BoxFit.fitHeight, width: maxWidth, height: imgHeight),
+                                Image.asset("img/ecobag/flowpack.webp", fit: BoxFit.fitHeight, width: maxWidth, height: imgHeight),
 
                                 // DOT 1
                                 Positioned(left: maxWidth * 0.29, top: imgHeight * 0.20, child: interactiveDot(const Offset(0.29, 0.35), 0)),
@@ -583,13 +578,10 @@ class _SliverInfoEcoFlowpackState extends State<SliverInfoEcoFlowpack> {
   @override
   Widget build(BuildContext context) {
     final List<dynamic> nuestroFlowpack = [
-      {"title": "EcoBag® Flowpack:\nversatilidad para\nproductos sellados.", "image": "assets/img/smartbag/5pro/cardLarge3.webp"},
-      {
-        "title": "Ideal para snacks,\npolvos, golosinas y más.\nProtección y frescura asegurada.",
-        "image": "assets/img/smartbag/5pro/cardLarge3.webp",
-      },
-      {"title": "Sellado hermético,\nexcelente presentación\ny eficiencia en empaque.", "image": "assets/img/smartbag/5pro/cardLarge3.webp"},
-      {"title": "Adaptable a líneas automáticas\nde empaque y alta rotación.", "image": "assets/img/smartbag/5pro/cardLarge3.webp"},
+      {"title": "EcoBag® Flowpack:\nversatilidad para\nproductos sellados.", "image": "img/smartbag/5pro/cardLarge3.webp"},
+      {"title": "Ideal para snacks,\npolvos, golosinas y más.\nProtección y frescura asegurada.", "image": "img/smartbag/5pro/cardLarge3.webp"},
+      {"title": "Sellado hermético,\nexcelente presentación\ny eficiencia en empaque.", "image": "img/smartbag/5pro/cardLarge3.webp"},
+      {"title": "Adaptable a líneas automáticas\nde empaque y alta rotación.", "image": "img/smartbag/5pro/cardLarge3.webp"},
     ];
 
     return SliverToBoxAdapter(
@@ -987,7 +979,7 @@ class SliverWithComparacion extends StatelessWidget {
                     Expanded(
                       child: Column(
                         children: [
-                          Image.asset("assets/img/smartbag/flowpack.webp", fit: BoxFit.contain),
+                          Image.asset("img/smartbag/flowpack.webp", fit: BoxFit.contain),
                           const SizedBox(height: 12),
                           Text("Flowpack Eco", style: TextStyle(fontWeight: FontWeight.bold, fontSize: titleFontSize, color: green)),
                         ],
@@ -996,7 +988,7 @@ class SliverWithComparacion extends StatelessWidget {
                     Expanded(
                       child: Column(
                         children: [
-                          Image.asset("assets/img/smartbag/4pro.webp", fit: BoxFit.contain),
+                          Image.asset("img/smartbag/4pro.webp", fit: BoxFit.contain),
                           const SizedBox(height: 12),
                           Text(
                             "4PRO Eco",
@@ -1369,7 +1361,7 @@ class _SliverFinalFlowpackState extends State<SliverFinalFlowpack> with TickerPr
                                       // Solo mostrar mientras no se haya activado la nueva bolsa
                                       return _newBagController.status == AnimationStatus.dismissed ? transformed : const SizedBox.shrink();
                                     },
-                                    child: Image.asset("assets/img/smartbag/flowpack/flowpack_blanco.webp"),
+                                    child: Image.asset("img/smartbag/flowpack/flowpack_blanco.webp"),
                                   ),
                                 ),
 
@@ -1389,7 +1381,7 @@ class _SliverFinalFlowpackState extends State<SliverFinalFlowpack> with TickerPr
                                         child: Transform.rotate(angle: _newBagRotation.value, child: child),
                                       );
                                     },
-                                    child: Image.asset("assets/img/smartbag/flowpack.webp"),
+                                    child: Image.asset("img/smartbag/flowpack.webp"),
                                   ),
                                 ),
                               ],
@@ -1465,7 +1457,7 @@ class _SliverFinalFlowpackState extends State<SliverFinalFlowpack> with TickerPr
                                       // Solo mostrar mientras no se haya activado la nueva bolsa
                                       return _newBagController.status == AnimationStatus.dismissed ? transformed : const SizedBox.shrink();
                                     },
-                                    child: Image.asset("assets/img/smartbag/flowpack/flowpack_blanco.webp"),
+                                    child: Image.asset("img/smartbag/flowpack/flowpack_blanco.webp"),
                                   ),
 
                                   // Segunda bolsa (la que aparece al final)
@@ -1481,7 +1473,7 @@ class _SliverFinalFlowpackState extends State<SliverFinalFlowpack> with TickerPr
                                         child: Transform.rotate(angle: _newBagRotation.value, child: child),
                                       );
                                     },
-                                    child: Image.asset("assets/img/smartbag/flowpack.webp"),
+                                    child: Image.asset("img/smartbag/flowpack.webp"),
                                   ),
                                 ],
                               ),

@@ -36,7 +36,7 @@ class PageNotFound extends StatelessWidget {
                         child: ColorFiltered(
                           colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
                           child: Image.asset(
-                            'assets/img/404.webp',
+                            'img/404.webp',
                             width: min(screenWidth * 0.2, 400),
                             height: min(screenWidth * 0.2, 400),
                             fit: BoxFit.contain,
@@ -49,11 +49,7 @@ class PageNotFound extends StatelessWidget {
                   const SizedBox(height: 20),
                   Text(
                     "No hay NADA aquí...",
-                    style: TextStyle(
-                      fontSize: min(100, screenWidth * 0.08),
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1.2,
-                    ),
+                    style: TextStyle(fontSize: min(100, screenWidth * 0.08), fontWeight: FontWeight.w600, letterSpacing: 1.2),
                   ),
                   const SizedBox(height: 4),
                   Text(

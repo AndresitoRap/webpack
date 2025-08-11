@@ -56,7 +56,6 @@ class _SliverToStartState extends State<SliverToStart> with TickerProviderStateM
 
   //Texto arriba del video
   late final AnimationController _doypackController;
-  late final Animation<double> _doypackFade;
 
   //Boton de abajo
   late final AnimationController _buttonController;
@@ -90,8 +89,6 @@ class _SliverToStartState extends State<SliverToStart> with TickerProviderStateM
     ).animate(CurvedAnimation(parent: _coverController, curve: Curves.fastEaseInToSlowEaseOut));
 
     _doypackController = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
-
-    _doypackFade = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(parent: _doypackController, curve: Curves.easeIn));
 
     _buttonController = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
 
@@ -186,7 +183,7 @@ class _SliverToStartState extends State<SliverToStart> with TickerProviderStateM
             // Cubierta que sube y tapa el texto
             SlideTransition(
               position: _coverSlide,
-              child: Container(
+              child: SizedBox(
                 height: widget.screenHeight + 25,
                 width: widget.screenWidth,
                 child: ClipRRect(
@@ -260,7 +257,7 @@ class _SliverInfoDoypackState extends State<SliverInfoDoypack> {
     final List<Map<String, dynamic>> nuestraDoypack = [
       {
         "title": "Smartbag® Doypack:\npresentación moderna\ny profesional.",
-        "image": "assets/img/smartbag/doypack/cardLarge1.webp",
+        "image": "img/smartbag/doypack/cardLarge1.webp",
         "isVideo": false,
         "video": "",
       },
@@ -272,7 +269,7 @@ class _SliverInfoDoypackState extends State<SliverInfoDoypack> {
       },
       {
         "title": "Zipper resellable,\nválvula desgasificadora\ny múltiples capacidades\npara cada necesidad.",
-        "image": "assets/img/smartbag/doypack/cardLarge2.webp",
+        "image": "img/smartbag/doypack/cardLarge2.webp",
         "isVideo": false,
         "video": "",
       },
@@ -499,7 +496,7 @@ class _SliverWithGramajeState extends State<SliverWithGramaje> {
                                 width: (widget.screenWidth * 0.6).clamp(0, 800),
                                 height: (widget.screenWidth * 0.6).clamp(0, 800),
                                 decoration: BoxDecoration(
-                                  image: DecorationImage(image: AssetImage("assets/img/smartbag/doypack/twobags1.webp")),
+                                  image: DecorationImage(image: AssetImage("img/smartbag/doypack/twobags1.webp")),
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                               ),
@@ -512,7 +509,7 @@ class _SliverWithGramajeState extends State<SliverWithGramaje> {
                                 width: (widget.screenWidth * 0.6).clamp(0, 800),
                                 height: (widget.screenWidth * 0.6).clamp(0, 800),
                                 decoration: BoxDecoration(
-                                  image: DecorationImage(image: AssetImage("assets/img/smartbag/doypack/twobags2.webp")),
+                                  image: DecorationImage(image: AssetImage("img/smartbag/doypack/twobags2.webp")),
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                               ),
@@ -770,7 +767,7 @@ class _SliverWithMoreInfoDoypackState extends State<SliverWithMoreInfoDoypack> w
                   padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.06, vertical: 100),
                   child: Column(
                     children: [
-                      Image.asset(height: 400, "assets/img/smartbag/doypack/aloneBag.webp", fit: BoxFit.contain),
+                      Image.asset(height: 400, "img/smartbag/doypack/aloneBag.webp", fit: BoxFit.contain),
                       const SizedBox(height: 24),
                       Text.rich(
                         TextSpan(
@@ -802,7 +799,7 @@ class _SliverWithMoreInfoDoypackState extends State<SliverWithMoreInfoDoypack> w
                         ),
                       ),
                       // const SizedBox(height: 50),
-                      //  Image.asset(height: 400, "assets/img/smartbag/doypack/aloneBag.webp", fit: BoxFit.contain),
+                      //  Image.asset(height: 400, "img/smartbag/doypack/aloneBag.webp", fit: BoxFit.contain),
                       const SizedBox(height: 24),
                       Text.rich(
                         TextSpan(
@@ -877,7 +874,7 @@ class _SliverWithMoreInfoDoypackState extends State<SliverWithMoreInfoDoypack> w
                                         ),
                                       );
                                     },
-                                    child: Image.asset("assets/img/smartbag/doypack/aloneBag2.webp", fit: BoxFit.contain),
+                                    child: Image.asset("img/smartbag/doypack/aloneBag2.webp", fit: BoxFit.contain),
                                   ),
                                 ),
 
@@ -1059,7 +1056,7 @@ class _SliverWithMoreInfoDoypackState extends State<SliverWithMoreInfoDoypack> w
                                         ),
                                       );
                                     },
-                                    child: Image.asset("assets/img/smartbag/doypack/aloneBag.webp", fit: BoxFit.contain),
+                                    child: Image.asset("img/smartbag/doypack/aloneBag.webp", fit: BoxFit.contain),
                                   ),
                                 ),
                               ],
@@ -1110,10 +1107,7 @@ class SliverWithDeclaracionDeExcelencia extends StatelessWidget {
                   isMobile
                       ? Column(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.asset(height: 80, "assets/img/BIsotipo.webp", fit: BoxFit.contain),
-                          ),
+                          Padding(padding: const EdgeInsets.all(8.0), child: Image.asset(height: 80, "img/BIsotipo.webp", fit: BoxFit.contain)),
                           Padding(
                             padding: EdgeInsets.symmetric(vertical: 20, horizontal: (screenWidth * 0.1).clamp(20, 50)),
                             child: Text.rich(
@@ -1143,7 +1137,7 @@ class SliverWithDeclaracionDeExcelencia extends StatelessWidget {
                       )
                       : Row(
                         children: [
-                          Expanded(child: Padding(padding: const EdgeInsets.all(50), child: Image.asset("assets/img/BIsotipo.webp"))),
+                          Expanded(child: Padding(padding: const EdgeInsets.all(50), child: Image.asset("img/BIsotipo.webp"))),
                           Expanded(
                             flex: 2,
 
@@ -1221,7 +1215,7 @@ class SliverWithVentanaInfo extends StatelessWidget {
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
                 child:
                     isMobile
-                        ? Image.asset("assets/img/smartbag/doypack/3ventanas.webp", fit: BoxFit.contain)
+                        ? Image.asset("img/smartbag/doypack/3ventanas.webp", fit: BoxFit.contain)
                         : SizedBox(
                           width: double.infinity,
 
@@ -1516,13 +1510,13 @@ class _SliverWithResumenState extends State<SliverWithResumen> {
                 padding: EdgeInsets.only(top: 50),
                 child: Row(
                   children: [
-                    Container(
+                    SizedBox(
                       width: widget.screenWidth,
                       height: 600,
 
                       child:
                           widget.isMobile
-                              ? Image.asset("assets/img/smartbag/doypack/cardsloop.webp", fit: BoxFit.cover)
+                              ? Image.asset("img/smartbag/doypack/cardsloop.webp", fit: BoxFit.cover)
                               : SizedBox(
                                 width: double.infinity,
 

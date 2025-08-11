@@ -124,7 +124,7 @@ class _WhatsappPageState extends State<WhatsappPage> {
                                   // Imagen
                                   Transform.translate(
                                     offset: Offset(screenWidth * 0.4, screenWidth * 0.3),
-                                    child: Transform.scale(scale: 1.6, child: Image.asset("assets/img/support/support_chat.webp")),
+                                    child: Transform.scale(scale: 1.6, child: Image.asset("img/support/support_chat.webp")),
                                   ),
                                 ],
                               )
@@ -211,10 +211,7 @@ class _WhatsappPageState extends State<WhatsappPage> {
                                   ),
                                   // Imagen que se desborda un poco hacia abajo
                                   Expanded(
-                                    child: Transform.translate(
-                                      offset: const Offset(0, 50),
-                                      child: Image.asset("assets/img/support/support_chat.webp"),
-                                    ),
+                                    child: Transform.translate(offset: const Offset(0, 50), child: Image.asset("img/support/support_chat.webp")),
                                   ),
                                 ],
                               ),
@@ -340,18 +337,18 @@ class SupportCardPerson {
 // Lista de tarjetas
 final List<SupportCardPerson> _supportCardsPerson = [
   //Carvajal
-  SupportCardPerson(ext: "101", zone: "Asesora Comercial", img: "assets/img/support/Adviser1.webp", sede: "Carvajal - Bogotá D.C."), //Betty
-  SupportCardPerson(ext: "107", zone: "Asesora Comercial ", img: "assets/img/support/Adviser2.webp", sede: "Carvajal - Bogotá D.C."), //Lorena
+  SupportCardPerson(ext: "101", zone: "Asesora Comercial", img: "img/support/Adviser1.webp", sede: "Carvajal - Bogotá D.C."), //Betty
+  SupportCardPerson(ext: "107", zone: "Asesora Comercial ", img: "img/support/Adviser2.webp", sede: "Carvajal - Bogotá D.C."), //Lorena
   //Norte
-  SupportCardPerson(ext: "102", zone: "Asesora Comercial", img: "assets/img/support/Adviser3.webp", sede: "Nogal - Bogotá D.C."), //Luisa
-  SupportCardPerson(ext: "105", zone: "Asesora Comercial", img: "assets/img/support/Adviser4.webp", sede: "Nogal - Bogotá D.C."), //Liliana
+  SupportCardPerson(ext: "102", zone: "Asesora Comercial", img: "img/support/Adviser3.webp", sede: "Nogal - Bogotá D.C."), //Luisa
+  SupportCardPerson(ext: "105", zone: "Asesora Comercial", img: "img/support/Adviser4.webp", sede: "Nogal - Bogotá D.C."), //Liliana
   //Tecplas
-  SupportCardPerson(ext: "104", zone: "Asesora Comercial", img: "assets/img/support/Adviser5.webp", sede: "Tecplas - Mosquera"), //Yeimi
-  SupportCardPerson(ext: "103", zone: "Asesora Comercial", img: "assets/img/support/Adviser6.webp", sede: "Tecplas - Mosquera"), //Laura
+  SupportCardPerson(ext: "104", zone: "Asesora Comercial", img: "img/support/Adviser5.webp", sede: "Tecplas - Mosquera"), //Yeimi
+  SupportCardPerson(ext: "103", zone: "Asesora Comercial", img: "img/support/Adviser6.webp", sede: "Tecplas - Mosquera"), //Laura
   SupportCardPerson(
     ext: "109",
     zone: "Asesora Comercial y Servicio al Cliente",
-    img: "assets/img/support/Adviser7.webp",
+    img: "img/support/Adviser7.webp",
     sede: "Tecplas - Mosquera",
   ), //Fernanda y Andres
 ];

@@ -39,9 +39,9 @@ class Subcategorie {
 
 final List<Subcategorie> subcategorieSmart = [
   Subcategorie(
-    clipArt: "assets/img/smartbag/clipart/cpa_4pro.svg",
+    clipArt: "img/smartbag/clipart/cpa_4pro.svg",
     category: categorieSmart,
-    img: "assets/img/smartbag/Costal.webp",
+    img: "img/smartbag/Costal.webp",
     title: "4PRO",
     description: "La bolsa que redefine la presentación de su producto.",
     sdescription: " Ideal para cafés de especialidad o alimentos selectos, la 4PRO ofrece frescura, distinción y una estética impecable. ",
@@ -50,9 +50,9 @@ final List<Subcategorie> subcategorieSmart = [
     route: "/SmartBag/Explora-SmartBag/4PRO",
   ),
   Subcategorie(
-    clipArt: "assets/img/smartbag/clipart/cpa_5pro.svg",
+    clipArt: "img/smartbag/clipart/cpa_5pro.svg",
     category: categorieSmart,
-    img: "assets/img/smartbag/5pro.webp",
+    img: "img/smartbag/5pro.webp",
     title: "5PRO",
     description: "La evolución del empaque flexible.",
     sdescription: "Tecnología de cinco capas para una protección superior, sellado perfecto y una presencia inigualable que realza su producto. ",
@@ -60,9 +60,9 @@ final List<Subcategorie> subcategorieSmart = [
     route: "/SmartBag/Explora-SmartBag/5PRO",
   ),
   Subcategorie(
-    clipArt: "assets/img/smartbag/clipart/cpa_doypack.svg",
+    clipArt: "img/smartbag/clipart/cpa_doypack.svg",
     category: categorieSmart,
-    img: "assets/img/smartbag/doypack.webp",
+    img: "img/smartbag/doypack.webp",
     title: "Doypack",
     description: "Prácticas, elegantes y versátiles.",
     sdescription: "El empaque ideal para marcas que desean sobresalir y preservar su producto con un toque de sofisticación. ",
@@ -72,9 +72,9 @@ final List<Subcategorie> subcategorieSmart = [
     route: "/SmartBag/Explora-SmartBag/Doypack",
   ),
   Subcategorie(
-    clipArt: "assets/img/smartbag/clipart/cpa_flowpack.svg",
+    clipArt: "img/smartbag/clipart/cpa_flowpack.svg",
     category: categorieSmart,
-    img: "assets/img/smartbag/flowpack.webp",
+    img: "img/smartbag/flowpack.webp",
     title: "Flowpack",
     description: "Alta eficiencia, impacto visual garantizado.",
     sdescription: "Diseñada para líneas de producción ágiles y presentaciones que capturan la atención con elegancia.",
@@ -83,9 +83,9 @@ final List<Subcategorie> subcategorieSmart = [
     route: "/SmartBag/Explora-SmartBag/Flowpack",
   ),
   Subcategorie(
-    clipArt: "assets/img/smartbag/clipart/cpa_piramidal.svg",
+    clipArt: "img/smartbag/clipart/cpa_piramidal.svg",
     category: categorieSmart,
-    img: "assets/img/smartbag/piramide.webp",
+    img: "img/smartbag/piramide.webp",
     title: "Piramidal",
     description: "Una forma distintiva, una presencia memorable.",
     sdescription: "El empaque triangular que destaca en anaquel y comunica innovación y sofisticación.",
@@ -95,9 +95,9 @@ final List<Subcategorie> subcategorieSmart = [
   ),
 
   Subcategorie(
-    clipArt: "assets/img/smartbag/clipart/cpa_cojin.svg",
+    clipArt: "img/smartbag/clipart/cpa_cojin.svg",
     category: categorieSmart,
-    img: "assets/img/smartbag/cojin.webp",
+    img: "img/smartbag/cojin.webp",
     title: "Cojín",
     description: "Ligereza y eficiencia en cada envío.",
     sdescription: "Ideal para empaques de alta rotación: fácil de manipular, práctico de usar, siempre efectivo.",
@@ -105,9 +105,9 @@ final List<Subcategorie> subcategorieSmart = [
     route: "/SmartBag/Especiales-SmartBag/Cojin",
   ),
   Subcategorie(
-    clipArt: "assets/img/smartbag/clipart/cpa_standpack.svg",
+    clipArt: "img/smartbag/clipart/cpa_standpack.svg",
     category: categorieSmart,
-    img: "assets/img/smartbag/standpack.webp",
+    img: "img/smartbag/standpack.webp",
     title: "Standpack",
     description: "Su producto siempre con una presentación impecable.",
     sdescription: "Un diseño estable y atractivo, ideal para destacar en estanterías y realzar la calidad de cafés y selectos snacks gourmet.",
@@ -116,7 +116,7 @@ final List<Subcategorie> subcategorieSmart = [
   ),
   Subcategorie(
     category: categorieSmart,
-    img: "assets/img/smartbag/valvula.webp",
+    img: "img/smartbag/valvula.webp",
     title: "Accesorios",
     description: "Detalles que perfeccionan su empaque.",
     sdescription: "Válvulas, zipper, peel & stick y más. Complementos esenciales para personalizar y optimizar la experiencia de su empaque.",
@@ -127,9 +127,9 @@ final List<Subcategorie> subcategorieSmart = [
 
 final List<Subcategorie> subcategorieEco = [
   Subcategorie(
-    clipArt: "assets/img/smartbag/clipart/cpa_4pro.svg",
+    clipArt: "img/smartbag/clipart/cpa_4pro.svg",
     category: categorieEco,
-    img: "assets/img/ecobag/4pro.webp",
+    img: "img/ecobag/4pro.webp",
     title: "4PRO",
     description: "Empaque ecológico con alto rendimiento.",
     sdescription: "Ideal para cafés orgánicos o productos sostenibles. Frescura, elegancia y menor impacto ambiental.",
@@ -137,9 +137,9 @@ final List<Subcategorie> subcategorieEco = [
     route: "/EcoBag/Explora-EcoBag/4PRO",
   ),
   Subcategorie(
-    clipArt: "assets/img/smartbag/clipart/cpa_5pro.svg",
+    clipArt: "img/smartbag/clipart/cpa_5pro.svg",
     category: categorieEco,
-    img: "assets/img/ecobag/5pro.webp",
+    img: "img/ecobag/5pro.webp",
     title: "5PRO",
     description: "Tecnología flexible con enfoque verde.",
     sdescription: "Cinco capas de protección con materiales que respetan el planeta. Sellado perfecto y presencia impactante.",
@@ -147,9 +147,9 @@ final List<Subcategorie> subcategorieEco = [
     route: "/EcoBag/Explora-EcoBag/5PRO",
   ),
   Subcategorie(
-    clipArt: "assets/img/smartbag/clipart/cpa_doypack.svg",
+    clipArt: "img/smartbag/clipart/cpa_doypack.svg",
     category: categorieEco,
-    img: "assets/img/ecobag/doypack.webp",
+    img: "img/ecobag/doypack.webp",
     title: "Doypack",
     description: "Versatilidad amigable con el entorno.",
     sdescription: "Diseñado para marcas sostenibles que buscan destacarse con empaques prácticos y biodegradables.",
@@ -159,9 +159,9 @@ final List<Subcategorie> subcategorieEco = [
     route: "/EcoBag/Explora-EcoBag/Doypack",
   ),
   Subcategorie(
-    clipArt: "assets/img/smartbag/clipart/cpa_flowpack.svg",
+    clipArt: "img/smartbag/clipart/cpa_flowpack.svg",
     category: categorieEco,
-    img: "assets/img/ecobag/flowpack.webp",
+    img: "img/ecobag/flowpack.webp",
     title: "Flowpack",
     description: "Producción rápida, mínima huella.",
     sdescription: "Optimizado para líneas ecológicas, con materiales sostenibles de alta calidad.",
@@ -171,9 +171,9 @@ final List<Subcategorie> subcategorieEco = [
     route: "/EcoBag/Explora-EcoBag/Flowpack",
   ),
   Subcategorie(
-    clipArt: "assets/img/smartbag/clipart/cpa_piramidal.svg",
+    clipArt: "img/smartbag/clipart/cpa_piramidal.svg",
     category: categorieEco,
-    img: "assets/img/ecobag/piramidal.webp",
+    img: "img/ecobag/piramidal.webp",
     title: "Piramidal",
     description: "Diseño ecológico con formato innovador.",
     sdescription: "Ideal para infusiones, productos gourmet y porciones individuales con bajo impacto ambiental.",
@@ -182,9 +182,9 @@ final List<Subcategorie> subcategorieEco = [
     route: "/EcoBag/Especiales-EcoBag/Piramidal",
   ),
   Subcategorie(
-    clipArt: "assets/img/smartbag/clipart/cpa_cojin.svg",
+    clipArt: "img/smartbag/clipart/cpa_cojin.svg",
     category: categorieEco,
-    img: "assets/img/ecobag/cojin.webp",
+    img: "img/ecobag/cojin.webp",
     title: "Cojín",
     description: "Eficiencia y conciencia ambiental.",
     sdescription: "Ideal para procesos productivos responsables y empaques de bajo impacto.",

@@ -5,41 +5,38 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:webpack/class/categories.dart';
 import 'package:webpack/main.dart';
+import 'package:webpack/utils/buttonarrow.dart';
+import 'package:webpack/utils/responsive.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
 import 'package:webpack/widgets/scrollopacity.dart';
 import 'package:webpack/widgets/video.dart';
 
 class FivePro extends StatelessWidget {
+  final Responsive r;
   final String currentRoute;
   final Subcategorie subcategorie;
   final String section;
-  const FivePro({super.key, required this.currentRoute, required this.subcategorie, required this.section});
+  const FivePro({super.key, required this.currentRoute, required this.subcategorie, required this.section, required this.r});
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final blue = Theme.of(context).primaryColor;
-    final isMobile = screenWidth < 850;
-    final isTable = screenWidth < 1024;
+    final isMobile = r.wp(100) < 850;
+    final route = '${subcategorie.route}/crea-tu-empaque';
+
     return Scaffold(
       body: Stack(
         children: [
           CustomScrollView(
             slivers: [
-              SilverStart(
-                screenHeight: screenHeight,
-                screenWidth: screenWidth,
-                blue: blue,
-                isMobile: isMobile,
-                isTable: isTable,
-                subcategorie: subcategorie,
-              ),
-              SliverAboutFivePro(screenWidth: screenWidth, blue: blue, isMobile: isMobile),
+              IntroSliver(r: r, blue: blue, isMobile: isMobile, route: route),
+
+              Our5PROSliver(screenWidth: screenWidth, blue: blue, isMobile: isMobile),
               SliverWithValvula(screenWidth: screenWidth, blue: blue, isMobile: isMobile),
               SliverAboutMoreInfo5Pro(screenWidth: screenWidth, blue: blue, isMobile: isMobile),
-              SliverWithGrandesSoluciones(screenWidth: screenWidth, blue: blue),
+              SliverWithGrandesSoluciones(r: r, blue: blue),
               SliverWithOtherThings(screenWidth: screenWidth, blue: blue),
               SliverWhyPakcivisionWith5pro(screenWidth: screenWidth),
               SliverFinalFivePro(screenWidth: screenWidth, blue: blue, subcategorie: subcategorie),
@@ -51,62 +48,50 @@ class FivePro extends StatelessWidget {
   }
 }
 
-//Inicio
-class SilverStart extends StatelessWidget {
-  final double screenHeight;
-  final double screenWidth;
+//---------Inicio de la pantalla en 5PRO------------
+
+class IntroSliver extends StatelessWidget {
+  final Responsive r;
   final Color blue;
   final bool isMobile;
-  final bool isTable;
-  final Subcategorie subcategorie;
-  const SilverStart({
-    super.key,
-    required this.screenHeight,
-    required this.screenWidth,
-    required this.blue,
-    required this.isMobile,
-    required this.isTable,
-    required this.subcategorie,
-  });
+  final String route;
+  const IntroSliver({super.key, required this.blue, required this.isMobile, required this.route, required this.r});
 
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: SizedBox(
-        height: screenHeight,
-        width: screenWidth,
+        height: r.hp(100),
+        width: r.wp(100),
         child: Stack(
           children: [
             Positioned(
               bottom: 180,
-              right: -170,
+              right: -100,
               child: Transform.rotate(
                 angle: math.pi * 1.5,
                 child: ScrollAnimatedWrapper(
-                  visibilityKey: Key('lateral-5pro'),
                   child: Stack(
                     children: [
-                      // Texto con borde rojo
                       Text(
                         "5PRO",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: (screenWidth * 0.8).clamp(120, 190),
+                          fontSize: r.fs(60, 120),
                           height: 0,
                           foreground:
                               Paint()
                                 ..style = PaintingStyle.stroke
                                 ..strokeWidth = 4
-                                ..color = blue.withAlpha(60), // Color del borde
+                                ..color = blue.withAlpha(60),
                         ),
                       ),
-                      // Texto relleno (color principal)
                       Text(
                         "5PRO",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: const Color.fromARGB(0, 255, 255, 255), // Relleno semitransparente
-                          fontSize: (screenWidth * 0.8).clamp(120, 190),
+                          color: const Color.fromARGB(0, 255, 255, 255),
+                          fontSize: r.fs(60, 120),
                           height: 0,
                         ),
                       ),
@@ -115,135 +100,142 @@ class SilverStart extends StatelessWidget {
                 ),
               ),
             ),
-            isTable
-                ? ScrollAnimatedWrapper(
-                  visibilityKey: Key('image-5pro'),
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Image.asset(
-                      alignment: Alignment.bottomCenter,
-                      'assets/img/smartbag/5pro/5proStart.webp',
-                      width: (screenHeight * .6).clamp(420, 420),
-                      height: (screenHeight * .6).clamp(420, 420),
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                )
-                : Row(
+            isMobile
+                ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox(width: screenWidth / 2, height: screenHeight),
-                    Center(
-                      child: Builder(
-                        builder: (context) {
-                          return SizedBox(
-                            width: screenWidth / 2.5,
-                            height: screenHeight,
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                ValueListenableBuilder<bool>(
-                                  valueListenable: videoBlurNotifier,
-                                  builder: (context, isBlur, _) {
-                                    return ScrollAnimatedWrapper(
-                                      visibilityKey: Key('video-soluciones-5pro'),
-                                      child: VideoFlutter(
-                                        src: 'assets/videos/smartbag/5pro/inicio.webm',
-                                        blur: isBlur,
-                                        loop: false,
-                                        showControls: false,
-                                        fit: BoxFit.contain,
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
+                    Container(
+                      padding: EdgeInsets.only(top: 60, left: r.wp(6)),
+                      width: r.wp(80),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ScrollAnimatedWrapper(
+                            child: Text(
+                              "5PRO",
+                              textAlign: TextAlign.justify,
+                              style: TextStyle(height: 0, fontSize: r.fs(30, 120), color: blue, fontWeight: FontWeight.bold),
                             ),
-                          );
-                        },
+                          ),
+                          ScrollAnimatedWrapper(
+                            child: Text(
+                              "5 Soluciones para tí",
+                              textAlign: TextAlign.justify,
+                              style: TextStyle(height: 0, fontSize: r.fs(2.4, 30), color: blue, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    ScrollAnimatedWrapper(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: r.wp(6), right: r.wp(6), top: r.hp(3), bottom: r.hp(1)),
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          style: ButtonStyle(foregroundColor: WidgetStatePropertyAll(Colors.white), backgroundColor: WidgetStatePropertyAll(blue)),
+                          child: Text("Crear mi 5PRO", style: TextStyle(fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                    ),
+                    ScrollAnimatedWrapper(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: r.wp(6), vertical: r.hp(3)),
+
+                        child: Text(
+                          "Cinco formas de ver, crear, sentir, conectar y transformar el mundo.",
+                          style: TextStyle(height: 0.99, fontWeight: FontWeight.bold, fontSize: r.fs(2.4, 28)),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Center(child: ScrollAnimatedWrapper(child: Image.asset("img/smartbag/5pro/5proStart.webp", fit: BoxFit.contain))),
+                    ),
+                  ],
+                )
+                : Stack(
+                  children: [
+                    Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(top: 60, left: r.wp(6)),
+                          width: 600,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ScrollAnimatedWrapper(
+                                child: Text(
+                                  "5PRO",
+                                  textAlign: TextAlign.justify,
+                                  style: TextStyle(height: 0, fontSize: r.fs(40, 160), color: blue, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              ScrollAnimatedWrapper(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 12),
+                                  child: Text(
+                                    "5 Soluciones para tí",
+                                    textAlign: TextAlign.justify,
+                                    style: TextStyle(height: 0, fontSize: r.fs(5, 40), color: blue, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                              ScrollAnimatedWrapper(
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(vertical: 30),
+                                  width: 420,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          navigateWithSlide(context, route);
+                                        },
+                                        style: ButtonStyle(
+                                          foregroundColor: WidgetStatePropertyAll(Colors.white),
+                                          backgroundColor: WidgetStatePropertyAll(blue),
+                                        ),
+                                        child: Text("Crear mi 5PRO", style: TextStyle(fontWeight: FontWeight.bold)),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Expanded(
+                                        child: Text(
+                                          "Cinco formas de ver, crear, sentir, conectar y transformar el mundo.",
+                                          style: TextStyle(height: 0.99, fontWeight: FontWeight.bold, fontSize: r.fs(1.2, 20)),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: EdgeInsets.only(right: r.wp(10)),
+                        child: SizedBox(
+                          width: r.hp(100),
+                          height: r.hp(100),
+                          child: ValueListenableBuilder<bool>(
+                            valueListenable: videoBlurNotifier,
+                            builder: (context, isBlur, _) {
+                              return VideoFlutter(src: "assets/videos/smartbag/5pro/inicio.webm", fit: BoxFit.fitHeight, loop: false, blur: isBlur);
+                            },
+                          ),
+                        ),
                       ),
                     ),
                   ],
                 ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 45),
-              child: ScrollAnimatedWrapper(
-                visibilityKey: Key('soluciones-5pro'),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: screenWidth * 0.06, right: screenWidth * 0.06),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "5PRO",
-                          style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: (screenWidth * 0.3).clamp(0, 250), height: 0.9),
-                        ),
-                        Text(
-                          "5 Soluciones para tí",
-                          style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: (screenWidth * 0.4).clamp(50, 60), height: 0.9),
-                        ),
-                        const SizedBox(height: 30),
-                        isMobile
-                            ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(height: 30),
-                                ElevatedButton(
-                                  style: ButtonStyle(
-                                    elevation: WidgetStatePropertyAll(3),
-                                    backgroundColor: WidgetStatePropertyAll(blue),
-                                    foregroundColor: const WidgetStatePropertyAll(Colors.white),
-                                  ),
-                                  onPressed: () {
-                                    final route = '${subcategorie.route}/crea-tu-empaque';
-                                    navigateWithSlide(context, route); // tu función personalizada
-                                  },
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                                    child: Text("Crear mi 5PRO", style: TextStyle(fontSize: (screenWidth * 0.3).clamp(17, 22))),
-                                  ),
-                                ),
-                                const SizedBox(height: 30),
-                                Text(
-                                  "Cinco formas de ver, crear, sentir,\nconectar y transformar el mundo.",
-                                  style: TextStyle(fontSize: (screenWidth * 0.3).clamp(16, 22), fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            )
-                            : Row(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                ElevatedButton(
-                                  style: ButtonStyle(
-                                    elevation: WidgetStatePropertyAll(3),
-                                    backgroundColor: WidgetStatePropertyAll(blue),
-                                    foregroundColor: const WidgetStatePropertyAll(Colors.white),
-                                  ),
-                                  onPressed: () {
-                                    final route = '${subcategorie.route}/crea-tu-empaque';
-                                    navigateWithSlide(context, route); // tu función personalizada
-                                  },
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                                    child: Text("Crear mi 5PRO", style: TextStyle(fontSize: (screenWidth * 0.3).clamp(16, 22))),
-                                  ),
-                                ),
-                                const SizedBox(width: 20),
-                                Text(
-                                  "Cinco formas de ver, crear, sentir,\nconectar y transformar el mundo.",
-                                  style: TextStyle(fontSize: (screenWidth * 0.3).clamp(16, 22), fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),
@@ -251,18 +243,19 @@ class SilverStart extends StatelessWidget {
   }
 }
 
-//Fila con la informacion de 5pro
-class SliverAboutFivePro extends StatefulWidget {
+//---------Fila con la información de 5PRO------------
+
+class Our5PROSliver extends StatefulWidget {
   final double screenWidth;
   final Color blue;
   final bool isMobile;
-  const SliverAboutFivePro({super.key, required this.screenWidth, required this.blue, required this.isMobile});
+  const Our5PROSliver({super.key, required this.screenWidth, required this.blue, required this.isMobile});
 
   @override
-  State<SliverAboutFivePro> createState() => _SliverAboutFiveProState();
+  State<Our5PROSliver> createState() => _Our5PROSliverState();
 }
 
-class _SliverAboutFiveProState extends State<SliverAboutFivePro> {
+class _Our5PROSliverState extends State<Our5PROSliver> {
   final ScrollController _scrollController = ScrollController();
   bool canScrollLeft = false;
   bool canScrollRight = true;
@@ -305,7 +298,7 @@ class _SliverAboutFiveProState extends State<SliverAboutFivePro> {
     final List<Map<String, dynamic>> nuestra5pro = [
       {
         'text': 'Protección superior \npara todo tipo de producto',
-        'image': 'assets/img/smartbag/5pro/cardLarge1.webp',
+        'image': 'img/smartbag/5pro/cardLarge1.webp',
 
         'TextStyle': TextStyle(color: Colors.grey[100], fontSize: (widget.screenWidth * 0.04).clamp(0, 26), fontWeight: FontWeight.bold),
         'alignment': Alignment.topLeft,
@@ -314,7 +307,7 @@ class _SliverAboutFiveProState extends State<SliverAboutFivePro> {
       },
       {
         'text': 'Empaque que se destaca \nen cualquier entorno',
-        'image': 'assets/img/smartbag/5pro/cardLarge2.webp',
+        'image': 'img/smartbag/5pro/cardLarge2.webp',
 
         'TextStyle': TextStyle(
           color: Colors.white,
@@ -327,7 +320,7 @@ class _SliverAboutFiveProState extends State<SliverAboutFivePro> {
       },
       {
         'text': 'Materiales sostenibles \ny compromiso ecológico',
-        'image': 'assets/img/smartbag/5pro/cardLarge3.webp',
+        'image': 'img/smartbag/5pro/cardLarge3.webp',
 
         'TextStyle': TextStyle(
           color: Colors.white,
@@ -340,7 +333,7 @@ class _SliverAboutFiveProState extends State<SliverAboutFivePro> {
       },
       {
         'text': 'Tecnología de sellado \ny cierre avanzada',
-        'image': 'assets/img/smartbag/5pro/cardLarge4.webp',
+        'image': 'img/smartbag/5pro/cardLarge4.webp',
 
         'TextStyle': TextStyle(color: Colors.black, fontSize: (widget.screenWidth * 0.04).clamp(0, 26), fontWeight: FontWeight.bold),
         'alignment': Alignment.bottomLeft,
@@ -348,7 +341,7 @@ class _SliverAboutFiveProState extends State<SliverAboutFivePro> {
       },
       {
         'text': 'Adaptabilidad total: múltiples \nformatos y capacidades',
-        'image': 'assets/img/smartbag/5pro/cardLarge5.webp',
+        'image': 'img/smartbag/5pro/cardLarge5.webp',
         'TextStyle': TextStyle(color: Colors.black, fontSize: (widget.screenWidth * 0.04).clamp(0, 26), fontWeight: FontWeight.bold),
         'alignment': Alignment.centerLeft,
         'textAlign': null,
@@ -438,7 +431,7 @@ class _SliverAboutFiveProState extends State<SliverAboutFivePro> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    _ArrowButton(
+                    ArrowButton(
                       enabled: canScrollLeft,
                       icon: CupertinoIcons.chevron_left,
                       onTap: () {
@@ -450,7 +443,7 @@ class _SliverAboutFiveProState extends State<SliverAboutFivePro> {
                       },
                     ),
                     const SizedBox(width: 20),
-                    _ArrowButton(
+                    ArrowButton(
                       enabled: canScrollRight,
                       icon: CupertinoIcons.chevron_right,
                       onTap: () {
@@ -495,21 +488,21 @@ class _SliverAboutFiveProState extends State<SliverAboutFivePro> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Expanded(child: Image.asset("assets/img/smartbag/5pro/cardshort1.webp", fit: BoxFit.contain)),
-                                      Expanded(child: Image.asset("assets/img/smartbag/5pro/cardshort2.webp", fit: BoxFit.contain)),
+                                      Expanded(child: Image.asset("img/smartbag/5pro/cardshort1.webp", fit: BoxFit.contain)),
+                                      Expanded(child: Image.asset("img/smartbag/5pro/cardshort2.webp", fit: BoxFit.contain)),
                                     ],
                                   ),
                                   SizedBox(height: 10),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Expanded(child: Image.asset("assets/img/smartbag/5pro/cardshort3.webp", fit: BoxFit.contain)),
-                                      Expanded(child: Image.asset("assets/img/smartbag/5pro/cardshort4.webp", fit: BoxFit.contain)),
+                                      Expanded(child: Image.asset("img/smartbag/5pro/cardshort3.webp", fit: BoxFit.contain)),
+                                      Expanded(child: Image.asset("img/smartbag/5pro/cardshort4.webp", fit: BoxFit.contain)),
                                     ],
                                   ),
                                   SizedBox(height: 10),
 
-                                  Image.asset("assets/img/smartbag/5pro/cardshort5.webp", fit: BoxFit.contain),
+                                  Image.asset("img/smartbag/5pro/cardshort5.webp", fit: BoxFit.contain),
                                 ],
                               ),
                               Padding(
@@ -616,35 +609,35 @@ class _AnimatedCardDeckState extends State<AnimatedCardDeck> with TickerProvider
   final List<Map<String, dynamic>> items = [
     {
       'id': 1,
-      'image': 'assets/img/smartbag/5pro/cardshort1.webp',
+      'image': 'img/smartbag/5pro/cardshort1.webp',
       'text': 'Diseño que comunica',
       'info':
           'Un empaque atractivo transmite la personalidad de tu marca y capta la atención en segundos. Nuestro diseño está pensado para conectar con tu cliente desde el primer vistazo.',
     },
     {
       'id': 2,
-      'image': 'assets/img/smartbag/5pro/cardshort2.webp',
+      'image': 'img/smartbag/5pro/cardshort2.webp',
       'text': 'Estructura protectora',
       'info':
           'La estructura multicapa protege tu producto de la humedad, el oxígeno y la luz, alargando su vida útil y manteniéndolo en óptimas condiciones.',
     },
     {
       'id': 3,
-      'image': 'assets/img/smartbag/5pro/cardshort3.webp',
+      'image': 'img/smartbag/5pro/cardshort3.webp',
       'text': 'Sostenibilidad real',
       'info':
           'Usamos materiales reciclables y procesos eficientes para reducir el impacto ambiental, sin comprometer la calidad ni la funcionalidad del empaque.',
     },
     {
       'id': 4,
-      'image': 'assets/img/smartbag/5pro/cardshort4.webp',
+      'image': 'img/smartbag/5pro/cardshort4.webp',
       'text': 'Versatilidad de formatos',
       'info':
           'Ofrecemos múltiples presentaciones: doypack, sachet, bottom, 4 sellos, con zipper, válvula o ventana. Adaptamos el empaque a tu producto y tu mercado.',
     },
     {
       'id': 5,
-      'image': 'assets/img/smartbag/5pro/cardshort5.webp',
+      'image': 'img/smartbag/5pro/cardshort5.webp',
       'text': 'Tecnología 5 capas',
       'info':
           'Nuestro sistema de 5 capas combina materiales de alta barrera que brindan máxima resistencia, sellado perfecto y una excelente presentación en góndola.',
@@ -902,10 +895,7 @@ class SliverWithValvula extends StatelessWidget {
                 padding: EdgeInsets.only(top: 40),
                 width: screenWidth * 0.9,
                 height: (screenWidth * 0.9).clamp(0, 600),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.asset("assets/img/smartbag/5pro/large.webp", fit: BoxFit.cover),
-                ),
+                child: ClipRRect(borderRadius: BorderRadius.circular(20), child: Image.asset("img/smartbag/5pro/large.webp", fit: BoxFit.cover)),
               ),
             ),
             ScrollAnimatedWrapper(
@@ -1047,7 +1037,7 @@ class _SliverAboutMoreInfo5ProState extends State<SliverAboutMoreInfo5Pro> {
       },
       {
         'isVideo': false,
-        'image': 'assets/img/smartbag/5pro/cardmin2.webp',
+        'image': 'img/smartbag/5pro/cardmin2.webp',
         'textSpans': [
           TextSpan(text: "Sistema de ", style: TextStyle(color: Colors.grey[600])),
           TextSpan(text: "válvula desgasificadora opcional", style: TextStyle(color: widget.blue.withAlpha(180))),
@@ -1058,7 +1048,7 @@ class _SliverAboutMoreInfo5ProState extends State<SliverAboutMoreInfo5Pro> {
       },
       {
         'isVideo': false,
-        'image': 'assets/img/smartbag/5pro/cardmin3.webp',
+        'image': 'img/smartbag/5pro/cardmin3.webp',
         'textSpans': [
           TextSpan(text: "Ofrece un ", style: TextStyle(color: Colors.grey[600])),
           TextSpan(text: "cierre seguro y hermético", style: TextStyle(color: widget.blue.withAlpha(180))),
@@ -1069,10 +1059,10 @@ class _SliverAboutMoreInfo5ProState extends State<SliverAboutMoreInfo5Pro> {
       },
       {
         'isVideo': false,
-        'image': 'assets/img/smartbag/5pro/cardmin4.webp',
+        'image': 'img/smartbag/5pro/cardmin4.webp',
         'textSpans': [
           TextSpan(text: "Acabados ", style: TextStyle(color: Colors.grey[600])),
-          TextSpan(text: "mate, brillante o soft-touch", style: TextStyle(color: widget.blue.withAlpha(180))),
+          TextSpan(text: "mateo o brillante", style: TextStyle(color: widget.blue.withAlpha(180))),
           TextSpan(text: ": elige el ", style: TextStyle(color: Colors.grey[600])),
           TextSpan(text: "look & feel", style: TextStyle(color: widget.blue.withAlpha(180))),
           TextSpan(
@@ -1083,7 +1073,7 @@ class _SliverAboutMoreInfo5ProState extends State<SliverAboutMoreInfo5Pro> {
       },
       {
         'isVideo': false,
-        'image': 'assets/img/smartbag/5pro/cardmin5.webp',
+        'image': 'img/smartbag/5pro/cardmin5.webp',
         'textSpans': [
           TextSpan(text: "Diseño con ", style: TextStyle(color: Colors.grey[600])),
           TextSpan(text: "ventanas opcionales", style: TextStyle(color: widget.blue.withAlpha(180))),
@@ -1159,15 +1149,20 @@ class _SliverAboutMoreInfo5ProState extends State<SliverAboutMoreInfo5Pro> {
                             const SizedBox(height: 26),
                             ConstrainedBox(
                               constraints: const BoxConstraints(maxWidth: 400),
-                              child: RichText(
+                              child: Text.rich(
                                 textAlign: TextAlign.start,
-                                text: TextSpan(
-                                  style: TextStyle(
-                                    fontSize: (widget.screenWidth * 0.03).clamp(12, 18),
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black.withAlpha(180),
-                                  ),
-                                  children: List<TextSpan>.from(nuestra5pro[index]['textSpans']),
+
+                                TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      style: TextStyle(
+                                        fontSize: (widget.screenWidth * 0.03).clamp(12, 18),
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black.withAlpha(180),
+                                      ),
+                                      children: List<TextSpan>.from(nuestra5pro[index]['textSpans']),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -1222,9 +1217,9 @@ class _SliverAboutMoreInfo5ProState extends State<SliverAboutMoreInfo5Pro> {
 
 //Contenedor grandes soluciones
 class SliverWithGrandesSoluciones extends StatelessWidget {
-  const SliverWithGrandesSoluciones({super.key, required this.screenWidth, required this.blue});
+  const SliverWithGrandesSoluciones({super.key, required this.r, required this.blue});
 
-  final double screenWidth;
+  final Responsive r;
   final Color blue;
 
   @override
@@ -1236,27 +1231,27 @@ class SliverWithGrandesSoluciones extends StatelessWidget {
           child: ScrollAnimatedWrapper(
             visibilityKey: Key('Grandes-soluciones-5pro'),
             child: Container(
-              margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: 50),
+              margin: EdgeInsets.symmetric(horizontal: r.wp(6), vertical: 50),
               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
               padding: const EdgeInsets.all(24),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  LottieBuilder.asset("assets/gifts/airplane.json", animate: true, height: 130),
+                  LottieBuilder.asset("assets/gifts/airplane.json", animate: true, height: 300),
                   const SizedBox(height: 30),
                   Text(
                     "Grandes soluciones, con detalles que marcan la diferencia.",
-                    style: TextStyle(fontSize: (screenWidth * 0.1).clamp(30, 60), fontWeight: FontWeight.bold, height: 0, color: blue),
+                    style: TextStyle(fontSize: (r.wp(100) * 0.1).clamp(30, 60), fontWeight: FontWeight.bold, height: 0, color: blue),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 30),
 
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                    padding: EdgeInsets.symmetric(horizontal: r.wp(10)),
                     child: Text.rich(
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: (screenWidth * 0.03).clamp(16, 22),
+                        fontSize: (r.wp(100) * 0.03).clamp(16, 22),
                         fontWeight: FontWeight.bold,
                         height: 1.4,
                         color: Colors.black.withAlpha(180),
@@ -1537,19 +1532,20 @@ class _SliverWhyPakcivisionWith5proState extends State<SliverWhyPakcivisionWith5
             visibilityKey: Key('Indeciso-lista'),
             child: SizedBox(
               height: 400,
-              child: ListView.builder(
+              child: ListView(
                 controller: _scrollController,
                 scrollDirection: Axis.horizontal,
-                itemCount: items.length,
-                itemBuilder:
-                    (_, index) => _ItemIndeciso(
-                      icon: items[index].icon,
-                      title: items[index].title,
-                      text: items[index].text,
-                      screenWidth: widget.screenWidth,
-                      isFirst: index == 0,
-                      isLast: index == items.length - 1,
-                    ),
+                children: List.generate(
+                  items.length,
+                  (index) => _ItemIndeciso(
+                    icon: items[index].icon,
+                    title: items[index].title,
+                    text: items[index].text,
+                    screenWidth: widget.screenWidth,
+                    isFirst: index == 0,
+                    isLast: index == items.length - 1,
+                  ),
+                ),
               ),
             ),
           ),
@@ -1788,7 +1784,7 @@ class _OvalOrbitAnimationState extends State<OvalOrbitAnimation> with TickerProv
               final angle = 2 * math.pi * (_controller.value + i / numLeaves);
               final position = calculatePosition(angle, 300, 50);
               final isBehind = position.dy < 0; // parte superior del óvalo
-              final imagePaths = ["assets/img/smartbag/5pro/earth.png", "assets/img/smartbag/5pro/saturn.png"];
+              final imagePaths = ["img/smartbag/5pro/earth.png", "img/smartbag/5pro/saturn.png"];
 
               final leaf = Transform.translate(
                 offset: calculatePosition(2 * math.pi * (_controller.value + i / numLeaves), 300, 50),
@@ -1818,13 +1814,10 @@ class _OvalOrbitAnimationState extends State<OvalOrbitAnimation> with TickerProv
                 ...behindBag,
 
                 // Bolsa al centro
-                // SizedBox(height: (screenWidth * 0.4).clamp(400, 700), child: Image.asset("assets/img/smartbag/5pro/bags.png", fit: BoxFit.cover)),
+                // SizedBox(height: (screenWidth * 0.4).clamp(400, 700), child: Image.asset("img/smartbag/5pro/bags.png", fit: BoxFit.cover)),
                 SlideTransition(
                   position: _animationimg,
-                  child: SizedBox(
-                    height: (screenWidth * 0.4).clamp(400, 700),
-                    child: Image.asset("assets/img/smartbag/5pro/bags.png", fit: BoxFit.cover),
-                  ),
+                  child: SizedBox(height: (screenWidth * 0.4).clamp(400, 700), child: Image.asset("img/smartbag/5pro/bags.png", fit: BoxFit.cover)),
                 ),
 
                 CustomPaint(

@@ -55,14 +55,14 @@ class _FourProEcoState extends State<FourProEco> with TickerProviderStateMixin {
   final GlobalKey _videoKey = GlobalKey();
 
   final List<Map<String, dynamic>> colors = [
-    {"name": "Kraft Azul", "color": const Color.fromARGB(225, 18, 97, 161), "image": "assets/img/ecobag/4pro.webp"},
-    {"name": "Kraft Blanco", "color": const Color.fromARGB(255, 199, 199, 199), "image": "assets/img/ecobag/4pro.webp"},
-    {"name": "Kraft Beige", "color": const Color.fromARGB(255, 211, 163, 96), "image": "assets/img/ecobag/4pro.webp"},
-    {"name": "Kraft Natural", "color": const Color.fromARGB(255, 242, 183, 135), "image": "assets/img/ecobag/4pro/Kraft_natural.webp"},
-    {"name": "Kraft Natural Negro", "color": Colors.black87, "image": "assets/img/ecobag/4pro/Kraft_negro.webp"},
-    {"name": "Kraft Natural Rojo", "color": Colors.red, "image": "assets/img/ecobag/4pro/Kraft_rojo.webp"},
-    {"name": "Kraft Verde Oscuro", "color": Colors.green, "image": "assets/img/ecobag/4pro/Kraft_verde.webp"},
-    {"name": "Kraft Verde Manzana Biche", "color": Colors.lightGreen, "image": "assets/img/ecobag/4pro.webp"},
+    {"name": "Kraft Azul", "color": const Color.fromARGB(225, 18, 97, 161), "image": "img/ecobag/4pro.webp"},
+    {"name": "Kraft Blanco", "color": const Color.fromARGB(255, 199, 199, 199), "image": "img/ecobag/4pro.webp"},
+    {"name": "Kraft Beige", "color": const Color.fromARGB(255, 211, 163, 96), "image": "img/ecobag/4pro.webp"},
+    {"name": "Kraft Natural", "color": const Color.fromARGB(255, 242, 183, 135), "image": "img/ecobag/4pro/Kraft_natural.webp"},
+    {"name": "Kraft Natural Negro", "color": Colors.black87, "image": "img/ecobag/4pro/Kraft_negro.webp"},
+    {"name": "Kraft Natural Rojo", "color": Colors.red, "image": "img/ecobag/4pro/Kraft_rojo.webp"},
+    {"name": "Kraft Verde Oscuro", "color": Colors.green, "image": "img/ecobag/4pro/Kraft_verde.webp"},
+    {"name": "Kraft Verde Manzana Biche", "color": Colors.lightGreen, "image": "img/ecobag/4pro.webp"},
   ];
 
   void _updateArrowVisibility() {
@@ -165,12 +165,9 @@ class _FourProEcoState extends State<FourProEco> with TickerProviderStateMixin {
     final selectedItem = colors.firstWhere((item) => item["name"] == selectedColor, orElse: () => colors.first);
 
     final List<dynamic> localCards = [
-      {"title": "4PRO Ecobag® está\ndiseñada pensando en el planeta. ", "image": "assets/img/home/eco.webp"},
-      {"title": "Tu producto merece verse\ny mantenerse\nimpecable.", "image": "assets/img/home/eco.webp"},
-      {
-        "title": "Cierre hermético, zipper,\nválvula desgasificadora.Todo para que\ntu producto luzca profesional.",
-        "image": "assets/img/home/eco.webp",
-      },
+      {"title": "4PRO Ecobag® está\ndiseñada pensando en el planeta. ", "image": "img/home/eco.webp"},
+      {"title": "Tu producto merece verse\ny mantenerse\nimpecable.", "image": "img/home/eco.webp"},
+      {"title": "Cierre hermético, zipper,\nválvula desgasificadora.Todo para que\ntu producto luzca profesional.", "image": "img/home/eco.webp"},
     ];
 
     return Scaffold(
@@ -199,7 +196,7 @@ class _FourProEcoState extends State<FourProEco> with TickerProviderStateMixin {
                             offset: _showImage ? Offset(0, 0) : Offset(0, 0.1),
                             duration: const Duration(milliseconds: 1000),
                             curve: Curves.easeOut,
-                            child: SizedBox(height: 500, width: 500, child: Image.asset("assets/img/ecobag/4pro.webp", fit: BoxFit.cover)),
+                            child: SizedBox(height: 500, width: 500, child: Image.asset("img/ecobag/4pro.webp", fit: BoxFit.cover)),
                           ),
                         ),
                       ),
@@ -334,7 +331,7 @@ class _FourProEcoState extends State<FourProEco> with TickerProviderStateMixin {
                             ),
                           ),
                           if (screenWidth >= 990) SizedBox(height: 100),
-                          Expanded(child: Center(child: Image.asset("assets/img/ecobag/4pro/Bags.png", fit: BoxFit.contain))),
+                          Expanded(child: Center(child: Image.asset("img/ecobag/4pro/Bags.png", fit: BoxFit.contain))),
                           Center(
                             child: Text(
                               textAlign: TextAlign.center,
@@ -609,7 +606,7 @@ class _FourProEcoState extends State<FourProEco> with TickerProviderStateMixin {
                                       ],
                                     ),
                                   ),
-                                  Image.asset("assets/img/ecobag/4pro/Kraft_negro.webp", height: 600, fit: BoxFit.fitHeight),
+                                  Image.asset("img/ecobag/4pro/Kraft_negro.webp", height: 600, fit: BoxFit.fitHeight),
                                   Text.rich(
                                     style: TextStyle(fontSize: min(screenWidth * 0.025, 23), fontWeight: FontWeight.w300),
                                     TextSpan(
@@ -673,10 +670,7 @@ class _FourProEcoState extends State<FourProEco> with TickerProviderStateMixin {
                                           ],
                                         ),
                                       ),
-                                      Expanded(
-                                        flex: 2,
-                                        child: Image.asset("assets/img/ecobag/4pro/Kraft_negro.webp", fit: BoxFit.fitHeight, height: 600),
-                                      ),
+                                      Expanded(flex: 2, child: Image.asset("img/ecobag/4pro/Kraft_negro.webp", fit: BoxFit.fitHeight, height: 600)),
                                     ],
                                   ),
                                 ),

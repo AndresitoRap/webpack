@@ -53,7 +53,7 @@ class SliverStartAccesorios extends StatelessWidget {
                     Stack(
                       children: [
                         // Imagen original detrás (visible y desenfocada)
-                        Image.asset("assets/img/smartbag/5pro/cardLarge5.webp", fit: BoxFit.cover, width: 700, height: 400),
+                        Image.asset("img/smartbag/5pro/cardLarge5.webp", fit: BoxFit.cover, width: 700, height: 400),
 
                         // Capa de desenfoque
                         Positioned.fill(
@@ -95,10 +95,7 @@ class SliverStartAccesorios extends StatelessWidget {
 
                       // Imagen con tamaño fijo
                       if (screenWidth >= 600)
-                        const SizedBox(
-                          height: 500,
-                          child: Image(image: AssetImage("assets/img/smartbag/5pro/cardLarge5.webp"), fit: BoxFit.fitHeight),
-                        ),
+                        const SizedBox(height: 500, child: Image(image: AssetImage("img/smartbag/5pro/cardLarge5.webp"), fit: BoxFit.fitHeight)),
                     ],
                   ),
                 ],
@@ -128,18 +125,18 @@ class _SliverWithContainersState extends State<SliverWithContainers> {
 
   final Map<String, List<Map<String, dynamic>>> data = {
     "Peel & Stick": [
-      {"image": "assets/img/BIsotipo.webp", "label": "Peel & Stick Azul oscuro"},
-      {"image": "assets/img/BIsotipo.webp", "label": "Peel & Stick Beige"},
-      {"image": "assets/img/BIsotipo.webp", "label": "Peel & Stick Blanco"},
-      {"image": "assets/img/BIsotipo.webp", "label": "Peel & Stick Cobre"},
-      {"image": "assets/img/BIsotipo.webp", "label": "Peel & Stick Dorado"},
-      {"image": "assets/img/BIsotipo.webp", "label": "Peel & Stick Negro"},
-      {"image": "assets/img/BIsotipo.webp", "label": "Peel & Stick Rojo"},
-      {"image": "assets/img/BIsotipo.webp", "label": "Peel & Stick Verde Oscuro"},
+      {"image": "img/BIsotipo.webp", "label": "Peel & Stick Azul oscuro"},
+      {"image": "img/BIsotipo.webp", "label": "Peel & Stick Beige"},
+      {"image": "img/BIsotipo.webp", "label": "Peel & Stick Blanco"},
+      {"image": "img/BIsotipo.webp", "label": "Peel & Stick Cobre"},
+      {"image": "img/BIsotipo.webp", "label": "Peel & Stick Dorado"},
+      {"image": "img/BIsotipo.webp", "label": "Peel & Stick Negro"},
+      {"image": "img/BIsotipo.webp", "label": "Peel & Stick Rojo"},
+      {"image": "img/BIsotipo.webp", "label": "Peel & Stick Verde Oscuro"},
     ],
     "Válvula": [
-      {"image": "assets/img/BIsotipo.webp", "label": "Válvula Desgasificadora"},
-      {"image": "assets/img/BIsotipo.webp", "label": "Válvula Dosificadora"},
+      {"image": "img/BIsotipo.webp", "label": "Válvula Desgasificadora"},
+      {"image": "img/BIsotipo.webp", "label": "Válvula Dosificadora"},
     ],
   };
 
@@ -290,13 +287,13 @@ class _SliverWithContainersState extends State<SliverWithContainers> {
           TextSpan(text: "Diseñado para adaptarse a cualquier superficie con total precisión "),
           TextSpan(text: "Peel & Stick ", style: TextStyle(color: widget.blue, fontWeight: FontWeight.bold)),
           TextSpan(text: "transforma la forma en que presentas tus productos."),
-        ], "assets/img/smartbag/5pro/cardmin2.webp"),
+        ], "img/smartbag/5pro/cardmin2.webp"),
         _peelStickCard([
           TextSpan(text: "Peel & Stick ", style: TextStyle(color: widget.blue, fontWeight: FontWeight.bold)),
           TextSpan(text: "combina estética "),
           TextSpan(text: "premium ", style: TextStyle(color: widget.blue, fontWeight: FontWeight.bold)),
           TextSpan(text: "con funcionalidad avanzada."),
-        ], "assets/img/smartbag/5pro/cardmin2.webp"),
+        ], "img/smartbag/5pro/cardmin2.webp"),
       ];
     } else if (selectedTab == "Válvula") {
       return [
@@ -304,12 +301,12 @@ class _SliverWithContainersState extends State<SliverWithContainers> {
           TextSpan(text: "La "),
           TextSpan(text: "válvula desgasificadora ", style: TextStyle(color: widget.blue, fontWeight: FontWeight.bold)),
           TextSpan(text: "preserva el aroma y frescura del café mientras permite la salida controlada de gases."),
-        ], "assets/img/smartbag/5pro/cardmin5.webp"),
+        ], "img/smartbag/5pro/cardmin5.webp"),
         _peelStickCard([
           TextSpan(text: "Ideal para empaques al vacío, la "),
           TextSpan(text: "válvula dosificadora ", style: TextStyle(color: widget.blue, fontWeight: FontWeight.bold)),
           TextSpan(text: "garantiza dosificaciones limpias y precisas, sin comprometer el sello del empaque."),
-        ], "assets/img/smartbag/5pro/cardmin5.webp"),
+        ], "img/smartbag/5pro/cardmin5.webp"),
       ];
     }
 

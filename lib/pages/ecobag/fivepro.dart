@@ -141,7 +141,7 @@ class _SliverToStartFiveProEcoState extends State<SliverToStartFiveProEco> with 
                   children: [
                     FadeTransition(
                       opacity: _bagOpacity,
-                      child: ScaleTransition(scale: _bagScale, child: Image.asset('assets/img/ecobag/5pro.webp', height: imageHeight)),
+                      child: ScaleTransition(scale: _bagScale, child: Image.asset('img/ecobag/5pro.webp', height: imageHeight)),
                     ),
                     SizedBox(height: widget.screenWidth * 0.3),
                     FadeTransition(
@@ -197,7 +197,7 @@ class _SliverToStartFiveProEcoState extends State<SliverToStartFiveProEco> with 
                             angle: math.pi * 2.1,
                             child: MouseRegion(
                               cursor: SystemMouseCursors.click,
-                              child: GestureDetector(onTap: () {}, child: Image.asset('assets/img/ecobag/5pro.webp', height: imageHeight)),
+                              child: GestureDetector(onTap: () {}, child: Image.asset('img/ecobag/5pro.webp', height: imageHeight)),
                             ),
                           ),
                         ),
@@ -256,7 +256,7 @@ class SliverWithNewStandar extends StatelessWidget {
                     height: 700,
                     width: screenWidth,
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.grey),
-                    child: Image.asset("assets/img/ecobag/5pro/bags.png", fit: BoxFit.cover),
+                    child: Image.asset("img/ecobag/5pro/bags.png", fit: BoxFit.cover),
                   ),
                 ),
               ],
@@ -729,7 +729,7 @@ class _SliverAboutMoreInfo5ProEcoState extends State<SliverAboutMoreInfo5ProEco>
                               height: cardSize,
                               width: cardSize,
                               decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.grey),
-                              child: Image.asset("assets/img/smartbag/5pro.webp"),
+                              child: Image.asset("img/smartbag/5pro.webp"),
                             ),
                             const SizedBox(height: 16),
                             ConstrainedBox(
@@ -1018,7 +1018,7 @@ class _SliverWithParallaxState extends State<SliverWithParallax> {
 
     final centerY = widget.screenHeight / 1.2;
 
-    final List<String> leafAssets = ['assets/img/ecobag/hoja1.webp', 'assets/img/ecobag/hoja2.webp', 'assets/img/ecobag/hoja3.webp'];
+    final List<String> leafAssets = ['img/ecobag/hoja1.webp', 'img/ecobag/hoja2.webp', 'img/ecobag/hoja3.webp'];
 
     final random = Random();
 
@@ -1116,7 +1116,7 @@ class _SliverWithParallaxState extends State<SliverWithParallax> {
                       ],
                     ),
                     SizedBox(height: widget.isMobile ? 50 : 100),
-                    Image.asset("assets/img/ecobag/5pro.webp", height: widget.isMobile ? 300 : 350, fit: BoxFit.contain),
+                    Image.asset("img/ecobag/5pro.webp", height: widget.isMobile ? 300 : 350, fit: BoxFit.contain),
                     SizedBox(height: widget.isMobile ? 50 : 100),
                     ElevatedButton(
                       onPressed: () {},

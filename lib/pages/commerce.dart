@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:webpack/class/categories.dart';
+import 'package:webpack/main.dart';
 import 'package:webpack/pages/ecobag/doypack.dart';
 import 'package:webpack/pages/ecobag/fivepro.dart';
 import 'package:webpack/pages/ecobag/flowpack.dart';
@@ -10,6 +11,8 @@ import 'package:webpack/pages/smartbag/flowpack.dart';
 import 'package:webpack/pages/smartbag/doypack.dart';
 import 'package:webpack/pages/smartbag/fivepro.dart';
 import 'package:webpack/pages/smartbag/fourpro.dart';
+import 'package:webpack/utils/buttonarrow.dart';
+import 'package:webpack/utils/responsive.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
 import 'package:webpack/widgets/video.dart';
@@ -36,16 +39,18 @@ class _CommerceState extends State<Commerce> with TickerProviderStateMixin {
     final currentRoute = ModalRoute.of(context)?.settings.name ?? '';
     final section = widget.section.toLowerCase();
     final categoryName = widget.selectedSubcategorie.category.name.toLowerCase();
+    final Responsive r = Responsive.of(context);
+
     Widget content;
 
     if (categoryName == 'smartbag') {
       switch (section) {
         case '4pro':
-          content = FourPro(currentRoute: currentRoute, subcategorie: widget.selectedSubcategorie, section: widget.section);
+          content = FourPro(currentRoute: currentRoute, subcategorie: widget.selectedSubcategorie, section: widget.section, r: r);
           break;
 
         case '5pro':
-          content = FivePro(currentRoute: currentRoute, subcategorie: widget.selectedSubcategorie, section: widget.section);
+          content = FivePro(currentRoute: currentRoute, subcategorie: widget.selectedSubcategorie, section: widget.section, r: r);
           break;
 
         case 'doypack':
@@ -57,15 +62,33 @@ class _CommerceState extends State<Commerce> with TickerProviderStateMixin {
           break;
 
         case 'cojin':
-          content = Plantilla(img: "assets/img/smartbag/cojin.webp", name: "Cojín", videoKey: widget.videoKey);
+          content = Plantilla(
+            img: "img/smartbag/cojin/inicio.webp",
+            name: "Cojín",
+            videoKey: widget.videoKey,
+            r: r,
+            subcategorie: widget.selectedSubcategorie,
+          );
           break;
 
         case 'piramidal':
-          content = Plantilla(img: "assets/img/smartbag/piramide.webp", name: "Piramidal", videoKey: widget.videoKey);
+          content = Plantilla(
+            img: "img/smartbag/piramide.webp",
+            name: "Piramidal",
+            videoKey: widget.videoKey,
+            r: r,
+            subcategorie: widget.selectedSubcategorie,
+          );
           break;
 
         case 'standpack':
-          content = Plantilla(img: "assets/img/smartbag/standpack.webp", name: "StandPack", videoKey: widget.videoKey);
+          content = Plantilla(
+            img: "assets/img/smartbag/standpack/inicio.webp",
+            name: "StandPack",
+            videoKey: widget.videoKey,
+            r: r,
+            subcategorie: widget.selectedSubcategorie,
+          );
           break;
 
         default:
@@ -96,11 +119,23 @@ class _CommerceState extends State<Commerce> with TickerProviderStateMixin {
           break;
 
         case 'cojin':
-          content = Plantilla(img: "assets/img/ecobag/cojin.webp", name: "Cojín", videoKey: widget.videoKey);
+          content = Plantilla(
+            img: "img/ecobag/cojin.webp",
+            name: "Cojín",
+            videoKey: widget.videoKey,
+            r: r,
+            subcategorie: widget.selectedSubcategorie,
+          );
           break;
 
         case 'piramidal':
-          content = Plantilla(img: "assets/img/ecobag/Piramidal.webp", name: "Piramidal", videoKey: widget.videoKey);
+          content = Plantilla(
+            img: "img/ecobag/Piramidal.webp",
+            name: "Piramidal",
+            videoKey: widget.videoKey,
+            r: r,
+            subcategorie: widget.selectedSubcategorie,
+          );
           break;
 
         default:
@@ -113,10 +148,12 @@ class _CommerceState extends State<Commerce> with TickerProviderStateMixin {
 }
 
 class Plantilla extends StatefulWidget {
-  final String img;
-  final String name;
+  final Responsive r;
+  final String img, name;
   final GlobalKey? videoKey;
-  const Plantilla({super.key, required this.img, required this.name, this.videoKey});
+  final Subcategorie subcategorie;
+
+  const Plantilla({super.key, required this.img, required this.name, this.videoKey, required this.r, required this.subcategorie});
 
   @override
   State<Plantilla> createState() => _PlantillaState();
@@ -179,32 +216,33 @@ class _PlantillaState extends State<Plantilla> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
     final color =
         (ModalRoute.of(context)?.settings.name?.toLowerCase() ?? "").contains('ecobag')
             ? Color.fromARGB(255, 75, 141, 44)
             : Theme.of(context).primaryColor;
     final isMobile = screenWidth < 850;
+    final r = widget.r;
+    final route = '${widget.subcategorie.route}/crea-tu-empaque';
 
     return Scaffold(
       backgroundColor: const Color(0xff1d1d1f),
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
-          SliverStartPlantilla(screenWidth: screenWidth, screenHeight: screenHeight, color: color, img: widget.img, name: widget.name),
-          SliverInfoPlantilla(screenWidth: screenWidth, isMobile: isMobile, color: color),
-          SliverWithOtherThingPlantilla(
+          StartTemplateSliver(color: color, img: widget.img, name: widget.name, r: r),
+          ScrollInfoSliver(screenWidth: screenWidth, isMobile: isMobile, color: color, r: r),
+          VideoTemplateSliver(
+            r: r,
             widget: widget,
-            screenWidth: screenWidth,
             isMobile: isMobile,
             color: color,
             scrollProgress: scrollProgress,
             videoKey: widget.videoKey ?? _videoKey,
           ),
-          SliverWithThisIsMoemnt(screenWidth: screenWidth, color: color),
-          SliverWithScroll(screenWidth: screenWidth, widget: widget, color: color, isMobile: isMobile),
+          ThisMomentSliver(r: r, color: color, isMobile: isMobile),
+          ScrollWithMoreInfoSliver(r: r, widget: widget, color: color, isMobile: isMobile, route: route),
 
-          SliverWithLoDudas(screenWidth: screenWidth, isMobile: isMobile, widget: widget, color: color),
+          DoubItSliver(r: r, isMobile: isMobile, widget: widget, color: color, route: route),
           if ((ModalRoute.of(context)?.settings.name?.toLowerCase() ?? "").contains('ecobag'))
             SliverWithCareUs(screenWidth: screenWidth, widget: widget),
           SliverToBoxAdapter(child: Padding(padding: const EdgeInsets.only(top: 50), child: Footer(isDark: true))),
@@ -214,39 +252,23 @@ class _PlantillaState extends State<Plantilla> with TickerProviderStateMixin {
   }
 }
 
-//Sliver inicio
-class SliverStartPlantilla extends StatefulWidget {
-  final double screenWidth;
-  final double screenHeight;
+//---------Inicio con el splash------------
+class StartTemplateSliver extends StatefulWidget {
+  final Responsive r;
   final Color color;
   final GlobalKey? videoKey;
-  final String img;
-  final String name;
-  const SliverStartPlantilla({
-    super.key,
-    required this.screenWidth,
-    required this.screenHeight,
-    required this.color,
-    this.videoKey,
-    required this.img,
-    required this.name,
-  });
+  final String img, name;
+  const StartTemplateSliver({super.key, required this.color, this.videoKey, required this.img, required this.name, required this.r});
 
   @override
-  State<SliverStartPlantilla> createState() => _SliverStartPlantillaState();
+  State<StartTemplateSliver> createState() => _StartTemplateSliverState();
 }
 
-class _SliverStartPlantillaState extends State<SliverStartPlantilla> with TickerProviderStateMixin {
-  //controlador scroll
-  double scrollProgress = 0.0;
-  final ScrollController _scrollController = ScrollController();
-  final GlobalKey _videoKey = GlobalKey();
-
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-  late Animation<double> _opacityAnimation;
-  //text
-  late Animation<double> _textScaleAnimation;
+class _StartTemplateSliverState extends State<StartTemplateSliver> with TickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _scaleAnimation;
+  late final Animation<double> _opacityAnimation;
+  late final Animation<double> _textScaleAnimation;
 
   @override
   void initState() {
@@ -269,118 +291,31 @@ class _SliverStartPlantillaState extends State<SliverStartPlantilla> with Ticker
       end: 1.0,
     ).animate(CurvedAnimation(parent: _controller, curve: const Interval(0.5, 1.0, curve: Curves.easeOut)));
 
-    _controller.forward().whenComplete(() {
-      setState(() {});
-    });
-    _controller.forward().whenComplete(() {
-      setState(() {});
-    });
-
-    _scrollController.addListener(() {
-      final GlobalKey videoKey = widget.videoKey ?? _videoKey;
-      final RenderBox? renderBox = videoKey.currentContext?.findRenderObject() as RenderBox?;
-      if (renderBox != null) {
-        final position = renderBox.localToGlobal(Offset.zero);
-        final screenHeight = MediaQuery.of(context).size.height;
-        final visible = position.dy + renderBox.size.height > 0 && position.dy < screenHeight;
-        if (visible) {
-          // Nuevo cálculo más preciso: efecto solo cuando el video está centrado
-          final double midScreen = screenHeight / 2;
-          final double midVideo = position.dy + renderBox.size.height / 2;
-          final double distance = (midVideo - midScreen).abs();
-          final double maxDistance = screenHeight * 0.6;
-          final double progress = (1.0 - (distance / maxDistance)).clamp(0.0, 1.0);
-          setState(() {
-            scrollProgress = progress;
-          });
-        } else {
-          setState(() {
-            scrollProgress = 0.0;
-          });
-        }
-      }
-    });
+    _controller.forward();
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    _scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
-      child: SizedBox(
-        height: widget.screenHeight,
-        width: widget.screenWidth,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            // Imagen con opacidad sincronizada con la explosión
-            // Texto "Bolsa" que aparece y se achica
-            Positioned(
-              top: 200,
-              child: AnimatedBuilder(
-                animation: _textScaleAnimation,
-                builder: (_, __) {
-                  return Transform.scale(
-                    scale: _textScaleAnimation.value,
-                    child: Opacity(
-                      opacity: 1.0 - _opacityAnimation.value,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            widget.name.toUpperCase(),
-                            style: TextStyle(
-                              fontSize: (widget.screenWidth * 0.2).clamp(20, 80),
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              shadows: [
-                                Shadow(
-                                  offset: Offset(0, -2), // sombra arriba blanca
-                                  color: Colors.white.withAlpha(150),
-                                  blurRadius: 6,
-                                ),
-                                Shadow(
-                                  offset: Offset(0, 2), // sombra abajo con color
-                                  color: widget.color,
-                                  blurRadius: 12,
-                                ),
-                              ],
-                            ),
-                          ),
-                          Text("Bajo pedido", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 12)),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            Positioned(
-              child: AnimatedBuilder(
-                animation: _opacityAnimation,
-                builder: (_, __) {
-                  return Opacity(
-                    opacity: 1.0 - _opacityAnimation.value,
-                    child: Image.asset(widget.img, width: (widget.screenWidth * 0.8).clamp(900, 1200)),
-                  );
-                },
-              ),
-            ),
-
-            // Efecto de explosión central
-            Positioned(
-              child: AnimatedBuilder(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 50),
+        child: SizedBox(
+          height: widget.r.hp(100),
+          width: widget.r.wp(100),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              AnimatedBuilder(
                 animation: _controller,
-                builder: (_, __) {
-                  return Opacity(
-                    opacity: _opacityAnimation.value,
-                    child: Center(
+                builder:
+                    (_, __) => Opacity(
+                      opacity: _opacityAnimation.value,
                       child: Transform.scale(
                         scale: _scaleAnimation.value,
                         child: Container(
@@ -394,47 +329,73 @@ class _SliverStartPlantillaState extends State<SliverStartPlantilla> with Ticker
                         ),
                       ),
                     ),
-                  );
-                },
               ),
-            ),
-            Positioned(
-              bottom: 50,
-              child: AnimatedOpacity(
-                duration: Duration(milliseconds: 1500),
-                opacity: 1.0 - _opacityAnimation.value,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.06),
-                  child: Container(
-                    width: (widget.screenWidth).clamp(400, 1100),
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: widget.screenWidth * 0.06),
+              // Contenido principal
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AnimatedBuilder(
+                    animation: _textScaleAnimation,
+                    builder:
+                        (_, __) => Transform.scale(
+                          scale: _textScaleAnimation.value,
+                          child: Opacity(
+                            opacity: 1.0 - _opacityAnimation.value,
+                            child: Column(
+                              children: [
+                                Text(
+                                  widget.name.toUpperCase(),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: widget.r.fs(10, 80),
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    shadows: [
+                                      Shadow(offset: Offset(0, -2), color: Colors.white.withAlpha(150), blurRadius: 6),
+                                      Shadow(offset: Offset(0, 2), color: widget.color, blurRadius: 12),
+                                    ],
+                                  ),
+                                ),
+                                Text("Bajo pedido", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white.withAlpha(200), fontSize: 20)),
+                              ],
+                            ),
+                          ),
+                        ),
+                  ),
+                  AnimatedBuilder(
+                    animation: _opacityAnimation,
+                    builder:
+                        (_, __) => Opacity(
+                          opacity: 1.0 - _opacityAnimation.value,
+                          child: Image.asset(widget.img, height: widget.r.hp(60, max: 600), fit: BoxFit.contain),
+                        ),
+                  ),
+                  AnimatedOpacity(
+                    duration: const Duration(milliseconds: 1500),
+                    opacity: 1.0 - _opacityAnimation.value,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          textAlign: TextAlign.center,
                           "Diseños que destacan.",
-                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: (widget.screenWidth * 0.1).clamp(22, 40)),
-                        ),
-                        SizedBox(height: 50),
-                        Text.rich(
                           textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white.withAlpha(200), fontSize: (widget.screenWidth * 0.03).clamp(16, 26)),
-                          TextSpan(children: _buildDescripcion(widget.name, widget.color)),
+                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: widget.r.fs(1.9, 40)),
                         ),
-                        Text(
-                          textAlign: TextAlign.center,
-                          "   ",
-                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: (widget.screenWidth * 0.06).clamp(20, 50)),
+                        SizedBox(height: widget.r.hp(2)),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6)),
+                          child: Text.rich(
+                            textAlign: TextAlign.center,
+                            TextSpan(children: _buildDescripcion(widget.name, widget.color)),
+                            style: TextStyle(color: Colors.white.withAlpha(200), fontSize: widget.r.fs(1.3, 26)),
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ),
+                ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -442,8 +403,7 @@ class _SliverStartPlantillaState extends State<SliverStartPlantilla> with Ticker
 
   List<TextSpan> _buildDescripcion(String bolsa, Color color) {
     final route = ModalRoute.of(context)?.settings.name?.toLowerCase() ?? '';
-    final isEco = route.contains("ecobag");
-    final tipo = isEco ? "EcoBag®" : "SmartBag®";
+    final tipo = route.contains("ecobag") ? "EcoBag®" : "SmartBag®";
 
     switch (bolsa.toLowerCase()) {
       case 'standpack':
@@ -488,18 +448,19 @@ class _SliverStartPlantillaState extends State<SliverStartPlantilla> with Ticker
   }
 }
 
-//Sliver con información
-class SliverInfoPlantilla extends StatefulWidget {
-  const SliverInfoPlantilla({super.key, required this.screenWidth, required this.isMobile, required this.color});
+//---------Información de el producto------------
+class ScrollInfoSliver extends StatefulWidget {
+  const ScrollInfoSliver({super.key, required this.screenWidth, required this.isMobile, required this.color, required this.r});
   final Color color;
+  final Responsive r;
   final double screenWidth;
   final bool isMobile;
 
   @override
-  State<SliverInfoPlantilla> createState() => _SliverInfoPlantillaState();
+  State<ScrollInfoSliver> createState() => _ScrolInfolSliverState();
 }
 
-class _SliverInfoPlantillaState extends State<SliverInfoPlantilla> {
+class _ScrolInfolSliverState extends State<ScrollInfoSliver> {
   final ScrollController _scrollController = ScrollController();
   bool canScrollLeft = false;
   bool canScrollRight = true;
@@ -541,33 +502,41 @@ class _SliverInfoPlantillaState extends State<SliverInfoPlantilla> {
     final Map<String, Map<String, List<Map<String, String>>>> tarjetas = {
       'cojin': {
         'eco': [
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'EcoBag® Cojín 1...'},
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'EcoBag® Cojín 2...'},
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'EcoBag® Cojín 3...'},
+          {'image': 'img/BLogo.webp', 'text': 'Cojín ecoamigable, 2 o 3 sellos, con terminación papel, varios tamaños.'},
+          {'image': 'img/BLogo.webp', 'text': 'Versátil y resistente, ideal para alimentos y productos sólidos.'},
+          {'image': 'img/BLogo.webp', 'text': 'Sostenible, con o sin ventana, en medidas y acabados premium.'},
         ],
         'smart': [
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'SmartBag® Cojín 1...'},
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'SmartBag® Cojín 2...'},
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'SmartBag® Cojín 3...'},
+          {'image': 'img/smartbag/cojin/cardLarge1.webp', 'text': 'Cojín de alto desempeño, 2 o 3 sellos, mate o brillante.'},
+          {'image': 'img/smartbag/cojin/cardLarge2.webp', 'text': 'Optimizado para conservación, con o sin ventana.'},
+          {'image': 'img/smartbag/cojin/cardLarge3.webp', 'text': 'Premium, alta barrera, acabados y medidas exclusivas.'},
         ],
       },
+
       'piramidal': {
         'eco': [
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'EcoBag® Piramidal 1...'},
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'EcoBag® Piramidal 2...'},
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'EcoBag® Piramidal 3...'},
+          {'image': 'img/BLogo.webp', 'text': 'EcoBag® Piramidal, diseño estable y atractivo, ideal para exhibición en estanterías.'},
+          {'image': 'img/BLogo.webp', 'text': 'Fabricada con materiales sostenibles, disponible con o sin ventana.'},
+          {'image': 'img/BLogo.webp', 'text': 'Acabados en papel o mate, perfecta para productos gourmet y especiales.'},
         ],
         'smart': [
-          {'image': 'assets/img/smartbag/piramidal/CardLarge1.webp', 'text': 'SmartBag® Piramidal 1...'},
-          {'image': 'assets/img/smartbag/piramidal/CardLarge2.webp', 'text': 'SmartBag® Piramidal 2...'},
-          {'image': 'assets/img/smartbag/piramidal/CardLarge3.webp', 'text': 'SmartBag® Piramidal 3...'},
+          {
+            'image': 'img/smartbag/piramidal/CardLarge1.webp',
+            'text': 'SmartBag® Piramidal de alto rendimiento, máxima protección y presentación premium.',
+          },
+          {
+            'image': 'img/smartbag/piramidal/CardLarge2.webp',
+            'text': 'Disponible en terminación mate o brillante, con barrera de alta conservación.',
+          },
+          {'image': 'img/smartbag/piramidal/CardLarge3.webp', 'text': 'Diseño exclusivo para destacar tu marca en tú negocio.'},
         ],
       },
+
       'standpack': {
         'smart': [
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'SmartBag® StandPack 1...'},
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'SmartBag® StandPack 2...'},
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'SmartBag® StandPack 3...'},
+          {'image': 'img/smartbag/standpack/cardLarge1.webp', 'text': 'SmartBag® StandPack 1...'},
+          {'image': 'img/smartbag/standpack/cardLarge2.webp', 'text': 'SmartBag® StandPack 2...'},
+          {'image': 'img/smartbag/standpack/cardLarge3.webp', 'text': 'SmartBag® StandPack 3...'},
         ],
       },
     };
@@ -580,10 +549,10 @@ class _SliverInfoPlantillaState extends State<SliverInfoPlantilla> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.06, vertical: 10),
+              padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.06, vertical: widget.isMobile ? 40 : 20),
               child: Text(
                 "Exclusividad de ${tipoBolsa.toUpperCase()}.",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: (widget.screenWidth * 0.09).clamp(30, 50), color: widget.color),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: (widget.screenWidth * 0.09).clamp(30, 50), color: Colors.white),
               ),
             ),
 
@@ -594,8 +563,6 @@ class _SliverInfoPlantillaState extends State<SliverInfoPlantilla> {
                 children: List.generate(tarjetasMostrar.length, (index) {
                   final tarjeta = tarjetasMostrar[index];
                   return buildCard(
-                    screenWidth: widget.screenWidth,
-                    isMobile: widget.isMobile,
                     image: tarjeta['image']!,
                     text: tarjeta['text']!,
                     isFirst: index == 0,
@@ -609,8 +576,9 @@ class _SliverInfoPlantillaState extends State<SliverInfoPlantilla> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  _ArrowButton(
+                  ArrowButton(
                     enabled: canScrollLeft,
+                    isDark: true,
                     icon: CupertinoIcons.chevron_left,
                     onTap: () {
                       _scrollController.animateTo(
@@ -621,8 +589,9 @@ class _SliverInfoPlantillaState extends State<SliverInfoPlantilla> {
                     },
                   ),
                   const SizedBox(width: 20),
-                  _ArrowButton(
+                  ArrowButton(
                     enabled: canScrollRight,
+                    isDark: true,
                     icon: CupertinoIcons.chevron_right,
                     onTap: () {
                       _scrollController.animateTo(
@@ -641,30 +610,32 @@ class _SliverInfoPlantillaState extends State<SliverInfoPlantilla> {
     );
   }
 
-  Widget buildCard({
-    required double screenWidth,
-    required bool isMobile,
-    required String image,
-    required String text,
-    required bool isFirst,
-    required bool isLast,
-  }) {
-    final double horizontalPadding = screenWidth * 0.06;
+  Widget buildCard({required String image, required String text, required bool isFirst, required bool isLast}) {
     return Padding(
-      padding: EdgeInsets.only(left: isFirst ? horizontalPadding : 0, right: isLast ? horizontalPadding : 20),
+      padding: EdgeInsets.only(left: isFirst ? widget.r.wp(6) : 0, right: isLast ? widget.r.wp(6) : 20),
       child: Container(
-        width: isMobile ? 400 : (screenWidth * 0.6).clamp(650, 1200),
-        height: isMobile ? 500 : (screenWidth * 0.1).clamp(500, 900),
-        padding: const EdgeInsets.only(top: 22, left: 22),
-        margin: const EdgeInsets.only(top: 20, bottom: 20, right: 20),
+        width: widget.isMobile ? widget.r.wp(80) : widget.r.wp(60),
+        height: widget.isMobile ? widget.r.wp(90) : widget.r.wp(40, max: 600),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(26), image: DecorationImage(image: AssetImage(image), fit: BoxFit.cover)),
         child: Align(
           alignment: Alignment.topLeft,
           child: Padding(
-            padding: EdgeInsets.only(left: screenWidth * 0.02, top: screenWidth * 0.01),
+            padding: EdgeInsets.all(widget.r.dp(3, max: 22)),
             child: Text(
               text,
-              style: TextStyle(height: 1.2, color: Colors.white, fontSize: (screenWidth * 0.04).clamp(16, 24), fontWeight: FontWeight.bold),
+              style: TextStyle(
+                height: 1.2,
+                color: Colors.white,
+                fontSize: widget.r.fs(2, 24),
+                fontWeight: FontWeight.bold,
+                shadows: [
+                  Shadow(
+                    offset: Offset(0, 0), // desplazamiento en X y Y
+                    blurRadius: 4, // difuminado de la sombra
+                    color: Colors.black.withAlpha(200), // color y opacidad
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -673,49 +644,32 @@ class _SliverInfoPlantillaState extends State<SliverInfoPlantilla> {
   }
 }
 
-//Clase de botones
-class _ArrowButton extends StatelessWidget {
-  final bool enabled;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _ArrowButton({required this.enabled, required this.icon, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: enabled ? onTap : null,
-      icon: Icon(icon, color: enabled ? Colors.white : Colors.white.withAlpha(150)),
-      style: ButtonStyle(backgroundColor: WidgetStateProperty.all(enabled ? Color(0xff393839) : Color(0xff393839).withAlpha(180))),
-    );
-  }
-}
-
-//Sliver con mas información
-class SliverWithOtherThingPlantilla extends StatefulWidget {
-  SliverWithOtherThingPlantilla({
+//---------Video con la información del producto------------
+class VideoTemplateSliver extends StatefulWidget {
+  const VideoTemplateSliver({
     super.key,
     required this.widget,
-    required this.screenWidth,
     required this.isMobile,
     required this.color,
     required this.scrollProgress,
     required this.videoKey,
+    required this.r,
   });
 
   final Plantilla widget;
+  final Responsive r;
   final Color color;
-  final double screenWidth;
   final bool isMobile;
-  double scrollProgress;
+  final double scrollProgress;
   final GlobalKey videoKey;
 
   @override
-  State<SliverWithOtherThingPlantilla> createState() => _SliverWithOtherThingPlantillaState();
+  State<VideoTemplateSliver> createState() => _VideoTemplateSliverState();
 }
 
-class _SliverWithOtherThingPlantillaState extends State<SliverWithOtherThingPlantilla> {
+class _VideoTemplateSliverState extends State<VideoTemplateSliver> {
   final ValueNotifier<bool> showAnimation = ValueNotifier(false);
+
   @override
   void dispose() {
     showAnimation.dispose();
@@ -738,30 +692,32 @@ class _SliverWithOtherThingPlantillaState extends State<SliverWithOtherThingPlan
             ? 'standpack'
             : '';
 
-    final Map<String, Map<String, List<Map<String, String>>>> video = {
+    final Map<String, Map<String, List<Map<String, String>>>> videos = {
       'cojin': {
         'eco': [
-          {'Video': 'assets/videos/smartbag/piramidal/videoCojinEco.webm'},
+          {'Video': 'assets/videos/smartbag/smart1.webm'},
         ],
         'smart': [
-          {'Video': 'assets/videos/smartbag/piramidal/videoCojinSmart.webm'},
+          {'Video': 'assets/videos/smartbag/cojin/video.webm'},
         ],
       },
       'piramidal': {
         'eco': [
-          {'Video': 'assets/videos/smartbag/piramidal/videoPiramidalEco.webm'},
+          {'Video': 'assets/videos/smartbag/smart1.webm'},
         ],
         'smart': [
-          {'Video': 'assets/videos/smartbag/piramidal/videoPiramidalSmart.webm'},
+          {'Video': 'assets/videos/smartbag/smart1.webm'},
         ],
       },
       'standpack': {
         'smart': [
-          {'Video': 'assets/videos/smartbag/piramidal/videoPiramidalSmart.webm'},
+          {'Video': 'assets/videos/smartbag/standpack/video.webm'},
         ],
       },
     };
-    final videoMostrar = video[tipoBolsa]?[isEco ? 'eco' : 'smart'] ?? [];
+
+    // Selección del video
+    final String videoSrc = videos[tipoBolsa]?[isEco ? 'eco' : 'smart']?.first['Video'] ?? '';
 
     return SliverToBoxAdapter(
       child: Padding(
@@ -781,17 +737,16 @@ class _SliverWithOtherThingPlantillaState extends State<SliverWithOtherThingPlan
 
               child: Text(
                 textAlign: TextAlign.center,
-
                 "Sé ${widget.widget.name}.",
                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: (screenWidth * 0.15).clamp(30, 60)),
               ),
             ),
             SizedBox(height: 60),
             SizedBox(
-              width: screenWidth.clamp(500, 1200),
+              width: widget.r.wp(80, max: 1000),
               child: Text.rich(
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white.withAlpha(200), fontSize: (screenWidth * 0.03).clamp(16, 26)),
+                style: TextStyle(color: Colors.white.withAlpha(200), fontSize: widget.r.fs(2, 26)),
                 TextSpan(children: buildDescripcion(widget.widget.name, widget.color)),
               ),
             ),
@@ -800,10 +755,9 @@ class _SliverWithOtherThingPlantillaState extends State<SliverWithOtherThingPlan
               child: Builder(
                 builder: (context) {
                   final borderRadius = BorderRadius.circular(30 * widget.scrollProgress);
-                  final horizontalPadding = screenWidth * 0.055 * widget.scrollProgress;
-
+                  final pdh = widget.r.wp(4) * widget.scrollProgress;
                   return Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: horizontalPadding),
+                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: pdh),
                     child: ClipRRect(
                       borderRadius: borderRadius,
                       child: SizedBox(
@@ -816,7 +770,6 @@ class _SliverWithOtherThingPlantillaState extends State<SliverWithOtherThingPlan
                             ValueListenableBuilder<bool>(
                               valueListenable: videoBlurNotifier,
                               builder: (context, isBlur, _) {
-                                final videoSrc = videoMostrar.isNotEmpty ? videoMostrar.first['Video'] ?? '' : '';
                                 return VideoFlutter(src: videoSrc, blur: isBlur, loop: true, showControls: true, fit: BoxFit.cover);
                               },
                             ),
@@ -828,7 +781,7 @@ class _SliverWithOtherThingPlantillaState extends State<SliverWithOtherThingPlan
                 },
               ),
             ),
-            SizedBox(height: widget.isMobile ? 100 : 60),
+            const SizedBox(height: 60),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.2),
               child:
@@ -1060,34 +1013,69 @@ class _SliverWithOtherThingPlantillaState extends State<SliverWithOtherThingPlan
   }
 }
 
-//Sliver con es el momento
-class SliverWithThisIsMoemnt extends StatelessWidget {
-  const SliverWithThisIsMoemnt({super.key, required this.screenWidth, required this.color});
-
-  final double screenWidth;
+//---------Sección "Se único y destaca"------------
+class ThisMomentSliver extends StatelessWidget {
+  final Responsive r;
   final Color color;
+  final bool isMobile;
+  const ThisMomentSliver({super.key, required this.color, required this.r, required this.isMobile});
 
   @override
   Widget build(BuildContext context) {
+    final route = ModalRoute.of(context)?.settings.name?.toLowerCase() ?? '';
+    final isEco = route.contains("ecobag");
+    final String tipoBolsa =
+        route.contains('cojin')
+            ? 'cojin'
+            : route.contains('piramidal')
+            ? 'piramidal'
+            : route.contains('standpack')
+            ? 'standpack'
+            : '';
+
+    final Map<String, Map<String, List<Map<String, String>>>> img = {
+      'cojin': {
+        'eco': [
+          {'Img': 'img/BIsotipo.webp'},
+        ],
+        'smart': [
+          {'Img': 'img/smartbag/cojin/Big.webp'},
+        ],
+      },
+      'piramidal': {
+        'eco': [
+          {'Img': 'img/BIsotipo.webp'},
+        ],
+        'smart': [
+          {'Img': 'img/smartbag/piramidal/BIG.webp'},
+        ],
+      },
+      'standpack': {
+        'smart': [
+          {'Img': 'img/smartbag/standpack/big.webp'},
+        ],
+      },
+    };
+    final String imgsrc = img[tipoBolsa]?[isEco ? 'eco' : 'smart']?.first['Img'] ?? '';
+    final bool isCojinSmartbag = tipoBolsa == 'cojin' && !isEco; // porque 'smart' es cuando isEco es false
+
+    final double imageHeight = isMobile ? (isCojinSmartbag ? 900 : 300) : (isCojinSmartbag ? 1200 : 500);
+
     return SliverToBoxAdapter(
-      child: Container(
+      child: SizedBox(
         width: double.infinity,
-        decoration: BoxDecoration(image: DecorationImage(image: AssetImage("assets/img/smartbag/piramidal/BIG.webp"), fit: BoxFit.contain)),
-        //color: Colors.black,
-        padding: const EdgeInsets.symmetric(vertical: 100),
+
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Texto gris claro
-            Text(
-              'Es el momento.',
-              style: TextStyle(color: Colors.grey.shade500, fontSize: (screenWidth * 0.09).clamp(16, 80), fontWeight: FontWeight.bold),
-            ),
+            Text('Es el momento.', style: TextStyle(color: Colors.grey.shade500, fontSize: r.fs(3, 80), fontWeight: FontWeight.bold)),
             // Texto con glow
             Text(
+              textAlign: TextAlign.center,
               'Sé único y destaca.',
               style: TextStyle(
-                fontSize: (screenWidth * 0.1).clamp(24, 90),
+                fontSize: r.fs(6, 90),
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
                 shadows: [
@@ -1096,29 +1084,22 @@ class SliverWithThisIsMoemnt extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 100),
+            SizedBox(
+              height: imageHeight,
               child: Stack(
                 children: [
-                  SizedBox(height: 1000, width: screenWidth),
                   Positioned(
                     bottom: 0,
                     left: 0,
                     right: 0,
                     child: Container(
-                      height: 600, // altura del degradado
+                      height: imageHeight,
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.transparent,
-                            color, // o cualquier color de fondo que tengas
-                          ],
-                        ),
+                        gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, color]),
                       ),
                     ),
                   ),
+                  Align(alignment: Alignment.bottomCenter, child: Image.asset(imgsrc, height: imageHeight, fit: BoxFit.cover)),
                 ],
               ),
             ),
@@ -1129,20 +1110,28 @@ class SliverWithThisIsMoemnt extends StatelessWidget {
   }
 }
 
-//Sliver con scroll
-class SliverWithScroll extends StatefulWidget {
-  const SliverWithScroll({super.key, required this.screenWidth, required this.widget, required this.color, required this.isMobile});
+//---------Sección con más información------------
+class ScrollWithMoreInfoSliver extends StatefulWidget {
+  const ScrollWithMoreInfoSliver({
+    super.key,
+    required this.r,
+    required this.widget,
+    required this.color,
+    required this.isMobile,
+    required this.route,
+  });
 
-  final double screenWidth;
+  final Responsive r;
   final Plantilla widget;
   final Color color;
   final bool isMobile;
+  final String route;
 
   @override
-  State<SliverWithScroll> createState() => _SliverWithScrollState();
+  State<ScrollWithMoreInfoSliver> createState() => _ScrollWithMoreInfoSliverState();
 }
 
-class _SliverWithScrollState extends State<SliverWithScroll> {
+class _ScrollWithMoreInfoSliverState extends State<ScrollWithMoreInfoSliver> {
   bool isHoverText = false;
 
   final ScrollController _scrollController = ScrollController();
@@ -1191,35 +1180,80 @@ class _SliverWithScrollState extends State<SliverWithScroll> {
             : '';
 
     final Map<String, Map<String, List<Map<String, String>>>> tarjetas = {
-      'cojin': {
+      'cojín': {
         'eco': [
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'EcoBag® Cojín 1...'},
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'EcoBag® Cojín 2...'},
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'EcoBag® Cojín 3...'},
+          {
+            'image': 'img/smartbag/discover1.webp',
+            'text':
+                'Bolsa tipo cojín fabricada con materiales ecoamigables. Disponible en 2 sellos o 3 sellos, con acabado mate o brillante, en varios tamaños.',
+          },
+          {
+            'image': 'img/smartbag/discover1.webp',
+            'text':
+                'Diseño versátil y resistente, ideal para alimentos y productos sólidos. Opciones de impresión personalizadas y variedad de gramajes.',
+          },
+          {
+            'image': 'img/smartbag/discover1.webp',
+            'text': 'Opción sostenible para empaque de alta calidad. Disponible en diferentes medidas, con o sin ventana, y terminados premium.',
+          },
         ],
         'smart': [
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'SmartBag® Cojín 1...'},
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'SmartBag® Cojín 2...'},
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'SmartBag® Cojín 3...'},
+          {
+            'image': 'img/smartbag/cojin/cardShort1.webp',
+            'text':
+                'Bolsa tipo cojín de alto desempeño, con opción de 2 o 3 sellos. Acabado mate o brillante y variedad de tamaños para diferentes usos.',
+          },
+          {
+            'image': 'img/smartbag/cojin/cardShort2.webp',
+            'text':
+                'Diseño optimizado para conservación de producto. Soporta impresión de alta definición y ofrece versiones con ventana o sin ventana.',
+          },
+          {
+            'image': 'img/smartbag/cojin/cardShort3.webp',
+            'text': 'Opción premium en presentación cojín, con materiales de alta barrera, múltiples acabados y medidas personalizables.',
+          },
         ],
       },
       'piramidal': {
         'eco': [
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'EcoBag® Piramidal 1...'},
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'EcoBag® Piramidal 2...'},
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'EcoBag® Piramidal 3...'},
+          {
+            'image': 'img/smartbag/discover1.webp',
+            'text':
+                'Diseño ecológico y moderno que optimiza el uso de materiales, reduciendo el consumo de plástico al usar papel kraft - blanco sin comprometer la protección del producto.',
+          },
+          {
+            'image': 'img/smartbag/discover1.webp',
+            'text':
+                'Perfecta para presentaciones gourmet, productos orgánicos y marcas que buscan transmitir un mensaje de responsabilidad ambiental.',
+          },
+          {
+            'image': 'img/smartbag/discover1.webp',
+            'text': 'Fabricada con materiales 100% eco amigables, ofreciendo resistencia, frescura prolongada y una huella de carbono reducida.',
+          },
         ],
         'smart': [
-          {'image': 'assets/img/smartbag/piramidal/CardShort1.webp', 'text': 'SmartBag® Piramidal 1...'},
-          {'image': 'assets/img/smartbag/piramidal/CardShort2.webp', 'text': 'SmartBag® Piramidal 2...'},
-          {'image': 'assets/img/smartbag/piramidal/CardShort3.webp', 'text': 'SmartBag® Piramidal 3...'},
+          {
+            'image': 'img/smartbag/piramidal/CardShort1.webp',
+            'text':
+                'Formato innovador y llamativo que destaca en estanterías, generando un alto impacto visual y aumentando la recordación de marca.',
+          },
+          {
+            'image': 'img/smartbag/piramidal/CardShort2.webp',
+            'text': 'Ideal para snacks, infusiones, café y productos de alta rotación, combinando practicidad de uso con una estética premium.',
+          },
+          {
+            'image': 'img/smartbag/piramidal/CardShort3.webp',
+            'text':
+                'Diseño ergonómico con sellado hermético y estructura estable que garantiza una conservación óptima y mayor durabilidad del contenido.',
+          },
         ],
       },
+
       'standpack': {
         'smart': [
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'SmartBag® StandPack 1...'},
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'SmartBag® StandPack 2...'},
-          {'image': 'assets/img/smartbag/discover1.webp', 'text': 'SmartBag® StandPack 3...'},
+          {'image': 'img/smartbag/standpack/cardShort1.webp', 'text': 'SmartBag® StandPack 1...'},
+          {'image': 'img/smartbag/standpack/cardShort2.webp', 'text': 'SmartBag® StandPack 2...'},
+          {'image': 'img/smartbag/standpack/cardShort3.webp', 'text': 'SmartBag® StandPack 3...'},
         ],
       },
     };
@@ -1229,19 +1263,20 @@ class _SliverWithScrollState extends State<SliverWithScroll> {
       child: Stack(
         children: [
           Container(
-            width: widget.screenWidth,
+            width: widget.r.wp(100),
             color: Colors.black,
+            padding: EdgeInsets.symmetric(vertical: 100),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.08),
+                  padding: EdgeInsets.symmetric(horizontal: widget.r.wp(8)),
                   child: SizedBox(
                     width: 1000,
                     child: Text.rich(
                       textAlign: TextAlign.left,
                       TextSpan(
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: (widget.screenWidth * 0.05).clamp(16, 24)),
+                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: widget.r.fs(1.3, 24)),
                         children: [
                           if (tipoBolsa == 'cojín' && tipoLinea == 'EcoBag®') ...[
                             const TextSpan(text: "Clásico, confiable y sostenible. El empaque tipo "),
@@ -1294,7 +1329,7 @@ class _SliverWithScrollState extends State<SliverWithScroll> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.08, vertical: 20),
+                  padding: EdgeInsets.symmetric(horizontal: widget.r.wp(8), vertical: 20),
                   child: MouseRegion(
                     cursor: SystemMouseCursors.click,
                     onEnter: (_) {
@@ -1308,7 +1343,9 @@ class _SliverWithScrollState extends State<SliverWithScroll> {
                       });
                     },
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        navigateWithSlide(context, widget.route);
+                      },
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -1319,7 +1356,7 @@ class _SliverWithScrollState extends State<SliverWithScroll> {
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: widget.color,
-                              fontSize: (widget.screenWidth * 0.04).clamp(15, 20),
+                              fontSize: widget.r.fs(1.2, 20),
                               decoration: isHoverText ? TextDecoration.underline : TextDecoration.none,
                               decorationColor: widget.color,
                             ),
@@ -1340,7 +1377,6 @@ class _SliverWithScrollState extends State<SliverWithScroll> {
                     children: List.generate(tarjetasMostrar.length, (index) {
                       final tarjeta = tarjetasMostrar[index];
                       return buildCard(
-                        screenWidth: widget.screenWidth,
                         isMobile: widget.isMobile,
                         image: tarjeta['image']!,
                         text: tarjeta['text']!,
@@ -1351,28 +1387,32 @@ class _SliverWithScrollState extends State<SliverWithScroll> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.06, vertical: 80),
+                  padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6), vertical: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      _ArrowButton(
+                      ArrowButton(
                         enabled: canScrollLeft,
+                        isDark: true,
                         icon: CupertinoIcons.chevron_left,
                         onTap: () {
                           _scrollController.animateTo(
-                            _scrollController.offset - (widget.screenWidth * 0.6),
+                            _scrollController.offset - (widget.r.wp(60)),
                             duration: const Duration(milliseconds: 300),
                             curve: Curves.easeInOut,
                           );
                         },
                       ),
+
                       const SizedBox(width: 20),
-                      _ArrowButton(
+                      ArrowButton(
+                        isDark: true,
+
                         enabled: canScrollRight,
                         icon: CupertinoIcons.chevron_right,
                         onTap: () {
                           _scrollController.animateTo(
-                            _scrollController.offset + (widget.screenWidth * 0.6),
+                            _scrollController.offset + (widget.r.wp(60)),
                             duration: const Duration(milliseconds: 300),
                             curve: Curves.easeInOut,
                           );
@@ -1404,48 +1444,40 @@ class _SliverWithScrollState extends State<SliverWithScroll> {
     );
   }
 
-  Widget buildCard({
-    required double screenWidth,
-    required bool isMobile,
-    required String image,
-    required String text,
-    required bool isFirst,
-    required bool isLast,
-  }) {
-    final double horizontalPadding = screenWidth * 0.06;
+  Widget buildCard({required bool isMobile, required String image, text, required bool isFirst, required bool isLast}) {
     return Padding(
-      padding: EdgeInsets.only(left: isFirst ? horizontalPadding : 0, right: isLast ? horizontalPadding : 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 500,
-            height: 500,
-            padding: const EdgeInsets.only(top: 22, left: 22),
-            margin: const EdgeInsets.only(top: 20, bottom: 20, right: 20),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(26), image: DecorationImage(image: AssetImage(image), fit: BoxFit.cover)),
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: screenWidth * 0.02, top: screenWidth * 0.01),
-            child: Text(
-              text,
-              style: TextStyle(height: 1.2, color: Colors.white, fontSize: (screenWidth * 0.04).clamp(16, 20), fontWeight: FontWeight.bold),
+      padding: EdgeInsets.only(left: isFirst ? widget.r.wp(6) : 0, right: isLast ? widget.r.wp(6) : 20),
+      child: SizedBox(
+        width: widget.r.wp(70, max: 500),
+        height: widget.r.wp(70, max: 500) + 200,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: widget.r.wp(70, max: 500),
+              height: widget.r.wp(70, max: 500),
+              padding: const EdgeInsets.only(top: 22, left: 22),
+              margin: const EdgeInsets.only(top: 20, bottom: 20, right: 20),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(26), image: DecorationImage(image: AssetImage(image), fit: BoxFit.cover)),
             ),
-          ),
-        ],
+            Text(text, style: TextStyle(height: 1.2, color: Colors.white, fontSize: widget.r.fs(1.4, 20), fontWeight: FontWeight.bold)),
+          ],
+        ),
       ),
     );
   }
 }
 
-//Sliver con Lo dudas
-class SliverWithLoDudas extends StatelessWidget {
-  const SliverWithLoDudas({super.key, required this.screenWidth, required this.isMobile, required this.widget, required this.color});
+//---------Sección final------------
 
-  final double screenWidth;
+class DoubItSliver extends StatelessWidget {
+  const DoubItSliver({super.key, required this.r, required this.isMobile, required this.widget, required this.color, required this.route});
+
+  final Responsive r;
   final bool isMobile;
   final Plantilla widget;
   final Color color;
+  final String route;
 
   @override
   Widget build(BuildContext context) {
@@ -1461,7 +1493,7 @@ class SliverWithLoDudas extends StatelessWidget {
               TextSpan(text: "Perfecto para destacar en anaquel y proteger tu producto."),
             ],
           ),
-          'image': "assets/img/smartbag/discover9_Down.webp",
+          'image': "img/smartbag/standpack/end.webp",
         },
         'piramidal': {
           'text': TextSpan(
@@ -1471,7 +1503,7 @@ class SliverWithLoDudas extends StatelessWidget {
               TextSpan(text: "Ideal para tés y productos gourmet que buscan una experiencia única."),
             ],
           ),
-          'image': "assets/img/smartbag/piramidal/end.webp",
+          'image': isSmart ? "img/BLogo.webp" : "img/smartbag/piramidal/end.webp",
         },
         'cojín': {
           'text': TextSpan(
@@ -1481,7 +1513,7 @@ class SliverWithLoDudas extends StatelessWidget {
               TextSpan(text: "Para líneas de alta producción con eficiencia y calidad."),
             ],
           ),
-          'image': "assets/img/smartbag/discover9_Down.webp",
+          'image': isSmart ? "img/BLogo.webp" : "img/smartbag/cojin/end.webp",
         },
       };
     }
@@ -1496,112 +1528,85 @@ class SliverWithLoDudas extends StatelessWidget {
     final datos = getLoDudasData(widget.name)[tipo]!;
 
     return SliverToBoxAdapter(
-      child: Container(
-        width: screenWidth,
-        padding: EdgeInsets.symmetric(vertical: 50),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 50, horizontal: r.wp(6)),
         child: Column(
           children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: isMobile ? 0 : screenWidth * 0.06),
-              child: Container(
-                width: 1200,
-                padding: EdgeInsets.symmetric(horizontal: isMobile ? 0 : screenWidth * 0.06, vertical: isMobile ? 0 : 50),
-                decoration: BoxDecoration(
-                  image:
-                      !isMobile
-                          ? DecorationImage(image: AssetImage("assets/img/smartbag/piramidal/end.webp"), alignment: Alignment.bottomRight)
-                          : null,
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(22),
-                ),
-                child: Center(
-                  child:
-                      isMobile
-                          ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(left: screenWidth * 0.06, right: screenWidth * 0.06, top: 50),
-                                child: Text(
-                                  "Lo dudas?",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey.shade500,
-                                    fontSize: (screenWidth * 0.05).clamp(18, 22),
+            Container(
+              width: 1200,
+              padding: EdgeInsets.symmetric(horizontal: r.wp(6), vertical: 50),
+              decoration: BoxDecoration(
+                image: !isMobile ? DecorationImage(image: AssetImage(datos['image']), alignment: Alignment.bottomRight) : null,
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(22),
+              ),
+              child: Center(
+                child:
+                    isMobile
+                        ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: r.wp(6), right: r.wp(6), top: 50),
+                              child: Text(
+                                "Lo dudas?",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey.shade500, fontSize: r.fs(1.9, 22)),
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: r.wp(6)),
+                              child: Text(
+                                "Es la ${widget.name} que esperabas!",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: r.fs(3, 32)),
+                              ),
+                            ),
+                            SizedBox(height: 20),
+
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: r.wp(6)),
+                              child: Text.rich(
+                                datos['text'],
+                                style: TextStyle(color: Colors.grey.shade500, fontWeight: FontWeight.bold, fontSize: r.fs(1.4, 18)),
+                              ),
+                            ),
+                            SizedBox(height: 20),
+
+                            _button(context, isMobile),
+                            Image.asset(datos['image']),
+                          ],
+                        )
+                        : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Lo dudas?",
+                                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey.shade500, fontSize: r.fs(1.2, 26)),
                                   ),
-                                ),
-                              ),
-                              SizedBox(height: 20),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
-                                child: Text(
-                                  "Es la ${widget.name} que esperabas!",
-                                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: (screenWidth * 0.08).clamp(24, 32)),
-                                ),
-                              ),
-                              SizedBox(height: 20),
-
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
-                                child: Text.rich(
-                                  datos['text'],
-                                  style: TextStyle(
-                                    color: Colors.grey.shade500,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: (screenWidth * 0.035).clamp(14, 18),
+                                  SizedBox(height: 20),
+                                  Text(
+                                    "Es la ${widget.name} que esperabas!",
+                                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: r.fs(2, 32)),
                                   ),
-                                ),
-                              ),
-                              SizedBox(height: 20),
+                                  SizedBox(height: 20),
+                                  Text.rich(
+                                    datos['text'],
+                                    style: TextStyle(color: Colors.grey.shade500, fontWeight: FontWeight.bold, fontSize: r.fs(1, 18)),
+                                  ),
+                                  SizedBox(height: 20),
 
-                              Padding(padding: const EdgeInsets.all(8.0), child: ElevatedButton(onPressed: () {}, child: Text("Comprar"))),
-                              Image.asset("assets/img/smartbag/piramidal/end.webp"),
-                            ],
-                          )
-                          : Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Lo dudas?",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey.shade500,
-                                        fontSize: (screenWidth * 0.06).clamp(22, 26),
-                                      ),
-                                    ),
-                                    SizedBox(height: 20),
-                                    Text(
-                                      "Es la ${widget.name} que esperabas!",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                        fontSize: (screenWidth * 0.08).clamp(24, 32),
-                                      ),
-                                    ),
-                                    SizedBox(height: 20),
-                                    Text.rich(
-                                      datos['text'],
-                                      style: TextStyle(
-                                        color: Colors.grey.shade500,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: (screenWidth * 0.035).clamp(14, 18),
-                                      ),
-                                    ),
-                                    SizedBox(height: 20),
-
-                                    ElevatedButton(onPressed: () {}, child: Text("Comprar")),
-                                  ],
-                                ),
+                                  _button(context, isMobile),
+                                ],
                               ),
-                              Expanded(child: SizedBox(height: 500)),
-                            ],
-                          ),
-                ),
+                            ),
+                            Expanded(child: SizedBox(height: 500)),
+                          ],
+                        ),
               ),
             ),
           ],
@@ -1609,6 +1614,17 @@ class SliverWithLoDudas extends StatelessWidget {
       ),
     );
   }
+
+  Padding _button(BuildContext context, bool isMobile) => Padding(
+    padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 0, vertical: 8),
+    child: ElevatedButton(
+      onPressed: () {
+        navigateWithSlide(context, route);
+      },
+      style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(color), foregroundColor: WidgetStatePropertyAll(Colors.white)),
+      child: Text("Cotizar"),
+    ),
+  );
 }
 
 //Sliver nos importa

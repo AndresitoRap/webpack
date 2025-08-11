@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:webpack/pages/accesorios/accesorios.dart';
 import 'package:webpack/pages/cartpage.dart';
 import 'package:webpack/pages/detailsproduct.dart';
@@ -105,8 +106,8 @@ class MyApp extends StatelessWidget {
           '/Nosotros/Quienes-Somos/Identidad-Corporativa': (_) => const AboutUs(),
           '/Nosotros/Quienes-Somos/Nuestros-Valores': (_) => const Us(),
           '/Accesorios': (_) => const Accesorios(),
-          '/Accesorios/Explora-Accesorios/Peel': (_) => const Us(),
-          '/Accesorios/Explora-Accesorios/Valvula': (_) => const Us(),
+          '/Accesorios/Accesorios-Destacados/Peel--Stick': (_) => const CreateModel3D(),
+          '/Accesorios/Accesorios-Destacados/Valvula': (_) => const CreateModel3D(),
         };
 
         if (staticRoutes.containsKey(uri.path)) {
@@ -134,7 +135,7 @@ class MyApp extends StatelessWidget {
 
         if (segments.length == 4 &&
             (segments[0].toLowerCase() == 'smartbag' || segments[0].toLowerCase() == 'ecobag') &&
-            segments[1].toLowerCase().startsWith('explora-') &&
+            (segments[1].toLowerCase().startsWith('explora-') || segments[1].toLowerCase().startsWith('especiales-')) &&
             segments[3].toLowerCase() == 'crea-tu-empaque') {
           final bagType = segments[0]; // SmartBag o EcoBag
           final section = segments[2]; // 4PRO, DOYPACK, etc.
@@ -149,7 +150,9 @@ class MyApp extends StatelessWidget {
             final firstProduct = allProducts.firstOrNull;
 
             if (firstProduct != null) {
-              return _buildRoute(settings, DetailsProduct(product: firstProduct, allProducts: allProducts));
+              return _buildRoute(settings, CreateModel3D());
+
+              // _buildRoute(settings, DetailsProduct(product: firstProduct, allProducts: allProducts));
             }
           }
 
@@ -246,11 +249,25 @@ class TransitionOverlayState extends State<TransitionOverlay> with TickerProvide
                   child: Container(
                     color: color,
                     child: Center(
-                      child: AnimatedOpacity(
-                        opacity: _showSpinner ? 1.0 : 0.0,
-                        duration: const Duration(milliseconds: 500),
-                        curve: Curves.easeInOut,
-                        child: const CircularProgressIndicator(color: Colors.white),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          AnimatedOpacity(
+                            opacity: _showSpinner ? 1.0 : 0.0,
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.easeInOut,
+                            child: SvgPicture.asset("assets/img/home/wisotipo.svg", height: 80),
+                          ),
+                          SizedBox(height: 20),
+                          AnimatedOpacity(
+                            opacity: _showSpinner ? 1.0 : 0.0,
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.easeInOut,
+                            child: const CircularProgressIndicator(color: Colors.white),
+                          ),
+                        ],
                       ),
                     ),
                   ),

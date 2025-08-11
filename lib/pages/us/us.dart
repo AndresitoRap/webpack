@@ -68,7 +68,7 @@ class _UsState extends State<Us> {
                                           ).createShader(bounds);
                                         },
                                         blendMode: BlendMode.dstIn,
-                                        child: Image.asset("assets/img/us/pruebva.webp", fit: BoxFit.cover),
+                                        child: Image.asset("img/us/pruebva.webp", fit: BoxFit.cover),
                                       ),
                                     ),
                                   ),
@@ -85,7 +85,7 @@ class _UsState extends State<Us> {
                                   height: 800,
                                   child: Opacity(
                                     opacity: (screenWidth * 0.0003).clamp(0.0, 1.0),
-                                    child: Image.asset("assets/img/us/pruebva.webp", fit: BoxFit.cover),
+                                    child: Image.asset("img/us/pruebva.webp", fit: BoxFit.cover),
                                   ),
                                 ),
                               ),

@@ -327,10 +327,7 @@ class _TitleVideoSliverState extends State<TitleVideoSliver> {
                               valueListenable: videoBlurNotifier,
                               builder: (context, isBlur, _) {
                                 return VideoFlutter(
-                                  src:
-                                      widget.isEcobag
-                                          ? 'assets/videos/ecobag/EcobagInicio.webm'
-                                          : 'assets/assets/videos/smartbag/SmartbagInicio.webm',
+                                  src: widget.isEcobag ? 'assets/videos/ecobag/EcobagInicio.webm' : 'assets/videos/smartbag/SmartbagInicio.webm',
                                   blur: isBlur,
                                   loop: true,
                                   showControls: true,
@@ -408,109 +405,111 @@ class _DiscoverSmartSliverState extends State<DiscoverSmartSliver> {
           ),
           SizedBox(
             height: min(widget.r.wp(100) * 0.93, 700) + 40,
-            child: ListView.builder(
+            child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               controller: _scroll,
-              itemCount: cards.length,
               padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6)),
-              itemBuilder: (context, index) {
-                final card = cards[index];
-                final ValueNotifier<bool> isHoverCard = ValueNotifier(false);
-                final ValueNotifier<bool> isHoverIcon = ValueNotifier(false);
-                return Padding(
-                  padding: const EdgeInsets.only(right: 20),
-                  child: GestureDetector(
-                    onTap: () {
-                      ourservicesdialog(context, index, cards, widget.r);
-                    },
-                    child: MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      onEnter: (_) => isHoverCard.value = true,
-                      onExit: (_) => isHoverCard.value = false,
-                      child: ValueListenableBuilder<bool>(
-                        valueListenable: isHoverCard,
-                        builder: (_, hover, __) {
-                          return AnimatedScale(
-                            scale: hover ? 1.02 : 1.0,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                            child: Container(
-                              width: widget.r.dp(28, max: 500),
-                              height: widget.r.dp(30, max: 600),
-                              padding: const EdgeInsets.only(top: 22, left: 22),
-                              margin: const EdgeInsets.symmetric(vertical: 20),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(widget.isMobile ? 16 : 22),
-                                image: DecorationImage(image: AssetImage(card.image), fit: BoxFit.cover),
-                              ),
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    bottom: 10,
-                                    right: 10,
-                                    child: MouseRegion(
-                                      onEnter: (_) => isHoverIcon.value = true,
-                                      onExit: (_) => isHoverIcon.value = false,
-                                      child: ValueListenableBuilder<bool>(
-                                        valueListenable: isHoverIcon,
-                                        builder: (_, isHoveringIcon, __) {
-                                          return AnimatedContainer(
-                                            duration: const Duration(milliseconds: 200),
-                                            curve: Curves.easeInBack,
-                                            width: widget.r.dp(3, max: 40),
-                                            height: widget.r.dp(3, max: 40),
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: isHoveringIcon ? widget.color : widget.color.withAlpha(200),
-                                            ),
-                                            child: AnimatedOpacity(
-                                              duration: const Duration(milliseconds: 300),
-                                              opacity: isHoveringIcon ? 1 : 0.5,
-                                              child: const Icon(Icons.add_rounded, color: Colors.white),
-                                            ),
-                                          );
-                                        },
+              child: Row(
+                children: List.generate(cards.length, (index) {
+                  final card = cards[index];
+                  final ValueNotifier<bool> isHoverCard = ValueNotifier(false);
+                  final ValueNotifier<bool> isHoverIcon = ValueNotifier(false);
+
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: GestureDetector(
+                      onTap: () {
+                        ourservicesdialog(context, index, cards, widget.r);
+                      },
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        onEnter: (_) => isHoverCard.value = true,
+                        onExit: (_) => isHoverCard.value = false,
+                        child: ValueListenableBuilder<bool>(
+                          valueListenable: isHoverCard,
+                          builder: (_, hover, __) {
+                            return AnimatedScale(
+                              scale: hover ? 1.02 : 1.0,
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeInOut,
+                              child: Container(
+                                width: widget.r.dp(28, max: 500),
+                                height: widget.r.dp(30, max: 600),
+                                padding: const EdgeInsets.only(top: 22, left: 22),
+                                margin: const EdgeInsets.symmetric(vertical: 20),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(widget.isMobile ? 16 : 22),
+                                  image: DecorationImage(image: AssetImage(card.image), fit: BoxFit.cover),
+                                ),
+                                child: Stack(
+                                  children: [
+                                    Positioned(
+                                      bottom: 10,
+                                      right: 10,
+                                      child: MouseRegion(
+                                        onEnter: (_) => isHoverIcon.value = true,
+                                        onExit: (_) => isHoverIcon.value = false,
+                                        child: ValueListenableBuilder<bool>(
+                                          valueListenable: isHoverIcon,
+                                          builder: (_, isHoveringIcon, __) {
+                                            return AnimatedContainer(
+                                              duration: const Duration(milliseconds: 200),
+                                              curve: Curves.easeInBack,
+                                              width: widget.r.dp(3, max: 40),
+                                              height: widget.r.dp(3, max: 40),
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: isHoveringIcon ? widget.color : widget.color.withAlpha(200),
+                                              ),
+                                              child: AnimatedOpacity(
+                                                duration: const Duration(milliseconds: 300),
+                                                opacity: isHoveringIcon ? 1 : 0.5,
+                                                child: const Icon(Icons.add_rounded, color: Colors.white),
+                                              ),
+                                            );
+                                          },
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 40),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          card.title,
-                                          style: TextStyle(
-                                            height: 0,
-                                            color: card.isblack ? Colors.black : Colors.white,
-                                            fontSize: widget.r.fs(1.3, 20),
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 40),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            card.title,
+                                            style: TextStyle(
+                                              height: 0,
+                                              color: card.isblack ? Colors.black : Colors.white,
+                                              fontSize: widget.r.fs(1.3, 20),
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        Text(
-                                          card.body,
-                                          maxLines: 5,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            height: 0,
-                                            color: card.isblack ? Colors.black : Colors.white,
-                                            fontSize: widget.r.fs(1.5, 25),
-                                            fontWeight: FontWeight.bold,
+                                          const SizedBox(height: 10),
+                                          Text(
+                                            card.body,
+                                            maxLines: 5,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              height: 0,
+                                              color: card.isblack ? Colors.black : Colors.white,
+                                              fontSize: widget.r.fs(1.5, 25),
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                }),
+              ),
             ),
           ),
 
@@ -788,48 +787,49 @@ class OurLinesSliver extends StatelessWidget {
               ScrollAnimatedWrapper(
                 child: SizedBox(
                   height: 650,
-                  child: ListView.builder(
+                  child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    itemCount: lines.length,
                     padding: EdgeInsets.symmetric(horizontal: r.wp(6)),
-                    itemBuilder: (context, index) {
-                      final categorie = lines[index];
-                      return Padding(
-                        padding: EdgeInsets.only(right: 50, top: 80),
-                        child: SizedBox(
-                          width: min(300, r.wp(100)),
-                          child: Column(
-                            crossAxisAlignment: isMobile ? CrossAxisAlignment.start : CrossAxisAlignment.center,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
-                                child: Image.asset(categorie.img, height: 250, width: double.infinity, fit: BoxFit.cover),
-                              ),
-                              const SizedBox(height: 20),
-                              Text(categorie.title, style: TextStyle(fontWeight: FontWeight.bold, color: color, fontSize: r.fs(3, 26))),
-                              const SizedBox(height: 20),
-                              Text(categorie.description, style: TextStyle(fontSize: r.fs(1.4, 20))),
-                              const SizedBox(height: 10),
-                              Text(categorie.sdescription, style: TextStyle(fontWeight: FontWeight.bold, fontSize: r.fs(1.2, 18))),
-                              const Spacer(),
-                              MouseRegion(
-                                cursor: SystemMouseCursors.click,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    navigateWithSlide(context, categorie.route);
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: color),
-                                    child: Text("Saber más", style: TextStyle(color: Colors.white, fontSize: 16)),
+                    child: Row(
+                      children: List.generate(lines.length, (index) {
+                        final categorie = lines[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 50, top: 80),
+                          child: SizedBox(
+                            width: min(300, r.wp(100)),
+                            child: Column(
+                              crossAxisAlignment: isMobile ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: Image.asset(categorie.img, height: 250, width: double.infinity, fit: BoxFit.cover),
+                                ),
+                                const SizedBox(height: 20),
+                                Text(categorie.title, style: TextStyle(fontWeight: FontWeight.bold, color: color, fontSize: r.fs(3, 26))),
+                                const SizedBox(height: 20),
+                                Text(categorie.description, style: TextStyle(fontSize: r.fs(1.4, 20))),
+                                const SizedBox(height: 10),
+                                Text(categorie.sdescription, style: TextStyle(fontWeight: FontWeight.bold, fontSize: r.fs(1.2, 18))),
+                                const Spacer(),
+                                MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      navigateWithSlide(context, categorie.route);
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: color),
+                                      child: const Text("Saber más", style: TextStyle(color: Colors.white, fontSize: 16)),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      }),
+                    ),
                   ),
                 ),
               ),
@@ -886,7 +886,7 @@ class _LeafAnimationState extends State<LeafAnimation> with SingleTickerProvider
 
   LeafData _generateLeaf() {
     return LeafData(
-      image: 'assets/img/ecobag/hoja${_random.nextInt(3) + 1}.webp',
+      image: 'img/ecobag/hoja${_random.nextInt(3) + 1}.webp',
       x: _random.nextDouble(),
       y: -50.0 - _random.nextDouble() * 300,
       speed: 1.0 + _random.nextDouble() * 2.0,

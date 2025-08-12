@@ -331,7 +331,7 @@ class _FourProEcoState extends State<FourProEco> with TickerProviderStateMixin {
                             ),
                           ),
                           if (screenWidth >= 990) SizedBox(height: 100),
-                          Expanded(child: Center(child: Image.asset("img/ecobag/4pro/Bags.png", fit: BoxFit.contain))),
+                          Expanded(child: Center(child: Image.asset("img/ecobag/4pro/Bags.webp", fit: BoxFit.contain))),
                           Center(
                             child: Text(
                               textAlign: TextAlign.center,

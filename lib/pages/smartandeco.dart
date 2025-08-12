@@ -3,11 +3,11 @@ import 'dart:ui' as ui show ImageFilter;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:webpack/class/cardproduct.dart' show cardFindS, cardFindE, CardProduct;
 import 'package:webpack/class/categories.dart';
 import 'package:webpack/main.dart';
+import 'package:webpack/utils/buttonarrow.dart';
 import 'package:webpack/utils/responsive.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
@@ -117,74 +117,71 @@ class _StartSliverState extends State<StartSliver> {
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.only(top: 40),
-        child: ScrollAnimatedWrapper(
-          child: Container(
-            width: widget.r.wp(100),
-            color: widget.isEcobag ? const Color(0xC5F2FEEE) : const Color(0xC5E0F0FF),
-            padding: EdgeInsets.symmetric(vertical: 30),
-            child: Stack(
-              children: [
-                SingleChildScrollView(
-                  controller: _scrollController,
-                  scrollDirection: Axis.horizontal,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(minWidth: widget.r.wp(100)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children:
-                          categorie.where((item) => item.clipArt != null && item.clipArt!.isNotEmpty).map((item) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: GestureDetector(
-                                onTap: () {
-                                  navigateWithSlide(context, item.route);
-                                },
-                                child: MouseRegion(
-                                  cursor: SystemMouseCursors.click,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.asset(item.clipArt!, height: 70),
-                                      const SizedBox(height: 8),
-                                      Text(item.title, style: TextStyle(fontSize: widget.r.fs(1.1, max(14, 16)), color: widget.color)),
-                                    ],
-                                  ),
+        child: Container(
+          width: widget.r.wp(100),
+          color: widget.isEcobag ? const Color(0xC5F2FEEE) : const Color(0xC5E0F0FF),
+          padding: EdgeInsets.symmetric(vertical: 30),
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                controller: _scrollController,
+                scrollDirection: Axis.horizontal,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: widget.r.wp(100)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children:
+                        categorie.where((item) => item.clipArt != null && item.clipArt!.isNotEmpty).map((item) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                navigateWithSlide(context, item.route);
+                              },
+                              child: MouseRegion(
+                                cursor: SystemMouseCursors.click,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset(item.clipArt!, height: 70),
+                                    const SizedBox(height: 8),
+                                    Text(item.title, style: TextStyle(fontSize: widget.r.fs(1.2, 18), color: widget.color)),
+                                  ],
                                 ),
                               ),
-                            );
-                          }).toList(),
-                    ),
+                            ),
+                          );
+                        }).toList(),
                   ),
                 ),
+              ),
 
-                // FLECHA IZQUIERDA
-                if (widget.r.wp(100) < 750) ...[
-                  Positioned(
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    child: _arrow(_showLeftArrow, -0.2, -150, CupertinoIcons.chevron_left, [
-                      const Color.fromARGB(255, 224, 240, 255),
-                      const Color.fromARGB(0, 255, 255, 255),
-                    ]),
-                  ),
-                  Positioned(
-                    top: 0,
-                    bottom: 0,
-                    right: 0,
-                    child: _arrow(_showRightArrow, 0.2, 150, CupertinoIcons.chevron_right, [
-                      const Color.fromARGB(0, 255, 255, 255),
+              // FLECHA IZQUIERDA
+              if (widget.r.wp(100) < 750) ...[
+                Positioned(
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  child: _arrow(_showLeftArrow, -0.2, -150, CupertinoIcons.chevron_left, [
+                    widget.isEcobag ? const Color(0xC5F2FEEE) : const Color(0xC5E0F0FF),
+                    const Color.fromARGB(0, 255, 255, 255),
+                  ]),
+                ),
+                Positioned(
+                  top: 0,
+                  bottom: 0,
+                  right: 0,
+                  child: _arrow(_showRightArrow, 0.2, 150, CupertinoIcons.chevron_right, [
+                    const Color.fromARGB(0, 255, 255, 255),
+                    widget.isEcobag ? const Color(0xC5F2FEEE) : const Color(0xC5E0F0FF),
+                  ]),
+                ),
 
-                      const Color.fromARGB(255, 224, 240, 255),
-                    ]),
-                  ),
-
-                  // FLECHA DERECHA
-                ],
+                // FLECHA DERECHA
               ],
-            ),
+            ],
           ),
         ),
       ),
@@ -368,8 +365,8 @@ List<CardProduct> getCardProductList({bool isSmartBag = true}) {
 
 class _DiscoverSmartSliverState extends State<DiscoverSmartSliver> {
   final ScrollController _scroll = ScrollController();
-  bool canScrollLeft = false;
-  bool canScrollRight = true;
+  bool _canScrollLeft = false;
+  bool _canScrollRight = true;
 
   @override
   void initState() {
@@ -382,8 +379,8 @@ class _DiscoverSmartSliverState extends State<DiscoverSmartSliver> {
     final currentScroll = _scroll.position.pixels;
 
     setState(() {
-      canScrollLeft = currentScroll > 0;
-      canScrollRight = currentScroll < maxScroll;
+      _canScrollLeft = currentScroll > 0;
+      _canScrollRight = currentScroll < maxScroll;
     });
   }
 
@@ -396,7 +393,7 @@ class _DiscoverSmartSliverState extends State<DiscoverSmartSliver> {
         children: [
           ScrollAnimatedWrapper(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6), vertical: widget.r.hp(6)),
+              padding: EdgeInsets.only(right: widget.r.wp(6), left: widget.r.wp(6), top: widget.r.hp(6)),
               child: Text(
                 'Descubre ${widget.isEcobag ? 'Eco' : 'Smart'}',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: widget.r.fs(4, 60), color: widget.color),
@@ -404,7 +401,7 @@ class _DiscoverSmartSliverState extends State<DiscoverSmartSliver> {
             ),
           ),
           SizedBox(
-            height: min(widget.r.wp(100) * 0.93, 700) + 40,
+            height: widget.r.wp(90, max: 600),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               controller: _scroll,
@@ -434,7 +431,7 @@ class _DiscoverSmartSliverState extends State<DiscoverSmartSliver> {
                               curve: Curves.easeInOut,
                               child: Container(
                                 width: widget.r.dp(28, max: 500),
-                                height: widget.r.dp(30, max: 600),
+                                height: widget.r.dp(36, max: 600),
                                 padding: const EdgeInsets.only(top: 22, left: 22),
                                 margin: const EdgeInsets.symmetric(vertical: 20),
                                 decoration: BoxDecoration(
@@ -518,27 +515,26 @@ class _DiscoverSmartSliverState extends State<DiscoverSmartSliver> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                _button(canScrollLeft, -500, Icons.arrow_back_ios_new_rounded),
-                const SizedBox(width: 20),
-                _button(canScrollRight, 500, Icons.arrow_forward_ios_rounded),
+                ArrowButton(
+                  enabled: _canScrollLeft,
+                  icon: CupertinoIcons.chevron_left,
+                  onTap: () {
+                    _scroll.animateTo(_scroll.offset - widget.r.wp(60), duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                  },
+                ),
+                SizedBox(width: widget.r.wp(2)),
+                ArrowButton(
+                  enabled: _canScrollRight,
+                  icon: CupertinoIcons.chevron_right,
+                  onTap: () {
+                    _scroll.animateTo(_scroll.offset + widget.r.wp(60), duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                  },
+                ),
               ],
             ),
           ),
         ],
       ),
-    );
-  }
-
-  IconButton _button(bool scroll, double offset, IconData icon) {
-    return IconButton(
-      style: ButtonStyle(backgroundColor: WidgetStateProperty.all(scroll ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80))),
-      onPressed:
-          scroll
-              ? () {
-                _scroll.animateTo(_scroll.offset + offset, duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
-              }
-              : null,
-      icon: Icon(icon),
     );
   }
 
@@ -757,7 +753,7 @@ class _DiscoverSmartSliverState extends State<DiscoverSmartSliver> {
 }
 
 //---------Conoce las lineas Smart/Eco------------
-class OurLinesSliver extends StatelessWidget {
+class OurLinesSliver extends StatefulWidget {
   final Responsive r;
   final Color color;
   final bool isMobile, isEcobag;
@@ -765,72 +761,136 @@ class OurLinesSliver extends StatelessWidget {
   const OurLinesSliver({super.key, required this.r, required this.color, required this.isMobile, required this.isEcobag});
 
   @override
+  State<OurLinesSliver> createState() => _OurLinesSliverState();
+}
+
+class _OurLinesSliverState extends State<OurLinesSliver> {
+  final ScrollController _scroll = ScrollController();
+  bool _canScrollLeft = false;
+  bool _canScrollRight = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _scroll.addListener(_checkScroll);
+  }
+
+  void _checkScroll() {
+    final maxScroll = _scroll.position.maxScrollExtent;
+    final offset = _scroll.offset;
+    setState(() {
+      _canScrollLeft = offset > 0;
+      _canScrollRight = offset < maxScroll;
+    });
+  }
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final lines = isEcobag ? subcategorieEco : subcategorieSmart;
+    final lines = widget.isEcobag ? subcategorieEco : subcategorieSmart;
     return SliverToBoxAdapter(
       child: ColoredBox(
         color: Colors.white,
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: r.wp(20, max: 100)),
+          padding: EdgeInsets.symmetric(vertical: widget.r.wp(20, max: 100)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ScrollAnimatedWrapper(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: r.wp(6)),
+                  padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6)),
                   child: Text(
-                    "Nuestras lineas ${isEcobag ? 'EcoBag®' : 'SmartBag®'}",
-                    style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: r.fs(3, 40)),
+                    "Nuestras lineas ${widget.isEcobag ? 'EcoBag®' : 'SmartBag®'}",
+                    style: TextStyle(color: widget.color, fontWeight: FontWeight.bold, fontSize: widget.r.fs(3, 40)),
                   ),
                 ),
               ),
-              ScrollAnimatedWrapper(
-                child: SizedBox(
-                  height: 650,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    padding: EdgeInsets.symmetric(horizontal: r.wp(6)),
-                    child: Row(
-                      children: List.generate(lines.length, (index) {
-                        final categorie = lines[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 50, top: 80),
-                          child: SizedBox(
-                            width: min(300, r.wp(100)),
-                            child: Column(
-                              crossAxisAlignment: isMobile ? CrossAxisAlignment.start : CrossAxisAlignment.center,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(16),
-                                  child: Image.asset(categorie.img, height: 250, width: double.infinity, fit: BoxFit.cover),
-                                ),
-                                const SizedBox(height: 20),
-                                Text(categorie.title, style: TextStyle(fontWeight: FontWeight.bold, color: color, fontSize: r.fs(3, 26))),
-                                const SizedBox(height: 20),
-                                Text(categorie.description, style: TextStyle(fontSize: r.fs(1.4, 20))),
-                                const SizedBox(height: 10),
-                                Text(categorie.sdescription, style: TextStyle(fontWeight: FontWeight.bold, fontSize: r.fs(1.2, 18))),
-                                const Spacer(),
-                                MouseRegion(
-                                  cursor: SystemMouseCursors.click,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      navigateWithSlide(context, categorie.route);
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: color),
-                                      child: const Text("Saber más", style: TextStyle(color: Colors.white, fontSize: 16)),
-                                    ),
+              SizedBox(
+                height: widget.r.dp(80, max: 700),
+                child: SingleChildScrollView(
+                  controller: _scroll,
+                  scrollDirection: Axis.horizontal,
+                  padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6)),
+                  child: Row(
+                    children: List.generate(lines.length, (index) {
+                      final categorie = lines[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 50, top: 80),
+                        child: SizedBox(
+                          width: widget.r.wp(60, max: 400),
+                          child: Column(
+                            crossAxisAlignment: widget.isMobile ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(16),
+                                child: Image.asset(categorie.img, height: 250, width: double.infinity, fit: BoxFit.cover),
+                              ),
+                              const SizedBox(height: 20),
+                              Text(
+                                categorie.title,
+                                textAlign: widget.isMobile ? TextAlign.left : TextAlign.center,
+                                style: TextStyle(fontWeight: FontWeight.bold, color: widget.color, fontSize: widget.r.fs(4, 30)),
+                              ),
+                              const SizedBox(height: 20),
+                              Text(
+                                categorie.description,
+                                textAlign: widget.isMobile ? TextAlign.left : TextAlign.center,
+                                style: TextStyle(fontSize: widget.r.fs(2, 22)),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                categorie.sdescription,
+                                textAlign: widget.isMobile ? TextAlign.left : TextAlign.center,
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: widget.r.fs(1.6, 20)),
+                              ),
+                              const Spacer(),
+                              MouseRegion(
+                                cursor: SystemMouseCursors.click,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    navigateWithSlide(context, categorie.route);
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: widget.color),
+                                    child: const Text("Saber más", style: TextStyle(color: Colors.white, fontSize: 16)),
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        );
-                      }),
-                    ),
+                        ),
+                      );
+                    }),
                   ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: widget.r.dp(10, max: 50), horizontal: widget.r.wp(6)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ArrowButton(
+                      enabled: _canScrollLeft,
+                      icon: CupertinoIcons.chevron_left,
+                      onTap: () {
+                        _scroll.animateTo(_scroll.offset - widget.r.wp(60), duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                      },
+                    ),
+                    SizedBox(width: widget.r.wp(3, max: 20)),
+                    ArrowButton(
+                      enabled: _canScrollRight,
+                      icon: CupertinoIcons.chevron_right,
+                      onTap: () {
+                        _scroll.animateTo(_scroll.offset + widget.r.wp(60), duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                      },
+                    ),
+                  ],
                 ),
               ),
             ],

@@ -81,14 +81,13 @@ class Start4PROSliver extends StatelessWidget {
                   child: Center(
                     child: SizedBox(
                       width: r.wp(100, max: 1500),
-                      child: Text("4PRO", style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: r.fs(4, 70))),
+                      child: Text("4PRO", style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: r.fs(7, 70))),
                     ),
                   ),
                 ),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: r.wp(6)),
-
                 child: Center(
                   child: Container(
                     clipBehavior: Clip.hardEdge,
@@ -97,7 +96,7 @@ class Start4PROSliver extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(22),
                       color: const Color.fromARGB(161, 255, 255, 255),
-                      image: isMobile ? DecorationImage(image: AssetImage("img/smartbag/4Pro/prueba.png"), fit: BoxFit.cover) : null,
+                      image: isMobile ? DecorationImage(image: AssetImage("img/smartbag/4Pro/prueba.webp"), fit: BoxFit.cover) : null,
                     ),
                     child: isMobile ? _buildPhone(context) : _buildDesktop(context),
                   ),
@@ -108,23 +107,21 @@ class Start4PROSliver extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: r.wp(8), vertical: r.hp(5)),
                     child: Container(
-                      height: 100,
-                      padding: EdgeInsets.all(8),
+                      padding: EdgeInsets.all(r.dp(2, max: 30)),
                       width: r.wp(100, max: 1300),
                       decoration: BoxDecoration(color: const Color.fromARGB(161, 255, 255, 255), borderRadius: BorderRadius.circular(16)),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Icon(CupertinoIcons.bag, size: r.wp(10, max: 30), color: blue),
+                            padding: EdgeInsets.only(right: isMobile ? 10 : 20),
+                            child: Icon(CupertinoIcons.bag, size: r.dp(4, max: 50), color: blue),
                           ),
                           Expanded(
                             child: Text(
                               "Nuestro empaque más versátil, resistente y elegante. Diseñado para brindar protección, presencia y funcionalidad en un solo producto. Ideal para marcas que quieren destacar.",
-                              maxLines: 4,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: r.fs(1.1, 23)),
+
+                              style: TextStyle(fontSize: r.fs(1.5, 24)),
                             ),
                           ),
                         ],
@@ -137,7 +134,7 @@ class Start4PROSliver extends StatelessWidget {
               ScrollAnimatedWrapper(
                 child: Center(
                   child: SizedBox(
-                    width: r.wp(90, max: 1200),
+                    width: r.wp(90, max: 1300),
                     child: isMobile ? _buildPhoneItems(context, items, r) : _buildDesktopItems(items, context),
                   ),
                 ),
@@ -158,31 +155,27 @@ class Start4PROSliver extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: SizedBox(
               width: r.wp(40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ScrollAnimatedWrapper(
-                    child: Text("La funcionalidad perfecta.", style: TextStyle(height: 0.99, fontWeight: FontWeight.bold, fontSize: r.fs(1.5, 26))),
-                  ),
-                  SizedBox(height: 16),
-                  ScrollAnimatedWrapper(
-                    child: Text(
+              child: ScrollAnimatedWrapper(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text("La\nfuncionalidad\nperfecta.", style: TextStyle(height: 0.99, fontWeight: FontWeight.bold, fontSize: r.fs(2.4, 28))),
+                    SizedBox(height: 16),
+                    Text(
                       "Más que un empaque funcional, es una declaración visual. Versátil, sofisticado y técnicamente superior, cada detalle ha sido concebido para transmitir la esencia de su marca.",
-                      style: TextStyle(height: 0.99, fontSize: r.fs(1.15, 24)),
+                      style: TextStyle(height: 0.99, fontSize: r.fs(1.6, 22)),
                     ),
-                  ),
-                  SizedBox(height: 14),
-                  ScrollAnimatedWrapper(
-                    child: ElevatedButton(
+                    SizedBox(height: 14),
+                    ElevatedButton(
                       style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(blue), foregroundColor: const WidgetStatePropertyAll(Colors.white)),
                       onPressed: () {
                         navigateWithSlide(context, route);
                       },
                       child: Text("Crear mi 4PRO", style: TextStyle(fontWeight: FontWeight.bold)),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -197,7 +190,6 @@ class Start4PROSliver extends StatelessWidget {
         Padding(
           padding: EdgeInsets.only(left: r.wp(9)),
           child: ScrollAnimatedWrapper(
-            duration: Duration(milliseconds: 800),
             delay: Duration(milliseconds: 1000),
             child: SizedBox(
               width: 400,
@@ -205,12 +197,16 @@ class Start4PROSliver extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("La funcionalidad perfecta", textAlign: TextAlign.start, style: TextStyle(fontWeight: FontWeight.bold, fontSize: r.fs(2, 50))),
+                  Text(
+                    "La funcionalidad perfecta",
+                    textAlign: TextAlign.start,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: r.fs(2.3, 50)),
+                  ),
                   SizedBox(height: 5),
                   Text(
                     "Más que un empaque funcional, es una declaración visual. Versátil, sofisticado y técnicamente superior, cada detalle ha sido concebido para transmitir la esencia de su marca.",
                     textAlign: TextAlign.start,
-                    style: TextStyle(fontWeight: FontWeight.normal, fontSize: r.fs(1, 22)),
+                    style: TextStyle(fontWeight: FontWeight.normal, fontSize: r.fs(1.4, 22)),
                   ),
                   SizedBox(height: 16),
                   ElevatedButton(
@@ -232,7 +228,7 @@ class Start4PROSliver extends StatelessWidget {
           child: IgnorePointer(
             child:
                 isMobile
-                    ? Image.asset("img/smartbag/4Pro/prueba.png", cacheWidth: 800, fit: BoxFit.cover, alignment: Alignment.centerLeft)
+                    ? Image.asset("img/smartbag/4Pro/prueba.webp", cacheWidth: 800, fit: BoxFit.cover, alignment: Alignment.centerLeft)
                     : Row(
                       children: [
                         Expanded(
@@ -273,9 +269,9 @@ class Start4PROSliver extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 child: Row(
                   children: [
-                    Icon(item["icon"], size: 28, color: blue),
-                    const SizedBox(width: 12),
-                    Expanded(child: Text(item["text"], style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
+                    Icon(item["icon"], size: r.dp(3.5, max: 45), color: blue),
+                    SizedBox(width: r.dp(1.5, max: 30)),
+                    Expanded(child: Text(item["text"], style: TextStyle(fontSize: r.fs(1.5, 24)))),
                   ],
                 ),
               );
@@ -284,23 +280,27 @@ class Start4PROSliver extends StatelessWidget {
     );
   }
 
-  Row _buildDesktopItems(List<Map<String, dynamic>> items, BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children:
-          items.map((item) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(item["icon"], size: 32, color: blue),
-                const SizedBox(height: 8),
-                SizedBox(
-                  width: r.wp(18, max: 200),
-                  child: Text(item["text"], textAlign: TextAlign.center, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                ),
-              ],
-            );
-          }).toList(),
+  Padding _buildDesktopItems(List<Map<String, dynamic>> items, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children:
+            items.map((item) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(item["icon"], size: r.dp(3.5, max: 45), color: blue),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    width: r.wp(18, max: 200),
+                    child: Text(item["text"], textAlign: TextAlign.center, style: TextStyle(fontSize: r.fs(1.3, 20))),
+                  ),
+                ],
+              );
+            }).toList(),
+      ),
     );
   }
 }
@@ -378,91 +378,85 @@ class _Scroll4FunctionsSliverState extends State<Scroll4FunctionsSliver> {
     return SliverToBoxAdapter(
       child: Container(
         width: widget.r.wp(100),
-        padding: EdgeInsets.only(bottom: widget.r.dp(7)),
+        padding: EdgeInsets.only(bottom: widget.r.dp(7), top: widget.r.hp(2)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ScrollAnimatedWrapper(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6)),
-                child: Text("4 Funciones, 4PRO.", style: TextStyle(fontWeight: FontWeight.bold, color: widget.blue, fontSize: widget.r.fs(2, 50))),
+                child: Text("4 Funciones, 4PRO.", style: TextStyle(fontWeight: FontWeight.bold, color: widget.blue, fontSize: widget.r.fs(2.6, 60))),
               ),
             ),
             SizedBox(height: widget.r.hp(3)),
-            SizedBox(
-              height: widget.r.wp(60, max: 550) + 40,
-              child: SingleChildScrollView(
-                controller: _scroll,
-                scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6)),
-                child: Row(
-                  children: List.generate(localCards.length, (index) {
-                    final card = localCards[index];
-
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 20),
-                      child: Container(
-                        width: widget.r.wp(80, max: 1000),
-                        height: widget.r.wp(60, max: 550),
-                        padding: EdgeInsets.all(widget.r.dp(2, max: 60)),
-                        margin: const EdgeInsets.symmetric(vertical: 20),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(widget.isMobile ? 16 : 20),
-                          image: DecorationImage(image: AssetImage(card['image']), fit: BoxFit.cover),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: card['down'] == true ? MainAxisAlignment.end : MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              card['title'],
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: widget.r.fs(1.4, 32),
-                                fontWeight: FontWeight.bold,
-                                shadows: [Shadow(offset: Offset(0, 0), blurRadius: 6, color: Colors.black.withAlpha(130))],
-                              ),
-                            ),
-                            Text(
-                              card['subtitle'],
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: widget.r.fs(1, 25),
-                                shadows: [Shadow(offset: Offset(0, 0), blurRadius: 6, color: Colors.black.withAlpha(130))],
-                              ),
-                            ),
-                          ],
-                        ),
+            SingleChildScrollView(
+              controller: _scroll,
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6)),
+              child: Row(
+                children: List.generate(localCards.length, (index) {
+                  final card = localCards[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: Container(
+                      width: widget.r.wp(80, max: 1000),
+                      height: widget.r.hp(widget.isMobile ? 40 : 60, max: 600),
+                      padding: EdgeInsets.all(widget.r.dp(2, max: 60)),
+                      margin: const EdgeInsets.symmetric(vertical: 20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(widget.isMobile ? 16 : 20),
+                        image: DecorationImage(image: AssetImage(card['image']), fit: BoxFit.cover),
                       ),
-                    );
-                  }),
-                ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: card['down'] == true ? MainAxisAlignment.end : MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            card['title'],
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: widget.r.fs(2, 32),
+                              fontWeight: FontWeight.bold,
+                              shadows: [Shadow(offset: Offset(0, 0), blurRadius: 6, color: Colors.black.withAlpha(widget.isMobile ? 150 : 130))],
+                            ),
+                          ),
+                          Text(
+                            card['subtitle'],
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: widget.r.fs(1.4, 25),
+                              shadows: [Shadow(offset: Offset(0, 0), blurRadius: 6, color: Colors.black.withAlpha(widget.isMobile ? 150 : 130))],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
               ),
             ),
-            ScrollAnimatedWrapper(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: widget.r.wp(8), vertical: widget.r.dp(2)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    ArrowButton(
-                      enabled: _canScrollLeft,
-                      icon: CupertinoIcons.chevron_left,
-                      onTap: () {
-                        _scroll.animateTo(_scroll.offset - widget.r.wp(60), duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-                      },
-                    ),
-                    SizedBox(width: widget.r.wp(2)),
-                    ArrowButton(
-                      enabled: _canScrollRight,
-                      icon: CupertinoIcons.chevron_right,
-                      onTap: () {
-                        _scroll.animateTo(_scroll.offset + widget.r.wp(60), duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-                      },
-                    ),
-                  ],
-                ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: widget.r.wp(8), vertical: widget.r.dp(2)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ArrowButton(
+                    enabled: _canScrollLeft,
+                    icon: CupertinoIcons.chevron_left,
+                    onTap: () {
+                      _scroll.animateTo(_scroll.offset - widget.r.wp(60), duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                    },
+                  ),
+                  SizedBox(width: widget.r.wp(3, max: 30)),
+                  ArrowButton(
+                    enabled: _canScrollRight,
+                    icon: CupertinoIcons.chevron_right,
+                    onTap: () {
+                      _scroll.animateTo(_scroll.offset + widget.r.wp(60), duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                    },
+                  ),
+                ],
               ),
             ),
           ],
@@ -494,7 +488,7 @@ class MultipleFunctionsSliver extends StatelessWidget {
               child: Center(
                 child: Text.rich(
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: r.fs(2.5, 70), color: Colors.black87, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: r.fs(2.9, 70), color: Colors.black87, fontWeight: FontWeight.bold),
                   TextSpan(children: [TextSpan(text: "Una familia, "), TextSpan(text: "múltiples funciones", style: TextStyle(color: blue))]),
                 ),
               ),
@@ -504,7 +498,7 @@ class MultipleFunctionsSliver extends StatelessWidget {
                 child: Text(
                   "Siempre 4PRO.",
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: r.fs(2.5, 70), color: Colors.black87, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: r.fs(2.3, 60), color: Colors.black87, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -667,11 +661,8 @@ class ValvePeelAndLeafSliver extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Container(
         color: Colors.white,
-        padding: EdgeInsets.symmetric(vertical: r.dp(3, max: 40), horizontal: r.wp(6)),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: r.wp(1, max: 400)),
-          child: ScrollAnimatedWrapper(child: isMobile ? _buildMobile() : _buildDesktop()),
-        ),
+        padding: EdgeInsets.symmetric(vertical: r.dp(3, max: isMobile ? 40 : 60), horizontal: r.wp(6)),
+        child: Padding(padding: EdgeInsets.symmetric(horizontal: r.wp(1, max: 400)), child: isMobile ? _buildMobile() : _buildDesktop()),
       ),
     );
   }
@@ -690,13 +681,14 @@ class ValvePeelAndLeafSliver extends StatelessWidget {
 
                 Text(
                   "Protección superior con cuatro capas.",
-                  style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: r.dp(1.4, max: 28)),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: r.dp(2, max: 28)),
                 ),
                 SizedBox(height: r.hp(1, max: 40)),
                 Text(
                   textAlign: TextAlign.center,
                   "La tecnología 4PRO, con su combinación de PET, BOPP y PE, crea una barrera robusta contra la humedad, la luz y el oxígeno, garantizando la frescura y calidad de tu producto. Su diseño, además de ser funcional, ofrece una presentación elegante y segura.",
-                  style: TextStyle(color: Colors.black87, fontSize: r.dp(1.2, max: 24)),
+                  style: TextStyle(color: Colors.black87, fontSize: r.dp(1.4, max: 24)),
                 ),
               ],
             ),
@@ -741,13 +733,13 @@ class ValvePeelAndLeafSliver extends StatelessWidget {
                   textAlign: TextAlign.center,
 
                   "Accesorios inteligentes para una funcionalidad óptima.",
-                  style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: r.dp(1.4, max: 28)),
+                  style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: r.dp(2, max: 28)),
                 ),
                 SizedBox(height: r.hp(1, max: 40)),
                 Text(
                   textAlign: TextAlign.center,
                   "El sistema Peel Stick permite abrir y cerrar la bolsa de forma sencilla, mientras que las válvulas desgasificadoras conservan tus productos frescos por más tiempo, maximizando su vida útil.",
-                  style: TextStyle(color: Colors.black87, fontSize: r.dp(1.2, max: 24)),
+                  style: TextStyle(color: Colors.black87, fontSize: r.dp(1.4, max: 24)),
                 ),
               ],
             ),
@@ -764,12 +756,12 @@ class ValvePeelAndLeafSliver extends StatelessWidget {
                 Image.asset("img/smartbag/4pro/terminacion.webp"),
                 SizedBox(height: r.hp(1, max: 40)),
 
-                Text("Tú decides la terminación", style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: r.dp(1.4, max: 28))),
+                Text("Tú decides la terminación", style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: r.dp(2, max: 28))),
                 SizedBox(height: r.hp(1, max: 40)),
                 Text(
                   textAlign: TextAlign.center,
                   "La bolsa 4PRO, con su estructura optimizada, es más ligera y resistente, ofreciendo una protección superior y prolongando la vida útil del producto. Con materiales de alta barrera y acabados técnicos, 4PRO es la solución de empaque eficiente y funcional que busca, con un diseño versátil que se adapta a distintos formatos, ideal para marcas que buscan la innovación.",
-                  style: TextStyle(color: Colors.black87, fontSize: r.dp(1.2, max: 24)),
+                  style: TextStyle(color: Colors.black87, fontSize: r.dp(1.4, max: 24)),
                 ),
               ],
             ),
@@ -814,19 +806,21 @@ class ValvePeelAndLeafSliver extends StatelessWidget {
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1400),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Columna izquierda con 2 cards que suman el mismo alto
-              Expanded(
-                child: Column(
-                  children: [_buildInfoCard(cards[0], height: halfHeight), SizedBox(height: spacing), _buildInfoCard(cards[1], height: halfHeight)],
+          child: ScrollAnimatedWrapper(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Columna izquierda con 2 cards que suman el mismo alto
+                Expanded(
+                  child: Column(
+                    children: [_buildInfoCard(cards[0], height: halfHeight), SizedBox(height: spacing), _buildInfoCard(cards[1], height: halfHeight)],
+                  ),
                 ),
-              ),
-              SizedBox(width: r.wp(2, max: 32)),
-              // Card derecha de altura total
-              Expanded(child: _buildInfoCard(cards[2], height: totalHeight)),
-            ],
+                SizedBox(width: r.wp(2, max: 32)),
+                // Card derecha de altura total
+                Expanded(child: _buildInfoCard(cards[2], height: totalHeight)),
+              ],
+            ),
           ),
         ),
       ),
@@ -869,9 +863,9 @@ class ValvePeelAndLeafSliver extends StatelessWidget {
               ),
             ),
           SizedBox(height: r.hp(1, max: 24)),
-          Text(data["title"]!, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: r.dp(1.2, max: 22))),
+          Text(data["title"]!, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: r.dp(1.4, max: 26))),
           SizedBox(height: r.hp(1, max: 20)),
-          Text(data["text"]!, textAlign: TextAlign.center, style: TextStyle(color: Colors.black87, fontSize: r.dp(1.1, max: 20))),
+          Text(data["text"]!, textAlign: TextAlign.center, style: TextStyle(color: Colors.black87, fontSize: r.dp(1.2, max: 22))),
         ],
       ),
     );
@@ -1002,14 +996,16 @@ class _VideoScrollableSliverState extends State<VideoScrollableSliver> {
       child: Column(
         children:
             ['0046', '0111', '0186', '0250'].map((frame) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: Image.asset(
-                  'img/smartbag/4pro/frames/frame$frame.webp',
-                  width: double.infinity,
-                  fit: BoxFit.contain,
-                  cacheWidth: 1920,
-                  filterQuality: FilterQuality.high,
+              return ScrollAnimatedWrapper(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 16, top: 16),
+                  child: Image.asset(
+                    'img/smartbag/4pro/frames/frame$frame.webp',
+                    width: double.infinity,
+                    fit: BoxFit.contain,
+                    cacheWidth: 1920,
+                    filterQuality: FilterQuality.high,
+                  ),
                 ),
               );
             }).toList(),
@@ -1036,7 +1032,7 @@ class Finally4PROSliver extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.only(top: 100),
                 width: double.infinity,
-                height: 600,
+                height: isMobile ? 400 : 600,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
@@ -1052,9 +1048,7 @@ class Finally4PROSliver extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    ScrollAnimatedWrapper(
-                      child: Text("UNICA E INIGUALABLE", style: TextStyle(color: blue, fontSize: r.fs(3, 50), fontWeight: FontWeight.bold)),
-                    ),
+                    ScrollAnimatedWrapper(child: Text("UNICA E INIGUALABLE", style: TextStyle(fontSize: r.fs(3, 50), fontWeight: FontWeight.bold))),
 
                     ScrollAnimatedWrapper(child: Image.asset("img/smartbag/4pro.webp", fit: BoxFit.cover, cacheWidth: 800, height: 400)),
                   ],
@@ -1075,13 +1069,13 @@ class Finally4PROSliver extends StatelessWidget {
                           Text(
                             textAlign: TextAlign.center,
                             "La bolsa 4PRO está diseñada para durar más y rendir mejor.",
-                            style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: r.fs(2.6, 45)),
+                            style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: r.fs(2.6, 26)),
                           ),
                           SizedBox(height: r.hp(2, max: 40)),
                           Text(
                             textAlign: TextAlign.center,
                             "Su estructura optimizada es más ligera y resistente, sin comprometer su capacidad de protección. Con materiales de alta barrera y acabados técnicos, 4PRO ofrece un empaque más eficiente, más funcional y con un impacto visual superior.\n\nAdemás, su diseño versátil se adapta perfectamente a distintos formatos y sistemas de cierre, lo que la convierte en la opción ideal para marcas que buscan innovación y rendimiento sin ocupar más espacio.",
-                            style: TextStyle(fontSize: r.fs(2, 25)),
+                            style: TextStyle(fontSize: r.fs(1.8, 22)),
                           ),
                         ],
                       ),
@@ -1114,7 +1108,7 @@ class Finally4PROSliver extends StatelessWidget {
                     style: TextStyle(fontSize: r.fs(1.7, 30)),
                     TextSpan(
                       children: [
-                        TextSpan(text: "Peel Stick: ", style: TextStyle(fontWeight: FontWeight.bold, color: blue)),
+                        TextSpan(text: "Peel Stick: ", style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: r.fs(2, 26))),
                         TextSpan(
                           text:
                               "Práctico y versátil, este accesorio de adhiere fácilmente a cualquier superficie plana, ofreciendo funcionalidad sin comprometer el diseño.",
@@ -1141,7 +1135,7 @@ class Finally4PROSliver extends StatelessWidget {
                   style: TextStyle(fontSize: r.fs(1.7, 30)),
                   TextSpan(
                     children: [
-                      TextSpan(text: "Válvula: ", style: TextStyle(fontWeight: FontWeight.bold, color: blue)),
+                      TextSpan(text: "Válvula: ", style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: r.fs(2, 26))),
                       TextSpan(
                         text:
                             "Diseñada para ofrecer un flujo controlado de aire o producto, la válvula mantiene la frescura y protege el contenido con cada uso.",

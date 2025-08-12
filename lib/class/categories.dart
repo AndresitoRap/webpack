@@ -44,7 +44,7 @@ final List<Subcategorie> subcategorieSmart = [
     img: "img/smartbag/Costal.webp",
     title: "4PRO",
     description: "La bolsa que redefine la presentación de su producto.",
-    sdescription: " Ideal para cafés de especialidad o alimentos selectos, la 4PRO ofrece frescura, distinción y una estética impecable. ",
+    sdescription: "Ideal para cafés de especialidad o alimentos selectos, la 4PRO ofrece frescura, distinción y una estética impecable. ",
     infoBuild:
         "🌟 La 4PRO es una bolsa de alta gama diseñada para productos que exigen elegancia, funcionalidad y conservación superior. Su estructura multilaminada le brinda una resistencia excepcional, ideal para cafés premium, superfoods, productos gourmet o suplementos nutricionales. 💪 Cuenta con un diseño de base estable que permite que se mantenga en pie, facilitando su exhibición en estanterías. Puede incorporar válvula desgasificadora, zipper resellable y acabados mate o brillantes que proyectan una imagen sofisticada y moderna. Gracias a su excelente barrera contra humedad, oxígeno y luz, la 4PRO mantiene la frescura y propiedades del contenido por más tiempo. Es la opción perfecta para marcas que buscan diferenciarse con un empaque funcional y visualmente impactante. ✨",
     route: "/SmartBag/Explora-SmartBag/4PRO",

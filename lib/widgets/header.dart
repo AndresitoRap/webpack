@@ -311,23 +311,41 @@ class _HeaderState extends State<Header> {
             Stack(
               alignment: Alignment.center,
               children: [
-                AnimatedOpacity(
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.decelerate,
-                  opacity: isMenuOpen ? 0.0 : 1.0,
-                  child: SvgPicture.asset("img/home/wisotipo.svg", height: 23, colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn)),
-                ),
-                AnimatedOpacity(
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.decelerate,
-                  opacity: selectedMenuIndex != null ? 1.0 : 0.0,
-                  child: IconButton(
-                    icon: Icon(CupertinoIcons.chevron_left, color: Colors.white),
-                    onPressed: () {
-                      setState(() {
-                        selectedMenuIndex = null;
-                      });
+                IgnorePointer(
+                  ignoring: isMenuOpen,
+                  child: GestureDetector(
+                    onTap: () {
+                      navigateWithSlide(context, '/');
                     },
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.decelerate,
+                      opacity: isMenuOpen ? 0.0 : 1.0,
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: SvgPicture.asset(
+                          "img/home/wisotipo.svg",
+                          height: 23,
+                          colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                IgnorePointer(
+                  ignoring: selectedMenuIndex == null,
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.decelerate,
+                    opacity: selectedMenuIndex != null ? 1.0 : 0.0,
+                    child: IconButton(
+                      icon: Icon(CupertinoIcons.chevron_left, color: Colors.white),
+                      onPressed: () {
+                        setState(() {
+                          selectedMenuIndex = null;
+                        });
+                      },
+                    ),
                   ),
                 ),
               ],
@@ -396,11 +414,15 @@ class _HeaderState extends State<Header> {
                               padding: const EdgeInsets.only(bottom: 16),
                               child: GestureDetector(
                                 onTap: () {
+                                  videoBlurNotifier.value = false;
                                   navigateTo(context, menu[selectedMenuIndex!].title);
                                 },
-                                child: Text(
-                                  "Explora todo sobre ${menu[selectedMenuIndex!].title}",
-                                  style: TextStyle(color: Colors.white, fontSize: (screenWidth * 0.045).clamp(18, 22)),
+                                child: MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: Text(
+                                    "Explora todo sobre ${menu[selectedMenuIndex!].title}",
+                                    style: TextStyle(color: Colors.white, fontSize: (screenWidth * 0.045).clamp(18, 22)),
+                                  ),
                                 ),
                               ),
                             ),
@@ -410,6 +432,7 @@ class _HeaderState extends State<Header> {
                                   cursor: SystemMouseCursors.click,
                                   child: GestureDetector(
                                     onTap: () {
+                                      videoBlurNotifier.value = false;
                                       navigateTo(context, menu[selectedMenuIndex!].title, subTitle: sub.title, sectionTitle: section);
                                     },
                                     child: Padding(

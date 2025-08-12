@@ -534,9 +534,9 @@ class _ScrolInfolSliverState extends State<ScrollInfoSliver> {
 
       'standpack': {
         'smart': [
-          {'image': 'img/smartbag/standpack/cardLarge1.webp', 'text': 'SmartBag® StandPack 1...'},
-          {'image': 'img/smartbag/standpack/cardLarge2.webp', 'text': 'SmartBag® StandPack 2...'},
-          {'image': 'img/smartbag/standpack/cardLarge3.webp', 'text': 'SmartBag® StandPack 3...'},
+          {'image': 'img/smartbag/standpack/cardLarge1.webp', 'text': 'Sella el sabor. Conserva lo esencial.'},
+          {'image': 'img/smartbag/standpack/cardLarge2.webp', 'text': 'Claridad total. El envase que deja ver la frescura.'},
+          {'image': 'img/smartbag/standpack/cardLarge3.webp', 'text': 'Diseñado para proteger. Hecho para destacar.', 'down': 'Y'},
         ],
       },
     };
@@ -567,6 +567,7 @@ class _ScrolInfolSliverState extends State<ScrollInfoSliver> {
                     text: tarjeta['text']!,
                     isFirst: index == 0,
                     isLast: index == tarjetasMostrar.length - 1,
+                    down: tarjeta['down'] ?? '',
                   );
                 }),
               ),
@@ -610,7 +611,7 @@ class _ScrolInfolSliverState extends State<ScrollInfoSliver> {
     );
   }
 
-  Widget buildCard({required String image, required String text, required bool isFirst, required bool isLast}) {
+  Widget buildCard({required String image, required String text, required bool isFirst, required bool isLast, required String down}) {
     return Padding(
       padding: EdgeInsets.only(left: isFirst ? widget.r.wp(6) : 0, right: isLast ? widget.r.wp(6) : 20),
       child: Container(
@@ -618,7 +619,7 @@ class _ScrolInfolSliverState extends State<ScrollInfoSliver> {
         height: widget.isMobile ? widget.r.wp(90) : widget.r.wp(40, max: 600),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(26), image: DecorationImage(image: AssetImage(image), fit: BoxFit.cover)),
         child: Align(
-          alignment: Alignment.topLeft,
+          alignment: down.isNotEmpty ? Alignment.bottomLeft : Alignment.topLeft,
           child: Padding(
             padding: EdgeInsets.all(widget.r.dp(3, max: 22)),
             child: Text(
@@ -1251,9 +1252,18 @@ class _ScrollWithMoreInfoSliverState extends State<ScrollWithMoreInfoSliver> {
 
       'standpack': {
         'smart': [
-          {'image': 'img/smartbag/standpack/cardShort1.webp', 'text': 'SmartBag® StandPack 1...'},
-          {'image': 'img/smartbag/standpack/cardShort2.webp', 'text': 'SmartBag® StandPack 2...'},
-          {'image': 'img/smartbag/standpack/cardShort3.webp', 'text': 'SmartBag® StandPack 3...'},
+          {
+            'image': 'img/smartbag/standpack/cardShort1.webp',
+            'text': 'Frescura que inspira confianza. Ideal para conservar la jugosidad y el sabor auténtico del pollo, como recién salido del horno.',
+          },
+          {
+            'image': 'img/smartbag/standpack/cardShort2.webp',
+            'text': 'El sabor de la naturaleza, preservado. Diseñado para mantener frutas y verduras tan frescas como el primer día.',
+          },
+          {
+            'image': 'img/smartbag/standpack/cardShort3.webp',
+            'text': 'Un solo envase, infinitas posibilidades. Perfecto para carnes, snacks o alimentos listos para disfrutar.',
+          },
         ],
       },
     };

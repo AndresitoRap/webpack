@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'package:webpack/utils/buttonarrow.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/scrollopacity.dart';
 
@@ -219,7 +220,12 @@ class SliverWithTextFlowPackEco extends StatelessWidget {
                         width: 60,
                         height: 60,
                         decoration: const BoxDecoration(shape: BoxShape.circle),
-                        child: Image.asset("img/ecobag/doypack/o_with_flowers.png", fit: BoxFit.cover, color: green, colorBlendMode: BlendMode.srcIn),
+                        child: Image.asset(
+                          "img/ecobag/doypack/o_with_flowers.webp",
+                          fit: BoxFit.cover,
+                          color: green,
+                          colorBlendMode: BlendMode.srcIn,
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Text(
@@ -668,7 +674,7 @@ class _SliverInfoEcoFlowpackState extends State<SliverInfoEcoFlowpack> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    _ArrowButton(
+                    ArrowButton(
                       enabled: canScrollLeft,
                       icon: CupertinoIcons.chevron_left,
                       onTap: () {
@@ -680,7 +686,7 @@ class _SliverInfoEcoFlowpackState extends State<SliverInfoEcoFlowpack> {
                       },
                     ),
                     const SizedBox(width: 20),
-                    _ArrowButton(
+                    ArrowButton(
                       enabled: canScrollRight,
                       icon: CupertinoIcons.chevron_right,
                       onTap: () {
@@ -698,24 +704,6 @@ class _SliverInfoEcoFlowpackState extends State<SliverInfoEcoFlowpack> {
           ],
         ),
       ),
-    );
-  }
-}
-
-//Clase de botones
-class _ArrowButton extends StatelessWidget {
-  final bool enabled;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _ArrowButton({required this.enabled, required this.icon, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: enabled ? onTap : null,
-      icon: Icon(icon),
-      style: ButtonStyle(backgroundColor: WidgetStateProperty.all(enabled ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80))),
     );
   }
 }

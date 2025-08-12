@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:web/web.dart' as web;
 import 'package:webpack/main.dart';
+import 'package:webpack/utils/buttonarrow.dart';
 import 'package:webpack/utils/responsive.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
@@ -45,7 +46,7 @@ class Home extends StatelessWidget {
               ProductsSliver(r: r, blue: blue, green: green),
 
               //Servicios
-              SliverCarrouselServices(),
+              SliverCarrouselServices(r: r, blue: blue),
 
               //Sedes
               SliverHeadquarters(r: r, isMobile: isMobile, blue: blue),
@@ -253,7 +254,7 @@ class _AnimatedPositionedCardState extends State<AnimatedPositionedCard> with Si
                   width: fontSizeTitle * 8,
                   padding: EdgeInsets.only(left: padding),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withAlpha(200),
+                    color: widget.blue.withAlpha(200),
                     borderRadius: BorderRadius.only(topRight: Radius.circular(padding), bottomRight: Radius.circular(padding)),
                   ),
                   child: Align(
@@ -291,7 +292,7 @@ class _AnimatedPositionedCardState extends State<AnimatedPositionedCard> with Si
                         position: _slide,
                         child: Text(
                           widget.card['description'],
-                          style: TextStyle(color: Theme.of(context).primaryColor, fontSize: fontSizeDescription, fontWeight: FontWeight.bold),
+                          style: TextStyle(color: widget.blue, fontSize: fontSizeDescription, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -391,7 +392,7 @@ class _PackagingWithConscienceSliverState extends State<PackagingWithConscienceS
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Theme.of(context).colorScheme.tertiary, Theme.of(context).primaryColor],
+            colors: [Theme.of(context).colorScheme.tertiary, widget.blue],
           ),
         ),
         child: Column(
@@ -498,7 +499,7 @@ class _MobileExpandableCardConsistent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double iconSize = r.dp(5, max: 40);
+    final double iconSize = r.dp(4, max: 30);
     return GestureDetector(
       onTap: onExpand,
       child: MouseRegion(
@@ -519,7 +520,7 @@ class _MobileExpandableCardConsistent extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withAlpha(230),
+                    color: blue.withAlpha(230),
                     borderRadius: const BorderRadius.only(topRight: Radius.circular(8), bottomRight: Radius.circular(8)),
                   ),
                   child: Text(card['title'], style: const TextStyle(color: Colors.white)),
@@ -550,27 +551,24 @@ class _MobileExpandableCardConsistent extends StatelessWidget {
                             colors: [Color.fromARGB(0, 255, 255, 255), Colors.white70, Colors.white],
                           ),
                         ),
-                        child: Text(card['description'], style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w600)),
+                        child: Text(card['description'], style: TextStyle(color: blue, fontWeight: FontWeight.w600)),
                       ),
                     ),
                   ),
                 ),
               ),
-              // Consistent circular expand/collapse button with AnimatedRotation
               Positioned(
-                bottom: 10,
-                right: 10,
+                bottom: r.dp(0.5),
+                right: r.dp(0.5),
                 child: Container(
                   margin: const EdgeInsets.all(12),
-                  width: 40,
-                  height: 40,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))],
+                    boxShadow: [BoxShadow(color: Colors.black.withAlpha(20), blurRadius: 1, offset: Offset(0, 0))],
                   ),
                   child: Center(
                     child: AnimatedRotation(
-                      turns: isExpanded ? 0.75 : 0.0,
+                      turns: isExpanded ? 0.88 : 0.0,
                       duration: const Duration(milliseconds: 400),
                       curve: Curves.easeInOut,
                       child: IconButton(
@@ -602,7 +600,7 @@ class TheFutureSliver extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: r.wp(6), vertical: r.hp(10)),
+        padding: EdgeInsets.only(left: r.wp(6), right: r.wp(6), top: r.hp(10), bottom: r.hp(5)),
         child: SizedBox(
           width: 1120,
           child: Center(
@@ -616,7 +614,7 @@ class TheFutureSliver extends StatelessWidget {
                     child: Text(
                       "El futuro de su marca está en el empaque.",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor, fontSize: r.fs(4, 50)),
+                      style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: r.fs(4, 50)),
                     ),
                   ),
                 ),
@@ -650,7 +648,7 @@ class SmartAndEcoSliver extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: r.wp(6), vertical: r.dp(5, max: 50)),
+        padding: EdgeInsets.symmetric(horizontal: r.wp(6), vertical: r.dp(5, max: isMobile ? 10 : 50)),
         child: ScrollAnimatedWrapper(child: isMobile ? _mobile(r) : _desktop()),
       ),
     );
@@ -745,7 +743,7 @@ class SmartAndEcoSliver extends StatelessWidget {
 
   Widget _mobile(Responsive r) {
     return SizedBox(
-      height: r.dp(40),
+      height: r.dp(50),
       width: r.dp(40),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -763,15 +761,15 @@ class SmartAndEcoSliver extends StatelessWidget {
               child: Image.asset('img/home/eco.webp', fit: BoxFit.cover),
             ),
           ),
+          SizedBox(height: r.hp(2)),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SizedBox(
               width: r.dp(40),
-
               child: Text(
                 textAlign: TextAlign.center,
                 'La solución para marcas comprometidas con el medio ambiente, con materiales sostenibles y una menor huella ecológica.',
-                style: TextStyle(fontWeight: FontWeight.bold, color: green, fontSize: r.fs(1.2, 35)),
+                style: TextStyle(fontWeight: FontWeight.bold, color: green, fontSize: r.fs(1.4, 35)),
               ),
             ),
           ),
@@ -783,7 +781,7 @@ class SmartAndEcoSliver extends StatelessWidget {
               child: Text(
                 textAlign: TextAlign.center,
                 "La opción ideal si busca elegancia, funcionalidad y una presencia premium en el punto de venta.",
-                style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: r.fs(1.2, 35)),
+                style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: r.fs(1.4, 35)),
               ),
             ),
           ),
@@ -908,42 +906,41 @@ class _ScrollWhyPvState extends State<ScrollWhyPv> {
       children: [
         SizedBox(
           height: widget.r.dp(40, max: widget.isMobile ? 700 : 600),
-          child: ListView.separated(
+          child: SingleChildScrollView(
             controller: _scrollController,
             scrollDirection: Axis.horizontal,
             padding: EdgeInsets.symmetric(horizontal: widget.r.wp(4, max: 20), vertical: widget.r.wp(2)),
-            itemCount: widget.items.length,
-            separatorBuilder: (_, __) => SizedBox(width: widget.r.wp(2, max: 20)),
-            itemBuilder: (context, index) {
-              final item = widget.items[index];
-              return Padding(
-                padding: EdgeInsets.only(
-                  left: index == 0 ? widget.r.wp(6) : 0,
-                  right: index == widget.items.length - 1 ? widget.r.wp(6) : 0,
-                  bottom: 50,
-                ),
-
-                child: Container(
-                  width: widget.r.wp(60, max: 500),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 1))],
+            child: Row(
+              children: List.generate(widget.items.length, (index) {
+                final item = widget.items[index];
+                return Padding(
+                  padding: EdgeInsets.only(
+                    left: index == 0 ? widget.r.wp(6) : 0,
+                    right: index == widget.items.length - 1 ? widget.r.wp(6) : widget.r.wp(2, max: 20),
+                    bottom: 50,
                   ),
-                  padding: EdgeInsets.all(widget.r.dp(2)),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(item.icon, color: widget.blue, size: widget.r.dp(10, max: 40)),
-                      SizedBox(height: widget.r.hp(1)),
-                      Text(item.title, style: TextStyle(fontSize: widget.r.dp(2, max: 30), fontWeight: FontWeight.bold, color: widget.blue)),
-                      SizedBox(height: widget.r.hp(1)),
-                      Text(item.description, style: TextStyle(fontSize: widget.r.dp(1.4, max: 23), color: Colors.black87)),
-                    ],
+                  child: Container(
+                    width: widget.r.wp(60, max: 500),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 1))],
+                    ),
+                    padding: EdgeInsets.all(widget.r.dp(2)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(item.icon, color: widget.blue, size: widget.r.dp(10, max: 40)),
+                        SizedBox(height: widget.r.hp(1)),
+                        Text(item.title, style: TextStyle(fontSize: widget.r.dp(2, max: 30), fontWeight: FontWeight.bold, color: widget.blue)),
+                        SizedBox(height: widget.r.hp(1)),
+                        Text(item.description, style: TextStyle(fontSize: widget.r.dp(1.4, max: 23), color: Colors.black87)),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              }),
+            ),
           ),
         ),
         Padding(
@@ -952,7 +949,7 @@ class _ScrollWhyPvState extends State<ScrollWhyPv> {
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _ArrowButton(
+              ArrowButton(
                 enabled: canScrollLeft,
                 icon: CupertinoIcons.chevron_left,
                 onTap: () {
@@ -963,8 +960,8 @@ class _ScrollWhyPvState extends State<ScrollWhyPv> {
                   );
                 },
               ),
-              SizedBox(width: widget.r.wp(1.2)),
-              _ArrowButton(
+              SizedBox(width: widget.r.wp(2, max: 20)),
+              ArrowButton(
                 enabled: canScrollRight,
                 icon: CupertinoIcons.chevron_right,
                 onTap: () {
@@ -979,23 +976,6 @@ class _ScrollWhyPvState extends State<ScrollWhyPv> {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _ArrowButton extends StatelessWidget {
-  final bool enabled;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _ArrowButton({required this.enabled, required this.icon, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: enabled ? onTap : null,
-      icon: Icon(icon),
-      style: ButtonStyle(backgroundColor: WidgetStateProperty.all(enabled ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80))),
     );
   }
 }
@@ -1044,7 +1024,7 @@ class ProductsSliver extends StatelessWidget {
                       card['title'],
                       style: TextStyle(fontSize: r.dp(4, max: 24), fontWeight: FontWeight.bold, color: card['isEcobag'] == true ? green : blue),
                     ),
-                    if (card['isEcobag']) Text("Materiales sostenibles", style: TextStyle(fontSize: r.dp(1, max: 10), color: Color(0xFF4B8D2C))),
+                    if (card['isEcobag']) Text("Materiales sostenibles", style: TextStyle(fontSize: r.dp(1.5, max: 16), color: Color(0xFF4B8D2C))),
                     const SizedBox(height: 8),
                     Text(
                       card['subtitle'],
@@ -1097,6 +1077,8 @@ class _PopupButtonState extends State<_PopupButton> {
 
   @override
   Widget build(BuildContext context) {
+    final Color blue = Theme.of(context).primaryColor;
+    final Color green = Color(0xFF4B8D2C);
     return PopupMenuButton<String>(
       tooltip: "",
       elevation: 3,
@@ -1119,10 +1101,10 @@ class _PopupButtonState extends State<_PopupButton> {
             PopupMenuItem(
               value: 'ecobag',
               child: Row(
-                children: const [
-                  Icon(CupertinoIcons.tree, color: Color(0xFF4B8D2C)),
-                  SizedBox(width: 10),
-                  Text('Ecobag', style: TextStyle(fontWeight: FontWeight.w500)),
+                children: [
+                  Icon(CupertinoIcons.tree, color: green),
+                  const SizedBox(width: 10),
+                  const Text('Ecobag', style: TextStyle(fontWeight: FontWeight.w500)),
                 ],
               ),
             ),
@@ -1130,7 +1112,7 @@ class _PopupButtonState extends State<_PopupButton> {
               value: 'smartbag',
               child: Row(
                 children: [
-                  Icon(CupertinoIcons.lightbulb, color: Theme.of(context).primaryColor),
+                  Icon(CupertinoIcons.lightbulb, color: blue),
                   const SizedBox(width: 10),
                   const Text('Smartbag', style: TextStyle(fontWeight: FontWeight.w500)),
                 ],
@@ -1164,7 +1146,9 @@ class _PopupButtonState extends State<_PopupButton> {
 
 //---------Servicios------------
 class SliverCarrouselServices extends StatefulWidget {
-  const SliverCarrouselServices({super.key});
+  final Responsive r;
+  final Color blue;
+  const SliverCarrouselServices({super.key, required this.r, required this.blue});
 
   @override
   State<SliverCarrouselServices> createState() => _SliverCarrouselServicesState();
@@ -1231,6 +1215,7 @@ class _SliverCarrouselServicesState extends State<SliverCarrouselServices> with 
           itemBuilder: (context, index, realIndex) {
             final bool isCenter = index == _currentIndexServices;
             return _ServiceSlideItem(
+              blue: widget.blue,
               list: services[index],
               isCenter: isCenter,
               isWide: isWide,
@@ -1241,7 +1226,7 @@ class _SliverCarrouselServicesState extends State<SliverCarrouselServices> with 
                   _carouselController.animateToPage(index);
                 }
               },
-              screenWidth: screenWidth,
+              r: widget.r,
             );
           },
         ),
@@ -1256,7 +1241,8 @@ class _ServiceSlideItem extends StatelessWidget {
   final Animation<double> fadeAnimation;
   final Animation<Offset> slideAnimation;
   final VoidCallback onTap;
-  final double screenWidth;
+  final Responsive r;
+  final Color blue;
 
   const _ServiceSlideItem({
     required this.isCenter,
@@ -1264,8 +1250,9 @@ class _ServiceSlideItem extends StatelessWidget {
     required this.fadeAnimation,
     required this.slideAnimation,
     required this.onTap,
-    required this.screenWidth,
+    required this.r,
     required this.list,
+    required this.blue,
   });
 
   @override
@@ -1324,18 +1311,17 @@ class _ServiceSlideItem extends StatelessWidget {
       children: [
         Text(
           list['text']!,
-
           maxLines: 2,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: (screenWidth * 0.03).clamp(0, 25), fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(fontSize: r.fs(1.5, 26), fontWeight: FontWeight.bold, color: Colors.white),
         ),
         const SizedBox(height: 10),
         ElevatedButton(
           onPressed: () {},
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: Theme.of(context).primaryColor),
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: blue),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
-            child: Text(list['title']!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: (screenWidth * 0.025).clamp(0, 20))),
+            child: Text(list['title']!, style: TextStyle(fontWeight: FontWeight.bold)),
           ),
         ),
       ],
@@ -1348,19 +1334,14 @@ class _ServiceSlideItem extends StatelessWidget {
       children: [
         ElevatedButton(
           onPressed: () {},
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: Theme.of(context).primaryColor),
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: blue),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
-            child: Text(list['title']!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: (screenWidth * 0.03).clamp(0, 25))),
+            child: Text(list['title']!, style: TextStyle(fontWeight: FontWeight.bold)),
           ),
         ),
         const SizedBox(width: 10),
-        Text(
-          list['text']!,
-          maxLines: 2,
-          softWrap: true,
-          style: TextStyle(fontSize: (screenWidth * 0.025).clamp(0, 20), fontWeight: FontWeight.bold, color: Colors.white),
-        ),
+        Text(list['text']!, maxLines: 2, softWrap: true, style: TextStyle(fontSize: r.fs(1, 20), fontWeight: FontWeight.bold, color: Colors.white)),
       ],
     );
   }
@@ -1524,14 +1505,11 @@ class SliverHeadquarters extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const SizedBox(width: 30), // Para simetría
-                          Text(
-                            "Sede ${headquarter['name']}",
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Theme.of(context).primaryColor),
-                          ),
+                          Text("Sede ${headquarter['name']}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: blue)),
                           IconButton(
                             onPressed: () => Navigator.pop(context),
                             icon: const Icon(CupertinoIcons.xmark_circle_fill),
-                            color: Theme.of(context).primaryColor,
+                            color: blue,
                             iconSize: 30,
                           ),
                         ],

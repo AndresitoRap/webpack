@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:webpack/widgets/scrollopacity.dart';
 
 class ArrowButton extends StatelessWidget {
   final bool enabled;
@@ -10,22 +11,24 @@ class ArrowButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: enabled ? onTap : null,
-      icon: Icon(
-        icon,
-        color:
-            isDark!
-                ? enabled
-                    ? Colors.white
-                    : Colors.white30
-                : null,
-      ),
-      style: ButtonStyle(
-        backgroundColor:
-            isDark!
-                ? WidgetStateProperty.all(enabled ? const Color(0xFFEAEAEA).withAlpha(100) : Colors.grey.withAlpha(80))
-                : WidgetStateProperty.all(enabled ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80)),
+    return ScrollAnimatedWrapper(
+      child: IconButton(
+        onPressed: enabled ? onTap : null,
+        icon: Icon(
+          icon,
+          color:
+              isDark!
+                  ? enabled
+                      ? Colors.white
+                      : Colors.white30
+                  : null,
+        ),
+        style: ButtonStyle(
+          backgroundColor:
+              isDark!
+                  ? WidgetStateProperty.all(enabled ? const Color(0xFFEAEAEA).withAlpha(100) : Colors.grey.withAlpha(80))
+                  : WidgetStateProperty.all(enabled ? Colors.grey.withAlpha(100) : Colors.grey.withAlpha(80)),
+        ),
       ),
     );
   }

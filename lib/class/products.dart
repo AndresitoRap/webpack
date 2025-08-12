@@ -239,7 +239,7 @@ final Map<String, List<Terminado>> productSections = {
 //     categoria: categorieSmart,
 //     subcategorie: subcategorieSmart[0],
 //     name: "Pastel",
-//     image: "img/3DM/SmartBag/4PRO/Pastel.png",
+//     image: "img/3DM/SmartBag/4PRO/Pastel.webp",
 //     description:
 //         "La SmartBag Pastel es la elección perfecta para quienes buscan un empaque que combine elegancia y frescura en un solo producto. Con su acabado sofisticado que imita la textura del cuero, esta bolsa ofrece una presentación premium para productos exclusivos o cosméticos de alta gama. Su diseño delicado y sus colores suaves no solo aportan un aire moderno, sino que también brindan resistencia y durabilidad. Ideal para quienes desean destacar con un empaque único que también respeta el medio ambiente. 🌿",
 //     price: 1234567,
@@ -1287,7 +1287,7 @@ final List<Terminado> fourproecoshop = [
 //     categoria: categorieEco,
 //     subcategorie: subcategorieEco[0],
 //     name: "Envejecida",
-//     image: "img/3DM/EcoBag/4PRO/Envejecida.png",
+//     image: "img/3DM/EcoBag/4PRO/Envejecida.webp",
 //     description:
 //         "La EcoBag 4PRO Bolsa Envejecida es la opción perfecta para marcas que desean transmitir un estilo vintage y ecológico al mismo tiempo. Con su acabado envejecido, esta bolsa no solo tiene una estética única, sino que también está hecha de materiales sostenibles, lo que la convierte en una alternativa responsable para envases de productos variados. Ideal para productos gourmet, artículos artesanales o cualquier artículo que se beneficie de un toque de distinción natural. La EcoBag mantiene su funcionalidad sin comprometer el respeto por el medio ambiente, ofreciendo un empaque robusto y estilizado. 🌍",
 //     price: 1234567,

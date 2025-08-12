@@ -1,13 +1,21 @@
 #!/bin/bash
 
-echo "🌿 Optimizando imágenes WebP en el proyecto..."
+echo "🔄 Convirtiendo PNG → WebP y optimizando..."
 
-find . -name "*.webp" | while read img; do
+# 1. Convertir PNG a WebP y borrar PNG original
+find . -type f -name "*.png" | while read img; do
+  webp="${img%.png}.webp"
+  cwebp -m 6 -metadata none -q 80 "$img" -o "$webp"
+  echo "🆕 Convertido: $img → $webp"
+  rm "$img"
+done
+
+# 2. Optimizar todos los WebP
+find . -type f -name "*.webp" | while read img; do
   original_size=$(stat -f%z "$img")
   tmp="tmp_optimized.webp"
 
   cwebp -m 6 -metadata none -q 80 "$img" -o "$tmp"
-
   optimized_size=$(stat -f%z "$tmp")
 
   if [ "$optimized_size" -lt "$original_size" ]; then
@@ -19,4 +27,4 @@ find . -name "*.webp" | while read img; do
   fi
 done
 
-echo "🎉 ¡Optimización completada!"
+echo "🎉 Conversión y optimización completadas!"

@@ -132,6 +132,9 @@ class VideoFlutterState extends State<VideoFlutter> {
 
   @override
   Widget build(BuildContext context) {
+    final String pauseButtonTag = 'pauseButton-${widget.src}';
+    final String retryButtonTag = 'retryButton-${widget.src}';
+
     return Stack(
       children: [
         HtmlElementView(viewType: _viewId),
@@ -143,6 +146,7 @@ class VideoFlutterState extends State<VideoFlutter> {
             child: GestureDetector(
               onDoubleTap: _togglePlayPause,
               child: FloatingActionButton(
+                heroTag: pauseButtonTag,
                 mini: true,
                 shape: const CircleBorder(),
                 backgroundColor: const Color(0xffb1b0b4),
@@ -157,6 +161,7 @@ class VideoFlutterState extends State<VideoFlutter> {
             bottom: 20,
             left: 20,
             child: FloatingActionButton(
+              heroTag: retryButtonTag,
               mini: true,
               shape: const CircleBorder(),
               backgroundColor: const Color(0xffb1b0b4),

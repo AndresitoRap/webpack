@@ -1,54 +1,57 @@
-import 'dart:math';
 import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'package:webpack/class/categories.dart';
+import 'package:webpack/main.dart';
 import 'package:webpack/utils/buttonarrow.dart';
+import 'package:webpack/utils/responsive.dart';
+import 'package:webpack/widgets/4pro/widgetsfourpro.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/scrollopacity.dart';
 
 class FlowpackEco extends StatelessWidget {
-  const FlowpackEco({super.key});
+  final Responsive r;
+  final Subcategorie subcategorie;
+  const FlowpackEco({super.key, required this.r, required this.subcategorie});
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final isMobile = screenWidth < 850;
-    final green = Color.fromARGB(255, 75, 141, 44);
+    final green = const Color(0xFF4B8D2C);
+    final route = '${subcategorie.route}/crea-tu-empaque';
+    final isMobile = r.wp(100) < 850;
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 253, 255, 252),
       body: CustomScrollView(
         slivers: [
-          SliverWithStartFlowPacEco(screenHeight: screenHeight, screenWidth: screenWidth, green: green),
-          SliverWithTextFlowPackEco(screenWidth: screenWidth, green: green),
-          SliverWithImage(green: green, isMobile: isMobile),
-          SliverInfoEcoFlowpack(isMobile: isMobile, screenWidth: screenWidth),
-          SliverWithMoreFlow(screenWidth: screenWidth, green: green, isMobile: isMobile),
-          SliverWithComparacion(screenWidth: screenWidth, green: green),
-          SliverWithCareUs(screenWidth: screenWidth),
-          SliverFinalFlowpack(screenWidth: screenWidth, isMobile: isMobile, green: green),
+          StartFlowpackSliver(r: r, green: green),
+          TextEcoBagFlowpckSliver(r: r, green: green),
+          ImageZoomFlowpackSliver(green: green, isMobile: isMobile),
+          ScrollEcoFlowpackSliver(isMobile: isMobile, r: r),
+          ImagenSlivers(r: r, green: green, isMobile: isMobile),
+          ComparisionSliver(r: r, green: green),
+          WeCareUsSliver(r: r, green: green, isMobile: isMobile),
+          FlowpackFinallySliver(r: r, isMobile: isMobile, green: green, route: route),
+          SliverToBoxAdapter(child: const Footer()),
         ],
       ),
     );
   }
 }
 
-//Inicio
-class SliverWithStartFlowPacEco extends StatefulWidget {
-  const SliverWithStartFlowPacEco({super.key, required this.screenHeight, required this.screenWidth, required this.green});
+//---------Inicio de Flowpack------------
+class StartFlowpackSliver extends StatefulWidget {
+  const StartFlowpackSliver({super.key, required this.r, required this.green});
 
-  final double screenHeight;
-  final double screenWidth;
+  final Responsive r;
   final Color green;
 
   @override
-  State<SliverWithStartFlowPacEco> createState() => _SliverWithStartFlowPacEcoState();
+  State<StartFlowpackSliver> createState() => _StartFlowpackSliverState();
 }
 
-class _SliverWithStartFlowPacEcoState extends State<SliverWithStartFlowPacEco> with TickerProviderStateMixin {
+class _StartFlowpackSliverState extends State<StartFlowpackSliver> with TickerProviderStateMixin {
   late AnimationController _textController;
 
   late Animation<double> _scaleAnimation;
@@ -127,15 +130,12 @@ class _SliverWithStartFlowPacEcoState extends State<SliverWithStartFlowPacEco> w
       child: Padding(
         padding: const EdgeInsets.only(bottom: 50, top: 200),
         child: SizedBox(
-          height: widget.screenHeight,
-          width: widget.screenWidth,
+          height: widget.r.hp(100),
+          width: widget.r.wp(100),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                "FLOWPACK",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: (widget.screenWidth * 0.2).clamp(30, 60), color: widget.green),
-              ),
+              Text("FLOWPACK", style: TextStyle(fontWeight: FontWeight.bold, fontSize: widget.r.fs(4, 60), color: widget.green)),
               SizedBox(height: 50),
 
               /// TEXTO
@@ -144,13 +144,13 @@ class _SliverWithStartFlowPacEcoState extends State<SliverWithStartFlowPacEco> w
                 child: FadeTransition(
                   opacity: _fadeAnimation,
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.06),
+                    padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6)),
                     width: 1000,
                     child: Center(
                       child: Text(
                         "Flowpack EcoBag redefine cómo debe sentirse un empaque flexible, funcional, sostenible y visualmente impactante. Sin o con válvula desgasificadora integrada, ventana frontal y sistema Peel Stick, esta bolsa combina practicidad y diseño en cada detalle. Su estructura es precisa, su presentación limpia, y su apertura, simplemente intuitiva. Listo para destacar tu producto desde el primer vistazo.",
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: (widget.screenWidth * 0.07).clamp(16, 26), color: Colors.black.withAlpha(200)),
+                        style: TextStyle(fontSize: widget.r.fs(1.9, 26), color: Colors.black.withAlpha(200)),
                       ),
                     ),
                   ),
@@ -163,13 +163,13 @@ class _SliverWithStartFlowPacEcoState extends State<SliverWithStartFlowPacEco> w
                   // Izquierda
                   SlideTransition(
                     position: _leftImageSlide,
-                    child: Opacity(opacity: 0.6, child: Image.asset("img/ecobag/flowpack.webp", height: widget.screenHeight * 0.3)),
+                    child: Opacity(opacity: 0.6, child: Image.asset("img/ecobag/flowpack.webp", height: widget.r.hp(30))),
                   ),
 
                   // Derecha
                   SlideTransition(
                     position: _rightImageSlide,
-                    child: Opacity(opacity: 0.6, child: Image.asset("img/ecobag/flowpack.webp", height: widget.screenHeight * 0.3)),
+                    child: Opacity(opacity: 0.6, child: Image.asset("img/ecobag/flowpack.webp", height: widget.r.hp(30))),
                   ),
 
                   // Central
@@ -177,10 +177,7 @@ class _SliverWithStartFlowPacEcoState extends State<SliverWithStartFlowPacEco> w
                     position: _slideAnimationimg,
                     child: ScaleTransition(
                       scale: _scaleAnimation,
-                      child: FadeTransition(
-                        opacity: _fadeAnimationimg,
-                        child: Image.asset("img/ecobag/flowpack.webp", height: widget.screenHeight * 0.45),
-                      ),
+                      child: FadeTransition(opacity: _fadeAnimationimg, child: Image.asset("img/ecobag/flowpack.webp", height: widget.r.hp(45))),
                     ),
                   ),
                 ],
@@ -193,18 +190,18 @@ class _SliverWithStartFlowPacEcoState extends State<SliverWithStartFlowPacEco> w
   }
 }
 
-//Sliver con texto
-class SliverWithTextFlowPackEco extends StatelessWidget {
-  const SliverWithTextFlowPackEco({super.key, required this.screenWidth, required this.green});
+//---------Información de Ecobag Flow------------
+class TextEcoBagFlowpckSliver extends StatelessWidget {
+  const TextEcoBagFlowpckSliver({super.key, required this.r, required this.green});
 
-  final double screenWidth;
+  final Responsive r;
   final Color green;
 
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
+        padding: EdgeInsets.symmetric(horizontal: r.wp(6)),
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 1200),
@@ -212,7 +209,6 @@ class SliverWithTextFlowPackEco extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ScrollAnimatedWrapper(
-                  visibilityKey: Key('ecobag-flowpack'),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -228,10 +224,7 @@ class SliverWithTextFlowPackEco extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 12),
-                      Text(
-                        "Ecobag® Flowpack",
-                        style: TextStyle(fontWeight: FontWeight.bold, color: green, fontSize: (screenWidth * 0.08).clamp(20, 50)),
-                      ),
+                      Text("Ecobag® Flowpack", style: TextStyle(fontWeight: FontWeight.bold, color: green, fontSize: r.fs(3, 50))),
                     ],
                   ),
                 ),
@@ -242,7 +235,7 @@ class SliverWithTextFlowPackEco extends StatelessWidget {
                   child: Text(
                     textAlign: TextAlign.center,
                     "Flowpack EcoBag combina protección, diseño y funcionalidad. Disponible en 3 o 4 láminas, con o sin ventana, se adapta a cada necesidad. Su sistema Peel Stick y la opción de válvula desgasificadora lo hacen ideal para productos que buscan destacar con una presentación impecable y práctica.",
-                    style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black87, fontSize: (screenWidth * 0.04).clamp(20, 24)),
+                    style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black87, fontSize: r.fs(2, 26)),
                   ),
                 ),
               ],
@@ -254,18 +247,17 @@ class SliverWithTextFlowPackEco extends StatelessWidget {
   }
 }
 
-//Sliver con la imagen
-
-class SliverWithImage extends StatefulWidget {
+//---------Bolsa con zoom------------
+class ImageZoomFlowpackSliver extends StatefulWidget {
   final Color green;
   final bool isMobile;
-  const SliverWithImage({super.key, required this.green, required this.isMobile});
+  const ImageZoomFlowpackSliver({super.key, required this.green, required this.isMobile});
 
   @override
-  State<SliverWithImage> createState() => _SliverWithImageState();
+  State<ImageZoomFlowpackSliver> createState() => _ImageZoomFlowpackSliverState();
 }
 
-class _SliverWithImageState extends State<SliverWithImage> with TickerProviderStateMixin {
+class _ImageZoomFlowpackSliverState extends State<ImageZoomFlowpackSliver> with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
 
@@ -363,7 +355,7 @@ class _SliverWithImageState extends State<SliverWithImage> with TickerProviderSt
     );
   }
 
-  Widget buildSlidingPanel() {
+  Widget buildSlidingPanel(bool isMobile) {
     if (selectedDot == null) return const SizedBox();
 
     String title = "";
@@ -416,7 +408,16 @@ class _SliverWithImageState extends State<SliverWithImage> with TickerProviderSt
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+                  isMobile
+                      ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+                          IconButton(icon: const Icon(Icons.close, color: Colors.white), onPressed: _exitZoom),
+                        ],
+                      )
+                      : Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+
                   const SizedBox(height: 10),
                   SizedBox(width: widget.isMobile ? 200 : 400, height: widget.isMobile ? 200 : 400, child: Image.asset(img)),
                   Text(description, style: TextStyle(color: Colors.white)),
@@ -436,8 +437,6 @@ class _SliverWithImageState extends State<SliverWithImage> with TickerProviderSt
       child: Stack(
         children: [
           ScrollAnimatedWrapper(
-            visibilityKey: Key('ecobag-flowpack-zoom-bag'),
-
             child: Center(
               child: LayoutBuilder(
                 builder: (context, constraints) {
@@ -485,7 +484,7 @@ class _SliverWithImageState extends State<SliverWithImage> with TickerProviderSt
               ),
             ),
           ),
-          buildSlidingPanel(),
+          buildSlidingPanel(widget.isMobile),
         ],
       ),
     );
@@ -544,18 +543,18 @@ class _PulseAnimationState extends State<_PulseAnimation> with SingleTickerProvi
   }
 }
 
-//Sliver con informacion
-class SliverInfoEcoFlowpack extends StatefulWidget {
-  const SliverInfoEcoFlowpack({super.key, required this.screenWidth, required this.isMobile});
+//---------Información en scroll con la flowpack------------
+class ScrollEcoFlowpackSliver extends StatefulWidget {
+  const ScrollEcoFlowpackSliver({super.key, required this.r, required this.isMobile});
 
-  final double screenWidth;
+  final Responsive r;
   final bool isMobile;
 
   @override
-  State<SliverInfoEcoFlowpack> createState() => _SliverInfoEcoFlowpackState();
+  State<ScrollEcoFlowpackSliver> createState() => ScrollEcoFlowpackSliverState();
 }
 
-class _SliverInfoEcoFlowpackState extends State<SliverInfoEcoFlowpack> {
+class ScrollEcoFlowpackSliverState extends State<ScrollEcoFlowpackSliver> {
   final ScrollController _scrollController = ScrollController();
   bool canScrollLeft = false;
   bool canScrollRight = true;
@@ -600,105 +599,91 @@ class _SliverInfoEcoFlowpackState extends State<SliverInfoEcoFlowpack> {
               visibilityKey: Key('presentacion-moderna-flowpack'),
 
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.06),
-                child: Text(
-                  "Presentación moderna. Estilo flowpack",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: (widget.screenWidth * 0.09).clamp(30, 50)),
-                ),
+                padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6)),
+                child: Text("Presentación moderna.\nEstilo flowpack", style: TextStyle(fontWeight: FontWeight.bold, fontSize: widget.r.fs(3, 50))),
               ),
             ),
 
-            ScrollAnimatedWrapper(
-              visibilityKey: Key('scroll-flowpack'),
-
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                controller: _scrollController,
-                child: Row(
-                  children: List.generate(nuestroFlowpack.length, (int index) {
-                    final card = nuestroFlowpack[index];
-                    final double horizontalPadding = widget.screenWidth * 0.06;
-                    return Padding(
-                      padding: EdgeInsets.only(
-                        left: index == 0 ? horizontalPadding : 0,
-                        right: index == nuestroFlowpack.length - 1 ? horizontalPadding : 20,
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              controller: _scrollController,
+              child: Row(
+                children: List.generate(nuestroFlowpack.length, (int index) {
+                  final card = nuestroFlowpack[index];
+                  return Padding(
+                    padding: EdgeInsets.only(left: index == 0 ? widget.r.wp(6) : 0, right: index == nuestroFlowpack.length - 1 ? widget.r.wp(6) : 20),
+                    child: Container(
+                      height: widget.r.hp(60, max: 700),
+                      width: widget.r.wp(80, max: 1000),
+                      padding: EdgeInsets.only(top: 22, left: 22),
+                      margin: EdgeInsets.only(top: 20, bottom: 20, right: 20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(26),
+                        image: DecorationImage(image: AssetImage(card['image']), fit: BoxFit.cover),
                       ),
-                      child: Container(
-                        width: widget.isMobile ? 450 : (widget.screenWidth * 0.6).clamp(650, 1200),
-                        height: widget.isMobile ? 700 : (widget.screenWidth * 0.1).clamp(500, 900),
-                        padding: EdgeInsets.only(top: 22, left: 22),
-                        margin: EdgeInsets.only(top: 20, bottom: 20, right: 20),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(26),
-                          image: DecorationImage(image: AssetImage(card['image']), fit: BoxFit.cover),
-                        ),
-                        child: Stack(
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(left: widget.screenWidth * 0.02, top: widget.screenWidth * 0.01),
-                                        child: Text(
-                                          card['title'],
-                                          style: TextStyle(
-                                            height: 0,
-                                            color: card['colorText'] ?? Colors.white,
-                                            fontSize: (widget.screenWidth * 0.04).clamp(16, 24),
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                      child: Stack(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(left: widget.r.dp(1, max: 20), top: widget.r.dp(1, max: 20)),
+                                      child: Text(
+                                        card['title'],
+                                        style: TextStyle(
+                                          height: 0,
+                                          color: card['colorText'] ?? Colors.white,
+                                          fontSize: widget.r.fs(2, 24),
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                                Expanded(flex: 1, child: SizedBox(width: 100)),
-                              ],
-                            ),
-                          ],
-                        ),
+                              ),
+                              Expanded(flex: 1, child: SizedBox(width: 100)),
+                            ],
+                          ),
+                        ],
                       ),
-                    );
-                  }),
-                ),
+                    ),
+                  );
+                }),
               ),
             ),
-            ScrollAnimatedWrapper(
-              visibilityKey: Key('scroll-buttons-flowpack'),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.06, vertical: 40),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    ArrowButton(
-                      enabled: canScrollLeft,
-                      icon: CupertinoIcons.chevron_left,
-                      onTap: () {
-                        _scrollController.animateTo(
-                          _scrollController.offset - (widget.screenWidth * 0.6),
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
-                      },
-                    ),
-                    const SizedBox(width: 20),
-                    ArrowButton(
-                      enabled: canScrollRight,
-                      icon: CupertinoIcons.chevron_right,
-                      onTap: () {
-                        _scrollController.animateTo(
-                          _scrollController.offset + (widget.screenWidth * 0.6),
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
-                      },
-                    ),
-                  ],
-                ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6), vertical: 40),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ArrowButton(
+                    enabled: canScrollLeft,
+                    icon: CupertinoIcons.chevron_left,
+                    onTap: () {
+                      _scrollController.animateTo(
+                        _scrollController.offset - widget.r.wp(60),
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    },
+                  ),
+                  const SizedBox(width: 20),
+                  ArrowButton(
+                    enabled: canScrollRight,
+                    icon: CupertinoIcons.chevron_right,
+                    onTap: () {
+                      _scrollController.animateTo(
+                        _scrollController.offset + widget.r.wp(60),
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
           ],
@@ -708,183 +693,30 @@ class _SliverInfoEcoFlowpackState extends State<SliverInfoEcoFlowpack> {
   }
 }
 
-//Sliver con mas flow aalto impacto
-class SliverWithMoreFlow extends StatefulWidget {
-  const SliverWithMoreFlow({super.key, required this.screenWidth, required this.green, required this.isMobile});
+//---------Imagenes con breve información------------
+class ImagenSlivers extends StatelessWidget {
+  const ImagenSlivers({super.key, required this.r, required this.green, required this.isMobile});
 
-  final double screenWidth;
+  final Responsive r;
   final Color green;
   final bool isMobile;
 
   @override
-  State<SliverWithMoreFlow> createState() => _SliverWithMoreFlowState();
-}
-
-class _SliverWithMoreFlowState extends State<SliverWithMoreFlow> {
-  @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 100, horizontal: widget.screenWidth * 0.06),
+        padding: EdgeInsets.only(bottom: 100, top: 20, left: r.wp(6), right: r.wp(6)),
         child: Column(
           children: [
-            ScrollAnimatedWrapper(
-              visibilityKey: Key('flow-al-mas-alto-impacto'),
-              child: Text.rich(
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: (widget.screenWidth * 0.07).clamp(20, 40)),
-                TextSpan(children: [TextSpan(text: "Flow ", style: TextStyle(color: widget.green)), TextSpan(text: "al más alto impacto")]),
-              ),
+            Text.rich(
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: r.fs(3, 40)),
+              TextSpan(children: [TextSpan(text: "Flow ", style: TextStyle(color: green)), TextSpan(text: "al más alto impacto")]),
             ),
             SizedBox(height: 50),
             SizedBox(
-              height: widget.isMobile ? 900 : 700,
-              width: (widget.screenWidth * 0.8).clamp(0, 1200),
-              child: ScrollAnimatedWrapper(
-                visibilityKey: Key('con-aleta-y-otras'),
-
-                child:
-                    widget.isMobile
-                        ? Column(
-                          children: [
-                            containerFlow(
-                              widget.green,
-                              alignment: Alignment.topLeft,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Con aleta",
-                                      style: TextStyle(fontSize: (widget.screenWidth * 0.05).clamp(20, 22), color: Colors.black.withAlpha(100)),
-                                    ),
-                                    Text(
-                                      "Algo más innovador",
-                                      style: TextStyle(fontSize: (widget.screenWidth * 0.07).clamp(24, 26), fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            containerFlow(
-                              widget.green,
-                              alignment: Alignment.topCenter,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Respira",
-                                      style: TextStyle(fontSize: (widget.screenWidth * 0.05).clamp(20, 22), color: Colors.black.withAlpha(100)),
-                                    ),
-                                    Text(
-                                      "Con toda seguridad",
-                                      style: TextStyle(fontSize: (widget.screenWidth * 0.05).clamp(24, 26), fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            containerFlow(
-                              widget.green,
-                              alignment: Alignment.topRight,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      "Simple",
-                                      style: TextStyle(fontSize: (widget.screenWidth * 0.05).clamp(20, 22), color: Colors.black.withAlpha(100)),
-                                    ),
-                                    Text(
-                                      "Pero con estilo",
-                                      style: TextStyle(fontSize: (widget.screenWidth * 0.05).clamp(24, 26), fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
-                        : Row(
-                          children: [
-                            containerFlow(
-                              widget.green,
-                              alignment: Alignment.topLeft,
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Con aleta",
-                                      style: TextStyle(fontSize: (widget.screenWidth * 0.05).clamp(20, 22), color: Colors.black.withAlpha(100)),
-                                    ),
-                                    Text(
-                                      "Algo más innovador",
-                                      style: TextStyle(fontSize: (widget.screenWidth * 0.07).clamp(24, 26), fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  containerFlow(
-                                    widget.green,
-                                    alignment: Alignment.centerRight,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            "Respira",
-                                            style: TextStyle(fontSize: (widget.screenWidth * 0.05).clamp(20, 22), color: Colors.black.withAlpha(100)),
-                                          ),
-                                          Text(
-                                            "Con toda seguridad",
-                                            style: TextStyle(fontSize: (widget.screenWidth * 0.05).clamp(24, 26), fontWeight: FontWeight.bold),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  containerFlow(
-                                    widget.green,
-                                    alignment: Alignment.centerLeft,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Simple",
-                                            style: TextStyle(fontSize: (widget.screenWidth * 0.05).clamp(20, 22), color: Colors.black.withAlpha(100)),
-                                          ),
-                                          Text(
-                                            "Pero con estilo",
-                                            style: TextStyle(fontSize: (widget.screenWidth * 0.05).clamp(24, 26), fontWeight: FontWeight.bold),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-              ),
+              height: isMobile ? 900 : 700,
+              width: r.wp(100, max: 1200),
+              child: ScrollAnimatedWrapper(child: isMobile ? _buildMobile() : _buildDesktop()),
             ),
           ],
         ),
@@ -892,7 +724,141 @@ class _SliverWithMoreFlowState extends State<SliverWithMoreFlow> {
     );
   }
 
-  Widget containerFlow(Color green, {required Widget child, Alignment alignment = Alignment.center}) {
+  Row _buildDesktop() {
+    return Row(
+      children: [
+        containerFlow(
+          imagen: "img/smartbag/flowpack/cortina.webp",
+          green,
+          alignment: Alignment.topLeft,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Con aleta", style: TextStyle(fontSize: r.fs(1.9, 22), color: Colors.black.withAlpha(100))),
+                Text("Algo más innovador", style: TextStyle(fontSize: r.fs(2.1, 27), fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+        ),
+        Expanded(
+          child: Column(
+            children: [
+              containerFlow(
+                imagen: "img/smartbag/flowpack/splash.webp",
+                green,
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text("Respira", style: TextStyle(fontSize: r.fs(1.9, 22), color: Colors.black.withAlpha(100))),
+                      Text("Con toda seguridad", style: TextStyle(fontSize: r.fs(2.1, 27), fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+              ),
+              containerFlow(
+                imagen: "img/smartbag/flowpack/perlas.webp",
+                green,
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Simple", style: TextStyle(fontSize: r.fs(1.9, 22), color: Colors.black.withAlpha(100))),
+                      Text("Pero con estilo", style: TextStyle(fontSize: r.fs(2.1, 27), fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Column _buildMobile() {
+    return Column(
+      children: [
+        containerFlow(
+          green,
+          imagen: "img/smartbag/flowpack/cortina.webp",
+          alignment: Alignment.topLeft,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Con aleta", style: TextStyle(fontSize: r.fs(1.9, 22), color: Colors.black.withAlpha(100))),
+                Text("Algo más innovador", style: TextStyle(fontSize: r.fs(2.1, 27), fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+        ),
+        containerFlow(
+          imagen: "img/smartbag/flowpack/splash.webp",
+          green,
+          alignment: Alignment.topCenter,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text("Respira", style: TextStyle(fontSize: r.fs(1.9, 22), color: Colors.black.withAlpha(100))),
+                Text("Con toda seguridad", style: TextStyle(fontSize: r.fs(2.1, 27), fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+        ),
+        containerFlow(
+          imagen: "img/smartbag/flowpack/perlas.webp",
+          green,
+          alignment: Alignment.topCenter,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Align(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    "Simple",
+                    style: TextStyle(
+                      fontSize: r.fs(1.9, 22),
+                      color: Colors.white,
+                      shadows: [Shadow(offset: Offset(0, 0), blurRadius: 6, color: Colors.black.withAlpha(180))],
+                    ),
+                  ),
+                  Text(
+                    "Pero con estilo",
+                    style: TextStyle(
+                      fontSize: r.fs(2.1, 27),
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      shadows: [Shadow(offset: Offset(0, 0), blurRadius: 6, color: Colors.black.withAlpha(180))],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget containerFlow(Color green, {required Widget child, required String imagen, Alignment alignment = Alignment.center}) {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -900,7 +866,8 @@ class _SliverWithMoreFlowState extends State<SliverWithMoreFlow> {
           alignment: alignment,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            color: Colors.white,
+            color: Colors.grey[100],
+            image: DecorationImage(image: AssetImage(imagen), fit: BoxFit.cover),
             boxShadow: [
               BoxShadow(color: Color.fromRGBO(50, 50, 93, 0.25), blurRadius: 5, spreadRadius: -1, offset: Offset(0, 2)),
               BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.3), blurRadius: 3, spreadRadius: -1, offset: Offset(0, 1)),
@@ -913,18 +880,18 @@ class _SliverWithMoreFlowState extends State<SliverWithMoreFlow> {
   }
 }
 
-//Sliver con comparacion
-class SliverWithComparacion extends StatelessWidget {
-  const SliverWithComparacion({super.key, required this.screenWidth, required this.green});
+//---------Comparación de la flowpack y 4pro------------
+class ComparisionSliver extends StatelessWidget {
+  const ComparisionSliver({super.key, required this.r, required this.green});
 
-  final double screenWidth;
+  final Responsive r;
   final Color green;
 
   @override
   Widget build(BuildContext context) {
     final double iconSize = 28;
-    final double fontSize = (screenWidth * 0.035).clamp(16, 20);
-    final double titleFontSize = (screenWidth * 0.05).clamp(16, 32);
+    final double fontSize = (r.wp(100) * 0.035).clamp(16, 20);
+    final double titleFontSize = (r.wp(100) * 0.05).clamp(16, 32);
 
     final characteristics = [
       {'icon': CupertinoIcons.layers, 'label': '3 y 4 láminas', 'flowpack': true, 'fourpro': true},
@@ -937,7 +904,7 @@ class SliverWithComparacion extends StatelessWidget {
 
     return SliverToBoxAdapter(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: 24),
+        padding: EdgeInsets.symmetric(horizontal: r.wp(6), vertical: 24),
         child: Container(
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.white),
@@ -945,29 +912,24 @@ class SliverWithComparacion extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ScrollAnimatedWrapper(
-                visibilityKey: Key('exclusividad-a-su-estilo'),
-
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
                   child: Text(
                     textAlign: TextAlign.start,
                     "Exclusividad en su estilo.",
-                    style: TextStyle(fontWeight: FontWeight.bold, color: green, fontSize: (screenWidth * 0.1).clamp(20, 40)),
+                    style: TextStyle(fontWeight: FontWeight.bold, color: green, fontSize: r.fs(4, 40)),
                   ),
                 ),
               ),
-
               SizedBox(height: 50),
               // Títulos y fotos
               ScrollAnimatedWrapper(
-                visibilityKey: Key('flowpackeco-4pro'),
-
                 child: Row(
                   children: [
                     Expanded(
                       child: Column(
                         children: [
-                          Image.asset("img/smartbag/flowpack.webp", fit: BoxFit.contain),
+                          Image.asset("img/smartbag/flowpack/flowpackBlancoNegro.webp", fit: BoxFit.contain),
                           const SizedBox(height: 12),
                           Text("Flowpack Eco", style: TextStyle(fontWeight: FontWeight.bold, fontSize: titleFontSize, color: green)),
                         ],
@@ -976,7 +938,7 @@ class SliverWithComparacion extends StatelessWidget {
                     Expanded(
                       child: Column(
                         children: [
-                          Image.asset("img/smartbag/4pro.webp", fit: BoxFit.contain),
+                          Image.asset("img/smartbag/flowpack/flowpackVs4proBlancoNegro.webp", fit: BoxFit.contain),
                           const SizedBox(height: 12),
                           Text(
                             "4PRO Eco",
@@ -992,14 +954,17 @@ class SliverWithComparacion extends StatelessWidget {
               const SizedBox(height: 24),
 
               // Separador
-              Padding(padding: const EdgeInsets.symmetric(horizontal: 20), child: Divider(thickness: 2, color: Colors.grey[300])),
+              ScrollAnimatedWrapper(
+                visibilityKey: Key('separador'),
+                child: Padding(padding: const EdgeInsets.symmetric(horizontal: 20), child: Divider(thickness: 2, color: Colors.grey[300])),
+              ),
 
               const SizedBox(height: 16),
 
               // Lista de características comparadas
               for (var item in characteristics) ...[
                 ScrollAnimatedWrapper(
-                  visibilityKey: Key('item-comparacion${item['label']}'),
+                  visibilityKey: Key('items-rows-${item['label'] as String}'),
 
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1046,148 +1011,18 @@ class SliverWithComparacion extends StatelessWidget {
   }
 }
 
-//Te importa, nos importa
-class SliverWithCareUs extends StatelessWidget {
-  const SliverWithCareUs({super.key, required this.screenWidth});
-
-  final double screenWidth;
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: SizedBox(
-        width: min(screenWidth, 1600),
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: screenWidth * 0.06, horizontal: screenWidth * 0.06),
-            child: Column(
-              children: [
-                ScrollAnimatedWrapper(
-                  visibilityKey: Key('te-importa-nos-importa'),
-
-                  child: Text(
-                    "Te importa. Nos importa.",
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 75, 141, 44), fontSize: min(screenWidth * 0.06, 70)),
-                  ),
-                ),
-
-                SizedBox(height: screenWidth >= 1000 ? 50 : 100),
-                ScrollAnimatedWrapper(
-                  visibilityKey: Key('desde-empaques-cono-flowpack'),
-
-                  child: Text(
-                    textAlign: TextAlign.center,
-                    "Desde empaques como Flowpac Ecobag®, diseñados para proteger tu producto y destacar tu marca, hasta soluciones como Ecobag®, que combinan funcionalidad con conciencia ambiental. Usamos materiales reciclables, desarrollamos opciones versátiles como válvulas y cierres herméticos, y te ofrecemos formatos pensados para cada necesidad, siempre con una visión sustentable. Porque cada detalle cuenta cuando quieres hacer las cosas bien.",
-                    style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black87, fontSize: min(screenWidth * 0.026, 25), height: 0),
-                  ),
-                ),
-
-                SizedBox(height: screenWidth >= 1000 ? 50 : 100),
-
-                SizedBox(
-                  width: min(screenWidth, 1600),
-                  child: ScrollAnimatedWrapper(
-                    visibilityKey: Key('items-con-empaque'),
-
-                    child:
-                        screenWidth > 900
-                            ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                for (var item in [
-                                  (
-                                    CupertinoIcons.leaf_arrow_circlepath,
-                                    "Sostenibilidad real.",
-                                    "Usamos materiales reciclables y procesos responsables en toda la línea 5PRO y Ecobag®.",
-                                  ),
-                                  (
-                                    CupertinoIcons.shield_lefthalf_fill,
-                                    "Protección garantizada",
-                                    "Empaques que conservan aroma, frescura y calidad con barrera multicapa y protección UV.",
-                                  ),
-                                  (
-                                    CupertinoIcons.cube_box,
-                                    "Diseño funcional",
-                                    "Opciones como válvulas, zippers y acabados premium para destacar tu producto con estilo.",
-                                  ),
-                                ])
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                                      child: _buildBenefitBox(icon: item.$1, title: item.$2, description: item.$3, context: context),
-                                    ),
-                                  ),
-                              ],
-                            )
-                            : Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                for (var item in [
-                                  (
-                                    CupertinoIcons.leaf_arrow_circlepath,
-                                    "Sostenibilidad real.",
-                                    "Usamos materiales reciclables y procesos responsables en toda la línea 4PRO y Ecobag®.",
-                                  ),
-                                  (
-                                    CupertinoIcons.shield_lefthalf_fill,
-                                    "Protección garantizada",
-                                    "Empaques que conservan aroma, frescura y calidad con barrera multicapa y protección UV.",
-                                  ),
-                                  (
-                                    CupertinoIcons.cube_box,
-                                    "Diseño funcional",
-                                    "Opciones como válvulas, zippers y acabados premium para destacar tu producto con estilo.",
-                                  ),
-                                ])
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                                    child: _buildBenefitBox(icon: item.$1, title: item.$2, description: item.$3, context: context),
-                                  ),
-                              ],
-                            ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBenefitBox({required IconData icon, required String title, required String description, required BuildContext context}) {
-    final screenw = MediaQuery.of(context).size.width;
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: min(screenw * 0.1, 40), color: Color(0xFF4B8D2C)),
-          const SizedBox(height: 20),
-          Text(title, textAlign: TextAlign.start, style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenw * 0.03, 24))),
-          const SizedBox(height: 10),
-          Text(description, textAlign: TextAlign.start, style: TextStyle(fontSize: min(screenw * 0.025, 22), fontWeight: FontWeight.w300)),
-        ],
-      ),
-    );
-  }
-}
-
-//Sliver final
-
-class SliverFinalFlowpack extends StatefulWidget {
-  const SliverFinalFlowpack({super.key, required this.screenWidth, required this.isMobile, required this.green});
+//---------Final de Flowpack EcoBag®------------
+class FlowpackFinallySliver extends StatefulWidget {
+  const FlowpackFinallySliver({super.key, required this.r, required this.isMobile, required this.green, required this.route});
   final bool isMobile;
-  final double screenWidth;
+  final Responsive r;
   final Color green;
-
+  final String route;
   @override
-  State<SliverFinalFlowpack> createState() => _SliverFinalFlowpackState();
+  State<FlowpackFinallySliver> createState() => _FlowpackFinallySliverState();
 }
 
-class _SliverFinalFlowpackState extends State<SliverFinalFlowpack> with TickerProviderStateMixin {
+class _FlowpackFinallySliverState extends State<FlowpackFinallySliver> with TickerProviderStateMixin {
   late AnimationController _controller;
   late AnimationController _secondaryController;
 
@@ -1226,7 +1061,7 @@ class _SliverFinalFlowpackState extends State<SliverFinalFlowpack> with TickerPr
       TweenSequenceItem(
         tween: Tween<Offset>(
           begin: const Offset(-0.1, 0),
-          end: const Offset(1.5, 0), // se va a la derecha
+          end: const Offset(5, 0), // se va a la derecha
         ).chain(CurveTween(curve: Curves.fastOutSlowIn)),
         weight: 50,
       ),
@@ -1235,7 +1070,7 @@ class _SliverFinalFlowpackState extends State<SliverFinalFlowpack> with TickerPr
     _newBagController = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
 
     _newBagSlide = Tween<Offset>(
-      begin: const Offset(1.5, 0),
+      begin: const Offset(5, 0),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _newBagController, curve: Curves.easeOutBack));
 
@@ -1269,211 +1104,211 @@ class _SliverFinalFlowpackState extends State<SliverFinalFlowpack> with TickerPr
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
-      child: VisibilityDetector(
-        key: const Key("flowpack-final-animation"),
-        onVisibilityChanged: (info) {
-          _startAnimationIfVisible(info.visibleFraction);
-        },
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.06, vertical: 50),
-              child: Container(
-                clipBehavior: Clip.antiAlias,
-                width: widget.screenWidth,
-                padding: EdgeInsets.symmetric(horizontal: 22, vertical: widget.isMobile ? 10 : 40),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(22), color: Colors.white),
-                child:
-                    widget.isMobile
-                        ? Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                              child: Text.rich(
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: (widget.screenWidth * 0.06).clamp(22, 40),
-                                  color: Colors.black.withAlpha(200),
-                                ),
-                                TextSpan(
-                                  children: [
-                                    TextSpan(text: "La opción ligera, versátil y económica para productos de "),
-                                    TextSpan(text: "alto rendimiento.", style: TextStyle(color: widget.green)),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              child: GestureDetector(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Elige Flowpack Eco",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(fontSize: (widget.screenWidth * 0.03).clamp(18, 26), color: Colors.black),
-                                    ),
-                                    SizedBox(width: 5),
+      child: ScrollAnimatedWrapper(
+        visibilityKey: Key('scroll-final'),
 
-                                    Icon(CupertinoIcons.arrow_right, color: widget.green),
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            Stack(
-                              children: [
-                                // Primera bolsa (entrada y salida)
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 20),
-                                  child: AnimatedBuilder(
-                                    animation: Listenable.merge([_controller, _secondaryController]),
-                                    builder: (context, child) {
-                                      Widget transformed = Transform.translate(
-                                        offset: _positionAnim.value * 300,
-                                        child: Transform.rotate(
-                                          angle: _rotationAnim.value,
-                                          child: Transform.scale(scale: _scaleAnim.value, child: child),
-                                        ),
-                                      );
-
-                                      if (_secondaryController.status != AnimationStatus.dismissed) {
-                                        transformed = Transform.translate(offset: _slideAnim.value * 300, child: transformed);
-                                      }
-
-                                      // Solo mostrar mientras no se haya activado la nueva bolsa
-                                      return _newBagController.status == AnimationStatus.dismissed ? transformed : const SizedBox.shrink();
-                                    },
-                                    child: Image.asset("img/smartbag/flowpack/flowpack_blanco.webp"),
-                                  ),
-                                ),
-
-                                // Segunda bolsa (la que aparece al final)
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 20),
-
-                                  child: AnimatedBuilder(
-                                    animation: _newBagController,
-                                    builder: (context, child) {
-                                      if (_newBagController.status == AnimationStatus.dismissed && _secondaryController.isCompleted) {
-                                        return const SizedBox.shrink();
-                                      }
-
-                                      return Transform.translate(
-                                        offset: _newBagSlide.value * 300,
-                                        child: Transform.rotate(angle: _newBagRotation.value, child: child),
-                                      );
-                                    },
-                                    child: Image.asset("img/smartbag/flowpack.webp"),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        )
-                        : Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                                    child: Text.rich(
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: (widget.screenWidth * 0.06).clamp(22, 40),
-                                        color: Colors.black.withAlpha(200),
-                                      ),
-                                      TextSpan(
-                                        children: [
-                                          TextSpan(text: "La opción ligera, versátil y económica para productos de "),
-                                          TextSpan(text: "alto rendimiento.", style: TextStyle(color: widget.green)),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  MouseRegion(
-                                    cursor: SystemMouseCursors.click,
-                                    child: GestureDetector(
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "Elige Flowpack Eco",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(fontSize: (widget.screenWidth * 0.03).clamp(18, 26), color: Colors.black),
-                                          ),
-                                          SizedBox(width: 5),
-                                          Icon(CupertinoIcons.arrow_right, color: widget.green),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              child: Stack(
-                                children: [
-                                  // Primera bolsa (entrada y salida)
-                                  AnimatedBuilder(
-                                    animation: Listenable.merge([_controller, _secondaryController]),
-                                    builder: (context, child) {
-                                      Widget transformed = Transform.translate(
-                                        offset: _positionAnim.value * 300,
-                                        child: Transform.rotate(
-                                          angle: _rotationAnim.value,
-                                          child: Transform.scale(scale: _scaleAnim.value, child: child),
-                                        ),
-                                      );
-
-                                      if (_secondaryController.status != AnimationStatus.dismissed) {
-                                        transformed = Transform.translate(offset: _slideAnim.value * 300, child: transformed);
-                                      }
-
-                                      // Solo mostrar mientras no se haya activado la nueva bolsa
-                                      return _newBagController.status == AnimationStatus.dismissed ? transformed : const SizedBox.shrink();
-                                    },
-                                    child: Image.asset("img/smartbag/flowpack/flowpack_blanco.webp"),
-                                  ),
-
-                                  // Segunda bolsa (la que aparece al final)
-                                  AnimatedBuilder(
-                                    animation: _newBagController,
-                                    builder: (context, child) {
-                                      if (_newBagController.status == AnimationStatus.dismissed && _secondaryController.isCompleted) {
-                                        return const SizedBox.shrink();
-                                      }
-
-                                      return Transform.translate(
-                                        offset: _newBagSlide.value * 300,
-                                        child: Transform.rotate(angle: _newBagRotation.value, child: child),
-                                      );
-                                    },
-                                    child: Image.asset("img/smartbag/flowpack.webp"),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+        child: VisibilityDetector(
+          key: const Key("flowpack-final-animation"),
+          onVisibilityChanged: (info) {
+            _startAnimationIfVisible(info.visibleFraction);
+          },
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6), vertical: 50),
+                child: Container(
+                  clipBehavior: Clip.antiAlias,
+                  width: widget.r.wp(100),
+                  padding: EdgeInsets.symmetric(horizontal: 22, vertical: widget.isMobile ? 10 : 40),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(22), color: Colors.white),
+                  child: widget.isMobile ? _buildMobile() : _buildDesktop(),
+                ),
               ),
-            ),
-            const Footer(),
-          ],
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  Row _buildDesktop() {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text.rich(
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: (widget.r.wp(100) * 0.06).clamp(22, 40),
+                    color: Colors.black.withAlpha(200),
+                  ),
+                  TextSpan(
+                    children: [
+                      TextSpan(text: "La opción ligera, versátil y económica para productos de "),
+                      TextSpan(text: "alto rendimiento.", style: TextStyle(color: widget.green)),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              GestureDetector(
+                onTap: () {
+                  navigateWithSlide(context, widget.route);
+                },
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Crea tú Flowpack",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: (widget.r.wp(100) * 0.03).clamp(18, 26), color: Colors.black),
+                      ),
+                      SizedBox(width: 5),
+                      Icon(CupertinoIcons.arrow_right, color: widget.green),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: Stack(
+            children: [
+              // Primera bolsa (entrada y salida)
+              AnimatedBuilder(
+                animation: Listenable.merge([_controller, _secondaryController]),
+                builder: (context, child) {
+                  Widget transformed = Transform.translate(
+                    offset: _positionAnim.value * 300,
+                    child: Transform.rotate(angle: _rotationAnim.value, child: Transform.scale(scale: _scaleAnim.value, child: child)),
+                  );
+
+                  if (_secondaryController.status != AnimationStatus.dismissed) {
+                    transformed = Transform.translate(offset: _slideAnim.value * 300, child: transformed);
+                  }
+
+                  // Solo mostrar mientras no se haya activado la nueva bolsa
+                  return _newBagController.status == AnimationStatus.dismissed ? transformed : const SizedBox.shrink();
+                },
+                child: Image.asset("img/smartbag/flowpack/flowpack_blanco.webp"),
+              ),
+
+              // Segunda bolsa (la que aparece al final)
+              AnimatedBuilder(
+                animation: _newBagController,
+                builder: (context, child) {
+                  if (_newBagController.status == AnimationStatus.dismissed && _secondaryController.isCompleted) {
+                    return const SizedBox.shrink();
+                  }
+
+                  return Transform.translate(offset: _newBagSlide.value * 300, child: Transform.rotate(angle: _newBagRotation.value, child: child));
+                },
+                child: Image.asset("img/smartbag/flowpack.webp"),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Column _buildMobile() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: Text.rich(
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: (widget.r.wp(100) * 0.06).clamp(22, 40), color: Colors.black.withAlpha(200)),
+            TextSpan(
+              children: [
+                TextSpan(text: "La opción ligera, versátil y económica para productos de "),
+                TextSpan(text: "alto rendimiento.", style: TextStyle(color: widget.green)),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        GestureDetector(
+          onTap: () {
+            navigateWithSlide(context, widget.route);
+          },
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  "Elige Flowpack Smart",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: (widget.r.wp(100) * 0.03).clamp(18, 26), color: Colors.black),
+                ),
+                SizedBox(width: 5),
+
+                Icon(CupertinoIcons.arrow_right, color: widget.green),
+              ],
+            ),
+          ),
+        ),
+
+        Stack(
+          children: [
+            // Primera bolsa (entrada y salida)
+            Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: AnimatedBuilder(
+                animation: Listenable.merge([_controller, _secondaryController]),
+                builder: (context, child) {
+                  Widget transformed = Transform.translate(
+                    offset: _positionAnim.value * 300,
+                    child: Transform.rotate(angle: _rotationAnim.value, child: Transform.scale(scale: _scaleAnim.value, child: child)),
+                  );
+
+                  if (_secondaryController.status != AnimationStatus.dismissed) {
+                    transformed = Transform.translate(offset: _slideAnim.value * 300, child: transformed);
+                  }
+
+                  // Solo mostrar mientras no se haya activado la nueva bolsa
+                  return _newBagController.status == AnimationStatus.dismissed ? transformed : const SizedBox.shrink();
+                },
+                child: Image.asset("img/smartbag/flowpack/flowpack_blanco.webp"),
+              ),
+            ),
+
+            // Segunda bolsa (la que aparece al final)
+            Padding(
+              padding: const EdgeInsets.only(top: 20),
+
+              child: AnimatedBuilder(
+                animation: _newBagController,
+                builder: (context, child) {
+                  if (_newBagController.status == AnimationStatus.dismissed && _secondaryController.isCompleted) {
+                    return const SizedBox.shrink();
+                  }
+
+                  return Transform.translate(offset: _newBagSlide.value * 300, child: Transform.rotate(angle: _newBagRotation.value, child: child));
+                },
+                child: Image.asset("img/smartbag/flowpack.webp"),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

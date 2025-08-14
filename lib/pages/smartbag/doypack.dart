@@ -1,50 +1,54 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'package:webpack/class/categories.dart';
+import 'package:webpack/main.dart';
 import 'package:webpack/utils/buttonarrow.dart';
+import 'package:webpack/utils/responsive.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
 import 'package:webpack/widgets/scrollopacity.dart';
 import 'package:webpack/widgets/video.dart';
 
 class DoypackSmart extends StatelessWidget {
-  const DoypackSmart({super.key});
+  final Responsive r;
+  final Subcategorie subcategorie;
+  const DoypackSmart({super.key, required this.r, required this.subcategorie});
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    final isMobile = screenWidth < 850;
+    final isMobile = r.wp(100) < 850;
     final blue = Theme.of(context).primaryColor;
+    final route = '${subcategorie.route}/crea-tu-empaque';
 
     return CustomScrollView(
       slivers: [
-        SliverToStart(screenHeight: screenHeight, screenWidth: screenWidth, blue: blue),
-        SliverInfoDoypack(screenWidth: screenWidth, isMobile: isMobile),
-        SliverWithGramaje(isMobile: isMobile, screenWidth: screenWidth, blue: blue),
-        SliverWithMoreInfoDoypack(screenWidth: screenWidth, blue: blue, isMobile: isMobile),
-        SliverWithDeclaracionDeExcelencia(isMobile: isMobile, screenWidth: screenWidth, blue: blue),
-        SliverWithVentanaInfo(blue: blue, screenWidth: screenWidth, isMobile: isMobile),
-        SliverWithResumen(screenWidth: screenWidth, isMobile: isMobile, blue: blue),
+        IntroDoypackSliver(r: r, blue: blue, isMobile: isMobile, route: route),
+        InformationDoypackSliver(r: r, isMobile: isMobile),
+        WeightSliver(isMobile: isMobile, r: r, blue: blue),
+        ZipperAndValveSliver(r: r, blue: blue, isMobile: isMobile),
+        DeclarationOfExcellenceSliver(isMobile: isMobile, r: r, blue: blue),
+        InformationWindowSliver(blue: blue, r: r, isMobile: isMobile),
+        SummarySliver(r: r, isMobile: isMobile, blue: blue, route: route),
         SliverToBoxAdapter(child: Footer()),
       ],
     );
   }
 }
 
-//Inicio de la doypack
-class SliverToStart extends StatefulWidget {
-  const SliverToStart({super.key, required this.screenHeight, required this.screenWidth, required this.blue});
-
-  final double screenHeight;
-  final double screenWidth;
+//---------Inicio de Doypack------------
+class IntroDoypackSliver extends StatefulWidget {
+  const IntroDoypackSliver({super.key, required this.r, required this.blue, required this.isMobile, required this.route});
+  final Responsive r;
   final Color blue;
+  final bool isMobile;
+  final String route;
 
   @override
-  State<SliverToStart> createState() => _SliverToStartState();
+  State<IntroDoypackSliver> createState() => _IntroDoypackSliverState();
 }
 
-class _SliverToStartState extends State<SliverToStart> with TickerProviderStateMixin {
+class _IntroDoypackSliverState extends State<IntroDoypackSliver> with TickerProviderStateMixin {
   //Inicio
   final String text = "Doypack";
   late final List<AnimationController> _controllers = [];
@@ -103,17 +107,17 @@ class _SliverToStartState extends State<SliverToStart> with TickerProviderStateM
     }
 
     // Espera un momento y luego lanza la cubierta
-    await Future.delayed(const Duration(milliseconds: 600));
+    await Future.delayed(const Duration(milliseconds: 200));
     _coverController.forward();
 
     await _coverController.forward();
 
-    await Future.delayed(const Duration(milliseconds: 400)); // pequeño espacio
+    await Future.delayed(const Duration(milliseconds: 200)); // pequeño espacio
     _doypackController.forward();
 
     await _doypackController.forward();
 
-    await Future.delayed(const Duration(milliseconds: 200)); // pequeño espacio
+    await Future.delayed(const Duration(milliseconds: 400)); // pequeño espacio
     _buttonController.forward();
   }
 
@@ -134,8 +138,8 @@ class _SliverToStartState extends State<SliverToStart> with TickerProviderStateM
       child: Container(
         decoration: BoxDecoration(),
         clipBehavior: Clip.antiAlias,
-        height: widget.screenHeight + 25,
-        width: widget.screenWidth,
+        height: widget.r.hp(100),
+        width: widget.r.wp(100),
         child: Stack(
           alignment: Alignment.center,
           children: [
@@ -147,34 +151,30 @@ class _SliverToStartState extends State<SliverToStart> with TickerProviderStateM
                   position: _slideAnimations[index],
                   child: FadeTransition(
                     opacity: _fadeAnimations[index],
-                    child: Text(text[index], style: TextStyle(fontSize: (widget.screenWidth * 0.1).clamp(40, 70), fontWeight: FontWeight.bold)),
+                    child: Text(text[index], style: TextStyle(fontSize: widget.r.fs(4, 70), fontWeight: FontWeight.bold)),
                   ),
                 );
               }),
             ),
             //Texto después de video
             Positioned(
-              bottom: 0,
+              bottom: widget.r.hp(2),
               left: 0,
               right: 0,
               child: FadeTransition(
                 opacity: _buttonFade,
                 child: Column(
                   children: [
-                    Text(
-                      "Exclusiva para tí.",
-                      style: TextStyle(fontWeight: FontWeight.bold, color: widget.blue, fontSize: (widget.screenWidth * 0.06).clamp(20, 30)),
-                    ),
+                    Text("Exclusiva para tí.", style: TextStyle(fontWeight: FontWeight.bold, color: widget.blue, fontSize: widget.r.fs(2, 30))),
                     SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        navigateWithSlide(context, widget.route);
+                      },
                       style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(widget.blue), foregroundColor: WidgetStatePropertyAll(Colors.white)),
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 10),
-                        child: Text(
-                          "Crear mi doypack",
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: (widget.screenHeight * 0.025).clamp(16, 22)),
-                        ),
+                        child: Text("Crear mi doypack", style: TextStyle(fontWeight: FontWeight.bold)),
                       ),
                     ),
                   ],
@@ -185,28 +185,24 @@ class _SliverToStartState extends State<SliverToStart> with TickerProviderStateM
             SlideTransition(
               position: _coverSlide,
               child: SizedBox(
-                height: widget.screenHeight + 25,
-                width: widget.screenWidth,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: SizedBox(
-                    width: double.infinity,
-
-                    child: ValueListenableBuilder<bool>(
-                      valueListenable: videoBlurNotifier,
-                      builder: (context, isBlur, _) {
-                        return VideoFlutter(
-                          src: 'assets/videos/smartbag/doypack/inicio_doypack.webm',
-                          blur: isBlur,
-                          loop: false,
-                          showControls: false,
-                          isPause: false,
-                          fit: BoxFit.cover,
-                        );
-                      },
-                    ),
-                  ),
-                ),
+                height: widget.r.hp(100),
+                width: widget.r.wp(100),
+                child:
+                    widget.isMobile
+                        ? Image.asset("img/smartbag/doypack/inicio.webp")
+                        : ValueListenableBuilder<bool>(
+                          valueListenable: videoBlurNotifier,
+                          builder: (context, isBlur, _) {
+                            return VideoFlutter(
+                              src: 'assets/videos/smartbag/doypack/inicio_doypack.webm',
+                              blur: isBlur,
+                              loop: false,
+                              showControls: false,
+                              isPause: false,
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        ),
               ),
             ),
           ],
@@ -216,18 +212,18 @@ class _SliverToStartState extends State<SliverToStart> with TickerProviderStateM
   }
 }
 
-//Sliver con la información
-class SliverInfoDoypack extends StatefulWidget {
-  const SliverInfoDoypack({super.key, required this.screenWidth, required this.isMobile});
+//---------Información acerca de la doypack------------
+class InformationDoypackSliver extends StatefulWidget {
+  const InformationDoypackSliver({super.key, required this.r, required this.isMobile});
 
-  final double screenWidth;
+  final Responsive r;
   final bool isMobile;
 
   @override
-  State<SliverInfoDoypack> createState() => _SliverInfoDoypackState();
+  State<InformationDoypackSliver> createState() => _InformationDoypackSliverState();
 }
 
-class _SliverInfoDoypackState extends State<SliverInfoDoypack> {
+class _InformationDoypackSliverState extends State<InformationDoypackSliver> {
   final ScrollController _scrollController = ScrollController();
   bool canScrollLeft = false;
   bool canScrollRight = true;
@@ -283,129 +279,111 @@ class _SliverInfoDoypackState extends State<SliverInfoDoypack> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ScrollAnimatedWrapper(
-              visibilityKey: Key('sello-perfecto-doypack'),
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.06),
-                child: Text(
-                  "Sello perfecto. Estilo Doypack.",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: (widget.screenWidth * 0.09).clamp(30, 50)),
-                ),
+                padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6)),
+                child: Text("Sello perfecto. Estilo Doypack.", style: TextStyle(fontWeight: FontWeight.bold, fontSize: widget.r.fs(3, 50))),
               ),
             ),
 
-            ScrollAnimatedWrapper(
-              visibilityKey: Key('Scroll-doypack'),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                controller: _scrollController,
-                child: Row(
-                  children: List.generate(nuestraDoypack.length, (int index) {
-                    final card = nuestraDoypack[index];
-                    final double horizontalPadding = widget.screenWidth * 0.06;
-                    return Padding(
-                      padding: EdgeInsets.only(
-                        left: index == 0 ? horizontalPadding : 0,
-                        right: index == nuestraDoypack.length - 1 ? horizontalPadding : 20,
-                      ),
-                      child: Container(
-                        width: widget.isMobile ? 450 : (widget.screenWidth * 0.6).clamp(650, 1200),
-                        height: widget.isMobile ? 700 : (widget.screenWidth * 0.1).clamp(500, 900),
-                        // padding: EdgeInsets.only(top: 22, left: 22),
-                        margin: EdgeInsets.only(top: 20, bottom: 20, right: 20),
-                        decoration: BoxDecoration(
-                          color: Colors.amber,
-                          borderRadius: BorderRadius.circular(26),
-                          // image: DecorationImage(image: AssetImage(card['image']), fit: BoxFit.cover),
-                        ),
-                        child: Stack(
-                          children: [
-                            if (!card['isVideo'])
-                              Positioned.fill(
-                                child: ClipRRect(borderRadius: BorderRadius.circular(26), child: Image.asset(card['image'], fit: BoxFit.cover)),
-                              ),
-                            if (card['isVideo'])
-                              Positioned.fill(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(26),
-                                  child: VideoFlutter(
-                                    src: card['video'],
-                                    loop: false,
-                                    autoplay: true,
-                                    isPause: false,
-                                    retry: true,
-                                    showControls: false,
-                                    fit: BoxFit.cover,
-                                  ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              controller: _scrollController,
+              child: Row(
+                children: List.generate(nuestraDoypack.length, (int index) {
+                  final card = nuestraDoypack[index];
+                  return Padding(
+                    padding: EdgeInsets.only(left: index == 0 ? widget.r.wp(6) : 0, right: index == nuestraDoypack.length - 1 ? widget.r.wp(6) : 20),
+                    child: Container(
+                      width: widget.r.wp(80, max: 1000),
+                      height: widget.r.wp(60, max: 500),
+                      margin: EdgeInsets.only(top: 20, bottom: 20, right: 20),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+                      child: Stack(
+                        children: [
+                          if (!card['isVideo'])
+                            Positioned.fill(
+                              child: ClipRRect(borderRadius: BorderRadius.circular(26), child: Image.asset(card['image'], fit: BoxFit.cover)),
+                            ),
+                          if (card['isVideo'])
+                            Positioned.fill(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(26),
+                                child: VideoFlutter(
+                                  src: card['video'],
+                                  loop: false,
+                                  autoplay: true,
+                                  isPause: false,
+                                  retry: true,
+                                  showControls: false,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 22, left: 22),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 2,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(left: widget.screenWidth * 0.02, top: widget.screenWidth * 0.01),
-                                          child: Text(
-                                            card['title'],
-                                            style: TextStyle(
-                                              height: 0,
-                                              color: card['colorText'] ?? Colors.white,
-                                              fontSize: (widget.screenWidth * 0.04).clamp(16, 24),
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                            ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 22, left: 22),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(left: widget.r.dp(1, max: 20), top: widget.r.dp(1, max: 20)),
+                                        child: Text(
+                                          card['title'],
+                                          style: TextStyle(
+                                            height: 0,
+                                            color: card['colorText'] ?? Colors.white,
+                                            fontSize: widget.r.fs(1.8, 22),
+                                            fontWeight: FontWeight.bold,
+                                            shadows: [Shadow(offset: Offset(0, 0), blurRadius: 6, color: Colors.black.withAlpha(130))],
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                  Expanded(flex: 1, child: SizedBox(width: 100)),
-                                ],
-                              ),
+                                ),
+                                Expanded(flex: 1, child: SizedBox(width: 100)),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    );
-                  }),
-                ),
+                    ),
+                  );
+                }),
               ),
             ),
-            ScrollAnimatedWrapper(
-              visibilityKey: Key('buttons-scroll'),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.06, vertical: 40),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    ArrowButton(
-                      enabled: canScrollLeft,
-                      icon: CupertinoIcons.chevron_left,
-                      onTap: () {
-                        _scrollController.animateTo(
-                          _scrollController.offset - (widget.screenWidth * 0.6),
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
-                      },
-                    ),
-                    const SizedBox(width: 20),
-                    ArrowButton(
-                      enabled: canScrollRight,
-                      icon: CupertinoIcons.chevron_right,
-                      onTap: () {
-                        _scrollController.animateTo(
-                          _scrollController.offset + (widget.screenWidth * 0.6),
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
-                      },
-                    ),
-                  ],
-                ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6), vertical: 40),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ArrowButton(
+                    enabled: canScrollLeft,
+                    icon: CupertinoIcons.chevron_left,
+                    onTap: () {
+                      _scrollController.animateTo(
+                        _scrollController.offset - widget.r.wp(60),
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    },
+                  ),
+                  const SizedBox(width: 20),
+                  ArrowButton(
+                    enabled: canScrollRight,
+                    icon: CupertinoIcons.chevron_right,
+                    onTap: () {
+                      _scrollController.animateTo(
+                        _scrollController.offset + widget.r.wp(60),
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
           ],
@@ -415,19 +393,19 @@ class _SliverInfoDoypackState extends State<SliverInfoDoypack> {
   }
 }
 
-//Sliver con los gramajes
-class SliverWithGramaje extends StatefulWidget {
-  const SliverWithGramaje({super.key, required this.isMobile, required this.screenWidth, required this.blue});
+//---------Video, imagen con la demostracion del tamaño------------
+class WeightSliver extends StatefulWidget {
+  const WeightSliver({super.key, required this.isMobile, required this.r, required this.blue});
 
   final bool isMobile;
-  final double screenWidth;
+  final Responsive r;
   final Color blue;
 
   @override
-  State<SliverWithGramaje> createState() => _SliverWithGramajeState();
+  State<WeightSliver> createState() => _WeightSliverState();
 }
 
-class _SliverWithGramajeState extends State<SliverWithGramaje> {
+class _WeightSliverState extends State<WeightSliver> {
   int selectedIndex = 0;
   final List<Map<String, String>> options = [
     {"text": "500Gr", "video": "assets/videos/smartbag/doypack/rotacion1.webm"},
@@ -446,176 +424,43 @@ class _SliverWithGramajeState extends State<SliverWithGramaje> {
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: widget.isMobile ? 100 : 150, horizontal: widget.screenWidth * 0.06),
+        padding: EdgeInsets.symmetric(vertical: widget.r.hp(1, max: 30), horizontal: widget.r.wp(6)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ScrollAnimatedWrapper(
-              visibilityKey: Key('varios-tamaños-doypack'),
               child: Text(
                 "Varios tamaños.",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: (widget.screenWidth * 0.08).clamp(50, 80)),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: widget.r.fs(5, 80)),
                 textAlign: TextAlign.center,
               ),
             ),
             ScrollAnimatedWrapper(
-              visibilityKey: Key('Capacidades-increibles'),
               child: Text(
                 "Capacidades increbiles.",
-                style: TextStyle(fontWeight: FontWeight.bold, color: widget.blue, fontSize: (widget.screenWidth * 0.08).clamp(50, 80)),
+                style: TextStyle(fontWeight: FontWeight.bold, color: widget.blue, fontSize: widget.r.fs(5, 80)),
                 textAlign: TextAlign.center,
               ),
             ),
+            ScrollAnimatedWrapper(visibilityKey: Key('video-imagen-tamano'), child: widget.isMobile ? _buildMobile() : _buildDesktop()),
             ScrollAnimatedWrapper(
-              visibilityKey: Key('video-imagen-tamano'),
-              child:
-                  widget.isMobile
-                      ? Column(
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(top: 50),
-                                width: (widget.screenWidth * 0.6).clamp(0, 800),
-                                height: (widget.screenWidth * 0.6).clamp(0, 800),
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(image: AssetImage("img/smartbag/doypack/twobags1.webp")),
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Container(
-                                width: (widget.screenWidth * 0.6).clamp(0, 800),
-                                height: (widget.screenWidth * 0.6).clamp(0, 800),
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(image: AssetImage("img/smartbag/doypack/twobags2.webp")),
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      )
-                      : Column(
-                        children: [
-                          // Nueva implementación con Stack + Visibility + GlobalKey + autoplay: true solo en seleccionado, isPause: false solo en seleccionado
-                          Container(
-                            margin: EdgeInsets.symmetric(vertical: 50),
-                            width: (widget.screenWidth * 0.6).clamp(0, 800),
-                            height: (widget.screenWidth * 0.6).clamp(0, 800),
-                            child: Stack(
-                              children: List.generate(options.length, (index) {
-                                return Visibility(
-                                  visible: selectedIndex == index,
-                                  maintainState: true,
-                                  maintainAnimation: true,
-                                  maintainSize: true,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(16),
-                                    child: VideoFlutter(
-                                      key: _videoKeys[index],
-                                      src: options[index]['video']!,
-                                      loop: false,
-                                      autoplay: true,
-                                      delay: Duration.zero,
-                                      isPause: false,
-                                      showControls: false,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                );
-                              }),
-                            ),
-                          ),
-                          Container(
-                            height: 40,
-                            width: 250,
-                            margin: EdgeInsets.symmetric(vertical: 50),
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: Colors.grey.shade300),
-                            child: Stack(
-                              children: [
-                                AnimatedAlign(
-                                  duration: const Duration(milliseconds: 600),
-                                  curve: Curves.fastLinearToSlowEaseIn,
-                                  alignment: selectedIndex == 0 ? Alignment.centerLeft : Alignment.centerRight,
-                                  child: Container(
-                                    width: 125,
-                                    height: 40,
-                                    decoration: BoxDecoration(color: widget.blue, borderRadius: BorderRadius.circular(30)),
-                                  ),
-                                ),
-                                Row(
-                                  children: List.generate(options.length, (index) {
-                                    return Expanded(
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          final previousIndex = selectedIndex;
-
-                                          setState(() {
-                                            selectedIndex = index;
-                                          });
-
-                                          // Reinicia el video anterior en segundo plano
-                                          final prevVideo = _videoKeys[previousIndex].currentState;
-                                          if (prevVideo != null) {
-                                            prevVideo.pause();
-                                            prevVideo.seekToStart();
-                                          }
-
-                                          // Espera y luego reproduce el nuevo
-                                          Future.delayed(Duration(milliseconds: 20), () {
-                                            final newVideo = _videoKeys[index].currentState;
-                                            if (newVideo != null) {
-                                              newVideo.play();
-                                            }
-                                          });
-                                        },
-                                        child: Center(
-                                          child: MouseRegion(
-                                            cursor: SystemMouseCursors.click,
-                                            child: Text(
-                                              options[index]['text']!,
-                                              style: TextStyle(
-                                                color: selectedIndex == index ? Colors.white : Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-            ),
-            ScrollAnimatedWrapper(
-              visibilityKey: Key('dispnible-en-gramajes-doypack'),
-              child: SizedBox(
-                width: 1000,
-                child: Text.rich(
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black.withAlpha(190),
-                    fontSize: (widget.screenWidth * 0.04).clamp(20, 28),
-                  ),
-                  TextSpan(
-                    children: [
-                      TextSpan(text: "Disponible en "),
-                      TextSpan(text: "125, 250, 500, 1000 y 2500 gramos, ", style: TextStyle(color: widget.blue)),
-                      TextSpan(
-                        text:
-                            "el empaque Doypack se adapta perfectamente a lo que necesites. Con acabados mate o brillante, cada presentación ofrece una experiencia visual impecable y funcional, pensada para destacar tu producto con estilo.",
-                      ),
-                    ],
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: widget.isMobile ? 60 : 100),
+                child: SizedBox(
+                  width: widget.r.wp(100, max: 1000),
+                  child: Text.rich(
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.black.withAlpha(190), fontSize: widget.r.fs(2, 26)),
+                    TextSpan(
+                      children: [
+                        TextSpan(text: "Disponible en "),
+                        TextSpan(text: "125, 250, 500, 1000 y 2500 gramos, ", style: TextStyle(color: widget.blue, fontWeight: FontWeight.bold)),
+                        TextSpan(
+                          text:
+                              "el empaque Doypack se adapta perfectamente a lo que necesites. Con acabados mate o brillante, cada presentación ofrece una experiencia visual impecable y funcional, pensada para destacar tu producto con estilo.",
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -625,21 +470,137 @@ class _SliverWithGramajeState extends State<SliverWithGramaje> {
       ),
     );
   }
+
+  Column _buildDesktop() {
+    return Column(
+      children: [
+        Container(
+          margin: EdgeInsets.symmetric(vertical: 20),
+          width: widget.r.wp(60, max: 800),
+          height: widget.r.wp(60, max: 800),
+          child: Stack(
+            children: List.generate(options.length, (index) {
+              return Visibility(
+                visible: selectedIndex == index,
+                maintainState: true,
+                maintainAnimation: true,
+                maintainSize: true,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: VideoFlutter(
+                    key: _videoKeys[index],
+                    src: options[index]['video']!,
+                    loop: false,
+                    autoplay: true,
+                    delay: Duration.zero,
+                    isPause: false,
+                    showControls: false,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              );
+            }),
+          ),
+        ),
+        Container(
+          height: 40,
+          width: 250,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: Colors.grey.shade300),
+          child: Stack(
+            children: [
+              AnimatedAlign(
+                duration: const Duration(milliseconds: 600),
+                curve: Curves.fastLinearToSlowEaseIn,
+                alignment: selectedIndex == 0 ? Alignment.centerLeft : Alignment.centerRight,
+                child: Container(width: 125, height: 40, decoration: BoxDecoration(color: widget.blue, borderRadius: BorderRadius.circular(30))),
+              ),
+              Row(
+                children: List.generate(options.length, (index) {
+                  return Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        final previousIndex = selectedIndex;
+
+                        setState(() {
+                          selectedIndex = index;
+                        });
+
+                        // Reinicia el video anterior en segundo plano
+                        final prevVideo = _videoKeys[previousIndex].currentState;
+                        if (prevVideo != null) {
+                          prevVideo.pause();
+                          prevVideo.seekToStart();
+                        }
+
+                        // Espera y luego reproduce el nuevo
+                        Future.delayed(Duration(milliseconds: 20), () {
+                          final newVideo = _videoKeys[index].currentState;
+                          if (newVideo != null) {
+                            newVideo.play();
+                          }
+                        });
+                      },
+                      child: Center(
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: Text(
+                            options[index]['text']!,
+                            style: TextStyle(color: selectedIndex == index ? Colors.white : Colors.black, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Padding _buildMobile() {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: widget.r.hp(2, max: 30)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+              width: widget.r.wp(60, max: 300),
+              height: widget.r.wp(60, max: 800),
+              decoration: BoxDecoration(image: DecorationImage(image: AssetImage("img/smartbag/doypack/twobags1.webp"))),
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Container(
+              width: widget.r.wp(60, max: 300),
+              height: widget.r.wp(60, max: 800),
+              decoration: BoxDecoration(image: DecorationImage(image: AssetImage("img/smartbag/doypack/twobags2.webp"))),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-//Sliver con las bolsas subiendo
-class SliverWithMoreInfoDoypack extends StatefulWidget {
-  const SliverWithMoreInfoDoypack({super.key, required this.screenWidth, required this.blue, required this.isMobile});
+//---------Información de la estructura------------
+class ZipperAndValveSliver extends StatefulWidget {
+  const ZipperAndValveSliver({super.key, required this.r, required this.blue, required this.isMobile});
 
-  final double screenWidth;
+  final Responsive r;
   final Color blue;
   final bool isMobile;
 
   @override
-  State<SliverWithMoreInfoDoypack> createState() => _SliverWithMoreInfoDoypackState();
+  State<ZipperAndValveSliver> createState() => _ZipperAndValveSliverState();
 }
 
-class _SliverWithMoreInfoDoypackState extends State<SliverWithMoreInfoDoypack> with TickerProviderStateMixin {
+class _ZipperAndValveSliverState extends State<ZipperAndValveSliver> with TickerProviderStateMixin {
   late AnimationController _controller;
   late AnimationController _controller3;
 
@@ -697,42 +658,36 @@ class _SliverWithMoreInfoDoypackState extends State<SliverWithMoreInfoDoypack> w
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ScrollAnimatedWrapper(
-            visibilityKey: Key('smartbag-doypack-blue'),
-            child: Text(
-              textAlign: TextAlign.center,
-              "SmartBag® Doypack.",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: (widget.screenWidth * 0.09).clamp(28, 60), color: widget.blue),
-            ),
-          ),
-          ScrollAnimatedWrapper(
-            visibilityKey: Key('elegante-funcional-doypoack'),
-            child: Text(
-              textAlign: TextAlign.center,
-              "Elegante, funcional, versátil.",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: (widget.screenWidth * 0.09).clamp(28, 60)),
-            ),
-          ),
-          ScrollAnimatedWrapper(
-            visibilityKey: Key('con-una-estrucutra-doypack'),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.06, vertical: 10),
+              padding: EdgeInsets.symmetric(vertical: widget.r.hp(2, max: 20)),
+              child: Text.rich(
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: widget.r.fs(4, 60)),
+                TextSpan(
+                  children: [
+                    TextSpan(text: "SmartBag® Doypack.\n", style: TextStyle(color: widget.blue)),
+                    TextSpan(text: "Elegante, funcional, versátil."),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          ScrollAnimatedWrapper(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6), vertical: 10),
               child: SizedBox(
                 width: 1000,
                 child: Text.rich(
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black.withAlpha(200),
-                    fontSize: (widget.screenWidth * 0.04).clamp(18, 22),
-                  ),
-
+                  style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black.withAlpha(200), fontSize: widget.r.fs(1.9, 22)),
                   TextSpan(
                     children: [
                       TextSpan(
                         text:
                             "Con una estructura de 132 g/m², disponible en acabados mate o brillante, y capacidades desde 125 g hasta 2.5 kg, ofrece la ",
                       ),
-                      TextSpan(text: "combinación perfecta entre resistencia, estética y funcionalidad. ", style: TextStyle(color: widget.blue)),
+                      TextSpan(text: "combinación perfecta entre resistencia, estética y funcionalidad.\n\n", style: TextStyle(color: widget.blue)),
                       TextSpan(
                         text:
                             "Incluye opciones como válvula desgasificadora y zipper hermético, para que tu producto se conserve impecable y proyecte una imagen verdaderamente profesional.",
@@ -743,428 +698,347 @@ class _SliverWithMoreInfoDoypackState extends State<SliverWithMoreInfoDoypack> w
               ),
             ),
           ),
-          widget.isMobile
-              ? ScrollAnimatedWrapper(
-                visibilityKey: Key('el-cierre-que-tranf'),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.06, vertical: 100),
-                  child: Column(
-                    children: [
-                      Image.asset(height: 400, "img/smartbag/doypack/aloneBag.webp", fit: BoxFit.contain),
-                      const SizedBox(height: 24),
-                      Text.rich(
-                        TextSpan(
-                          style: TextStyle(
-                            fontSize: (widget.screenWidth * 0.022).clamp(20, 22),
-                            fontWeight: FontWeight.w400,
-                            height: 1.6,
-                            color: Colors.black87,
-                          ),
+          ScrollAnimatedWrapper(child: widget.isMobile ? _buildPhone() : _buildDesktop(context)),
+        ],
+      ),
+    );
+  }
+
+  Padding _buildDesktop(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 50),
+      child: Column(
+        children: [
+          VisibilityDetector(
+            key: const Key('smartbag-animation'),
+            onVisibilityChanged: (info) {
+              final visiblePercentage = info.visibleFraction;
+              if (!_hasAnimated && visiblePercentage >= 0.4) {
+                _hasAnimated = true;
+                Future.delayed(const Duration(milliseconds: 300), () {
+                  if (mounted) _controller.forward();
+                });
+              }
+            },
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: widget.r.wp(8)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Imagen con animación
+                    Expanded(
+                      flex: 5,
+                      child: AnimatedBuilder(
+                        animation: _controller,
+                        builder: (_, child) {
+                          return Transform.translate(
+                            offset: Offset(_offset.value.dx * 100, _offset.value.dy * 100),
+                            child: Transform.rotate(angle: _rotation.value, alignment: Alignment.topCenter, child: child),
+                          );
+                        },
+                        child: Image.asset("img/smartbag/doypack/aloneBag2.webp", fit: BoxFit.contain),
+                      ),
+                    ),
+
+                    const SizedBox(width: 40),
+
+                    // Texto con animación también (opcional)
+                    Expanded(
+                      flex: 5,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            TextSpan(text: "El cierre que transforma la experiencia.\n", style: TextStyle(fontWeight: FontWeight.w800)),
-                            TextSpan(text: "El "),
-                            TextSpan(text: "zipper hermético", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
-                            TextSpan(text: " de la "),
-                            TextSpan(text: "Smartbag Doypack", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
-                            TextSpan(text: " redefine la manera en que se conserva y presenta tu producto. Abre y cierra con facilidad, "),
-                            TextSpan(
-                              text: "manteniendo la frescura intacta una y otra vez.\n\n",
-                              style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500),
+                            Text(
+                              "Zipper inteligente.",
+                              style: TextStyle(fontSize: widget.r.fs(2, 28), fontWeight: FontWeight.w600, color: Theme.of(context).primaryColor),
                             ),
-                            TextSpan(text: "Diseñado para ser "),
-                            TextSpan(text: "práctico, confiable", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
-                            TextSpan(text: " y "),
-                            TextSpan(text: "visualmente limpio", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
-                            TextSpan(text: ", eleva la experiencia del usuario y proyecta una "),
-                            TextSpan(text: "imagen profesional", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
-                            TextSpan(text: " desde el primer contacto."),
+                            const SizedBox(height: 24),
+                            Text.rich(
+                              TextSpan(
+                                style: TextStyle(fontSize: widget.r.fs(1.9, 20), fontWeight: FontWeight.w400, height: 1.6, color: Colors.black87),
+                                children: [
+                                  TextSpan(text: "El cierre que transforma la experiencia.\n\n"),
+                                  TextSpan(text: "El "),
+                                  TextSpan(text: "zipper hermético", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
+                                  TextSpan(text: " de la "),
+                                  TextSpan(text: "Smartbag Doypack", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
+                                  TextSpan(text: " redefine la manera en que se conserva y presenta tu producto. Abre y cierra con facilidad, "),
+                                  TextSpan(
+                                    text: "manteniendo la frescura intacta una y otra vez.\n\n",
+                                    style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500),
+                                  ),
+                                  TextSpan(text: "Diseñado para ser "),
+                                  TextSpan(text: "práctico, confiable", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
+                                  TextSpan(text: " y "),
+                                  TextSpan(text: "visualmente limpio", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
+                                  TextSpan(text: ", eleva la experiencia del usuario y proyecta una "),
+                                  TextSpan(text: "imagen profesional", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
+                                  TextSpan(text: " desde el primer contacto."),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ),
-                      // const SizedBox(height: 50),
-                      //  Image.asset(height: 400, "img/smartbag/doypack/aloneBag.webp", fit: BoxFit.contain),
-                      const SizedBox(height: 24),
-                      Text.rich(
-                        TextSpan(
-                          style: TextStyle(
-                            fontSize: (widget.screenWidth * 0.022).clamp(20, 22),
-                            fontWeight: FontWeight.w400,
-                            height: 1.6,
-                            color: Colors.black87,
-                          ),
-                          children: [
-                            TextSpan(text: "Tecnología que respira contigo.\n", style: TextStyle(fontWeight: FontWeight.w800)),
-                            TextSpan(text: "La "),
-                            TextSpan(text: "válvula desgasificadora", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
-                            TextSpan(text: " permite la "),
-                            TextSpan(text: "liberación controlada de gases", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
-                            TextSpan(text: " sin dejar entrar oxígeno, "),
-                            TextSpan(
-                              text: "preservando la frescura del producto.",
-                              style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500),
-                            ),
-                            TextSpan(text: " Ideal para productos como café.\n\n"),
-                            TextSpan(text: "Además, su "),
-                            TextSpan(text: "diseño discreto", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
-                            TextSpan(text: " mantiene la "),
-                            TextSpan(text: "estética limpia", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
-                            TextSpan(text: " del empaque."),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-              : ScrollAnimatedWrapper(
-                visibilityKey: Key('el-cierre-que-tranf2'),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 30),
-                  child: Column(
-                    children: [
-                      VisibilityDetector(
-                        key: const Key('smartbag-animation'),
-                        onVisibilityChanged: (info) {
-                          final visiblePercentage = info.visibleFraction;
-                          if (!_hasAnimated && visiblePercentage >= 0.4) {
-                            _hasAnimated = true;
-                            Future.delayed(const Duration(milliseconds: 300), () {
-                              if (mounted) _controller.forward();
-                            });
-                          }
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 20),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.08),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                // Imagen con animación
-                                Expanded(
-                                  flex: 5,
-                                  child: AnimatedBuilder(
-                                    animation: _controller,
-                                    builder: (_, child) {
-                                      return Transform.translate(
-                                        offset: Offset(_offset.value.dx * 100, _offset.value.dy * 100),
-                                        child: Transform.rotate(
-                                          angle: _rotation.value,
-                                          alignment: Alignment.topCenter, // Punto central superior como eje de giro
-                                          child: child,
-                                        ),
-                                      );
-                                    },
-                                    child: Image.asset("img/smartbag/doypack/aloneBag2.webp", fit: BoxFit.contain),
-                                  ),
-                                ),
-
-                                const SizedBox(width: 40),
-
-                                // Texto con animación también (opcional)
-                                Expanded(
-                                  flex: 5,
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.06),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Text(
-                                              "Zipper ",
-                                              style: TextStyle(
-                                                fontSize: (widget.screenWidth * 0.03).clamp(22, 28),
-                                                fontWeight: FontWeight.w600,
-                                                color: Theme.of(context).primaryColor,
-                                              ),
-                                            ),
-                                            Text(
-                                              "inteligente",
-                                              style: TextStyle(
-                                                fontSize: (widget.screenWidth * 0.03).clamp(22, 28),
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 24),
-                                        Text.rich(
-                                          TextSpan(
-                                            style: TextStyle(
-                                              fontSize: (widget.screenWidth * 0.022).clamp(16, 20),
-                                              fontWeight: FontWeight.w400,
-                                              height: 1.6,
-                                              color: Colors.black87,
-                                            ),
-                                            children: [
-                                              TextSpan(text: "El cierre que transforma la experiencia.\n\n"),
-                                              TextSpan(text: "El "),
-                                              TextSpan(text: "zipper hermético", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
-                                              TextSpan(text: " de la "),
-                                              TextSpan(text: "Smartbag Doypack", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
-                                              TextSpan(
-                                                text: " redefine la manera en que se conserva y presenta tu producto. Abre y cierra con facilidad, ",
-                                              ),
-                                              TextSpan(
-                                                text: "manteniendo la frescura intacta una y otra vez.\n\n",
-                                                style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500),
-                                              ),
-                                              TextSpan(text: "Diseñado para ser "),
-                                              TextSpan(
-                                                text: "práctico, confiable",
-                                                style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500),
-                                              ),
-                                              TextSpan(text: " y "),
-                                              TextSpan(text: "visualmente limpio", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
-                                              TextSpan(text: ", eleva la experiencia del usuario y proyecta una "),
-                                              TextSpan(text: "imagen profesional", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
-                                              TextSpan(text: " desde el primer contacto."),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      VisibilityDetector(
-                        key: const Key('third-bag'),
-                        onVisibilityChanged: (info) {
-                          final visiblePercentage = info.visibleFraction;
-                          if (!_hasAnimated3 && visiblePercentage >= 0.4) {
-                            _hasAnimated3 = true;
-                            Future.delayed(const Duration(milliseconds: 300), () {
-                              if (mounted) _controller3.forward();
-                            });
-                          }
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 20),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.08),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  flex: 5,
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.06),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Text(
-                                              "Válvula ",
-                                              style: TextStyle(
-                                                fontSize: (widget.screenWidth * 0.03).clamp(22, 28),
-                                                fontWeight: FontWeight.w600,
-                                                color: Theme.of(context).primaryColor,
-                                              ),
-                                            ),
-                                            Text(
-                                              "inteligente",
-                                              style: TextStyle(
-                                                fontSize: (widget.screenWidth * 0.03).clamp(22, 28),
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 24),
-                                        Text.rich(
-                                          TextSpan(
-                                            style: TextStyle(
-                                              fontSize: (widget.screenWidth * 0.022).clamp(16, 20),
-                                              fontWeight: FontWeight.w400,
-                                              height: 1.6,
-                                              color: Colors.black87,
-                                            ),
-                                            children: [
-                                              TextSpan(text: "Tecnología que respira contigo.\n\n"),
-                                              TextSpan(text: "La "),
-                                              TextSpan(
-                                                text: "válvula desgasificadora",
-                                                style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500),
-                                              ),
-                                              TextSpan(text: " permite la "),
-                                              TextSpan(
-                                                text: "liberación controlada de gases",
-                                                style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500),
-                                              ),
-                                              TextSpan(text: " sin dejar entrar oxígeno, "),
-                                              TextSpan(
-                                                text: "preservando la frescura del producto.",
-                                                style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500),
-                                              ),
-                                              TextSpan(text: " Ideal para productos como café.\n\n"),
-                                              TextSpan(text: "Además, su "),
-                                              TextSpan(text: "diseño discreto", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
-                                              TextSpan(text: " mantiene la "),
-                                              TextSpan(text: "estética limpia", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
-                                              TextSpan(text: " del empaque."),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 40),
-
-                                // Imagen con animación
-                                Expanded(
-                                  flex: 5,
-                                  child: AnimatedBuilder(
-                                    animation: _controller3,
-                                    builder: (_, child) {
-                                      return Transform.translate(
-                                        offset: Offset(_offset3.value.dx * 100, _offset3.value.dy * 100),
-                                        child: Transform.rotate(
-                                          angle: _rotation3.value,
-                                          alignment: Alignment.topCenter, // Punto central superior como eje de giro
-                                          child: child,
-                                        ),
-                                      );
-                                    },
-                                    child: Image.asset("img/smartbag/doypack/aloneBag.webp", fit: BoxFit.contain),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
+            ),
+          ),
+
+          VisibilityDetector(
+            key: const Key('third-bag'),
+            onVisibilityChanged: (info) {
+              final visiblePercentage = info.visibleFraction;
+              if (!_hasAnimated3 && visiblePercentage >= 0.4) {
+                _hasAnimated3 = true;
+                Future.delayed(const Duration(milliseconds: 300), () {
+                  if (mounted) _controller3.forward();
+                });
+              }
+            },
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: widget.r.wp(8)),
+
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Válvula inteligente.",
+                              style: TextStyle(fontSize: widget.r.fs(2, 28), fontWeight: FontWeight.w600, color: Theme.of(context).primaryColor),
+                            ),
+                            const SizedBox(height: 24),
+                            Text.rich(
+                              TextSpan(
+                                style: TextStyle(fontSize: widget.r.fs(1.9, 20), fontWeight: FontWeight.w400, height: 1.6, color: Colors.black87),
+                                children: [
+                                  TextSpan(text: "Tecnología que respira contigo.\n\n"),
+                                  TextSpan(text: "La "),
+                                  TextSpan(text: "válvula desgasificadora", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
+                                  TextSpan(text: " permite la "),
+                                  TextSpan(text: "liberación controlada de gases", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
+                                  TextSpan(text: " sin dejar entrar oxígeno, "),
+                                  TextSpan(
+                                    text: "preservando la frescura del producto.",
+                                    style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500),
+                                  ),
+                                  TextSpan(text: " Ideal para productos como café.\n\n"),
+                                  TextSpan(text: "Además, su "),
+                                  TextSpan(text: "diseño discreto", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
+                                  TextSpan(text: " mantiene la "),
+                                  TextSpan(text: "estética limpia", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
+                                  TextSpan(text: " del empaque."),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 40),
+
+                    // Imagen con animación
+                    Expanded(
+                      flex: 5,
+                      child: AnimatedBuilder(
+                        animation: _controller3,
+                        builder: (_, child) {
+                          return Transform.translate(
+                            offset: Offset(_offset3.value.dx * 100, _offset3.value.dy * 100),
+                            child: Transform.rotate(
+                              angle: _rotation3.value,
+                              alignment: Alignment.topCenter, // Punto central superior como eje de giro
+                              child: child,
+                            ),
+                          );
+                        },
+                        child: Image.asset("img/smartbag/doypack/aloneBag.webp", fit: BoxFit.contain),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Padding _buildPhone() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6), vertical: 10),
+      child: Column(
+        children: [
+          Image.asset(height: 400, "img/smartbag/doypack/aloneBag.webp", fit: BoxFit.contain),
+          Text.rich(
+            TextSpan(
+              style: TextStyle(fontSize: widget.r.fs(1.8, 22), fontWeight: FontWeight.w400, height: 1.6, color: Colors.black87),
+              children: [
+                TextSpan(
+                  text: "El cierre que transforma la experiencia.\n",
+                  style: TextStyle(fontWeight: FontWeight.w800, fontSize: widget.r.fs(2.2, 26)),
+                ),
+                TextSpan(text: "El "),
+                TextSpan(text: "zipper hermético", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
+                TextSpan(text: " de la "),
+                TextSpan(text: "Smartbag Doypack", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
+                TextSpan(text: " redefine la manera en que se conserva y presenta tu producto. Abre y cierra con facilidad, "),
+                TextSpan(
+                  text: "manteniendo la frescura intacta una y otra vez.\n\n",
+                  style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500),
+                ),
+                TextSpan(text: "Diseñado para ser "),
+                TextSpan(text: "práctico, confiable", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
+                TextSpan(text: " y "),
+                TextSpan(text: "visualmente limpio", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
+                TextSpan(text: ", eleva la experiencia del usuario y proyecta una "),
+                TextSpan(text: "imagen profesional", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
+                TextSpan(text: " desde el primer contacto."),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          Image.asset(height: 400, "img/smartbag/doypack/aloneBag2.webp", fit: BoxFit.contain),
+          Text.rich(
+            TextSpan(
+              style: TextStyle(fontSize: widget.r.fs(1.8, 22), fontWeight: FontWeight.w400, height: 1.6, color: Colors.black87),
+              children: [
+                TextSpan(text: "Tecnología que respira contigo.\n", style: TextStyle(fontWeight: FontWeight.w800, fontSize: widget.r.fs(2.2, 26))),
+                TextSpan(text: "La "),
+                TextSpan(text: "válvula desgasificadora", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
+                TextSpan(text: " permite la "),
+                TextSpan(text: "liberación controlada de gases", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
+                TextSpan(text: " sin dejar entrar oxígeno, "),
+                TextSpan(text: "preservando la frescura del producto.", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
+                TextSpan(text: " Ideal para productos como café.\n\n"),
+                TextSpan(text: "Además, su "),
+                TextSpan(text: "diseño discreto", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
+                TextSpan(text: " mantiene la "),
+                TextSpan(text: "estética limpia", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w500)),
+                TextSpan(text: " del empaque."),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 }
 
-//Sliver con declaración de excelencia
-class SliverWithDeclaracionDeExcelencia extends StatelessWidget {
-  const SliverWithDeclaracionDeExcelencia({super.key, required this.isMobile, required this.screenWidth, required this.blue});
+//---------Declaración de Excelencia------------
+class DeclarationOfExcellenceSliver extends StatelessWidget {
+  const DeclarationOfExcellenceSliver({super.key, required this.isMobile, required this.r, required this.blue});
 
   final bool isMobile;
-  final double screenWidth;
+  final Responsive r;
   final Color blue;
 
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: isMobile ? 50 : 150),
+        padding: EdgeInsets.only(left: r.wp(6), right: r.wp(6), top: isMobile ? 50 : 100, bottom: isMobile ? 50 : 150),
         child: Center(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 50),
-            margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
-            width: 1200,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color: Colors.white,
-
-              boxShadow: [
-                BoxShadow(color: Color.fromRGBO(9, 30, 66, 0.25), blurRadius: 8, spreadRadius: -2, offset: Offset(0, 4)),
-                BoxShadow(color: Color.fromRGBO(9, 30, 66, 0.08), blurRadius: 0, spreadRadius: 1, offset: Offset(0, 0)),
-              ],
-            ),
-            child: ScrollAnimatedWrapper(
-              visibilityKey: Key('declaracion-de-excelencia-doyopack'),
-              child:
-                  isMobile
-                      ? Column(
-                        children: [
-                          Padding(padding: const EdgeInsets.all(8.0), child: Image.asset(height: 80, "img/BIsotipo.webp", fit: BoxFit.contain)),
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 20, horizontal: (screenWidth * 0.1).clamp(20, 50)),
-                            child: Text.rich(
-                              textAlign: TextAlign.center,
-                              TextSpan(
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black.withAlpha(150),
-                                  height: 1.2,
-                                  fontSize: (screenWidth * 0.05).clamp(16, 20),
-                                ),
-                                children: [
-                                  TextSpan(text: "PackVision Smartbag Doypack convierte cada empaque en una "),
-                                  TextSpan(
-                                    text: "declaración de excelencia. ",
-                                    style: TextStyle(color: blue.withAlpha(200), fontWeight: FontWeight.bold),
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        "Disponible en acabados mate, brillante o metalizado. Zipper hermético y válvula desgasificadora integrados para preservar frescura y calidad. Diseño funcional con materiales premium que protegen y elevan tu producto.",
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                      : Row(
-                        children: [
-                          Expanded(child: Padding(padding: const EdgeInsets.all(50), child: Image.asset("img/BIsotipo.webp"))),
-                          Expanded(
-                            flex: 2,
-
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 100),
-                              child: Text.rich(
-                                TextSpan(
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black.withAlpha(150),
-                                    height: 1.2,
-                                    fontSize: (screenWidth * 0.05).clamp(16, 20),
-                                  ),
-                                  children: [
-                                    TextSpan(text: "PackVision Smartbag Doypack convierte cada empaque en una "),
-                                    TextSpan(
-                                      text: "declaración de excelencia. ",
-                                      style: TextStyle(color: blue.withAlpha(200), fontWeight: FontWeight.bold),
-                                    ),
-                                    TextSpan(
-                                      text:
-                                          "Disponible en acabados mate, brillante o metalizado. Zipper hermético y válvula desgasificadora integrados para preservar frescura y calidad. Diseño funcional con materiales premium que protegen y elevan tu producto.",
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+          child: ScrollAnimatedWrapper(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: isMobile ? 0 : 20, vertical: 50),
+              width: 1200,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(color: Color.fromRGBO(9, 30, 66, 0.163), blurRadius: 8, spreadRadius: -2, offset: Offset(0, 4)),
+                  BoxShadow(color: Color.fromRGBO(9, 30, 66, 0.04), blurRadius: 0, spreadRadius: 1, offset: Offset(0, 0)),
+                ],
+              ),
+              child: isMobile ? _buildMobile() : _buildDesktop(),
             ),
           ),
         ),
       ),
     );
   }
+
+  Row _buildDesktop() {
+    return Row(
+      children: [
+        Expanded(child: Padding(padding: const EdgeInsets.all(50), child: Image.asset("img/BImagotipo.webp"))),
+        Expanded(
+          flex: 2,
+
+          child: Padding(
+            padding: const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 100),
+            child: Text.rich(
+              TextSpan(
+                style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black.withAlpha(150), height: 1.2, fontSize: r.fs(1.8, 20)),
+                children: [
+                  TextSpan(text: "PackVision Smartbag Doypack convierte cada empaque en una "),
+                  TextSpan(text: "declaración de excelencia. ", style: TextStyle(color: blue.withAlpha(200), fontWeight: FontWeight.bold)),
+                  TextSpan(
+                    text:
+                        "Disponible en acabados mate, brillante o metalizado. Zipper hermético y válvula desgasificadora integrados para preservar frescura y calidad. Diseño funcional con materiales premium que protegen y elevan tu producto.",
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Column _buildMobile() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(padding: const EdgeInsets.all(16), child: Image.asset(height: 200, "img/BImagotipo.webp", fit: BoxFit.contain)),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text.rich(
+            textAlign: TextAlign.center,
+            TextSpan(
+              style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black.withAlpha(150), height: 1.2, fontSize: r.fs(1.8, 20)),
+              children: [
+                TextSpan(text: "PackVision Smartbag Doypack convierte cada empaque en una "),
+                TextSpan(text: "declaración de excelencia. ", style: TextStyle(color: blue.withAlpha(200), fontWeight: FontWeight.bold)),
+                TextSpan(
+                  text:
+                      "Disponible en acabados mate, brillante o metalizado.\n\nZipper hermético y válvula desgasificadora integrados para preservar frescura y calidad. Diseño funcional con materiales premium que protegen y elevan tu producto.",
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
-//Sliver con la información de ventana
-class SliverWithVentanaInfo extends StatelessWidget {
-  const SliverWithVentanaInfo({super.key, required this.blue, required this.screenWidth, required this.isMobile});
+//---------Declaración información de la ventana------------
+class InformationWindowSliver extends StatelessWidget {
+  const InformationWindowSliver({super.key, required this.blue, required this.r, required this.isMobile});
 
   final Color blue;
-  final double screenWidth;
+  final Responsive r;
   final bool isMobile;
 
   @override
@@ -1174,235 +1048,201 @@ class SliverWithVentanaInfo extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 50),
         child: Column(
           children: [
+            ScrollAnimatedWrapper(child: Text("Ventana", style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: r.fs(5, 70)))),
+            SizedBox(height: 10),
             ScrollAnimatedWrapper(
-              visibilityKey: Key('Ventana-doypack'),
-              child: Text(
-                "Ventana",
-                style: TextStyle(fontWeight: FontWeight.bold, color: blue, fontSize: (screenWidth * 0.1).clamp(40, 70), height: 0.8),
-              ),
-            ),
-            ScrollAnimatedWrapper(
-              visibilityKey: Key('Revela-tu-escencia-doyapck'),
               child: Text(
                 textAlign: TextAlign.center,
                 "Revela tu esencia.\nY todo lo demás.",
-                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87, fontSize: (screenWidth * 0.1).clamp(40, 65), height: 0.95),
+                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87, fontSize: r.fs(4, 60), height: 0.98),
               ),
             ),
             ScrollAnimatedWrapper(
-              visibilityKey: Key('foto-video-revela-0tu-sad'),
-              child: Container(
-                margin: EdgeInsets.symmetric(vertical: 50),
-                height: 800,
-                width: screenWidth,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
-                child:
-                    isMobile
-                        ? Image.asset("img/smartbag/doypack/3ventanas.webp", fit: BoxFit.contain)
-                        : SizedBox(
-                          width: double.infinity,
-
-                          child: ValueListenableBuilder<bool>(
-                            valueListenable: videoBlurNotifier,
-                            builder: (context, isBlur, _) {
-                              return VideoFlutter(
-                                src: 'assets/videos/smartbag/doypack/Tresventanas.webm',
-                                blur: isBlur,
-                                loop: false,
-                                showControls: false,
-                                isPause: false,
-                                fit: BoxFit.contain,
-                              );
-                            },
-                          ),
+              child:
+                  isMobile
+                      ? Padding(
+                        padding: EdgeInsets.symmetric(vertical: r.hp(10, max: 50)),
+                        child: Image.asset("img/smartbag/doypack/3ventanas.webp", fit: BoxFit.cover, width: r.wp(100)),
+                      )
+                      : SizedBox(
+                        height: r.hp(90, max: 800),
+                        child: ValueListenableBuilder<bool>(
+                          valueListenable: videoBlurNotifier,
+                          builder: (context, isBlur, _) {
+                            return VideoFlutter(
+                              src: 'assets/videos/smartbag/doypack/Tresventanas.webm',
+                              blur: isBlur,
+                              loop: false,
+                              showControls: false,
+                              isPause: false,
+                              fit: BoxFit.cover,
+                            );
+                          },
                         ),
-              ),
+                      ),
             ),
-            Container(
-              width: 1000,
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
-              child: ScrollAnimatedWrapper(
-                visibilityKey: Key('Visibivilidad-interna-mas-icono'),
-                child:
-                    isMobile
-                        ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
 
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.remove_red_eye_outlined, size: 40),
-                                  SizedBox(width: 12),
-                                  Expanded(
-                                    child: Text.rich(
-                                      style: TextStyle(fontSize: 18),
-                                      TextSpan(
-                                        children: [
-                                          TextSpan(text: "Visibilidad interna ", style: TextStyle(fontWeight: FontWeight.w800)),
-                                          TextSpan(
-                                            text: "Tu producto a la vista, tal como es.",
-                                            style: TextStyle(color: Colors.black.withAlpha(200)),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 40),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.local_cafe_rounded, size: 40),
-                                  SizedBox(width: 12),
-                                  Expanded(
-                                    child: Text.rich(
-                                      style: TextStyle(fontSize: 18),
-                                      TextSpan(
-                                        children: [
-                                          TextSpan(text: "Ventana que enamora ", style: TextStyle(fontWeight: FontWeight.w800)),
-                                          TextSpan(
-                                            text: "Ideal para granos de café y más, muestra lo mejor desde el empaque.",
-                                            style: TextStyle(color: Colors.black.withAlpha(200)),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 40),
-
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
-
-                              child: Text.rich(
-                                textAlign: TextAlign.center,
-                                TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: "Diseñado para destacar tu producto desde el primer vistazo. ",
-                                      style: TextStyle(color: blue, fontWeight: FontWeight.bold),
-                                    ),
-                                    TextSpan(
-                                      text:
-                                          "Su ventana transparente revela el interior con elegancia, mientras que su estructura Doypack lo mantiene fresco y protegido. Ideal para cautivar, informar y conectar con tus clientes al instante.",
-                                    ),
-                                  ],
-                                ),
-                                style: TextStyle(fontSize: 18, height: 1.5),
-                              ),
-                            ),
-                          ],
-                        )
-                        : Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Columna de características con íconos
-                            Expanded(
-                              flex: 1,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // Primer ítem
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Icon(Icons.remove_red_eye_outlined, size: 40),
-                                      SizedBox(width: 12),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text("Visibilidad interna", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                                            SizedBox(height: 4),
-                                            Text("Tu producto a la vista, tal como es.", style: TextStyle(fontSize: 16, color: Colors.grey[700])),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 24),
-                                  // Segundo ítem
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Icon(Icons.local_cafe_rounded, size: 40),
-                                      SizedBox(width: 12),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text("Ventana que enamora", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                                            SizedBox(height: 4),
-                                            Text(
-                                              "Ideal para granos de café y más, muestra lo mejor desde el empaque.",
-                                              style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            SizedBox(width: 60),
-
-                            // Texto descriptivo
-                            Expanded(
-                              flex: 1,
-                              child: Text.rich(
-                                TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: "Diseñado para destacar tu producto desde el primer vistazo. ",
-                                      style: TextStyle(color: blue, fontWeight: FontWeight.bold),
-                                    ),
-                                    TextSpan(
-                                      text:
-                                          "Su ventana transparente revela el interior con elegancia, mientras que su estructura Doypack lo mantiene fresco y protegido. Ideal para cautivar, informar y conectar con tus clientes al instante.",
-                                    ),
-                                  ],
-                                ),
-                                style: TextStyle(fontSize: 18, height: 1.5),
-                              ),
-                            ),
-                          ],
-                        ),
-              ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: r.wp(6)),
+              child: SizedBox(width: r.wp(100, max: 1000), child: ScrollAnimatedWrapper(child: isMobile ? _buildPhone() : _buildDesktop())),
             ),
+            if (isMobile)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: r.wp(6)),
+                child: Text.rich(
+                  textAlign: TextAlign.center,
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: "Diseñado para destacar tu producto desde el primer vistazo. ",
+                        style: TextStyle(color: blue, fontWeight: FontWeight.bold),
+                      ),
+                      TextSpan(
+                        text:
+                            "Su ventana transparente revela el interior con elegancia, mientras que su estructura Doypack lo mantiene fresco y protegido. Ideal para cautivar, informar y conectar con tus clientes al instante.",
+                      ),
+                    ],
+                  ),
+                  style: TextStyle(fontSize: r.fs(2, 30), height: 1.5),
+                ),
+              ),
           ],
         ),
       ),
     );
   }
+
+  Padding _buildDesktop() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 50),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 1,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Primer ítem
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.remove_red_eye_outlined, size: 40),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Visibilidad interna", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 4),
+                          Text("Tu producto a la vista, tal como es.", style: TextStyle(fontSize: 16, color: Colors.grey[700])),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 24),
+                // Segundo ítem
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.local_cafe_rounded, size: 40),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Ventana que enamora", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 4),
+                          Text(
+                            "Ideal para granos de café y más, muestra lo mejor desde el empaque.",
+                            style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: r.wp(6)),
+
+              child: Text.rich(
+                textAlign: TextAlign.center,
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: "Diseñado para destacar tu producto desde el primer vistazo. ",
+                      style: TextStyle(color: blue, fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(
+                      text:
+                          "Su ventana transparente revela el interior con elegancia, mientras que su estructura Doypack lo mantiene fresco y protegido. Ideal para cautivar, informar y conectar con tus clientes al instante.",
+                    ),
+                  ],
+                ),
+                style: TextStyle(fontSize: 18, height: 1.5),
+              ),
+            ),
+          ),
+
+          SizedBox(width: 60),
+        ],
+      ),
+    );
+  }
+
+  Padding _buildPhone() {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: r.hp(7, max: 20)),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _buildLetterPhone("Visibilidad interna ", "Tu producto a la vista, tal como es.", Icons.remove_red_eye_outlined),
+          SizedBox(height: 40),
+          _buildLetterPhone("Ventana que enamora ", "Ideal para granos de café y más, muestra lo mejor desde el empaque.", Icons.coffee),
+          SizedBox(height: 50),
+        ],
+      ),
+    );
+  }
+
+  Row _buildLetterPhone(String title, String label, IconData icon) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, size: 40),
+        SizedBox(width: 12),
+        Expanded(
+          child: Text.rich(
+            style: TextStyle(fontSize: r.fs(1.9, 22)),
+            TextSpan(
+              children: [
+                TextSpan(text: title, style: TextStyle(fontWeight: FontWeight.w800)),
+                TextSpan(text: label, style: TextStyle(color: Colors.black.withAlpha(200))),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
-//Sliver con el resumen y final
-class SliverWithResumen extends StatefulWidget {
-  const SliverWithResumen({super.key, required this.screenWidth, required this.isMobile, required this.blue});
+//---------Final de doypack------------
+class SummarySliver extends StatelessWidget {
+  const SummarySliver({super.key, required this.r, required this.isMobile, required this.blue, required this.route});
 
-  final double screenWidth;
+  final Responsive r;
   final bool isMobile;
   final Color blue;
-
-  @override
-  State<SliverWithResumen> createState() => _SliverWithResumenState();
-}
-
-class _SliverWithResumenState extends State<SliverWithResumen> {
-  bool isHoverBuy = false;
+  final String route;
 
   @override
   Widget build(BuildContext context) {
@@ -1411,135 +1251,134 @@ class _SliverWithResumenState extends State<SliverWithResumen> {
         children: [
           Container(
             color: Colors.white,
-            width: widget.screenWidth,
+            width: r.wp(100),
             padding:
-                widget.isMobile
-                    ? EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.06, vertical: 100)
-                    : EdgeInsets.only(
-                      left: (widget.screenWidth * 0.2).clamp(30, widget.screenWidth),
-                      right: (widget.screenWidth * 0.4),
-                      top: 100,
-                      bottom: 100,
-                    ),
+                isMobile
+                    ? EdgeInsets.symmetric(horizontal: r.wp(6), vertical: 100)
+                    : EdgeInsets.only(left: r.wp(20), right: r.wp(40), top: 100, bottom: 100),
             child: SizedBox(
               width: 700,
               child: ScrollAnimatedWrapper(
-                visibilityKey: Key('todo=en-uno.ventana'),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Menos dudas.", style: TextStyle(fontWeight: FontWeight.bold, fontSize: (widget.screenWidth * 0.1).clamp(30, 60))),
-                    Text(
-                      "Más visibilidad.",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: (widget.screenWidth * 0.1).clamp(30, 60), color: widget.blue),
-                    ),
                     Text.rich(
-                      style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87, fontSize: (widget.screenWidth * 0.07).clamp(20, 25)),
-                      TextSpan(
-                        children: [
-                          TextSpan(text: "Todo en uno. Ventana ", style: TextStyle(color: widget.blue)),
-                          TextSpan(text: "que muestra "),
-                          TextSpan(text: "válvula ", style: TextStyle(color: widget.blue)),
-                          TextSpan(text: "que respira "),
-                          TextSpan(text: "zipper ", style: TextStyle(color: widget.blue)),
-                          TextSpan(text: "que conserva. "),
-                          TextSpan(text: "SmartBag combina funcionalidad y elegancia para elevar tu producto. El empaque que lo tiene todo. "),
-                        ],
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: r.fs(4.2, 60)),
+                      TextSpan(children: [TextSpan(text: "Menos dudas.\n"), TextSpan(text: "Más visibilidad.", style: TextStyle(color: blue))]),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        onEnter: (_) => setState(() => isHoverBuy = true),
-                        onExit: (_) => setState(() => isHoverBuy = false),
-                        child: GestureDetector(
-                          onTap: () {
-                            // Acción al hacer click
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Ir a crear mi doypack",
-                                style: TextStyle(
-                                  color: widget.blue,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: (widget.screenWidth * 0.05).clamp(20, 28),
-                                ),
-                              ),
-                              AnimatedContainer(
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.easeOut,
-                                height: 3,
-                                width: isHoverBuy ? (widget.screenWidth * 0.05).clamp(20, 20) * 15 : 0, // ajusta largo aquí
-                                color: widget.blue,
-                              ),
-                            ],
-                          ),
+                      child: Text.rich(
+                        style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87, fontSize: r.fs(2, 26)),
+                        TextSpan(
+                          children: [
+                            TextSpan(text: "Todo en uno. Ventana ", style: TextStyle(color: blue)),
+                            TextSpan(text: "que muestra "),
+                            TextSpan(text: "válvula ", style: TextStyle(color: blue)),
+                            TextSpan(text: "que respira "),
+                            TextSpan(text: "zipper ", style: TextStyle(color: blue)),
+                            TextSpan(text: "que conserva. "),
+                            TextSpan(text: "SmartBag combina funcionalidad y elegancia para elevar tu producto. El empaque que lo tiene todo. "),
+                          ],
                         ),
                       ),
                     ),
+                    _ButtonHover(blue: blue, r: r, route: route),
                   ],
                 ),
               ),
             ),
           ),
-          ScrollAnimatedWrapper(
-            visibilityKey: Key('foto-video-todo-en-una-venandas'),
-            child: Container(
-              color: Colors.white,
-              child: Padding(
-                padding: EdgeInsets.only(top: 50),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: widget.screenWidth,
-                      height: 600,
+          Container(
+            color: Colors.white,
+            child: Padding(
+              padding: EdgeInsets.only(top: isMobile ? 0 : 20),
+              child: SizedBox(
+                width: r.wp(100),
+                height: 600,
 
-                      child:
-                          widget.isMobile
-                              ? Image.asset("img/smartbag/doypack/cardsloop.webp", fit: BoxFit.cover)
-                              : SizedBox(
-                                width: double.infinity,
-
-                                child: ValueListenableBuilder<bool>(
-                                  valueListenable: videoBlurNotifier,
-                                  builder: (context, isBlur, _) {
-                                    return VideoFlutter(
-                                      src: 'assets/videos/smartbag/doypack/loop.webm',
-                                      blur: isBlur,
-                                      loop: false,
-                                      showControls: false,
-                                      isPause: false,
-                                      retry: true,
-                                      fit: BoxFit.cover,
-                                    );
-                                  },
-                                ),
-                              ),
-                    ),
-                  ],
-                ),
+                child:
+                    isMobile
+                        ? Image.asset("img/smartbag/doypack/cardsloop.webp", fit: BoxFit.cover)
+                        : ValueListenableBuilder<bool>(
+                          valueListenable: videoBlurNotifier,
+                          builder: (context, isBlur, _) {
+                            return VideoFlutter(
+                              src: 'assets/videos/smartbag/doypack/loop.webm',
+                              blur: isBlur,
+                              loop: false,
+                              showControls: false,
+                              isPause: false,
+                              retry: true,
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        ),
               ),
             ),
           ),
 
           ScrollAnimatedWrapper(
-            visibilityKey: Key('crear-mi-doypackpor'),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 50),
               child: ElevatedButton(
-                style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(widget.blue), foregroundColor: WidgetStatePropertyAll(Colors.white)),
-                onPressed: () {},
+                style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(blue), foregroundColor: WidgetStatePropertyAll(Colors.white)),
+                onPressed: () {
+                  navigateWithSlide(context, route);
+                },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-                  child: Text("Crear mi DoyPack", style: TextStyle(fontWeight: FontWeight.bold, fontSize: (widget.screenWidth * 0.06).clamp(18, 24))),
+                  child: Text("Crear mi DoyPack", style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ButtonHover extends StatefulWidget {
+  final Color blue;
+  final Responsive r;
+  final String route;
+  const _ButtonHover({required this.blue, required this.r, required this.route});
+
+  @override
+  State<_ButtonHover> createState() => __ButtonHoverState();
+}
+
+class __ButtonHoverState extends State<_ButtonHover> {
+  bool isHoverBuy = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: GestureDetector(
+        onTap: () {
+          navigateWithSlide(context, widget.route);
+        },
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          onEnter: (_) => setState(() => isHoverBuy = true),
+          onExit: (_) => setState(() => isHoverBuy = false),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Ir a crear mi doypack", style: TextStyle(color: widget.blue, fontWeight: FontWeight.w600, fontSize: widget.r.fs(1.8, 24))),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOut,
+                height: 3,
+                width: isHoverBuy ? widget.r.wp(5) * 15 : 0,
+                color: widget.blue,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -73,28 +73,28 @@ class _WhatsappPageState extends State<WhatsappPage> {
                                       ],
                                     ),
                                   ),
-                                  MouseRegion(
-                                    onEnter: (_) {
-                                      setState(() {
-                                        _whatsapp = true;
-                                      });
+                                  GestureDetector(
+                                    onTap: () async {
+                                      final url = Uri.parse("https://web.whatsapp.com/send?phone=573178689125");
+                                      if (await canLaunchUrl(url)) {
+                                        await launchUrl(url, mode: LaunchMode.externalApplication);
+                                      } else {
+                                        throw 'No se pudo abrir el enlace: $url';
+                                      }
                                     },
-                                    onExit: (_) {
-                                      setState(() {
-                                        _whatsapp = false;
-                                      });
-                                    },
-                                    cursor: SystemMouseCursors.click,
-                                    child: GestureDetector(
-                                      onTap: () async {
-                                        final url = Uri.parse("https://web.whatsapp.com/send?phone=573178689125");
-                                        if (await canLaunchUrl(url)) {
-                                          await launchUrl(url, mode: LaunchMode.externalApplication);
-                                        } else {
-                                          throw 'No se pudo abrir el enlace: $url';
-                                        }
-                                      },
 
+                                    child: MouseRegion(
+                                      onEnter: (_) {
+                                        setState(() {
+                                          _whatsapp = true;
+                                        });
+                                      },
+                                      onExit: (_) {
+                                        setState(() {
+                                          _whatsapp = false;
+                                        });
+                                      },
+                                      cursor: SystemMouseCursors.click,
                                       child: AnimatedScale(
                                         duration: Duration(milliseconds: 200),
                                         curve: Curves.easeInOut,
@@ -157,27 +157,27 @@ class _WhatsappPageState extends State<WhatsappPage> {
                                             ],
                                           ),
                                         ),
-                                        MouseRegion(
-                                          onEnter: (_) {
-                                            setState(() {
-                                              _whatsapp = true;
-                                            });
+                                        GestureDetector(
+                                          onTap: () async {
+                                            final url = Uri.parse("https://web.whatsapp.com/send?phone=573178689125");
+                                            if (await canLaunchUrl(url)) {
+                                              await launchUrl(url, mode: LaunchMode.externalApplication);
+                                            } else {
+                                              throw 'No se pudo abrir el enlace: $url';
+                                            }
                                           },
-                                          onExit: (_) {
-                                            setState(() {
-                                              _whatsapp = false;
-                                            });
-                                          },
-                                          cursor: SystemMouseCursors.click,
-                                          child: GestureDetector(
-                                            onTap: () async {
-                                              final url = Uri.parse("https://web.whatsapp.com/send?phone=573178689125");
-                                              if (await canLaunchUrl(url)) {
-                                                await launchUrl(url, mode: LaunchMode.externalApplication);
-                                              } else {
-                                                throw 'No se pudo abrir el enlace: $url';
-                                              }
+                                          child: MouseRegion(
+                                            onEnter: (_) {
+                                              setState(() {
+                                                _whatsapp = true;
+                                              });
                                             },
+                                            onExit: (_) {
+                                              setState(() {
+                                                _whatsapp = false;
+                                              });
+                                            },
+                                            cursor: SystemMouseCursors.click,
                                             child: AnimatedScale(
                                               duration: Duration(milliseconds: 200),
                                               curve: Curves.easeInOut,
@@ -249,17 +249,17 @@ class _WhatsappPageState extends State<WhatsappPage> {
                       alignment: WrapAlignment.center,
                       children:
                           _supportCardsPerson.map((card) {
-                            return MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              child: GestureDetector(
-                                onTap: () async {
-                                  final Uri phoneUri = Uri(scheme: 'tel', path: '6017460533${card.ext}');
-                                  if (await canLaunchUrl(phoneUri)) {
-                                    await launchUrl(phoneUri);
-                                  } else {
-                                    throw 'No se pudo iniciar la llamada a $phoneUri';
-                                  }
-                                },
+                            return GestureDetector(
+                              onTap: () async {
+                                final Uri phoneUri = Uri(scheme: 'tel', path: '6017460533${card.ext}');
+                                if (await canLaunchUrl(phoneUri)) {
+                                  await launchUrl(phoneUri);
+                                } else {
+                                  throw 'No se pudo iniciar la llamada a $phoneUri';
+                                }
+                              },
+                              child: MouseRegion(
+                                cursor: SystemMouseCursors.click,
                                 child: Container(
                                   width: itemWidth.clamp(260, 350),
                                   height: 300,

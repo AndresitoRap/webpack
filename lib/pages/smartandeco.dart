@@ -849,12 +849,12 @@ class _OurLinesSliverState extends State<OurLinesSliver> {
                                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: widget.r.fs(1.6, 20)),
                               ),
                               const Spacer(),
-                              MouseRegion(
-                                cursor: SystemMouseCursors.click,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    navigateWithSlide(context, categorie.route);
-                                  },
+                              GestureDetector(
+                                onTap: () {
+                                  navigateWithSlide(context, categorie.route);
+                                },
+                                child: MouseRegion(
+                                  cursor: SystemMouseCursors.click,
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
                                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: widget.color),

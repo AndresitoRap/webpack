@@ -51,23 +51,23 @@ class _DataProccessingState extends State<DataProccessing> {
                             const SizedBox(height: 30),
                             Row(
                               children: [
-                                MouseRegion(
-                                  cursor: SystemMouseCursors.click,
-                                  onEnter: (_) {
+                                GestureDetector(
+                                  onTap: () {
+                                    downloadPDF();
                                     setState(() {
-                                      ishover = true;
+                                      isdownload = true;
                                     });
                                   },
-                                  onExit: (_) {
-                                    setState(() {
-                                      ishover = false;
-                                    });
-                                  },
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      downloadPDF();
+                                  child: MouseRegion(
+                                    cursor: SystemMouseCursors.click,
+                                    onEnter: (_) {
                                       setState(() {
-                                        isdownload = true;
+                                        ishover = true;
+                                      });
+                                    },
+                                    onExit: (_) {
+                                      setState(() {
+                                        ishover = false;
                                       });
                                     },
                                     child: AnimatedScale(

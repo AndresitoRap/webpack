@@ -80,12 +80,13 @@ class SupportHome extends StatelessWidget {
                         alignment: WrapAlignment.center,
                         children:
                             _supportCards.map((card) {
-                              return MouseRegion(
-                                cursor: SystemMouseCursors.click,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    navigateWithSlide(context, card.route);
-                                  },
+                              return GestureDetector(
+                                onTap: () {
+                                  navigateWithSlide(context, card.route);
+                                },
+                                child: MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+
                                   child: Container(
                                     width: itemWidth.clamp(260, 350),
                                     height: 300,

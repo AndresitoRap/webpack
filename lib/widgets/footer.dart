@@ -99,10 +99,11 @@ class Footer extends StatelessWidget {
           socialMedia.map((social) {
             return Padding(
               padding: const EdgeInsets.only(right: 10),
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: () => launchUrl(Uri.parse(social['url']), mode: LaunchMode.externalApplication),
+              child: GestureDetector(
+                onTap: () => launchUrl(Uri.parse(social['url']), mode: LaunchMode.externalApplication),
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(8)),

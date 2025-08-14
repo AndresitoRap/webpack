@@ -16,12 +16,10 @@ class FivePro extends StatelessWidget {
   final Responsive r;
   final String currentRoute;
   final Subcategorie subcategorie;
-  final String section;
-  const FivePro({super.key, required this.currentRoute, required this.subcategorie, required this.section, required this.r});
+  const FivePro({super.key, required this.currentRoute, required this.subcategorie, required this.r});
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
     final blue = Theme.of(context).primaryColor;
     final isMobile = r.wp(100) < 850;
     final route = '${subcategorie.route}/crea-tu-empaque';

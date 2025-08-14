@@ -84,7 +84,7 @@ flutter:
     - assets/img/smartbag/5pro/
     - assets/img/smartbag/flowpack/
     - assets/img/smartbag/piramidal/
-    - assets/videos/smartbag/cojin/
+    - assets/img/smartbag/cojin/
     - assets/img/smartbag/standpack/
     - assets/img/support/
     - assets/img/us/
@@ -105,6 +105,7 @@ flutter:
     - assets/videos/smartbag/piramidal/
     - assets/videos/smartbag/cojin/
     - assets/videos/smartbag/standpack/
+    - assets/videos/ecobag/4pro/
     - assets/videos/us/
       
       

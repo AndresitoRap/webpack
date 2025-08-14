@@ -1,102 +1,123 @@
-import 'dart:math';
 import 'dart:ui' as ui show ImageFilter;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'package:webpack/class/categories.dart';
+import 'package:webpack/main.dart';
+import 'package:webpack/utils/responsive.dart';
+import 'package:webpack/widgets/4pro/widgetsfourpro.dart';
 import 'package:webpack/widgets/doypack/collage.dart';
 import 'package:webpack/widgets/footer.dart';
+import 'package:webpack/widgets/header.dart';
 import 'package:webpack/widgets/scrollopacity.dart';
+import 'package:webpack/widgets/video.dart';
 
 class DoypackEco extends StatelessWidget {
-  const DoypackEco({super.key});
+  final Responsive r;
+  final Subcategorie subcategorie;
+  const DoypackEco({super.key, required this.r, required this.subcategorie});
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    final green = Color.fromARGB(255, 75, 141, 44);
-    final isMobile = screenWidth < 850;
+    final green = const Color(0xFF4B8D2C);
+    final route = '${subcategorie.route}/crea-tu-empaque';
+    final isMobile = r.wp(100) < 850;
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 253, 255, 252),
 
       body: CustomScrollView(
         slivers: [
-          SliverWithStart(screenWidth: screenWidth, screenHeight: screenHeight, green: green),
-          SliverWithSostenible(screenWidth: screenWidth, green: green),
-          SliverWithCollage(isMobile: isMobile, green: green, screenWidth: screenWidth),
-          SliverWithCareUs(screenWidth: screenWidth),
-          SliverFinallyDoypackEco(screenWidth: screenWidth, green: green),
+          StartDoypackSliver(r: r, green: green, isMobile: isMobile, route: route),
+          SustainableSliver(r: r, green: green, route: route),
+          SliverWithCollage(isMobile: isMobile, green: green, r: r),
+          WeCareUsSliver(r: r, isMobile: isMobile, green: green),
+          SliverFinallyDoypackEco(r: r, green: green, route: route),
+          SliverToBoxAdapter(child: const Footer()),
         ],
       ),
     );
   }
 }
 
-//Inicio
-class SliverWithStart extends StatelessWidget {
-  const SliverWithStart({super.key, required this.screenWidth, required this.screenHeight, required this.green});
-
-  final double screenWidth;
-  final double screenHeight;
+//---------Inicio de Doypack------------
+class StartDoypackSliver extends StatelessWidget {
+  const StartDoypackSliver({super.key, required this.r, required this.green, required this.isMobile, required this.route});
+  final Responsive r;
   final Color green;
+  final bool isMobile;
+  final String route;
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = screenWidth < 950;
-
     return SliverToBoxAdapter(
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 50, horizontal: screenWidth * 0.06),
-        child: SizedBox(
-          height: screenHeight - 50,
-          width: screenWidth,
-          child: ScrollAnimatedWrapper(
-            visibilityKey: Key("Diseño que respira"),
-            child:
-                isMobile
-                    ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text("Doypack Ecobag®", style: TextStyle(color: green, fontSize: (screenWidth * 0.08).clamp(20, 30))),
-                        Text(
-                          "Diseño que respira.",
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: (screenWidth * 0.1).clamp(40, 60), height: 0.95),
-                        ),
+      child: SizedBox(
+        height: r.hp(100),
+        width: r.wp(100),
 
-                        SizedBox(height: 10),
-                        button(),
-                      ],
-                    )
-                    : Padding(
-                      padding: const EdgeInsets.only(bottom: 50),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Column(
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            isMobile
+                ? Image.asset("img/BLogo.webp")
+                : ValueListenableBuilder<bool>(
+                  valueListenable: videoBlurNotifier,
+                  builder: (context, isBlur, _) {
+                    return VideoFlutter(
+                      src: 'assets/videos/ecobag/4pro/videoBolsas.webm',
+                      loop: true,
+                      isPause: false,
+                      fit: BoxFit.cover,
+                      blur: isBlur,
+                    );
+                  },
+                ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 45, horizontal: r.wp(6)),
+              child: SizedBox(
+                height: r.hp(100) - 50,
+                width: r.wp(100),
+                child: ScrollAnimatedWrapper(
+                  child:
+                      isMobile
+                          ? Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              Text("Doypack Ecobag®", style: TextStyle(color: green, fontSize: (screenWidth * 0.08).clamp(20, 30))),
-                              Text(
-                                "Diseño que respira.",
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: (screenWidth * 0.1).clamp(40, 60), height: 0.95),
-                              ),
+                              Text("Doypack Ecobag®", style: TextStyle(color: green, fontSize: r.fs(2, 30))),
+                              Text("Diseño que respira.", style: TextStyle(fontWeight: FontWeight.bold, fontSize: r.fs(4, 50), height: 0.95)),
+
+                              SizedBox(height: 10),
+                              button(context, route),
                             ],
+                          )
+                          : Padding(
+                            padding: const EdgeInsets.only(bottom: 50),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text("Doypack Ecobag®", style: TextStyle(color: green, fontSize: r.fs(2, 30))),
+                                    Text("Diseño que respira.", style: TextStyle(fontWeight: FontWeight.bold, fontSize: r.fs(4, 50), height: 0.95)),
+                                  ],
+                                ),
+                                button(context, route),
+                              ],
+                            ),
                           ),
-                          button(),
-                        ],
-                      ),
-                    ),
-          ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget button() {
+  Padding button(BuildContext context, String route) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: ClipRRect(
@@ -108,14 +129,16 @@ class SliverWithStart extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text("Crear mi", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: (screenWidth * 0.03).clamp(16, 18))),
+                Text("Crear mi", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: r.fs(1.8, 18))),
                 SizedBox(width: 10),
                 ElevatedButton(
                   style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.white), foregroundColor: WidgetStatePropertyAll(green)),
-                  onPressed: () {},
+                  onPressed: () {
+                    navigateWithSlide(context, route);
+                  },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text("Doypack", style: TextStyle(fontWeight: FontWeight.bold, fontSize: (screenWidth * 0.03).clamp(16, 18))),
+                    child: Text("Doypack", style: TextStyle(fontWeight: FontWeight.bold, fontSize: r.fs(1.8, 18))),
                   ),
                 ),
               ],
@@ -127,110 +150,103 @@ class SliverWithStart extends StatelessWidget {
   }
 }
 
-//Sliver con sostenibilidad
-class SliverWithSostenible extends StatelessWidget {
-  const SliverWithSostenible({super.key, required this.screenWidth, required this.green});
+//---------Sustentabilidad de Doypack------------
+class SustainableSliver extends StatelessWidget {
+  const SustainableSliver({super.key, required this.r, required this.green, required this.route});
 
-  final double screenWidth;
+  final Responsive r;
   final Color green;
+  final String route;
 
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          ScrollAnimatedWrapper(
-            visibilityKey: Key('image-sostenibilidad'),
-            child: Container(
-              margin: EdgeInsets.symmetric(vertical: 100),
-              width: (screenWidth * 0.4).clamp(400, 1000),
-              height: 500,
-              decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(16)),
-              child: Center(child: Text("Foto")),
-            ),
-          ),
-          ScrollAnimatedWrapper(
-            visibilityKey: Key('doypack-with-o'),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(shape: BoxShape.circle),
-                  child: Image.asset("img/ecobag/doypack/o_with_flowers.webp", fit: BoxFit.cover, color: green, colorBlendMode: BlendMode.srcIn),
-                ),
-                Text(
-                  "DOYPACK",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: (screenWidth * 0.07).clamp(40, 60), color: green, letterSpacing: 2.4),
-                ),
-              ],
-            ),
-          ),
-          ScrollAnimatedWrapper(
-            visibilityKey: Key('ecobag-doypack'),
-            child: Text(
-              "EcoBag®",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: (screenWidth * 0.04).clamp(22, 24), color: green, letterSpacing: 2.4),
-            ),
-          ),
-          ScrollAnimatedWrapper(
-            visibilityKey: Key('Sostenibilidad por donde mires'),
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 40, horizontal: screenWidth * 0.06),
-              child: Text(
-                textAlign: TextAlign.center,
-                "Sostenible por donde lo mires.",
-                style: TextStyle(fontSize: (screenWidth * 0.1).clamp(40, 60), fontWeight: FontWeight.w700, color: Colors.black.withAlpha(220)),
-              ),
-            ),
-          ),
-          ScrollAnimatedWrapper(
-            visibilityKey: Key('text-de-sontitbble'),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
-              child: SizedBox(
-                width: 1000,
-                child: Center(
-                  child: Text(
-                    textAlign: TextAlign.center,
-                    "Empaques Ecobag que inspiran. Estilo doypack en kraft natural o blanco. Con válvula y zipper para conservar mejor. Tecnología práctica, diseño consciente. Doypack Ecobag®: todo lo que necesitas, en un empaque con propósito.",
-                    style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87, fontSize: (screenWidth * 0.03).clamp(20, 30)),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: r.hp(6, max: 100)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ScrollAnimatedWrapper(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: r.wp(6), vertical: 30),
+                child: Container(
+                  width: r.wp(100, max: 700),
+                  height: r.wp(100, max: 700),
+                  decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(16),
+                    image: DecorationImage(image: AssetImage("img/BIsotipo.webp")),
                   ),
                 ),
               ),
             ),
-          ),
-          ScrollAnimatedWrapper(
-            visibilityKey: Key('crear-doypack'),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 30),
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                    decoration: BoxDecoration(color: green, borderRadius: BorderRadius.circular(30)),
-                    child: Text("Crear Doypack", style: TextStyle(color: Colors.white, fontSize: (screenWidth * 0.03).clamp(16, 20))),
+            ScrollAnimatedWrapper(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(shape: BoxShape.circle),
+                    child: Image.asset("img/ecobag/doypack/o_with_flowers.webp", fit: BoxFit.cover, color: green, colorBlendMode: BlendMode.srcIn),
+                  ),
+                  Text("DOYPACK", style: TextStyle(fontWeight: FontWeight.bold, fontSize: r.fs(4, 60), color: green, letterSpacing: 2.4)),
+                ],
+              ),
+            ),
+            ScrollAnimatedWrapper(
+              child: Text("EcoBag®", style: TextStyle(fontWeight: FontWeight.bold, fontSize: r.fs(2, 24), color: green, letterSpacing: 2.4)),
+            ),
+            ScrollAnimatedWrapper(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 40, horizontal: r.wp(6)),
+                child: Text(
+                  textAlign: TextAlign.center,
+                  "Sostenible por donde lo mires.",
+                  style: TextStyle(fontSize: r.fs(4, 60), fontWeight: FontWeight.w700, color: Colors.black.withAlpha(220)),
+                ),
+              ),
+            ),
+            ScrollAnimatedWrapper(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: r.wp(6)),
+                child: SizedBox(
+                  width: 1000,
+                  child: Center(
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      "Empaques Ecobag que inspiran. Estilo doypack en kraft natural o blanco. Con válvula y zipper para conservar mejor. Tecnología práctica, diseño consciente. Doypack Ecobag®: todo lo que necesitas, en un empaque con propósito.",
+                      style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87, fontSize: r.fs(2.2, 30)),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+            ScrollAnimatedWrapper(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 50, bottom: 30),
+                child: ElevatedButton(
+                  style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(green), foregroundColor: WidgetStatePropertyAll(Colors.white)),
+                  onPressed: () {
+                    navigateWithSlide(context, route);
+                  },
+                  child: Text("Crear mi Doypack", style: TextStyle(fontWeight: FontWeight.bold, fontSize: r.fs(1.6, 26))),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-//Sliver con Collage
+//---------Collage------------
 class SliverWithCollage extends StatefulWidget {
-  const SliverWithCollage({super.key, required this.isMobile, required this.green, required this.screenWidth});
-
+  const SliverWithCollage({super.key, required this.isMobile, required this.green, required this.r});
+  final Responsive r;
   final bool isMobile;
   final Color green;
-  final double screenWidth;
 
   @override
   State<SliverWithCollage> createState() => _SliverWithCollageState();
@@ -248,23 +264,22 @@ class _SliverWithCollageState extends State<SliverWithCollage> {
             if (index >= containerscollage.length) return null;
 
             final data = containerscollage[index];
-            return ScrollAnimatedWrapper(
-              visibilityKey: Key("Collage${data.title}"),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 500),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: ContainerCollage(
-                      green: widget.green,
-                      isMobile: widget.isMobile,
-                      data: data.builder(context),
-                      height: data.height!,
-                      color: data.color,
-                      colorOpen: data.colorOpen,
-                      title: data.title,
-                      description: data.description,
-                    ),
+            return Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 500),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: ContainerCollage(
+                    r: widget.r,
+                    green: widget.green,
+                    isMobile: widget.isMobile,
+                    data: data.builder(context),
+                    height: data.height ?? widget.r.hp(50),
+
+                    color: data.color,
+                    colorOpen: data.colorOpen,
+                    title: data.title,
+                    description: data.description,
                   ),
                 ),
               ),
@@ -295,35 +310,33 @@ class _SliverWithCollageState extends State<SliverWithCollage> {
             final itemsThisRow = extendedPattern[index];
             final rowItems = containerscollage.skip(itemIndex).take(itemsThisRow).toList();
 
-            return ScrollAnimatedWrapper(
-              visibilityKey: Key('Collage-${rowItems.map((e) => e.title)}'),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 1200),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
-                      children:
-                          rowItems.map((data) {
-                            return Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: RepaintBoundary(
-                                  child: ContainerCollage(
-                                    green: widget.green,
-                                    isMobile: widget.isMobile,
-                                    data: data.builder(context),
-                                    height: data.height!,
-                                    color: data.color,
-                                    colorOpen: data.colorOpen,
-                                    title: data.title,
-                                    description: data.description,
-                                  ),
+            return Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1200),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    children:
+                        rowItems.map((data) {
+                          return Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: RepaintBoundary(
+                                child: ContainerCollage(
+                                  r: widget.r,
+                                  green: widget.green,
+                                  isMobile: widget.isMobile,
+                                  data: data.builder(context),
+                                  height: data.height ?? widget.r.hp(70),
+                                  color: data.color,
+                                  colorOpen: data.colorOpen,
+                                  title: data.title,
+                                  description: data.description,
                                 ),
                               ),
-                            );
-                          }).toList(),
-                    ),
+                            ),
+                          );
+                        }).toList(),
                   ),
                 ),
               ),
@@ -352,6 +365,7 @@ class _SliverWithCollageState extends State<SliverWithCollage> {
 
 // Animación de container
 class ContainerCollage extends StatefulWidget {
+  final Responsive r;
   final Color green, color, colorOpen;
   final bool isMobile;
   final Widget data;
@@ -368,6 +382,7 @@ class ContainerCollage extends StatefulWidget {
     required this.colorOpen,
     required this.title,
     required this.description,
+    required this.r,
   });
 
   @override
@@ -417,10 +432,8 @@ class _ContainerCollageState extends State<ContainerCollage> with TickerProvider
 
   @override
   Widget build(BuildContext context) {
-    final screenW = MediaQuery.of(context).size.width;
     return Container(
       clipBehavior: Clip.antiAlias,
-
       margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       height: widget.height,
       decoration: BoxDecoration(color: widget.color, borderRadius: BorderRadius.circular(16)),
@@ -436,15 +449,12 @@ class _ContainerCollageState extends State<ContainerCollage> with TickerProvider
                 width: double.infinity,
                 color: widget.colorOpen,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenW * 0.06),
+                  padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        widget.title,
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: (screenW * 0.03).clamp(20, 24)),
-                      ),
+                      Text(widget.title, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: widget.r.fs(2, 24))),
                       SizedBox(height: 30),
                       AnimatedBuilder(
                         animation: _controller,
@@ -455,7 +465,7 @@ class _ContainerCollageState extends State<ContainerCollage> with TickerProvider
                               offset: _slideAnimation.value * 100,
                               child: SizedBox(
                                 width: widget.isMobile ? null : 500,
-                                child: Text(widget.description, style: TextStyle(color: Colors.white, fontSize: (screenW * 0.025).clamp(16, 20))),
+                                child: Text(widget.description, style: TextStyle(color: Colors.white, fontSize: widget.r.fs(1.9, 23))),
                               ),
                             ),
                           );
@@ -470,10 +480,10 @@ class _ContainerCollageState extends State<ContainerCollage> with TickerProvider
           Positioned(
             bottom: 10,
             right: 10,
-            child: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: toggle,
+            child: GestureDetector(
+              onTap: toggle,
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
                 child: AnimatedContainer(
                   duration: Duration(milliseconds: 900),
                   curve: Curves.fastEaseInToSlowEaseOut,
@@ -509,7 +519,7 @@ class ContainerCollageClass {
     required this.colorOpen,
     this.isOpen = false,
     required this.builder,
-    this.height = 500,
+    this.height,
   });
 }
 
@@ -612,167 +622,58 @@ final List<ContainerCollageClass> containerscollage = [
   ),
 ];
 
-//Te importa, nos importa
-class SliverWithCareUs extends StatelessWidget {
-  const SliverWithCareUs({super.key, required this.screenWidth});
-
-  final double screenWidth;
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: SizedBox(
-        width: min(screenWidth, 1600),
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: screenWidth * 0.06, horizontal: screenWidth * 0.06),
-            child: Column(
-              children: [
-                ScrollAnimatedWrapper(
-                  visibilityKey: Key('te-importa'),
-                  child: Text(
-                    "Te importa. Nos importa.",
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 75, 141, 44), fontSize: min(screenWidth * 0.06, 70)),
-                  ),
-                ),
-                SizedBox(height: screenWidth >= 1000 ? 50 : 100),
-                ScrollAnimatedWrapper(
-                  visibilityKey: Key('nos-importa'),
-                  child: Text(
-                    textAlign: TextAlign.center,
-                    "Desde empaques como 5PRO Ecobag®, diseñados para proteger tu producto y destacar tu marca, hasta soluciones como Ecobag®, que combinan funcionalidad con conciencia ambiental. Usamos materiales reciclables, desarrollamos opciones versátiles como válvulas y cierres herméticos, y te ofrecemos formatos pensados para cada necesidad, siempre con una visión sustentable. Porque cada detalle cuenta cuando quieres hacer las cosas bien.",
-                    style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black87, fontSize: min(screenWidth * 0.026, 25), height: 0),
-                  ),
-                ),
-                SizedBox(height: screenWidth >= 1000 ? 50 : 100),
-
-                SizedBox(
-                  width: min(screenWidth, 1600),
-                  child: ScrollAnimatedWrapper(
-                    visibilityKey: Key('info-importa'),
-                    child:
-                        screenWidth > 900
-                            ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                for (var item in [
-                                  (
-                                    CupertinoIcons.leaf_arrow_circlepath,
-                                    "Sostenibilidad real.",
-                                    "Usamos materiales reciclables y procesos responsables en toda la línea 5PRO y Ecobag®.",
-                                  ),
-                                  (
-                                    CupertinoIcons.shield_lefthalf_fill,
-                                    "Protección garantizada",
-                                    "Empaques que conservan aroma, frescura y calidad con barrera multicapa y protección UV.",
-                                  ),
-                                  (
-                                    CupertinoIcons.cube_box,
-                                    "Diseño funcional",
-                                    "Opciones como válvulas, zippers y acabados premium para destacar tu producto con estilo.",
-                                  ),
-                                ])
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                                      child: _buildBenefitBox(icon: item.$1, title: item.$2, description: item.$3, context: context),
-                                    ),
-                                  ),
-                              ],
-                            )
-                            : Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                for (var item in [
-                                  (
-                                    CupertinoIcons.leaf_arrow_circlepath,
-                                    "Sostenibilidad real.",
-                                    "Usamos materiales reciclables y procesos responsables en toda la línea 4PRO y Ecobag®.",
-                                  ),
-                                  (
-                                    CupertinoIcons.shield_lefthalf_fill,
-                                    "Protección garantizada",
-                                    "Empaques que conservan aroma, frescura y calidad con barrera multicapa y protección UV.",
-                                  ),
-                                  (
-                                    CupertinoIcons.cube_box,
-                                    "Diseño funcional",
-                                    "Opciones como válvulas, zippers y acabados premium para destacar tu producto con estilo.",
-                                  ),
-                                ])
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                                    child: _buildBenefitBox(icon: item.$1, title: item.$2, description: item.$3, context: context),
-                                  ),
-                              ],
-                            ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBenefitBox({required IconData icon, required String title, required String description, required BuildContext context}) {
-    final screenw = MediaQuery.of(context).size.width;
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: min(screenw * 0.1, 40), color: Color(0xFF4B8D2C)),
-          const SizedBox(height: 20),
-          Text(title, textAlign: TextAlign.start, style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenw * 0.03, 24))),
-          const SizedBox(height: 10),
-          Text(description, textAlign: TextAlign.start, style: TextStyle(fontSize: min(screenw * 0.025, 22), fontWeight: FontWeight.w300)),
-        ],
-      ),
-    );
-  }
-}
-
 //Final
 class SliverFinallyDoypackEco extends StatelessWidget {
-  const SliverFinallyDoypackEco({super.key, required this.screenWidth, required this.green});
+  const SliverFinallyDoypackEco({super.key, required this.r, required this.green, required this.route});
 
-  final double screenWidth;
+  final Responsive r;
   final Color green;
+  final String route;
 
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Column(
         children: [
-          ScrollAnimatedWrapper(
-            visibilityKey: Key('Doypack-lab'),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: r.wp(6)),
+
             child: Container(
               padding: EdgeInsets.symmetric(vertical: 50),
-              width: screenWidth,
+              width: r.wp(100),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text("Doypack Lab", style: TextStyle(fontWeight: FontWeight.bold, color: green, fontSize: (screenWidth * 0.04).clamp(20, 30))),
+                  Text("Doypack Lab", style: TextStyle(fontWeight: FontWeight.bold, color: green, fontSize: r.fs(2.1, 30))),
                   Text(
                     textAlign: TextAlign.center,
                     "Elige el tamaño. Elige el acabado.\nElige tu estilo.",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: (screenWidth * 0.05).clamp(30, 40)),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: r.fs(3, 40)),
                   ),
                   SizedBox(height: 20),
-                  MouseRegion(cursor: SystemMouseCursors.click, child: GestureDetector(onTap: () {}, child: GradientBorderButton())),
+                  GestureDetector(
+                    onTap: () {
+                      navigateWithSlide(context, route);
+                    },
+                    child: MouseRegion(cursor: SystemMouseCursors.click, child: GradientBorderButton()),
+                  ),
 
                   SizedBox(height: 50),
-
-                  Container(height: 600, width: screenWidth, color: Colors.grey),
                 ],
               ),
             ),
           ),
-          Footer(),
+          Container(
+            height: r.hp(60, max: 600),
+            width: r.wp(100),
+            color: Colors.grey,
+            child: ValueListenableBuilder<bool>(
+              valueListenable: videoBlurNotifier,
+              builder: (context, isBlur, _) {
+                return VideoFlutter(src: 'assets/videos/smartbag/doypack/loop.webm', loop: true, isPause: false, fit: BoxFit.cover, blur: isBlur);
+              },
+            ),
+          ),
         ],
       ),
     );

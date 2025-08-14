@@ -196,9 +196,9 @@ class _SliverToStartFiveProEcoState extends State<SliverToStartFiveProEco> with 
                           scale: _bagScale,
                           child: Transform.rotate(
                             angle: math.pi * 2.1,
-                            child: MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              child: GestureDetector(onTap: () {}, child: Image.asset('img/ecobag/5pro.webp', height: imageHeight)),
+                            child: GestureDetector(
+                              onTap: () {},
+                              child: MouseRegion(cursor: SystemMouseCursors.click, child: Image.asset('img/ecobag/5pro.webp', height: imageHeight)),
                             ),
                           ),
                         ),

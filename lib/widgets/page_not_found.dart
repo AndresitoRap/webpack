@@ -58,10 +58,11 @@ class PageNotFound extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 40),
-                  MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: () => navigateWithSlide(context, '/'),
+                  GestureDetector(
+                    onTap: () => navigateWithSlide(context, '/'),
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
                         decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(30)),

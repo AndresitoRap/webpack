@@ -223,11 +223,11 @@ class _SliverWithContainersState extends State<SliverWithContainers> {
                         final item = items[index];
                         final isHovering = hoverIndexes.contains(index);
 
-                        return MouseRegion(
-                          onEnter: (_) => setState(() => hoverIndexes.add(index)),
-                          onExit: (_) => setState(() => hoverIndexes.remove(index)),
-                          cursor: SystemMouseCursors.click,
-                          child: GestureDetector(
+                        return GestureDetector(
+                          child: MouseRegion(
+                            onEnter: (_) => setState(() => hoverIndexes.add(index)),
+                            onExit: (_) => setState(() => hoverIndexes.remove(index)),
+                            cursor: SystemMouseCursors.click,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [

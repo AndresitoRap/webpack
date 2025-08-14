@@ -258,7 +258,7 @@ class TransitionOverlayState extends State<TransitionOverlay> with TickerProvide
                             opacity: _showSpinner ? 1.0 : 0.0,
                             duration: const Duration(milliseconds: 500),
                             curve: Curves.easeInOut,
-                            child: SvgPicture.asset("assets/img/home/wisotipo.svg", height: 80),
+                            child: SvgPicture.asset("img/home/wisotipo.svg", height: 80),
                           ),
                           SizedBox(height: 20),
                           AnimatedOpacity(

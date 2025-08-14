@@ -1,12 +1,14 @@
 import 'dart:math';
 import 'dart:ui';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:webpack/class/categories.dart';
 import 'package:webpack/main.dart';
 import 'package:webpack/utils/responsive.dart';
 import 'package:webpack/widgets/header.dart';
+import 'package:webpack/widgets/scrollopacity.dart';
 
 import 'package:webpack/widgets/video.dart';
 
@@ -155,12 +157,9 @@ class _AnimatedLetterState extends State<AnimatedLetter> with SingleTickerProvid
 }
 
 //Flores
-
 class LeafWithBagReveal extends StatefulWidget {
-  final String currentRoute;
-  final Subcategorie subcategorie;
-  final String section;
-  const LeafWithBagReveal({super.key, required this.currentRoute, required this.subcategorie, required this.section});
+  final String route;
+  const LeafWithBagReveal({super.key, required this.route});
 
   @override
   State<LeafWithBagReveal> createState() => _LeafWithBagRevealState();
@@ -322,7 +321,7 @@ class _LeafWithBagRevealState extends State<LeafWithBagReveal> with TickerProvid
                     mainAxisSize: MainAxisSize.min, // <- solo el ancho del contenido
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Expanded(flex: 1, child: Image.asset('img/ecobag/discover1_Top.webp', fit: BoxFit.fitHeight)),
+                      Expanded(flex: 1, child: Image.asset('img/ecobag/4pro/end.webp', fit: BoxFit.fitHeight)),
 
                       Expanded(
                         child: Padding(
@@ -384,7 +383,7 @@ class _LeafWithBagRevealState extends State<LeafWithBagReveal> with TickerProvid
                                     isRepeatingAnimation: false,
                                     animatedTexts: [
                                       TypewriterAnimatedText(
-                                        '¡Crea tu Ecobag®!',
+                                        '¡Crea tu EcoBag®!',
                                         textStyle: const TextStyle(
                                           fontSize: 32,
                                           fontWeight: FontWeight.bold,
@@ -404,7 +403,7 @@ class _LeafWithBagRevealState extends State<LeafWithBagReveal> with TickerProvid
                                   child: Opacity(
                                     opacity: 0,
                                     child: const Text(
-                                      '¡Crea tu Ecobag®!',
+                                      '¡Crea tu EcoBag®!',
                                       style: TextStyle(
                                         fontSize: 32,
                                         fontWeight: FontWeight.bold,
@@ -422,8 +421,7 @@ class _LeafWithBagRevealState extends State<LeafWithBagReveal> with TickerProvid
                                 opacity: _buttonOpacity,
                                 child: TextButton.icon(
                                   onPressed: () {
-                                    final route = '${widget.subcategorie.route}/crea-tu-empaque';
-                                    navigateWithSlide(context, route); // tu función personalizada
+                                    navigateWithSlide(context, widget.route); // tu función personalizada
                                   },
                                   style: TextButton.styleFrom(
                                     foregroundColor: Colors.black,
@@ -534,4 +532,124 @@ class _RainDrop {
   _RainDrop({required this.x, required this.delay, required this.speed, required this.size});
 }
 
-//Finally image
+//Nos importa
+//---------Te importa, nos importa------------
+class WeCareUsSliver extends StatelessWidget {
+  final Responsive r;
+  final Color green;
+  final bool isMobile;
+  const WeCareUsSliver({super.key, required this.r, required this.green, required this.isMobile});
+
+  @override
+  Widget build(BuildContext context) {
+    final titleSize = r.fs(5, 60);
+    final textSize = r.fs(2, 24);
+
+    final items = [
+      {
+        'icon': CupertinoIcons.leaf_arrow_circlepath,
+        'title': "Sostenibilidad real.",
+        'description': "Usamos materiales reciclables y procesos responsables en toda la línea 4PRO® y EcoBag.",
+      },
+      {
+        'icon': CupertinoIcons.shield_lefthalf_fill,
+        'title': "Protección garantizada",
+        'description': "Empaques que conservan aroma, frescura y calidad con barrera multicapa y protección UV.",
+      },
+      {
+        'icon': CupertinoIcons.cube_box,
+        'title': "Diseño funcional",
+        'description': "Opciones como válvulas, zippers y acabados premium para destacar tu producto con estilo.",
+      },
+    ];
+
+    return SliverToBoxAdapter(
+      child: SizedBox(
+        width: r.wp(100, max: 1600),
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: r.hp(10, max: 40), horizontal: r.wp(6)),
+            child: Column(
+              children: [
+                // Título
+                ScrollAnimatedWrapper(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: isMobile ? 50 : 60),
+                    child: Text(
+                      "Te importa. Nos importa.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold, color: green, fontSize: titleSize),
+                    ),
+                  ),
+                ),
+
+                // Texto principal
+                ScrollAnimatedWrapper(
+                  child: Text(
+                    "Desde empaques como 4PRO EcoBag®, diseñados para proteger tu producto y destacar tu marca, hasta soluciones como Ecobag, que combinan funcionalidad con conciencia ambiental. Usamos materiales reciclables, desarrollamos opciones versátiles como válvulas y cierres herméticos, y te ofrecemos formatos pensados para cada necesidad, siempre con una visión sustentable. Porque cada detalle cuenta cuando quieres hacer las cosas bien.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black87, fontSize: textSize, height: 0),
+                  ),
+                ),
+
+                // Lista de ítems
+                ScrollAnimatedWrapper(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 80),
+                    child:
+                        isMobile
+                            ? Column(
+                              children:
+                                  items
+                                      .map(
+                                        (e) =>
+                                            _buildItem(e['icon'] as IconData, e['title'] as String, e['description'] as String, green, r, textSize),
+                                      )
+                                      .toList(),
+                            )
+                            : Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children:
+                                  items
+                                      .map(
+                                        (e) => Expanded(
+                                          child: _buildItem(
+                                            e['icon'] as IconData,
+                                            e['title'] as String,
+                                            e['description'] as String,
+                                            green,
+                                            r,
+                                            textSize,
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                            ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Column _buildItem(IconData icon, String title, String description, Color green, Responsive r, double textSize) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(padding: const EdgeInsets.symmetric(vertical: 12), child: Icon(icon, size: r.fs(5, 40), color: green)),
+
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: Text(title, style: TextStyle(color: green, fontSize: textSize, fontWeight: FontWeight.bold)),
+        ),
+        Padding(padding: const EdgeInsets.symmetric(vertical: 6), child: Text(description, style: TextStyle(fontSize: textSize))),
+        if (isMobile) SizedBox(height: 20),
+      ],
+    );
+  }
+}

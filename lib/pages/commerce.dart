@@ -35,7 +35,6 @@ class _CommerceState extends State<Commerce> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
     final currentRoute = ModalRoute.of(context)?.settings.name ?? '';
     final section = widget.section.toLowerCase();
     final categoryName = widget.selectedSubcategorie.category.name.toLowerCase();
@@ -50,15 +49,15 @@ class _CommerceState extends State<Commerce> with TickerProviderStateMixin {
           break;
 
         case '5pro':
-          content = FivePro(currentRoute: currentRoute, subcategorie: widget.selectedSubcategorie, section: widget.section, r: r);
+          content = FivePro(currentRoute: currentRoute, subcategorie: widget.selectedSubcategorie, r: r);
           break;
 
         case 'doypack':
-          content = DoypackSmart();
+          content = DoypackSmart(r: r, subcategorie: widget.selectedSubcategorie);
           break;
 
         case 'flowpack':
-          content = Flowpack();
+          content = Flowpack(r: r, subcategorie: widget.selectedSubcategorie);
           break;
 
         case 'cojin':
@@ -83,7 +82,7 @@ class _CommerceState extends State<Commerce> with TickerProviderStateMixin {
 
         case 'standpack':
           content = Plantilla(
-            img: "assets/img/smartbag/standpack/inicio.webp",
+            img: "img/smartbag/standpack/inicio.webp",
             name: "StandPack",
             videoKey: widget.videoKey,
             r: r,
@@ -98,12 +97,7 @@ class _CommerceState extends State<Commerce> with TickerProviderStateMixin {
     } else {
       switch (section) {
         case '4pro':
-          content = FourProEco(
-            screenWidth: screenWidth,
-            currentRoute: currentRoute,
-            subcategorie: widget.selectedSubcategorie,
-            section: widget.section,
-          );
+          content = FourProEco(r: r, subcategorie: widget.selectedSubcategorie);
           break;
 
         case '5pro':
@@ -111,11 +105,11 @@ class _CommerceState extends State<Commerce> with TickerProviderStateMixin {
           break;
 
         case 'doypack':
-          content = DoypackEco();
+          content = DoypackEco(r: r, subcategorie: widget.selectedSubcategorie);
           break;
 
         case 'flowpack':
-          content = FlowpackEco();
+          content = FlowpackEco(r: r, subcategorie: widget.selectedSubcategorie);
           break;
 
         case 'cojin':
@@ -1340,21 +1334,21 @@ class _ScrollWithMoreInfoSliverState extends State<ScrollWithMoreInfoSliver> {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: widget.r.wp(8), vertical: 20),
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    onEnter: (_) {
-                      setState(() {
-                        isHoverText = true;
-                      });
+                  child: GestureDetector(
+                    onTap: () {
+                      navigateWithSlide(context, widget.route);
                     },
-                    onExit: (_) {
-                      setState(() {
-                        isHoverText = false;
-                      });
-                    },
-                    child: GestureDetector(
-                      onTap: () {
-                        navigateWithSlide(context, widget.route);
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      onEnter: (_) {
+                        setState(() {
+                          isHoverText = true;
+                        });
+                      },
+                      onExit: (_) {
+                        setState(() {
+                          isHoverText = false;
+                        });
                       },
                       child: Row(
                         mainAxisSize: MainAxisSize.min,

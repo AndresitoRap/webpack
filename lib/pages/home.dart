@@ -1399,12 +1399,13 @@ class SliverHeadquarters extends StatelessWidget {
           final sede = cardHQ[index - 1];
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
-            child: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () {
-                  _showHeadquarterDialog(context, sede);
-                },
+            child: GestureDetector(
+              onTap: () {
+                _showHeadquarterDialog(context, sede);
+              },
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: r.wp(6), vertical: r.dp(5, max: 50)),
                   decoration: BoxDecoration(

@@ -123,14 +123,14 @@ class _LegalPoliciesState extends State<LegalPolicies> {
                                     ),
                                     WidgetSpan(
                                       alignment: PlaceholderAlignment.middle,
-                                      child: MouseRegion(
-                                        onEnter: (_) => setState(() => _isHovering = true),
-                                        onExit: (_) => setState(() => _isHovering = false),
-                                        cursor: SystemMouseCursors.click,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            navigateWithSlide(context, '/Soporte/Politicas/Tratamiento-de-datos');
-                                          },
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          navigateWithSlide(context, '/Soporte/Politicas/Tratamiento-de-datos');
+                                        },
+                                        child: MouseRegion(
+                                          onEnter: (_) => setState(() => _isHovering = true),
+                                          onExit: (_) => setState(() => _isHovering = false),
+                                          cursor: SystemMouseCursors.click,
                                           child: Text(
                                             "Política de Protección de Datos Personales.",
                                             style:
@@ -222,12 +222,12 @@ class _GlosaryitemState extends State<Glosaryitem> {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _isHovering = true),
-      onExit: (_) => setState(() => _isHovering = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => _isHovering = true),
+        onExit: (_) => setState(() => _isHovering = false),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 4),
           child: Text.rich(

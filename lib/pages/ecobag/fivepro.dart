@@ -4,48 +4,47 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:webpack/class/categories.dart';
+import 'package:webpack/main.dart';
 import 'package:webpack/utils/buttonarrow.dart';
+import 'package:webpack/utils/responsive.dart';
+import 'package:webpack/widgets/4pro/imagesequencescroller.dart';
+import 'package:webpack/widgets/4pro/widgetsfourpro.dart';
 import 'package:webpack/widgets/footer.dart';
+import 'package:webpack/widgets/header.dart';
 import 'package:webpack/widgets/scrollopacity.dart';
+import 'package:webpack/widgets/video.dart';
 
-class FiveProEco extends StatefulWidget {
-  const FiveProEco({super.key});
-
-  @override
-  State<FiveProEco> createState() => _FiveProEcoState();
-}
-
-class _FiveProEcoState extends State<FiveProEco> {
-  final ScrollController _controller = ScrollController();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+class FiveProEco extends StatelessWidget {
+  final Responsive r;
+  final Subcategorie subcategorie;
+  const FiveProEco({super.key, required this.r, required this.subcategorie});
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final isMobile = screenWidth < 850;
-    final green = Color.fromARGB(255, 75, 141, 44);
+    final isMobile = r.wp(100) < 850;
+    final green = const Color(0xFF4B8D2C);
+    final route = '${subcategorie.route}/crea-tu-empaque';
+    final ScrollController scroll = ScrollController();
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 253, 255, 252),
-
+      backgroundColor: const Color(0xFFFBFFF8),
       body: CustomScrollView(
-        controller: _controller,
+        controller: scroll,
         slivers: [
-          SliverToStartFiveProEco(screenHeight: screenHeight, screenWidth: screenWidth, isMobile: isMobile, green: green),
-          SliverWithNewStandar(green: green, screenWidth: screenWidth),
-          SliverAboutFiveProEco(screenWidth: screenWidth, green: green, isMobile: isMobile),
-          SliverWithProteccionEcobag5pro(screenWidth: screenWidth, green: green, isMobile: isMobile),
-          SliverVideo5ProEcobag(screenWidth: screenWidth, green: green, isMobile: isMobile),
-          SliverAboutMoreInfo5ProEco(screenWidth: screenWidth, green: green, isMobile: isMobile),
-          SliverWithVideoScrollabe(isMobile: isMobile, screenWidth: screenWidth, green: green),
-          SliverWithCareUs(screenWidth: screenWidth),
-          SliverWithParallax(screenHeight: screenHeight, screenWidth: screenWidth, green: green, scrollController: _controller, isMobile: isMobile),
+          Start5PROSliver(isMobile: isMobile, r: r, green: green, route: route),
+          FiveSealsOfTrustSliver(green: green, r: r, isMobile: isMobile),
+          Scroll4FunctionsSliver(r: r, isMobile: isMobile, green: green),
+          BigPowerBigResponsabilitySliver(r: r, green: green, isMobile: isMobile),
+          VideoSliver5PROEcoSliver(r: r, green: green),
+          NowBreatheSliver(isMobile: isMobile, r: r, green: green),
+          MoreInformation5PRO(r: r, green: green, isMobile: isMobile),
+          VideoScrollableSliver(isMobile: isMobile, r: r, scroll: scroll),
+          WeCareUsSliver(r: r, green: green, isMobile: isMobile),
+
+          // SliverWithParallax(screenHeight: screenHeight, screenWidth: screenWidth, green: green, scrollController: _controller, isMobile: isMobile),
+
+          // SliverToStartFiveProEco(screenHeight: screenHeight, screenWidth: screenWidth, isMobile: isMobile, green: green),
           SliverToBoxAdapter(child: Footer()),
         ],
       ),
@@ -53,214 +52,142 @@ class _FiveProEcoState extends State<FiveProEco> {
   }
 }
 
-//Inicio de la página
-class SliverToStartFiveProEco extends StatefulWidget {
-  const SliverToStartFiveProEco({super.key, required this.screenHeight, required this.screenWidth, required this.isMobile, required this.green});
-
+//---------Intro de 5PRO Ecobag------------
+class Start5PROSliver extends StatefulWidget {
   final bool isMobile;
-  final double screenHeight;
-  final double screenWidth;
+  final Responsive r;
   final Color green;
+  final String route;
+  const Start5PROSliver({super.key, required this.isMobile, required this.r, required this.green, required this.route});
 
   @override
-  State<SliverToStartFiveProEco> createState() => _SliverToStartFiveProEcoState();
+  State<Start5PROSliver> createState() => _Start5PROSliverState();
 }
 
-class _SliverToStartFiveProEcoState extends State<SliverToStartFiveProEco> with TickerProviderStateMixin {
-  late AnimationController _bagController;
-  late Animation<double> _bagScale;
-  late Animation<double> _bagOpacity;
-
-  late AnimationController _textController;
-  late Animation<double> _textScale;
-  late Animation<double> _textOpacity;
-
-  late Animation<Offset> _bagFloatOffset;
-  late AnimationController _bagFloatController;
+class _Start5PROSliverState extends State<Start5PROSliver> with TickerProviderStateMixin {
+  late AnimationController _floatController;
+  late Animation<Offset> _floatAnim;
 
   @override
   void initState() {
     super.initState();
 
-    _bagController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1800));
-    _textController = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
-
-    _bagOpacity = CurvedAnimation(parent: _bagController, curve: Curves.easeIn);
-    _bagFloatController = AnimationController(vsync: this, duration: const Duration(seconds: 2))
-      ..repeat(reverse: true); // Movimiento continuo arriba-abajo
-
-    _bagFloatOffset = Tween<Offset>(
+    // Animación flotante
+    _floatController = AnimationController(vsync: this, duration: const Duration(seconds: 2))..repeat(reverse: true);
+    _floatAnim = Tween<Offset>(
       begin: const Offset(0, -0.02),
       end: const Offset(0, 0.02),
-    ).animate(CurvedAnimation(parent: _bagFloatController, curve: Curves.easeInOut));
-
-    _textOpacity = CurvedAnimation(parent: _textController, curve: Curves.easeIn);
-
-    _startAnimationSequence();
-  }
-
-  void _startAnimationSequence() async {
-    await _bagController.forward();
-    await Future.delayed(const Duration(milliseconds: 200));
-    _textController.forward();
+    ).animate(CurvedAnimation(parent: _floatController, curve: Curves.easeInOut));
   }
 
   @override
   void dispose() {
-    _bagController.dispose();
-    _textController.dispose();
-    _bagFloatController.dispose();
-
+    _floatController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
-      child: Container(
-        width: widget.screenWidth,
-        constraints: BoxConstraints(minHeight: widget.screenHeight - 100),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final double baseTextSize = (constraints.maxWidth * 0.06).clamp(30.0, 90.0);
-            final double imageHeight = (constraints.maxHeight * 0.35).clamp(180.0, 500.0);
+      child: SizedBox(width: widget.r.wp(100), height: widget.r.hp(100), child: widget.isMobile ? _buildPhone(context) : _buildDesktop()),
+    );
+  }
 
-            _bagScale = Tween<double>(
-              begin: widget.isMobile ? 0.6 : 0.7,
-              end: widget.isMobile ? 1.8 : 1.3,
-            ).animate(CurvedAnimation(parent: _bagController, curve: Curves.fastEaseInToSlowEaseOut));
-
-            _textScale = Tween<double>(
-              begin: widget.isMobile ? 0.6 : 0.7,
-              end: widget.isMobile ? 2.0 : 2.6,
-            ).animate(CurvedAnimation(parent: _textController, curve: Curves.fastEaseInToSlowEaseOut));
-
-            return widget.isMobile
-                ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    FadeTransition(
-                      opacity: _bagOpacity,
-                      child: ScaleTransition(scale: _bagScale, child: Image.asset('img/ecobag/5pro.webp', height: imageHeight)),
-                    ),
-                    SizedBox(height: widget.screenWidth * 0.3),
-                    FadeTransition(
-                      opacity: _textOpacity,
-                      child: ScaleTransition(
-                        scale: _textScale,
-                        child: Text(
-                          '5PRO Ecobag',
-                          style: TextStyle(fontSize: baseTextSize, fontWeight: FontWeight.w600, letterSpacing: 1.2, color: widget.green),
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-                : Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Positioned(
-                      top: 100,
-                      left: 200,
-                      child: FadeTransition(
-                        opacity: _textOpacity,
-                        child: ScaleTransition(
-                          scale: _textScale,
-                          child: Text(
-                            '5PRO ',
-                            style: TextStyle(fontSize: baseTextSize, fontWeight: FontWeight.w600, letterSpacing: 1.2, color: widget.green),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 70,
-                      right: 200,
-                      child: FadeTransition(
-                        opacity: _textOpacity,
-                        child: ScaleTransition(
-                          scale: _textScale,
-                          child: Text(
-                            'Ecobag ',
-                            style: TextStyle(fontSize: baseTextSize, fontWeight: FontWeight.w600, letterSpacing: 1.2, color: widget.green),
-                          ),
-                        ),
-                      ),
-                    ),
-                    FadeTransition(
-                      opacity: _bagOpacity,
-                      child: SlideTransition(
-                        position: _bagFloatOffset,
-                        child: ScaleTransition(
-                          scale: _bagScale,
-                          child: Transform.rotate(
-                            angle: math.pi * 2.1,
-                            child: GestureDetector(
-                              onTap: () {},
-                              child: MouseRegion(cursor: SystemMouseCursors.click, child: Image.asset('img/ecobag/5pro.webp', height: imageHeight)),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-          },
-        ),
+  ScrollAnimatedWrapper _buildPhone(BuildContext context) {
+    return ScrollAnimatedWrapper(
+      child: Column(
+        children: [
+          Expanded(child: SlideTransition(position: _floatAnim, child: Image.asset("img/ecobag/5pro/inicio.webp", fit: BoxFit.fitWidth))),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: ElevatedButton(
+              onPressed: () => navigateWithSlide(context, widget.route),
+              style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(widget.green), foregroundColor: WidgetStatePropertyAll(Colors.white)),
+              child: Text("Crear mi 5PRO", style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Text.rich(
+              style: TextStyle(fontWeight: FontWeight.bold, color: widget.green, fontSize: widget.r.fs(10, 70), height: 0.99),
+              textAlign: TextAlign.center,
+              TextSpan(children: [TextSpan(text: "5PRO\n"), TextSpan(text: "ECOBAG®")]),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-//Sección: Nuevo estandar
-class SliverWithNewStandar extends StatelessWidget {
-  const SliverWithNewStandar({super.key, required this.green, required this.screenWidth});
+class _buildDesktop extends StatelessWidget {
+  const _buildDesktop({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column();
+  }
+}
+
+//---------5 Sellos de confianza------------
+class FiveSealsOfTrustSliver extends StatelessWidget {
+  const FiveSealsOfTrustSliver({super.key, required this.green, required this.r, required this.isMobile});
 
   final Color green;
-  final double screenWidth;
+  final Responsive r;
+  final bool isMobile;
 
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
         color: green,
-        width: screenWidth,
-        child: Center(
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 200, horizontal: screenWidth * 0.06),
-            width: 1150,
-            child: Column(
-              children: [
-                ScrollAnimatedWrapper(
-                  visibilityKey: Key('nuevo-estandar-ecobag-5pro'),
-                  child: Text(
-                    "Nuevo estándar.\n5 sellos de confianza.",
-                    style: TextStyle(color: Colors.white, fontSize: (screenWidth * 0.09).clamp(24, 60), height: 0.9, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
+        width: r.wp(100),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: r.wp(6), vertical: r.hp(20, max: 120)),
+          child: Center(
+            child: SizedBox(
+              width: 1200,
+              child: Column(
+                children: [
+                  ScrollAnimatedWrapper(
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      "Nuevo estandar.\n5 Sellos de confianza.",
+                      style: TextStyle(color: Colors.white, fontSize: r.fs(4, 60), fontWeight: FontWeight.bold, height: 0.96),
+                    ),
                   ),
-                ),
-                SizedBox(height: 50),
-                ScrollAnimatedWrapper(
-                  visibilityKey: Key('Presentamos-5pro-ecobag'),
-                  child: Text(
-                    "Presentamos la 5PRO Ecobag. Diseñada con cinco sellos de alta tecnología, pensada para la resistencia, la sostenibilidad y el rendimiento. Creada para enfrentar cualquier desafío con estilo y fuerza, es la solución de empaque definitiva para marcas conscientes que no se conforman.",
-                    style: TextStyle(color: Colors.white, fontSize: (screenWidth * 0.3).clamp(18, 24), height: 0.9, fontWeight: FontWeight.w400),
-                    textAlign: TextAlign.center,
+                  SizedBox(height: isMobile ? 60 : 40),
+                  ScrollAnimatedWrapper(
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      "Presentamos la 5PRO Ecobag. Diseñada con cinco sellos de alta tecnología, pensada para la resistencia, la sostenibilidad y el rendimiento. Creada para enfrentar cualquier desafío con estilo y fuerza, es la solución de empaque definitiva para marcas conscientes que no se conforman.",
+                      style: TextStyle(color: Colors.white, fontSize: r.fs(2, 30), height: 0.99),
+                    ),
                   ),
-                ),
-                SizedBox(height: 50),
+                  SizedBox(height: isMobile ? 60 : 40),
 
-                ScrollAnimatedWrapper(
-                  visibilityKey: Key('Imagenes-bolsa-5pro'),
-                  child: Container(
-                    height: 700,
-                    width: screenWidth,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.grey),
-                    child: Image.asset("img/ecobag/5pro/bags.webp", fit: BoxFit.cover),
+                  ScrollAnimatedWrapper(
+                    child: Container(
+                      height: r.wp(100, max: 700),
+                      width: r.wp(100, max: 700),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Color.fromARGB(255, 122, 194, 88)),
+                      child: ValueListenableBuilder<bool>(
+                        valueListenable: videoBlurNotifier,
+                        builder: (context, isBlur, _) {
+                          return VideoFlutter(
+                            src: 'assets/videos/ecobag/5pro/loop.webm',
+                            blur: isBlur,
+                            loop: true,
+                            showControls: true,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -269,163 +196,127 @@ class SliverWithNewStandar extends StatelessWidget {
   }
 }
 
-//Contenedores con información
-class SliverAboutFiveProEco extends StatefulWidget {
-  final double screenWidth;
-  final Color green;
+//---------Scroll Nuestra 5 Pro------------
+class Scroll4FunctionsSliver extends StatefulWidget {
+  const Scroll4FunctionsSliver({super.key, required this.r, required this.green, required this.isMobile});
+
   final bool isMobile;
-  const SliverAboutFiveProEco({super.key, required this.screenWidth, required this.green, required this.isMobile});
+  final Responsive r;
+  final Color green;
 
   @override
-  State<SliverAboutFiveProEco> createState() => _SliverAboutFiveProEcoState();
+  State<Scroll4FunctionsSliver> createState() => _Scroll4FunctionsSliverState();
 }
 
-class _SliverAboutFiveProEcoState extends State<SliverAboutFiveProEco> {
-  final ScrollController _scrollController = ScrollController();
-  bool canScrollLeft = false;
-  bool canScrollRight = true;
+class _Scroll4FunctionsSliverState extends State<Scroll4FunctionsSliver> {
+  final ScrollController _scroll = ScrollController();
+  bool _canScrollLeft = false;
+  bool _canScrollRight = true;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_checkScroll);
+    _scroll.addListener(_checkScroll);
   }
 
   void _checkScroll() {
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final offset = _scrollController.offset;
+    final maxScroll = _scroll.position.maxScrollExtent;
+    final offset = _scroll.offset;
     setState(() {
-      canScrollLeft = offset > 0;
-      canScrollRight = offset < maxScroll;
+      _canScrollLeft = offset > 0;
+      _canScrollRight = offset < maxScroll;
     });
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _scroll.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final double cardWidth =
-        widget.isMobile
-            ? widget.screenWidth *
-                0.7 // más ancho en mobile
-            : (widget.screenWidth * 0.8).clamp(0, 1000);
-
-    final double cardHeight =
-        widget.isMobile
-            ? widget.screenWidth *
-                0.9 // cuadrado en mobile
-            : (widget.screenWidth * 0.5).clamp(0, 500);
-
-    final List<String> nuestraEcoBag5Pro = [
-      'Sello de sustentabilidad con estilo profesional',
-      'Diseño 5PRO: elegante, resistente y consciente',
-      'Fabricada con materiales reciclables y compostables',
-      'Sellado hermético y tecnología multipunto',
-      'Ideal para marcas que buscan impacto y responsabilidad',
+    final List<dynamic> nuestraEcoBag5Pro = [
+      {'text': 'Sello de sustentabilidad con estilo profesional', 'image': 'img/ecobag/5pro/cardLarge1.webp'},
+      {'text': 'Diseño 5PRO: elegante, resistente y consciente', 'image': 'img/ecobag/5pro/cardLarge2.webp'},
+      {'text': 'Fabricada con materiales reciclables y compostables', 'image': 'img/ecobag/5pro/cardLarge3.webp'},
+      {'text': 'Sellado hermético y tecnología multipunto', 'image': 'img/ecobag/5pro/cardLarge4.webp'},
+      {'text': 'Ideal para marcas que buscan impacto y responsabilidad', 'image': 'img/ecobag/5pro/cardLarge5.webp'},
     ];
 
     return SliverToBoxAdapter(
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 50),
-        width: widget.screenWidth,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.white, Colors.white, const Color.fromARGB(0, 255, 255, 255)],
-
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+        width: widget.r.wp(100),
+        padding: EdgeInsets.only(bottom: widget.r.dp(7), top: widget.r.hp(10, max: 100)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ScrollAnimatedWrapper(
-              visibilityKey: Key('Nuestra-5pro'),
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 60, horizontal: widget.screenWidth * 0.06),
-                child: Text(
-                  "Nuestra 5pro.",
-                  style: TextStyle(fontSize: (widget.screenWidth * 0.2).clamp(30, 50), fontWeight: FontWeight.bold, color: widget.green),
-                ),
+                padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6)),
+                child: Text("Nuestra 5PRO", style: TextStyle(fontWeight: FontWeight.bold, color: widget.green, fontSize: widget.r.fs(4, 60))),
               ),
             ),
-
-            ScrollAnimatedWrapper(
-              visibilityKey: Key('Row-contenedores-5pro'),
-              child: SingleChildScrollView(
-                controller: _scrollController,
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    ...List.generate(nuestraEcoBag5Pro.length, (index) {
-                      return Padding(
-                        padding: EdgeInsets.only(
-                          left: index == 0 ? widget.screenWidth * 0.06 : 0,
-                          right: index == 4 ? widget.screenWidth * 0.06 : 20,
-                          bottom: 50,
-                        ),
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          height: cardHeight,
-                          width: cardWidth,
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.grey),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                nuestraEcoBag5Pro[index],
-                                style: TextStyle(
-                                  fontSize: (widget.screenWidth * 0.04).clamp(0, 26),
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
+            SizedBox(height: widget.r.hp(3)),
+            SingleChildScrollView(
+              controller: _scroll,
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6)),
+              child: Row(
+                children: List.generate(nuestraEcoBag5Pro.length, (index) {
+                  final card = nuestraEcoBag5Pro[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: Container(
+                      width: widget.r.wp(80, max: 1000),
+                      height: widget.r.hp(widget.isMobile ? 40 : 60, max: 600),
+                      padding: EdgeInsets.all(widget.r.dp(2, max: 60)),
+                      margin: const EdgeInsets.symmetric(vertical: 20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(widget.isMobile ? 16 : 20),
+                        image: DecorationImage(image: AssetImage(card['image']), fit: BoxFit.cover),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            card['text'],
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: widget.r.fs(2, 32),
+                              fontWeight: FontWeight.bold,
+                              shadows: [Shadow(offset: Offset(0, 0), blurRadius: 6, color: Colors.black.withAlpha(widget.isMobile ? 150 : 130))],
+                            ),
                           ),
-                        ),
-                      );
-                    }),
-                  ],
-                ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
               ),
             ),
-            ScrollAnimatedWrapper(
-              visibilityKey: Key('Scroll-buttons'),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.06, vertical: 40),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    ArrowButton(
-                      enabled: canScrollLeft,
-                      icon: CupertinoIcons.chevron_left,
-                      onTap: () {
-                        _scrollController.animateTo(
-                          _scrollController.offset - (widget.screenWidth * 0.6),
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
-                      },
-                    ),
-                    const SizedBox(width: 20),
-                    ArrowButton(
-                      enabled: canScrollRight,
-                      icon: CupertinoIcons.chevron_right,
-                      onTap: () {
-                        _scrollController.animateTo(
-                          _scrollController.offset + (widget.screenWidth * 0.6),
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
-                      },
-                    ),
-                  ],
-                ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: widget.r.wp(8), vertical: widget.r.dp(2)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ArrowButton(
+                    enabled: _canScrollLeft,
+                    icon: CupertinoIcons.chevron_left,
+                    onTap: () {
+                      _scroll.animateTo(_scroll.offset - widget.r.wp(60), duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                    },
+                  ),
+                  SizedBox(width: widget.r.wp(3, max: 30)),
+                  ArrowButton(
+                    enabled: _canScrollRight,
+                    icon: CupertinoIcons.chevron_right,
+                    onTap: () {
+                      _scroll.animateTo(_scroll.offset + widget.r.wp(60), duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                    },
+                  ),
+                ],
               ),
             ),
           ],
@@ -435,175 +326,219 @@ class _SliverAboutFiveProEcoState extends State<SliverAboutFiveProEco> {
   }
 }
 
-//Protección ecobag
-class SliverWithProteccionEcobag5pro extends StatelessWidget {
-  const SliverWithProteccionEcobag5pro({super.key, required this.screenWidth, required this.green, required this.isMobile});
+//---------Grande poder, grande proteccion------------
+class BigPowerBigResponsabilitySliver extends StatelessWidget {
+  const BigPowerBigResponsabilitySliver({super.key, required this.r, required this.green, required this.isMobile});
 
-  final double screenWidth;
+  final Responsive r;
   final Color green;
   final bool isMobile;
 
   @override
   Widget build(BuildContext context) {
-    final textSize = (screenWidth * 0.05).clamp(16.0, 20.0);
     return SliverToBoxAdapter(
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 50, horizontal: screenWidth * 0.06),
-          margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
-          width: screenWidth < 450 ? screenWidth : screenWidth.clamp(450, 1120),
-
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
-          child: Column(
-            children: [
-              ScrollAnimatedWrapper(visibilityKey: Key('turtle'), child: Icon(CupertinoIcons.tortoise_fill, color: green, size: 80)),
-              SizedBox(height: 10),
-              ScrollAnimatedWrapper(
-                visibilityKey: Key('prtect-5pro'),
-                child: Text(
-                  textAlign: TextAlign.center,
-                  "Gran protección viene en una 5PRO ECOBAG.",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: (screenWidth * 0.1).clamp(30, 45), height: 0.95),
-                ),
+      child: ScrollAnimatedWrapper(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: r.wp(6), vertical: r.hp(10, max: 70)),
+          child: Center(
+            child: Container(
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
+              width: r.wp(100, max: 1300),
+              padding: EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  Icon(CupertinoIcons.tortoise_fill, size: r.dp(12, max: 100), color: green),
+                  Text(
+                    textAlign: TextAlign.center,
+                    "Gran protección viene en una 5PRO ECOBAG.",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: r.fs(3, 45), height: 0.95),
+                  ),
+                  SizedBox(height: isMobile ? 40 : 50),
+                  isMobile ? _buildPhone() : _buildDesktop(),
+                ],
               ),
-              SizedBox(height: 100),
-              ScrollAnimatedWrapper(
-                visibilityKey: Key('Granpoder-responsabilidad-5pro'),
-                child:
-                    isMobile
-                        ? Padding(
-                          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
-                          child: Column(
-                            children: [
-                              Text.rich(
-                                style: TextStyle(fontSize: textSize, color: Colors.black.withAlpha(150), fontWeight: FontWeight.w700),
-                                TextSpan(
-                                  children: [
-                                    TextSpan(text: "Desde su estructura multicapa hasta sus"),
-                                    TextSpan(text: "materiales ecoamigables, ", style: TextStyle(color: green)),
-                                    TextSpan(
-                                      text:
-                                          "todo está pensado para proteger tu producto sin comprometer el planeta. Su diseño inteligente se adapta a tu contenido sin exponerlo.",
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              SizedBox(height: 30),
-                              Text.rich(
-                                style: TextStyle(fontSize: textSize, color: Colors.black.withAlpha(150), fontWeight: FontWeight.w700),
-                                TextSpan(
-                                  children: [
-                                    TextSpan(text: "Su empaque actúa como una defensa natural, "),
-                                    TextSpan(text: "creada para conservar, resistir y proteger, sin dejar huella. ", style: TextStyle(color: green)),
-                                    TextSpan(
-                                      text:
-                                          "Utilizamos materiales compostables y estructuras inteligentes que entienden lo que tu producto necesita, sin comprometer su integridad.",
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                        : Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Text.rich(
-                                style: TextStyle(fontSize: textSize, color: Colors.black.withAlpha(150), fontWeight: FontWeight.w700),
-                                TextSpan(
-                                  children: [
-                                    TextSpan(text: "Desde su estructura multicapa hasta sus"),
-                                    TextSpan(text: "materiales ecoamigables, ", style: TextStyle(color: green)),
-                                    TextSpan(
-                                      text:
-                                          "todo está pensado para proteger tu producto sin comprometer el planeta. Su diseño inteligente se adapta a tu contenido sin exponerlo.",
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Text.rich(
-                                style: TextStyle(fontSize: textSize, color: Colors.black.withAlpha(150), fontWeight: FontWeight.w700),
-                                TextSpan(
-                                  children: [
-                                    TextSpan(text: "Su empaque actúa como una defensa natural, "),
-                                    TextSpan(text: "creada para conservar, resistir y proteger, sin dejar huella. ", style: TextStyle(color: green)),
-                                    TextSpan(
-                                      text:
-                                          "Utilizamos materiales compostables y estructuras inteligentes que entienden lo que tu producto necesita, sin comprometer su integridad.",
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
+
+  Padding _buildDesktop() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: r.wp(6), vertical: r.hp(16, max: 70)),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Text.rich(
+              style: TextStyle(fontSize: r.fs(1.8, 22), color: Colors.black.withAlpha(150), fontWeight: FontWeight.w700),
+              TextSpan(
+                children: [
+                  TextSpan(text: "Desde su estructura multicapa hasta sus"),
+                  TextSpan(text: "materiales ecoamigables, ", style: TextStyle(color: green)),
+                  TextSpan(
+                    text:
+                        "todo está pensado para proteger tu producto sin comprometer el planeta. Su diseño inteligente se adapta a tu contenido sin exponerlo.",
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(width: 40),
+          Expanded(
+            child: Text.rich(
+              style: TextStyle(fontSize: r.fs(1.8, 22), color: Colors.black.withAlpha(150), fontWeight: FontWeight.w700),
+              TextSpan(
+                children: [
+                  TextSpan(text: "Su empaque actúa como una defensa natural, "),
+                  TextSpan(text: "creada para conservar, resistir y proteger, sin dejar huella. ", style: TextStyle(color: green)),
+                  TextSpan(
+                    text:
+                        "Utilizamos materiales compostables y estructuras inteligentes que entienden lo que tu producto necesita, sin comprometer su integridad.",
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Padding _buildPhone() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: r.wp(6)),
+      child: Column(
+        children: [
+          Text.rich(
+            style: TextStyle(fontSize: r.fs(2, 26), color: Colors.black.withAlpha(150), fontWeight: FontWeight.w700),
+            TextSpan(
+              children: [
+                TextSpan(text: "Desde su estructura multicapa hasta sus"),
+                TextSpan(text: "materiales ecoamigables, ", style: TextStyle(color: green)),
+                TextSpan(
+                  text:
+                      "todo está pensado para proteger tu producto sin comprometer el planeta. Su diseño inteligente se adapta a tu contenido sin exponerlo.",
+                ),
+              ],
+            ),
+          ),
+
+          SizedBox(height: 30),
+          Text.rich(
+            style: TextStyle(fontSize: r.fs(2, 26), color: Colors.black.withAlpha(150), fontWeight: FontWeight.w700),
+            TextSpan(
+              children: [
+                TextSpan(text: "Su empaque actúa como una defensa natural, "),
+                TextSpan(text: "creada para conservar, resistir y proteger, sin dejar huella. ", style: TextStyle(color: green)),
+                TextSpan(
+                  text:
+                      "Utilizamos materiales compostables y estructuras inteligentes que entienden lo que tu producto necesita, sin comprometer su integridad.",
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-//Video 5pro Ecobag
-class SliverVideo5ProEcobag extends StatelessWidget {
-  final double screenWidth;
+//---------Video 5PRO------------
+class VideoSliver5PROEcoSliver extends StatelessWidget {
+  final Responsive r;
   final Color green;
+  const VideoSliver5PROEcoSliver({super.key, required this.r, required this.green});
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverLayoutBuilder(
+      builder: (context, constraints) {
+        final sliverHeight = r.hp(80, max: 1100);
+        final offset = constraints.scrollOffset;
+
+        // 📌 Queremos que empiece apenas entra y termine cuando se ve el 30%
+        final visibleStart = 0.0; // entra
+        final visibleEnd = sliverHeight * 0.3; // 30% visible
+
+        double progress = ((offset - visibleStart) / (visibleEnd - visibleStart)).clamp(0.0, 1.0);
+
+        final borderRadius = BorderRadius.circular(30 * progress);
+        final pdh = r.wp(4) * progress;
+
+        return SliverToBoxAdapter(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ScrollAnimatedWrapper(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: r.wp(6), vertical: r.hp(2, max: 20)),
+                  child: Text(
+                    "Siente el terminado. 5PRO. Papel, Válvula. Perfecto",
+                    style: TextStyle(color: green, fontSize: r.fs(3.5, 50), fontWeight: FontWeight.bold, height: 0.99),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: pdh),
+                child: ClipRRect(
+                  borderRadius: borderRadius,
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: r.hp(80, max: 1100),
+                    child: ValueListenableBuilder<bool>(
+                      valueListenable: videoBlurNotifier,
+                      builder: (context, isBlur, _) {
+                        return VideoFlutter(
+                          src: 'assets/videos/ecobag/5pro/video.webm',
+                          blur: isBlur,
+                          loop: true,
+                          showControls: true,
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+//---------Ahora respira mejor con la 5PRO------------
+class NowBreatheSliver extends StatelessWidget {
+  const NowBreatheSliver({super.key, required this.isMobile, required this.r, required this.green});
+
   final bool isMobile;
-  const SliverVideo5ProEcobag({super.key, required this.screenWidth, required this.green, required this.isMobile});
+  final Responsive r;
+  final Color green;
 
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: isMobile ? 50 : 150),
+        padding: EdgeInsets.symmetric(vertical: isMobile ? 20 : 50),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ScrollAnimatedWrapper(
-              visibilityKey: Key('Siente-el-terminado'),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: 50),
-                child: AnimatedTextKit(
-                  animatedTexts: [
-                    ColorizeAnimatedText(
-                      "Siente el terminado. 5PRO. Papel, Válvula. Perfecto",
-                      textStyle: TextStyle(fontSize: (screenWidth * 0.2).clamp(30, 50), fontWeight: FontWeight.bold),
-                      colors: [green, Colors.white, green],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            Center(child: Container(width: (screenWidth).clamp(0, 1800).toDouble(), height: 800, color: Colors.grey)),
-
-            ScrollAnimatedWrapper(
-              visibilityKey: Key('5pro-respira'),
               child: SizedBox(
                 width: 1120,
                 child: Padding(
-                  padding: EdgeInsets.only(right: screenWidth * 0.06, left: screenWidth * 0.06, top: 100),
+                  padding: EdgeInsets.only(right: r.wp(6), left: r.wp(6), top: 100),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Ahora tu producto respira... y dura más.",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: (screenWidth * 0.1).clamp(30, 50)),
-                      ),
+                      Text("Ahora tu producto respira... y dura más.", style: TextStyle(fontWeight: FontWeight.bold, fontSize: r.fs(3, 50))),
                       SizedBox(height: 30),
                       Text.rich(
-                        style: TextStyle(
-                          fontSize: (screenWidth * 0.05).clamp(16, 20),
-                          color: Colors.black.withAlpha(150),
-                          fontWeight: FontWeight.w700,
-                        ),
+                        style: TextStyle(fontSize: r.fs(1.9, 22), color: Colors.black.withAlpha(150), fontWeight: FontWeight.w700),
                         TextSpan(
                           children: [
                             TextSpan(
@@ -630,19 +565,19 @@ class SliverVideo5ProEcobag extends StatelessWidget {
   }
 }
 
-//Sección de información de 5pro
-class SliverAboutMoreInfo5ProEco extends StatefulWidget {
-  final double screenWidth;
+//---------Cards con información de 5PRO------------
+class MoreInformation5PRO extends StatefulWidget {
+  final Responsive r;
   final Color green;
   final bool isMobile;
 
-  const SliverAboutMoreInfo5ProEco({super.key, required this.screenWidth, required this.green, required this.isMobile});
+  const MoreInformation5PRO({super.key, required this.r, required this.green, required this.isMobile});
 
   @override
-  State<SliverAboutMoreInfo5ProEco> createState() => _SliverAboutMoreInfo5ProEcoState();
+  State<MoreInformation5PRO> createState() => _MoreInformation5PROState();
 }
 
-class _SliverAboutMoreInfo5ProEcoState extends State<SliverAboutMoreInfo5ProEco> {
+class _MoreInformation5PROState extends State<MoreInformation5PRO> {
   final ScrollController _scrollController = ScrollController();
   bool canScrollLeft = false;
   bool canScrollRight = true;
@@ -670,26 +605,42 @@ class _SliverAboutMoreInfo5ProEcoState extends State<SliverAboutMoreInfo5ProEco>
 
   @override
   Widget build(BuildContext context) {
-    final List<String> nuestra5pro = [
-      'Disponible en estructuras de 3 y 4 láminas, con papeles kraft de alta resistencia y barreras intermedias biodegradables. Ideal para conservar aromas, texturas y frescura.',
-      'Terminación 100% papel: kraft natural o blanco, con opción de ventana troquelada. Transmite autenticidad, sostenibilidad y compromiso ambiental.',
-      'Compatible con válvula desgasificadora, perfecta para productos que continúan liberando gases como el café recién tostado o granos fermentados.',
-      'Diseñada para ser sellada en líneas automáticas y semi-automáticas. Su estructura laminada garantiza un cierre seguro y sin fugas.',
-      'Soporta impresión flexográfica y digital sobre papel. Acabados disponibles: mate natural o barniz protector para mejor resistencia y presencia en góndola.',
+    final List<dynamic> nuestra5pro = [
+      {
+        'text':
+            'Disponible en estructuras de 3 y 4 láminas, con papeles kraft de alta resistencia y barreras intermedias biodegradables. Ideal para conservar aromas, texturas y frescura.',
+        'image': 'img/ecobag/5pro/cardShort1.webp',
+      },
+      {
+        'text':
+            'Terminación 100% papel: kraft natural o blanco, con opción de ventana troquelada. Transmite autenticidad, sostenibilidad y compromiso ambiental.',
+        'image': 'img/ecobag/5pro/cardShort2.webp',
+      },
+      {
+        'text':
+            'Compatible con válvula desgasificadora, perfecta para productos que continúan liberando gases como el café recién tostado o granos fermentados.',
+        'image': 'img/ecobag/5pro/cardShort3.webp',
+      },
+      {
+        'text': 'Diseñada para ser sellada en líneas automáticas y semi-automáticas. Su estructura laminada garantiza un cierre seguro y sin fugas.',
+        'image': 'img/ecobag/5pro/cardShort4.webp',
+      },
+      {
+        'text':
+            'Soporta impresión flexográfica y digital sobre papel. Acabados disponibles: mate natural o barniz protector para mejor resistencia y presencia en góndola.',
+        'image': 'img/ecobag/5pro/cardShort5.webp',
+      },
     ];
 
-    final cardSize = (widget.screenWidth * 0.450).clamp(0, 450).toDouble();
-    final paddingSide = widget.screenWidth * 0.06;
-
     return SliverToBoxAdapter(
-      child: SizedBox(
-        width: widget.screenWidth,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ScrollAnimatedWrapper(
-              visibilityKey: Key('scroll-informacion-5pro-eco'),
-              child: SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: widget.r.hp(16, max: 50)),
+        child: SizedBox(
+          width: widget.r.wp(100),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SingleChildScrollView(
                 controller: _scrollController,
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -697,12 +648,12 @@ class _SliverAboutMoreInfo5ProEcoState extends State<SliverAboutMoreInfo5ProEco>
                   children: List.generate(nuestra5pro.length, (index) {
                     return Padding(
                       padding: EdgeInsets.only(
-                        left: index == 0 ? paddingSide : 0,
-                        right: index == nuestra5pro.length - 1 ? paddingSide : 20,
+                        left: index == 0 ? widget.r.wp(6) : 0,
+                        right: index == nuestra5pro.length - 1 ? widget.r.wp(6) : 20,
                         bottom: 50,
                       ),
                       child: SizedBox(
-                        width: cardSize,
+                        width: widget.r.wp(70, max: 500),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -710,21 +661,21 @@ class _SliverAboutMoreInfo5ProEcoState extends State<SliverAboutMoreInfo5ProEco>
                           children: [
                             Container(
                               padding: const EdgeInsets.all(16),
-                              height: cardSize,
-                              width: cardSize,
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.grey),
-                              child: Image.asset("img/smartbag/5pro.webp"),
+                              height: widget.r.wp(70, max: 500),
+
+                              width: widget.r.wp(70, max: 500),
+
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                image: DecorationImage(image: AssetImage(nuestra5pro[index]['image'])),
+                              ),
                             ),
                             const SizedBox(height: 16),
                             ConstrainedBox(
                               constraints: const BoxConstraints(maxWidth: 400),
                               child: Text(
-                                nuestra5pro[index],
-                                style: TextStyle(
-                                  fontSize: (widget.screenWidth * 0.03).clamp(12, 18),
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black.withAlpha(180),
-                                ),
+                                nuestra5pro[index]['text'],
+                                style: TextStyle(fontSize: widget.r.fs(1.8, 20), fontWeight: FontWeight.w600, color: Colors.black.withAlpha(180)),
                                 textAlign: TextAlign.start,
                               ),
                             ),
@@ -735,11 +686,8 @@ class _SliverAboutMoreInfo5ProEcoState extends State<SliverAboutMoreInfo5ProEco>
                   }),
                 ),
               ),
-            ),
-            ScrollAnimatedWrapper(
-              visibilityKey: Key('scrol-button-info-5pro'),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: paddingSide, vertical: 40),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6), vertical: 40),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -748,7 +696,7 @@ class _SliverAboutMoreInfo5ProEcoState extends State<SliverAboutMoreInfo5ProEco>
                       icon: CupertinoIcons.chevron_left,
                       onTap: () {
                         _scrollController.animateTo(
-                          _scrollController.offset - (widget.screenWidth * 0.6),
+                          _scrollController.offset - widget.r.wp(70),
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeInOut,
                         );
@@ -760,7 +708,7 @@ class _SliverAboutMoreInfo5ProEcoState extends State<SliverAboutMoreInfo5ProEco>
                       icon: CupertinoIcons.chevron_right,
                       onTap: () {
                         _scrollController.animateTo(
-                          _scrollController.offset + (widget.screenWidth * 0.6),
+                          _scrollController.offset + widget.r.wp(70),
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeInOut,
                         );
@@ -769,54 +717,6 @@ class _SliverAboutMoreInfo5ProEcoState extends State<SliverAboutMoreInfo5ProEco>
                   ],
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-//Video scrollable
-class SliverWithVideoScrollabe extends StatelessWidget {
-  const SliverWithVideoScrollabe({super.key, required this.isMobile, required this.screenWidth, required this.green});
-
-  final bool isMobile;
-  final double screenWidth;
-  final Color green;
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: isMobile ? 50 : 120),
-        color: Colors.white,
-        width: screenWidth,
-        child: ScrollAnimatedWrapper(
-          visibilityKey: Key('scroll-video'),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
-                child: Text(
-                  "Mayor vida util",
-                  style: TextStyle(fontSize: (screenWidth * 0.1).clamp(30, 60), fontWeight: FontWeight.w600, height: 0.95),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: 10),
-                child: Text(
-                  "El zipper resiste más que\nel contenido que protege.",
-                  style: TextStyle(fontSize: (screenWidth * 0.1).clamp(30, 60), color: green, fontWeight: FontWeight.w600, height: 0.95),
-                ),
-              ),
-              Container(
-                height: 600,
-                width: screenWidth,
-                color: green,
-                child: Center(child: Text("Video scroll de la bolsa ventana abriendose con el zipper y botando granos de cafe")),
-              ),
             ],
           ),
         ),
@@ -825,330 +725,689 @@ class SliverWithVideoScrollabe extends StatelessWidget {
   }
 }
 
-//Te importa nos importa
-class SliverWithCareUs extends StatelessWidget {
-  const SliverWithCareUs({super.key, required this.screenWidth});
-
-  final double screenWidth;
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: SizedBox(
-        width: min(screenWidth, 1600),
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: screenWidth * 0.06, horizontal: screenWidth * 0.06),
-            child: Column(
-              children: [
-                ScrollAnimatedWrapper(
-                  visibilityKey: Key('te-importa'),
-                  child: Text(
-                    "Te importa. Nos importa.",
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 75, 141, 44), fontSize: min(screenWidth * 0.06, 70)),
-                  ),
-                ),
-                SizedBox(height: screenWidth >= 1000 ? 50 : 100),
-                ScrollAnimatedWrapper(
-                  visibilityKey: Key('nos-importa'),
-                  child: Text(
-                    textAlign: TextAlign.center,
-                    "Desde empaques como 5PRO Ecobag®, diseñados para proteger tu producto y destacar tu marca, hasta soluciones como Ecobag®, que combinan funcionalidad con conciencia ambiental. Usamos materiales reciclables, desarrollamos opciones versátiles como válvulas y cierres herméticos, y te ofrecemos formatos pensados para cada necesidad, siempre con una visión sustentable. Porque cada detalle cuenta cuando quieres hacer las cosas bien.",
-                    style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black87, fontSize: min(screenWidth * 0.026, 25), height: 0),
-                  ),
-                ),
-                SizedBox(height: screenWidth >= 1000 ? 50 : 100),
-
-                SizedBox(
-                  width: min(screenWidth, 1600),
-                  child: ScrollAnimatedWrapper(
-                    visibilityKey: Key('info-importa'),
-                    child:
-                        screenWidth > 900
-                            ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                for (var item in [
-                                  (
-                                    CupertinoIcons.leaf_arrow_circlepath,
-                                    "Sostenibilidad real.",
-                                    "Usamos materiales reciclables y procesos responsables en toda la línea 5PRO y Ecobag®.",
-                                  ),
-                                  (
-                                    CupertinoIcons.shield_lefthalf_fill,
-                                    "Protección garantizada",
-                                    "Empaques que conservan aroma, frescura y calidad con barrera multicapa y protección UV.",
-                                  ),
-                                  (
-                                    CupertinoIcons.cube_box,
-                                    "Diseño funcional",
-                                    "Opciones como válvulas, zippers y acabados premium para destacar tu producto con estilo.",
-                                  ),
-                                ])
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                                      child: _buildBenefitBox(icon: item.$1, title: item.$2, description: item.$3, context: context),
-                                    ),
-                                  ),
-                              ],
-                            )
-                            : Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                for (var item in [
-                                  (
-                                    CupertinoIcons.leaf_arrow_circlepath,
-                                    "Sostenibilidad real.",
-                                    "Usamos materiales reciclables y procesos responsables en toda la línea 4PRO y Ecobag®.",
-                                  ),
-                                  (
-                                    CupertinoIcons.shield_lefthalf_fill,
-                                    "Protección garantizada",
-                                    "Empaques que conservan aroma, frescura y calidad con barrera multicapa y protección UV.",
-                                  ),
-                                  (
-                                    CupertinoIcons.cube_box,
-                                    "Diseño funcional",
-                                    "Opciones como válvulas, zippers y acabados premium para destacar tu producto con estilo.",
-                                  ),
-                                ])
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                                    child: _buildBenefitBox(icon: item.$1, title: item.$2, description: item.$3, context: context),
-                                  ),
-                              ],
-                            ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBenefitBox({required IconData icon, required String title, required String description, required BuildContext context}) {
-    final screenw = MediaQuery.of(context).size.width;
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: min(screenw * 0.1, 40), color: Color(0xFF4B8D2C)),
-          const SizedBox(height: 20),
-          Text(title, textAlign: TextAlign.start, style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenw * 0.03, 24))),
-          const SizedBox(height: 10),
-          Text(description, textAlign: TextAlign.start, style: TextStyle(fontSize: min(screenw * 0.025, 22), fontWeight: FontWeight.w300)),
-        ],
-      ),
-    );
-  }
-}
-
-class SliverWithParallax extends StatefulWidget {
-  const SliverWithParallax({
-    super.key,
-    required this.screenHeight,
-    required this.screenWidth,
-    required this.green,
-    required this.scrollController,
-    required this.isMobile,
-  });
-
-  final double screenHeight;
-  final double screenWidth;
-  final Color green;
+//---------Scrollable video------------
+class VideoScrollableSliver extends StatefulWidget {
   final bool isMobile;
-  final ScrollController scrollController;
+  final Responsive r;
+  final ScrollController scroll;
+
+  const VideoScrollableSliver({super.key, required this.isMobile, required this.r, required this.scroll});
 
   @override
-  State<SliverWithParallax> createState() => _SliverWithParallaxState();
+  State<VideoScrollableSliver> createState() => _VideoScrollableSliverState();
 }
 
-class _SliverWithParallaxState extends State<SliverWithParallax> {
-  double _localScrollOffset = 0;
-  final GlobalKey _key = GlobalKey();
+double computeYOffset({
+  required BuildContext context,
+  required GlobalKey targetKey,
+  required GlobalKey limitKey,
+  required double currentYOffset,
+  required bool shouldAnimate,
+  required void Function() onStartAnimation,
+}) {
+  if (!targetKey.currentContext!.mounted || !limitKey.currentContext!.mounted) return currentYOffset;
 
-  late final List<_ParallaxIcon> _icons;
+  final RenderBox targetBox = targetKey.currentContext!.findRenderObject() as RenderBox;
+  final targetPos = targetBox.localToGlobal(Offset.zero);
+  final targetCenterY = targetPos.dy + targetBox.size.height / 2;
 
-  void _updateScrollOffset() {
-    if (!mounted) return;
+  final screenHeight = MediaQuery.of(context).size.height;
+  final screenCenterY = screenHeight / 2;
 
-    final RenderBox? renderBox = _key.currentContext?.findRenderObject() as RenderBox?;
-    if (renderBox == null) return;
+  final RenderBox limitBox = limitKey.currentContext!.findRenderObject() as RenderBox;
+  final limitPos = limitBox.localToGlobal(Offset.zero);
 
-    final position = renderBox.localToGlobal(Offset.zero);
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    // Esto hace que el efecto solo se active cuando entra al viewport
-    final offsetVisible = position.dy < screenHeight + 400 && position.dy > -renderBox.size.height;
-
-    if (offsetVisible) {
-      setState(() {
-        _localScrollOffset = screenHeight - position.dy;
-      });
-    }
+  if ((targetCenterY - screenCenterY).abs() < 10 && !shouldAnimate) {
+    onStartAnimation();
   }
+
+  if (shouldAnimate) {
+    final double maxYOffset = limitPos.dy - targetBox.size.height - 10;
+    final double targetOffset = screenCenterY - targetCenterY;
+    final double clampedTarget = min(max(0, targetOffset), maxYOffset - targetPos.dy);
+    return clampedTarget; // Actualización directa para seguir el scroll sin delay
+  }
+
+  return currentYOffset;
+}
+
+class _VideoScrollableSliverState extends State<VideoScrollableSliver> {
+  final GlobalKey greenKey = GlobalKey();
+  final GlobalKey redKey = GlobalKey();
+
+  double greenYOffset = 0.0;
+  bool isAnimatingGreen = false;
 
   @override
   void initState() {
     super.initState();
+    widget.scroll.addListener(_handleScroll);
+  }
 
-    widget.scrollController.addListener(_updateScrollOffset);
+  @override
+  void dispose() {
+    widget.scroll.removeListener(_handleScroll);
+    super.dispose();
+  }
 
-    final centerY = widget.screenHeight / 1.2;
+  void _handleScroll() {
+    final newYOffset = computeYOffset(
+      context: context,
+      targetKey: greenKey,
+      limitKey: redKey,
+      currentYOffset: greenYOffset,
+      shouldAnimate: isAnimatingGreen,
+      onStartAnimation: () {
+        isAnimatingGreen = true;
+      },
+    );
 
-    final List<String> leafAssets = ['img/ecobag/hoja1.webp', 'img/ecobag/hoja2.webp', 'img/ecobag/hoja3.webp'];
-
-    final random = Random();
-
-    _icons = List.generate(20, (index) {
-      // Rango de dispersión horizontal y vertical
-      final double top = centerY - 200 + random.nextDouble() * 400; // entre -200 y +200 desde el centro
-      final double leftPercent = 0.1 + random.nextDouble() * 0.8;
-
-      final String asset = leafAssets[random.nextInt(leafAssets.length)];
-      final double scale = 0.8 + random.nextDouble() * 0.6; // entre 0.8 y 1.4
-      final double verticalSpeed = 0.4 + random.nextDouble() * 0.3; // entre 0.4 y 0.7
-      final double horizontalShift = -20 + random.nextDouble() * 40; // entre -20 y +20
-
-      return _ParallaxIcon(
-        initialTop: top,
-        leftPercent: leftPercent,
-        asset: asset,
-        scale: scale,
-        verticalSpeed: verticalSpeed,
-        horizontalShift: horizontalShift,
-      );
+    setState(() {
+      greenYOffset = newYOffset;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.isMobile) return SliverToBoxAdapter(child: _buildMobile());
+
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return SliverToBoxAdapter(
-      child: SizedBox(
-        key: _key,
-        height: widget.screenHeight,
-        child: ScrollAnimatedWrapper(
-          visibilityKey: Key('parallax'),
-          child: Stack(
-            children: [
-              ..._icons.map((icon) => icon.build(_localScrollOffset, widget.screenWidth)),
-
-              Positioned(
-                top: (widget.screenHeight / 2) - _localScrollOffset * 0.2,
-                left: 0,
-                right: 0,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Texto principal con borde blanco
-                    Stack(
-                      children: [
-                        // Borde (stroke blanco)
-                        Text(
-                          "5PRO EcoBag®.",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: (widget.screenWidth * 0.1).clamp(30.0, 60.0),
-                            fontWeight: FontWeight.bold,
-                            foreground:
-                                Paint()
-                                  ..style = PaintingStyle.stroke
-                                  ..strokeWidth = 4
-                                  ..color = Colors.white,
-                          ),
-                        ),
-                        // Texto relleno (verde)
-                        Text(
-                          "5PRO EcoBag®.",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: (widget.screenWidth * 0.1).clamp(30.0, 60.0), fontWeight: FontWeight.bold, color: widget.green),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    // Segundo texto con borde blanco
-                    Stack(
-                      children: [
-                        // Borde blanco
-                        Text(
-                          "Haz que tu producto hable por ti.",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: (widget.screenWidth * 0.08).clamp(20.0, 50.0),
-                            fontWeight: FontWeight.bold,
-                            foreground:
-                                Paint()
-                                  ..style = PaintingStyle.stroke
-                                  ..strokeWidth = 3
-                                  ..color = Colors.white,
-                          ),
-                        ),
-                        // Texto principal
-                        Text(
-                          "Haz que tu producto hable por ti.",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: (widget.screenWidth * 0.08).clamp(20.0, 50.0), fontWeight: FontWeight.bold, color: Colors.black),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: widget.isMobile ? 50 : 100),
-                    Image.asset("img/ecobag/5pro.webp", height: widget.isMobile ? 300 : 350, fit: BoxFit.contain),
-                    SizedBox(height: widget.isMobile ? 50 : 100),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(widget.green),
-                        foregroundColor: WidgetStatePropertyAll(Colors.white),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                        child: Text(
-                          "Crear mi 5PRO",
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: (widget.screenWidth * 0.03).clamp(16, 26)),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+      child: Column(
+        children: [
+          // 🔹 Animación secuencial con desplazamiento
+          Center(
+            child: AnimatedContainer(
+              key: greenKey,
+              duration: Duration.zero,
+              curve: Curves.linear,
+              transform: Matrix4.translationValues(0, greenYOffset, 0),
+              width: screenHeight * 1.1,
+              child: ImageSequenceScroller(
+                framePrefix: 'img/ecobag/5pro/frames/frame',
+                frameExtension: 'webp',
+                totalFrames: 227,
+                width: double.infinity,
+                externalScrollController: widget.scroll,
+                pixelsPerFrame: 5.0,
+                frameCalculationMode: 'clamp',
               ),
-            ],
+            ),
           ),
-        ),
+
+          // 🔴 Punto de corte que marca el final del scroll controlado
+          Padding(padding: const EdgeInsets.only(top: 294 * 5), child: SizedBox(key: redKey, height: 100, width: double.infinity)),
+        ],
+      ),
+    );
+  }
+
+  Padding _buildMobile() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6)),
+      child: Column(
+        children:
+            ['0046', '0111', '0186', '0250'].map((frame) {
+              return ScrollAnimatedWrapper(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 16, top: 16),
+                  child: Image.asset(
+                    'img/smartbag/4pro/frames/frame$frame.webp',
+                    width: double.infinity,
+                    fit: BoxFit.contain,
+                    cacheWidth: 1920,
+                    filterQuality: FilterQuality.high,
+                  ),
+                ),
+              );
+            }).toList(),
       ),
     );
   }
 }
 
-class _ParallaxIcon {
-  final double initialTop;
-  final double leftPercent; // 0.0 - 1.0
-  final String asset;
-  final double scale;
-  final double verticalSpeed;
-  final double horizontalShift;
+// //Inicio de la página
+// class SliverToStartFiveProEco extends StatefulWidget {
+//   const SliverToStartFiveProEco({super.key, required this.screenHeight, required this.screenWidth, required this.isMobile, required this.green});
 
-  _ParallaxIcon({
-    required this.initialTop,
-    required this.leftPercent,
-    required this.asset,
-    required this.scale,
-    required this.verticalSpeed,
-    required this.horizontalShift,
-  });
+//   final bool isMobile;
+//   final double screenHeight;
+//   final double screenWidth;
+//   final Color green;
 
-  Widget build(double scrollOffset, double screenWidth) {
-    return Positioned(
-      top: initialTop - scrollOffset * verticalSpeed,
-      left: screenWidth * leftPercent + scrollOffset * 0.15 * (horizontalShift / 20),
-      child: Transform.scale(scale: scale, child: Opacity(opacity: 0.75, child: Image.asset(asset, width: 50, height: 50))),
-    );
-  }
-}
+//   @override
+//   State<SliverToStartFiveProEco> createState() => _SliverToStartFiveProEcoState();
+// }
+
+// class _SliverToStartFiveProEcoState extends State<SliverToStartFiveProEco> with TickerProviderStateMixin {
+//   late AnimationController _bagController;
+//   late Animation<double> _bagScale;
+//   late Animation<double> _bagOpacity;
+
+//   late AnimationController _textController;
+//   late Animation<double> _textScale;
+//   late Animation<double> _textOpacity;
+
+//   late Animation<Offset> _bagFloatOffset;
+//   late AnimationController _bagFloatController;
+
+//   @override
+//   void initState() {
+//     super.initState();
+
+//     _bagController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1800));
+//     _textController = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
+
+//     _bagOpacity = CurvedAnimation(parent: _bagController, curve: Curves.easeIn);
+//     _bagFloatController = AnimationController(vsync: this, duration: const Duration(seconds: 2))
+//       ..repeat(reverse: true); // Movimiento continuo arriba-abajo
+
+//     _bagFloatOffset = Tween<Offset>(
+//       begin: const Offset(0, -0.02),
+//       end: const Offset(0, 0.02),
+//     ).animate(CurvedAnimation(parent: _bagFloatController, curve: Curves.easeInOut));
+
+//     _textOpacity = CurvedAnimation(parent: _textController, curve: Curves.easeIn);
+
+//     _startAnimationSequence();
+//   }
+
+//   void _startAnimationSequence() async {
+//     await _bagController.forward();
+//     await Future.delayed(const Duration(milliseconds: 200));
+//     _textController.forward();
+//   }
+
+//   @override
+//   void dispose() {
+//     _bagController.dispose();
+//     _textController.dispose();
+//     _bagFloatController.dispose();
+
+//     super.dispose();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return SliverToBoxAdapter(
+//       child: Container(
+//         width: widget.screenWidth,
+//         constraints: BoxConstraints(minHeight: widget.screenHeight - 100),
+//         child: LayoutBuilder(
+//           builder: (context, constraints) {
+//             final double baseTextSize = (constraints.maxWidth * 0.06).clamp(30.0, 90.0);
+//             final double imageHeight = (constraints.maxHeight * 0.35).clamp(180.0, 500.0);
+
+//             _bagScale = Tween<double>(
+//               begin: widget.isMobile ? 0.6 : 0.7,
+//               end: widget.isMobile ? 1.8 : 1.3,
+//             ).animate(CurvedAnimation(parent: _bagController, curve: Curves.fastEaseInToSlowEaseOut));
+
+//             _textScale = Tween<double>(
+//               begin: widget.isMobile ? 0.6 : 0.7,
+//               end: widget.isMobile ? 2.0 : 2.6,
+//             ).animate(CurvedAnimation(parent: _textController, curve: Curves.fastEaseInToSlowEaseOut));
+
+//             return widget.isMobile
+//                 ? Padding(
+//                   padding: EdgeInsetsGeometry.symmetric(vertical: 45),
+//                   child: Column(
+//                     mainAxisAlignment: MainAxisAlignment.center,
+//                     crossAxisAlignment: CrossAxisAlignment.center,
+//                     children: [
+//                       FadeTransition(
+//                         opacity: _bagOpacity,
+//                         child: ScaleTransition(scale: _bagScale, child: Image.asset('img/ecobag/5pro/inicio.webp', height: imageHeight)),
+//                       ),
+//                       SizedBox(height: widget.screenWidth * 0.3),
+//                       FadeTransition(
+//                         opacity: _textOpacity,
+//                         child: ScaleTransition(
+//                           scale: _textScale,
+//                           child: Text(
+//                             '5PRO Ecobag',
+//                             style: TextStyle(fontSize: baseTextSize, fontWeight: FontWeight.w600, letterSpacing: 1.2, color: widget.green),
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 )
+//                 : Stack(
+//                   alignment: Alignment.center,
+//                   children: [
+//                     Positioned(
+//                       top: 100,
+//                       left: 200,
+//                       child: FadeTransition(
+//                         opacity: _textOpacity,
+//                         child: ScaleTransition(
+//                           scale: _textScale,
+//                           child: Text(
+//                             '5PRO ',
+//                             style: TextStyle(fontSize: baseTextSize, fontWeight: FontWeight.w600, letterSpacing: 1.2, color: widget.green),
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                     Positioned(
+//                       bottom: 70,
+//                       right: 200,
+//                       child: FadeTransition(
+//                         opacity: _textOpacity,
+//                         child: ScaleTransition(
+//                           scale: _textScale,
+//                           child: Text(
+//                             'Ecobag ',
+//                             style: TextStyle(fontSize: baseTextSize, fontWeight: FontWeight.w600, letterSpacing: 1.2, color: widget.green),
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                     FadeTransition(
+//                       opacity: _bagOpacity,
+//                       child: SlideTransition(
+//                         position: _bagFloatOffset,
+//                         child: ScaleTransition(
+//                           scale: _bagScale,
+//                           child: Transform.rotate(
+//                             angle: math.pi * 2.1,
+//                             child: MouseRegion(
+//                               cursor: SystemMouseCursors.click,
+//                               child: GestureDetector(onTap: () {}, child: Image.asset('img/ecobag/5pro/inicio.webp', height: imageHeight)),
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 );
+//           },
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
+// //Sección de información de 5pro
+
+
+// //Video scrollable
+// class SliverWithVideoScrollabe extends StatelessWidget {
+//   const SliverWithVideoScrollabe({super.key, required this.isMobile, required this.screenWidth, required this.green});
+
+//   final bool isMobile;
+//   final double screenWidth;
+//   final Color green;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return SliverToBoxAdapter(
+//       child: Container(
+//         padding: EdgeInsets.symmetric(vertical: isMobile ? 50 : 120),
+//         color: Colors.white,
+//         width: screenWidth,
+//         child: ScrollAnimatedWrapper(
+//           visibilityKey: Key('scroll-video'),
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               Padding(
+//                 padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
+//                 child: Text(
+//                   "Mayor vida util",
+//                   style: TextStyle(fontSize: (screenWidth * 0.1).clamp(30, 60), fontWeight: FontWeight.w600, height: 0.95),
+//                 ),
+//               ),
+//               Padding(
+//                 padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: 10),
+//                 child: Text(
+//                   "El zipper resiste más que\nel contenido que protege.",
+//                   style: TextStyle(fontSize: (screenWidth * 0.1).clamp(30, 60), color: green, fontWeight: FontWeight.w600, height: 0.95),
+//                 ),
+//               ),
+//               Container(
+//                 height: 600,
+//                 width: screenWidth,
+//                 color: green,
+//                 child: Center(child: Text("Video scroll de la bolsa ventana abriendose con el zipper y botando granos de cafe")),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+// //Te importa nos importa
+// class SliverWithCareUs extends StatelessWidget {
+//   const SliverWithCareUs({super.key, required this.screenWidth});
+
+//   final double screenWidth;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return SliverToBoxAdapter(
+//       child: SizedBox(
+//         width: min(screenWidth, 1600),
+//         child: Center(
+//           child: Padding(
+//             padding: EdgeInsets.symmetric(vertical: screenWidth * 0.06, horizontal: screenWidth * 0.06),
+//             child: Column(
+//               children: [
+//                 ScrollAnimatedWrapper(
+//                   visibilityKey: Key('te-importa'),
+//                   child: Text(
+//                     "Te importa. Nos importa.",
+//                     style: TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 75, 141, 44), fontSize: min(screenWidth * 0.06, 70)),
+//                   ),
+//                 ),
+//                 SizedBox(height: screenWidth >= 1000 ? 50 : 100),
+//                 ScrollAnimatedWrapper(
+//                   visibilityKey: Key('nos-importa'),
+//                   child: Text(
+//                     textAlign: TextAlign.center,
+//                     "Desde empaques como 5PRO Ecobag®, diseñados para proteger tu producto y destacar tu marca, hasta soluciones como Ecobag®, que combinan funcionalidad con conciencia ambiental. Usamos materiales reciclables, desarrollamos opciones versátiles como válvulas y cierres herméticos, y te ofrecemos formatos pensados para cada necesidad, siempre con una visión sustentable. Porque cada detalle cuenta cuando quieres hacer las cosas bien.",
+//                     style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black87, fontSize: min(screenWidth * 0.026, 25), height: 0),
+//                   ),
+//                 ),
+//                 SizedBox(height: screenWidth >= 1000 ? 50 : 100),
+
+//                 SizedBox(
+//                   width: min(screenWidth, 1600),
+//                   child: ScrollAnimatedWrapper(
+//                     visibilityKey: Key('info-importa'),
+//                     child:
+//                         screenWidth > 900
+//                             ? Row(
+//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                               crossAxisAlignment: CrossAxisAlignment.start,
+//                               children: [
+//                                 for (var item in [
+//                                   (
+//                                     CupertinoIcons.leaf_arrow_circlepath,
+//                                     "Sostenibilidad real.",
+//                                     "Usamos materiales reciclables y procesos responsables en toda la línea 5PRO y Ecobag®.",
+//                                   ),
+//                                   (
+//                                     CupertinoIcons.shield_lefthalf_fill,
+//                                     "Protección garantizada",
+//                                     "Empaques que conservan aroma, frescura y calidad con barrera multicapa y protección UV.",
+//                                   ),
+//                                   (
+//                                     CupertinoIcons.cube_box,
+//                                     "Diseño funcional",
+//                                     "Opciones como válvulas, zippers y acabados premium para destacar tu producto con estilo.",
+//                                   ),
+//                                 ])
+//                                   Expanded(
+//                                     child: Padding(
+//                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+//                                       child: _buildBenefitBox(icon: item.$1, title: item.$2, description: item.$3, context: context),
+//                                     ),
+//                                   ),
+//                               ],
+//                             )
+//                             : Column(
+//                               crossAxisAlignment: CrossAxisAlignment.stretch,
+//                               children: [
+//                                 for (var item in [
+//                                   (
+//                                     CupertinoIcons.leaf_arrow_circlepath,
+//                                     "Sostenibilidad real.",
+//                                     "Usamos materiales reciclables y procesos responsables en toda la línea 4PRO y Ecobag®.",
+//                                   ),
+//                                   (
+//                                     CupertinoIcons.shield_lefthalf_fill,
+//                                     "Protección garantizada",
+//                                     "Empaques que conservan aroma, frescura y calidad con barrera multicapa y protección UV.",
+//                                   ),
+//                                   (
+//                                     CupertinoIcons.cube_box,
+//                                     "Diseño funcional",
+//                                     "Opciones como válvulas, zippers y acabados premium para destacar tu producto con estilo.",
+//                                   ),
+//                                 ])
+//                                   Padding(
+//                                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+//                                     child: _buildBenefitBox(icon: item.$1, title: item.$2, description: item.$3, context: context),
+//                                   ),
+//                               ],
+//                             ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget _buildBenefitBox({required IconData icon, required String title, required String description, required BuildContext context}) {
+//     final screenw = MediaQuery.of(context).size.width;
+//     return Padding(
+//       padding: const EdgeInsets.all(8.0),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         mainAxisSize: MainAxisSize.min,
+//         children: [
+//           Icon(icon, size: min(screenw * 0.1, 40), color: Color(0xFF4B8D2C)),
+//           const SizedBox(height: 20),
+//           Text(title, textAlign: TextAlign.start, style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenw * 0.03, 24))),
+//           const SizedBox(height: 10),
+//           Text(description, textAlign: TextAlign.start, style: TextStyle(fontSize: min(screenw * 0.025, 22), fontWeight: FontWeight.w300)),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+// class SliverWithParallax extends StatefulWidget {
+//   const SliverWithParallax({
+//     super.key,
+//     required this.screenHeight,
+//     required this.screenWidth,
+//     required this.green,
+//     required this.scrollController,
+//     required this.isMobile,
+//   });
+
+//   final double screenHeight;
+//   final double screenWidth;
+//   final Color green;
+//   final bool isMobile;
+//   final ScrollController scrollController;
+
+//   @override
+//   State<SliverWithParallax> createState() => _SliverWithParallaxState();
+// }
+
+// class _SliverWithParallaxState extends State<SliverWithParallax> {
+//   double _localScrollOffset = 0;
+//   final GlobalKey _key = GlobalKey();
+
+//   late final List<_ParallaxIcon> _icons;
+
+//   void _updateScrollOffset() {
+//     if (!mounted) return;
+
+//     final RenderBox? renderBox = _key.currentContext?.findRenderObject() as RenderBox?;
+//     if (renderBox == null) return;
+
+//     final position = renderBox.localToGlobal(Offset.zero);
+//     final screenHeight = MediaQuery.of(context).size.height;
+
+//     // Esto hace que el efecto solo se active cuando entra al viewport
+//     final offsetVisible = position.dy < screenHeight + 400 && position.dy > -renderBox.size.height;
+
+//     if (offsetVisible) {
+//       setState(() {
+//         _localScrollOffset = screenHeight - position.dy;
+//       });
+//     }
+//   }
+
+//   @override
+//   void initState() {
+//     super.initState();
+
+//     widget.scrollController.addListener(_updateScrollOffset);
+
+//     final centerY = widget.screenHeight / 1.2;
+
+//     final List<String> leafAssets = ['img/ecobag/hoja1.webp', 'img/ecobag/hoja2.webp', 'img/ecobag/hoja3.webp'];
+
+//     final random = Random();
+
+//     _icons = List.generate(20, (index) {
+//       // Rango de dispersión horizontal y vertical
+//       final double top = centerY - 200 + random.nextDouble() * 400; // entre -200 y +200 desde el centro
+//       final double leftPercent = 0.1 + random.nextDouble() * 0.8;
+
+//       final String asset = leafAssets[random.nextInt(leafAssets.length)];
+//       final double scale = 0.8 + random.nextDouble() * 0.6; // entre 0.8 y 1.4
+//       final double verticalSpeed = 0.4 + random.nextDouble() * 0.3; // entre 0.4 y 0.7
+//       final double horizontalShift = -20 + random.nextDouble() * 40; // entre -20 y +20
+
+//       return _ParallaxIcon(
+//         initialTop: top,
+//         leftPercent: leftPercent,
+//         asset: asset,
+//         scale: scale,
+//         verticalSpeed: verticalSpeed,
+//         horizontalShift: horizontalShift,
+//       );
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return SliverToBoxAdapter(
+//       child: SizedBox(
+//         key: _key,
+//         height: widget.screenHeight + 100,
+//         child: ScrollAnimatedWrapper(
+//           visibilityKey: Key('parallax'),
+//           child: Stack(
+//             children: [
+//               ..._icons.map((icon) => icon.build(_localScrollOffset, widget.screenWidth)),
+
+//               Positioned(
+//                 top: (widget.screenHeight / 2) - _localScrollOffset * 0.2,
+//                 left: 0,
+//                 right: 0,
+//                 child: Column(
+//                   mainAxisSize: MainAxisSize.min,
+//                   children: [
+//                     // Texto principal con borde blanco
+//                     Stack(
+//                       children: [
+//                         // Borde (stroke blanco)
+//                         Text(
+//                           "5PRO EcoBag®.",
+//                           textAlign: TextAlign.center,
+//                           style: TextStyle(
+//                             fontSize: (widget.screenWidth * 0.1).clamp(30.0, 60.0),
+//                             fontWeight: FontWeight.bold,
+//                             foreground:
+//                                 Paint()
+//                                   ..style = PaintingStyle.stroke
+//                                   ..strokeWidth = 4
+//                                   ..color = Colors.white,
+//                           ),
+//                         ),
+//                         // Texto relleno (verde)
+//                         Text(
+//                           "5PRO EcoBag®.",
+//                           textAlign: TextAlign.center,
+//                           style: TextStyle(fontSize: (widget.screenWidth * 0.1).clamp(30.0, 60.0), fontWeight: FontWeight.bold, color: widget.green),
+//                         ),
+//                       ],
+//                     ),
+
+//                     const SizedBox(height: 20),
+
+//                     // Segundo texto con borde blanco
+//                     Stack(
+//                       children: [
+//                         // Borde blanco
+//                         Text(
+//                           "Haz que tu producto hable por ti.",
+//                           textAlign: TextAlign.center,
+//                           style: TextStyle(
+//                             fontSize: (widget.screenWidth * 0.08).clamp(20.0, 50.0),
+//                             fontWeight: FontWeight.bold,
+//                             foreground:
+//                                 Paint()
+//                                   ..style = PaintingStyle.stroke
+//                                   ..strokeWidth = 3
+//                                   ..color = Colors.white,
+//                           ),
+//                         ),
+//                         // Texto principal
+//                         Text(
+//                           "Haz que tu producto hable por ti.",
+//                           textAlign: TextAlign.center,
+//                           style: TextStyle(fontSize: (widget.screenWidth * 0.08).clamp(20.0, 50.0), fontWeight: FontWeight.bold, color: Colors.black),
+//                         ),
+//                       ],
+//                     ),
+
+//                     SizedBox(
+//                       height: 500,
+//                       child: Image.asset("assets/img/ecobag/5pro/end.webp", height: widget.isMobile ? 350 : 400, fit: BoxFit.contain),
+//                     ),
+//                     ElevatedButton(
+//                       onPressed: () {},
+//                       style: ButtonStyle(
+//                         backgroundColor: WidgetStatePropertyAll(widget.green),
+//                         foregroundColor: WidgetStatePropertyAll(Colors.white),
+//                       ),
+//                       child: Padding(
+//                         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+//                         child: Text(
+//                           "Crear mi 5PRO",
+//                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: (widget.screenWidth * 0.03).clamp(16, 26)),
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+// class _ParallaxIcon {
+//   final double initialTop;
+//   final double leftPercent; // 0.0 - 1.0
+//   final String asset;
+//   final double scale;
+//   final double verticalSpeed;
+//   final double horizontalShift;
+
+//   _ParallaxIcon({
+//     required this.initialTop,
+//     required this.leftPercent,
+//     required this.asset,
+//     required this.scale,
+//     required this.verticalSpeed,
+//     required this.horizontalShift,
+//   });
+
+//   Widget build(double scrollOffset, double screenWidth) {
+//     return Positioned(
+//       top: initialTop - scrollOffset * verticalSpeed,
+//       left: screenWidth * leftPercent + scrollOffset * 0.15 * (horizontalShift / 20),
+//       child: Transform.scale(scale: scale, child: Opacity(opacity: 0.75, child: Image.asset(asset, width: 50, height: 50))),
+//     );
+//   }
+// }

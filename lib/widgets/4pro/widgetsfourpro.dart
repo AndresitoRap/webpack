@@ -614,13 +614,16 @@ class WeCareUsSliver extends StatelessWidget {
                                   items
                                       .map(
                                         (e) => Expanded(
-                                          child: _buildItem(
-                                            e['icon'] as IconData,
-                                            e['title'] as String,
-                                            e['description'] as String,
-                                            green,
-                                            r,
-                                            textSize,
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                                            child: _buildItem(
+                                              e['icon'] as IconData,
+                                              e['title'] as String,
+                                              e['description'] as String,
+                                              green,
+                                              r,
+                                              textSize,
+                                            ),
                                           ),
                                         ),
                                       )

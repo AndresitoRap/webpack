@@ -13,6 +13,7 @@ import 'package:webpack/pages/smartbag/fivepro.dart';
 import 'package:webpack/pages/smartbag/fourpro.dart';
 import 'package:webpack/utils/buttonarrow.dart';
 import 'package:webpack/utils/responsive.dart';
+import 'package:webpack/widgets/4pro/widgetsfourpro.dart';
 import 'package:webpack/widgets/footer.dart';
 import 'package:webpack/widgets/header.dart';
 import 'package:webpack/widgets/video.dart';
@@ -101,7 +102,7 @@ class _CommerceState extends State<Commerce> with TickerProviderStateMixin {
           break;
 
         case '5pro':
-          content = FiveProEco();
+          content = FiveProEco(r: r, subcategorie: widget.selectedSubcategorie);
           break;
 
         case 'doypack':
@@ -237,8 +238,7 @@ class _PlantillaState extends State<Plantilla> with TickerProviderStateMixin {
           ScrollWithMoreInfoSliver(r: r, widget: widget, color: color, isMobile: isMobile, route: route),
 
           DoubItSliver(r: r, isMobile: isMobile, widget: widget, color: color, route: route),
-          if ((ModalRoute.of(context)?.settings.name?.toLowerCase() ?? "").contains('ecobag'))
-            SliverWithCareUs(screenWidth: screenWidth, widget: widget),
+          if ((ModalRoute.of(context)?.settings.name?.toLowerCase() ?? "").contains('ecobag')) WeCareUsSliver(r: r, green: color, isMobile: isMobile),
           SliverToBoxAdapter(child: Padding(padding: const EdgeInsets.only(top: 50), child: Footer(isDark: true))),
         ],
       ),

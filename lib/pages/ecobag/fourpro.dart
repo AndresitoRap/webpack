@@ -842,7 +842,19 @@ class VideoSliver4PROEcoSliver extends StatelessWidget {
               child: SizedBox(
                 width: double.infinity,
                 height: r.hp(80, max: 1100),
-                child: VideoFlutter(src: 'assets/videos/ecobag/4pro/animacion.webm', blur: false, loop: true, showControls: true, fit: BoxFit.cover),
+
+                child: ValueListenableBuilder<bool>(
+                  valueListenable: videoBlurNotifier,
+                  builder: (context, isBlur, _) {
+                    return VideoFlutter(
+                      src: 'assets/videos/ecobag/4pro/animacion.webm',
+                      blur: false,
+                      loop: true,
+                      showControls: true,
+                      fit: BoxFit.cover,
+                    );
+                  },
+                ),
               ),
             ),
           ),

@@ -75,6 +75,7 @@ flutter:
     - assets/img/ecobag/
     - assets/img/ecobag/4pro/
     - assets/img/ecobag/5pro/
+    - assets/img/ecobag/5pro/frames/
     - assets/img/ecobag/doypack/
     - assets/img/smartbag/
     - assets/img/smartbag/clipart/
@@ -106,6 +107,7 @@ flutter:
     - assets/videos/smartbag/cojin/
     - assets/videos/smartbag/standpack/
     - assets/videos/ecobag/4pro/
+    - assets/videos/ecobag/5pro/
     - assets/videos/us/
       
       

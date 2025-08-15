@@ -41,10 +41,9 @@ class FiveProEco extends StatelessWidget {
           MoreInformation5PRO(r: r, green: green, isMobile: isMobile),
           VideoScrollableSliver(isMobile: isMobile, r: r, scroll: scroll),
           WeCareUsSliver(r: r, green: green, isMobile: isMobile),
+          ParallaxSliver(r: r, green: green, scrollController: scroll),
 
-          // SliverWithParallax(screenHeight: screenHeight, screenWidth: screenWidth, green: green, scrollController: _controller, isMobile: isMobile),
-
-          // SliverToStartFiveProEco(screenHeight: screenHeight, screenWidth: screenWidth, isMobile: isMobile, green: green),
+          // SliverWithParallax(green: green, screenHeight: r.hp(100), screenWidth: r.wp(100), scrollController: scroll, isMobile: isMobile),
           SliverToBoxAdapter(child: Footer()),
         ],
       ),
@@ -738,6 +737,7 @@ class VideoScrollableSliver extends StatefulWidget {
 }
 
 double computeYOffset({
+  required bool isMobile,
   required BuildContext context,
   required GlobalKey targetKey,
   required GlobalKey limitKey,
@@ -745,30 +745,33 @@ double computeYOffset({
   required bool shouldAnimate,
   required void Function() onStartAnimation,
 }) {
-  if (!targetKey.currentContext!.mounted || !limitKey.currentContext!.mounted) return currentYOffset;
+  if (!isMobile) {
+    if (!targetKey.currentContext!.mounted || !limitKey.currentContext!.mounted) return currentYOffset;
 
-  final RenderBox targetBox = targetKey.currentContext!.findRenderObject() as RenderBox;
-  final targetPos = targetBox.localToGlobal(Offset.zero);
-  final targetCenterY = targetPos.dy + targetBox.size.height / 2;
+    final RenderBox targetBox = targetKey.currentContext!.findRenderObject() as RenderBox;
+    final targetPos = targetBox.localToGlobal(Offset.zero);
+    final targetCenterY = targetPos.dy + targetBox.size.height / 2;
 
-  final screenHeight = MediaQuery.of(context).size.height;
-  final screenCenterY = screenHeight / 2;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenCenterY = screenHeight / 2;
 
-  final RenderBox limitBox = limitKey.currentContext!.findRenderObject() as RenderBox;
-  final limitPos = limitBox.localToGlobal(Offset.zero);
+    final RenderBox limitBox = limitKey.currentContext!.findRenderObject() as RenderBox;
+    final limitPos = limitBox.localToGlobal(Offset.zero);
 
-  if ((targetCenterY - screenCenterY).abs() < 10 && !shouldAnimate) {
-    onStartAnimation();
+    if ((targetCenterY - screenCenterY).abs() < 10 && !shouldAnimate) {
+      onStartAnimation();
+    }
+
+    if (shouldAnimate) {
+      final double maxYOffset = limitPos.dy - targetBox.size.height - 10;
+      final double targetOffset = screenCenterY - targetCenterY;
+      final double clampedTarget = min(max(0, targetOffset), maxYOffset - targetPos.dy);
+      return clampedTarget; // Actualización directa para seguir el scroll sin delay
+    }
+
+    return currentYOffset;
   }
-
-  if (shouldAnimate) {
-    final double maxYOffset = limitPos.dy - targetBox.size.height - 10;
-    final double targetOffset = screenCenterY - targetCenterY;
-    final double clampedTarget = min(max(0, targetOffset), maxYOffset - targetPos.dy);
-    return clampedTarget; // Actualización directa para seguir el scroll sin delay
-  }
-
-  return currentYOffset;
+  return 0;
 }
 
 class _VideoScrollableSliverState extends State<VideoScrollableSliver> {
@@ -792,6 +795,7 @@ class _VideoScrollableSliverState extends State<VideoScrollableSliver> {
 
   void _handleScroll() {
     final newYOffset = computeYOffset(
+      isMobile: widget.isMobile,
       context: context,
       targetKey: greenKey,
       limitKey: redKey,
@@ -848,12 +852,12 @@ class _VideoScrollableSliverState extends State<VideoScrollableSliver> {
       padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6)),
       child: Column(
         children:
-            ['0046', '0111', '0186', '0250'].map((frame) {
+            ['0041', '0072', '0106', '0199'].map((frame) {
               return ScrollAnimatedWrapper(
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 16, top: 16),
                   child: Image.asset(
-                    'img/smartbag/4pro/frames/frame$frame.webp',
+                    'img/ecobag/5pro/frames/frame$frame.webp',
                     width: double.infinity,
                     fit: BoxFit.contain,
                     cacheWidth: 1920,
@@ -862,6 +866,163 @@ class _VideoScrollableSliverState extends State<VideoScrollableSliver> {
                 ),
               );
             }).toList(),
+      ),
+    );
+  }
+}
+
+//---------Parallax------------
+class ParallaxSliver extends StatefulWidget {
+  const ParallaxSliver({super.key, required this.r, required this.green, required this.scrollController});
+
+  final Responsive r;
+  final Color green;
+  final ScrollController scrollController;
+
+  @override
+  State<ParallaxSliver> createState() => _ParallaxSliverState();
+}
+
+class _ParallaxSliverState extends State<ParallaxSliver> {
+  double _localScrollOffset = 0;
+  final GlobalKey _key = GlobalKey();
+
+  late final List<_ParallaxIcon> _icons;
+
+  void _updateScrollOffset() {
+    if (!mounted) return;
+
+    final RenderBox? renderBox = _key.currentContext?.findRenderObject() as RenderBox?;
+    if (renderBox == null) return;
+
+    final position = renderBox.localToGlobal(Offset.zero);
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    // Esto hace que el efecto solo se active cuando entra al viewport
+    final offsetVisible = position.dy < screenHeight + 400 && position.dy > -renderBox.size.height;
+
+    if (offsetVisible) {
+      setState(() {
+        _localScrollOffset = screenHeight - position.dy;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    widget.scrollController.addListener(_updateScrollOffset);
+
+    final centerY = widget.r.hp(90);
+
+    final List<String> leafAssets = ['img/ecobag/hoja1.webp', 'img/ecobag/hoja2.webp', 'img/ecobag/hoja3.webp'];
+
+    final random = Random();
+
+    _icons = List.generate(20, (index) {
+      // Rango de dispersión horizontal y vertical
+      final double top = centerY - 200 + random.nextDouble() * 400; // entre -200 y +200 desde el centro
+      final double leftPercent = 0.1 + random.nextDouble() * 0.8;
+
+      final String asset = leafAssets[random.nextInt(leafAssets.length)];
+      final double scale = 0.8 + random.nextDouble() * 0.6; // entre 0.8 y 1.4
+      final double verticalSpeed = 0.4 + random.nextDouble() * 0.3; // entre 0.4 y 0.7
+      final double horizontalShift = -20 + random.nextDouble() * 40; // entre -20 y +20
+
+      return _ParallaxIcon(
+        initialTop: top,
+        leftPercent: leftPercent,
+        asset: asset,
+        scale: scale,
+        verticalSpeed: verticalSpeed,
+        horizontalShift: horizontalShift,
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: SizedBox(
+        key: _key,
+
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            ..._icons.map((icon) => icon.build(_localScrollOffset, widget.r.wp(100))),
+
+            // Fondo o decoraciones con parallax (por ejemplo)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6)),
+                  child: Stack(
+                    children: [
+                      Text(
+                        "5PRO EcoBag®.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: widget.r.fs(3, 50),
+                          foreground:
+                              Paint()
+                                ..style = PaintingStyle.stroke
+                                ..strokeWidth = 3
+                                ..color = Colors.white,
+                        ),
+                      ),
+                      Text(
+                        "5PRO EcoBag®.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold, color: widget.green, fontSize: widget.r.fs(3, 50)),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: widget.r.wp(6)),
+                  child: Stack(
+                    children: [
+                      Text(
+                        "Haz que tu producto hable por ti.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: widget.r.fs(2.5, 40),
+                          fontWeight: FontWeight.bold,
+                          foreground:
+                              Paint()
+                                ..style = PaintingStyle.stroke
+                                ..strokeWidth = 2.5
+                                ..color = Colors.white,
+                        ),
+                      ),
+                      Text(
+                        "Haz que tu producto hable por ti.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: widget.r.fs(2.5, 40), fontWeight: FontWeight.bold, color: Colors.black),
+                      ),
+                    ],
+                  ),
+                ),
+                Image.asset("img/ecobag/5pro/end.webp", width: widget.r.wp(100, max: 600), fit: BoxFit.cover),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: widget.r.hp(10, max: 20)),
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(widget.green), foregroundColor: WidgetStatePropertyAll(Colors.white)),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                      child: Text("Crear mi 5PRO", style: TextStyle(fontWeight: FontWeight.bold, fontSize: widget.r.fs(2, 26))),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1030,384 +1191,30 @@ class _VideoScrollableSliverState extends State<VideoScrollableSliver> {
 //   }
 // }
 
-
 // //Sección de información de 5pro
 
+class _ParallaxIcon {
+  final double initialTop;
+  final double leftPercent; // 0.0 - 1.0
+  final String asset;
+  final double scale;
+  final double verticalSpeed;
+  final double horizontalShift;
 
-// //Video scrollable
-// class SliverWithVideoScrollabe extends StatelessWidget {
-//   const SliverWithVideoScrollabe({super.key, required this.isMobile, required this.screenWidth, required this.green});
+  _ParallaxIcon({
+    required this.initialTop,
+    required this.leftPercent,
+    required this.asset,
+    required this.scale,
+    required this.verticalSpeed,
+    required this.horizontalShift,
+  });
 
-//   final bool isMobile;
-//   final double screenWidth;
-//   final Color green;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return SliverToBoxAdapter(
-//       child: Container(
-//         padding: EdgeInsets.symmetric(vertical: isMobile ? 50 : 120),
-//         color: Colors.white,
-//         width: screenWidth,
-//         child: ScrollAnimatedWrapper(
-//           visibilityKey: Key('scroll-video'),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Padding(
-//                 padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
-//                 child: Text(
-//                   "Mayor vida util",
-//                   style: TextStyle(fontSize: (screenWidth * 0.1).clamp(30, 60), fontWeight: FontWeight.w600, height: 0.95),
-//                 ),
-//               ),
-//               Padding(
-//                 padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: 10),
-//                 child: Text(
-//                   "El zipper resiste más que\nel contenido que protege.",
-//                   style: TextStyle(fontSize: (screenWidth * 0.1).clamp(30, 60), color: green, fontWeight: FontWeight.w600, height: 0.95),
-//                 ),
-//               ),
-//               Container(
-//                 height: 600,
-//                 width: screenWidth,
-//                 color: green,
-//                 child: Center(child: Text("Video scroll de la bolsa ventana abriendose con el zipper y botando granos de cafe")),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// //Te importa nos importa
-// class SliverWithCareUs extends StatelessWidget {
-//   const SliverWithCareUs({super.key, required this.screenWidth});
-
-//   final double screenWidth;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return SliverToBoxAdapter(
-//       child: SizedBox(
-//         width: min(screenWidth, 1600),
-//         child: Center(
-//           child: Padding(
-//             padding: EdgeInsets.symmetric(vertical: screenWidth * 0.06, horizontal: screenWidth * 0.06),
-//             child: Column(
-//               children: [
-//                 ScrollAnimatedWrapper(
-//                   visibilityKey: Key('te-importa'),
-//                   child: Text(
-//                     "Te importa. Nos importa.",
-//                     style: TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 75, 141, 44), fontSize: min(screenWidth * 0.06, 70)),
-//                   ),
-//                 ),
-//                 SizedBox(height: screenWidth >= 1000 ? 50 : 100),
-//                 ScrollAnimatedWrapper(
-//                   visibilityKey: Key('nos-importa'),
-//                   child: Text(
-//                     textAlign: TextAlign.center,
-//                     "Desde empaques como 5PRO Ecobag®, diseñados para proteger tu producto y destacar tu marca, hasta soluciones como Ecobag®, que combinan funcionalidad con conciencia ambiental. Usamos materiales reciclables, desarrollamos opciones versátiles como válvulas y cierres herméticos, y te ofrecemos formatos pensados para cada necesidad, siempre con una visión sustentable. Porque cada detalle cuenta cuando quieres hacer las cosas bien.",
-//                     style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black87, fontSize: min(screenWidth * 0.026, 25), height: 0),
-//                   ),
-//                 ),
-//                 SizedBox(height: screenWidth >= 1000 ? 50 : 100),
-
-//                 SizedBox(
-//                   width: min(screenWidth, 1600),
-//                   child: ScrollAnimatedWrapper(
-//                     visibilityKey: Key('info-importa'),
-//                     child:
-//                         screenWidth > 900
-//                             ? Row(
-//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                               crossAxisAlignment: CrossAxisAlignment.start,
-//                               children: [
-//                                 for (var item in [
-//                                   (
-//                                     CupertinoIcons.leaf_arrow_circlepath,
-//                                     "Sostenibilidad real.",
-//                                     "Usamos materiales reciclables y procesos responsables en toda la línea 5PRO y Ecobag®.",
-//                                   ),
-//                                   (
-//                                     CupertinoIcons.shield_lefthalf_fill,
-//                                     "Protección garantizada",
-//                                     "Empaques que conservan aroma, frescura y calidad con barrera multicapa y protección UV.",
-//                                   ),
-//                                   (
-//                                     CupertinoIcons.cube_box,
-//                                     "Diseño funcional",
-//                                     "Opciones como válvulas, zippers y acabados premium para destacar tu producto con estilo.",
-//                                   ),
-//                                 ])
-//                                   Expanded(
-//                                     child: Padding(
-//                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-//                                       child: _buildBenefitBox(icon: item.$1, title: item.$2, description: item.$3, context: context),
-//                                     ),
-//                                   ),
-//                               ],
-//                             )
-//                             : Column(
-//                               crossAxisAlignment: CrossAxisAlignment.stretch,
-//                               children: [
-//                                 for (var item in [
-//                                   (
-//                                     CupertinoIcons.leaf_arrow_circlepath,
-//                                     "Sostenibilidad real.",
-//                                     "Usamos materiales reciclables y procesos responsables en toda la línea 4PRO y Ecobag®.",
-//                                   ),
-//                                   (
-//                                     CupertinoIcons.shield_lefthalf_fill,
-//                                     "Protección garantizada",
-//                                     "Empaques que conservan aroma, frescura y calidad con barrera multicapa y protección UV.",
-//                                   ),
-//                                   (
-//                                     CupertinoIcons.cube_box,
-//                                     "Diseño funcional",
-//                                     "Opciones como válvulas, zippers y acabados premium para destacar tu producto con estilo.",
-//                                   ),
-//                                 ])
-//                                   Padding(
-//                                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-//                                     child: _buildBenefitBox(icon: item.$1, title: item.$2, description: item.$3, context: context),
-//                                   ),
-//                               ],
-//                             ),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
-//   Widget _buildBenefitBox({required IconData icon, required String title, required String description, required BuildContext context}) {
-//     final screenw = MediaQuery.of(context).size.width;
-//     return Padding(
-//       padding: const EdgeInsets.all(8.0),
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         mainAxisSize: MainAxisSize.min,
-//         children: [
-//           Icon(icon, size: min(screenw * 0.1, 40), color: Color(0xFF4B8D2C)),
-//           const SizedBox(height: 20),
-//           Text(title, textAlign: TextAlign.start, style: TextStyle(fontWeight: FontWeight.bold, fontSize: min(screenw * 0.03, 24))),
-//           const SizedBox(height: 10),
-//           Text(description, textAlign: TextAlign.start, style: TextStyle(fontSize: min(screenw * 0.025, 22), fontWeight: FontWeight.w300)),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-// class SliverWithParallax extends StatefulWidget {
-//   const SliverWithParallax({
-//     super.key,
-//     required this.screenHeight,
-//     required this.screenWidth,
-//     required this.green,
-//     required this.scrollController,
-//     required this.isMobile,
-//   });
-
-//   final double screenHeight;
-//   final double screenWidth;
-//   final Color green;
-//   final bool isMobile;
-//   final ScrollController scrollController;
-
-//   @override
-//   State<SliverWithParallax> createState() => _SliverWithParallaxState();
-// }
-
-// class _SliverWithParallaxState extends State<SliverWithParallax> {
-//   double _localScrollOffset = 0;
-//   final GlobalKey _key = GlobalKey();
-
-//   late final List<_ParallaxIcon> _icons;
-
-//   void _updateScrollOffset() {
-//     if (!mounted) return;
-
-//     final RenderBox? renderBox = _key.currentContext?.findRenderObject() as RenderBox?;
-//     if (renderBox == null) return;
-
-//     final position = renderBox.localToGlobal(Offset.zero);
-//     final screenHeight = MediaQuery.of(context).size.height;
-
-//     // Esto hace que el efecto solo se active cuando entra al viewport
-//     final offsetVisible = position.dy < screenHeight + 400 && position.dy > -renderBox.size.height;
-
-//     if (offsetVisible) {
-//       setState(() {
-//         _localScrollOffset = screenHeight - position.dy;
-//       });
-//     }
-//   }
-
-//   @override
-//   void initState() {
-//     super.initState();
-
-//     widget.scrollController.addListener(_updateScrollOffset);
-
-//     final centerY = widget.screenHeight / 1.2;
-
-//     final List<String> leafAssets = ['img/ecobag/hoja1.webp', 'img/ecobag/hoja2.webp', 'img/ecobag/hoja3.webp'];
-
-//     final random = Random();
-
-//     _icons = List.generate(20, (index) {
-//       // Rango de dispersión horizontal y vertical
-//       final double top = centerY - 200 + random.nextDouble() * 400; // entre -200 y +200 desde el centro
-//       final double leftPercent = 0.1 + random.nextDouble() * 0.8;
-
-//       final String asset = leafAssets[random.nextInt(leafAssets.length)];
-//       final double scale = 0.8 + random.nextDouble() * 0.6; // entre 0.8 y 1.4
-//       final double verticalSpeed = 0.4 + random.nextDouble() * 0.3; // entre 0.4 y 0.7
-//       final double horizontalShift = -20 + random.nextDouble() * 40; // entre -20 y +20
-
-//       return _ParallaxIcon(
-//         initialTop: top,
-//         leftPercent: leftPercent,
-//         asset: asset,
-//         scale: scale,
-//         verticalSpeed: verticalSpeed,
-//         horizontalShift: horizontalShift,
-//       );
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return SliverToBoxAdapter(
-//       child: SizedBox(
-//         key: _key,
-//         height: widget.screenHeight + 100,
-//         child: ScrollAnimatedWrapper(
-//           visibilityKey: Key('parallax'),
-//           child: Stack(
-//             children: [
-//               ..._icons.map((icon) => icon.build(_localScrollOffset, widget.screenWidth)),
-
-//               Positioned(
-//                 top: (widget.screenHeight / 2) - _localScrollOffset * 0.2,
-//                 left: 0,
-//                 right: 0,
-//                 child: Column(
-//                   mainAxisSize: MainAxisSize.min,
-//                   children: [
-//                     // Texto principal con borde blanco
-//                     Stack(
-//                       children: [
-//                         // Borde (stroke blanco)
-//                         Text(
-//                           "5PRO EcoBag®.",
-//                           textAlign: TextAlign.center,
-//                           style: TextStyle(
-//                             fontSize: (widget.screenWidth * 0.1).clamp(30.0, 60.0),
-//                             fontWeight: FontWeight.bold,
-//                             foreground:
-//                                 Paint()
-//                                   ..style = PaintingStyle.stroke
-//                                   ..strokeWidth = 4
-//                                   ..color = Colors.white,
-//                           ),
-//                         ),
-//                         // Texto relleno (verde)
-//                         Text(
-//                           "5PRO EcoBag®.",
-//                           textAlign: TextAlign.center,
-//                           style: TextStyle(fontSize: (widget.screenWidth * 0.1).clamp(30.0, 60.0), fontWeight: FontWeight.bold, color: widget.green),
-//                         ),
-//                       ],
-//                     ),
-
-//                     const SizedBox(height: 20),
-
-//                     // Segundo texto con borde blanco
-//                     Stack(
-//                       children: [
-//                         // Borde blanco
-//                         Text(
-//                           "Haz que tu producto hable por ti.",
-//                           textAlign: TextAlign.center,
-//                           style: TextStyle(
-//                             fontSize: (widget.screenWidth * 0.08).clamp(20.0, 50.0),
-//                             fontWeight: FontWeight.bold,
-//                             foreground:
-//                                 Paint()
-//                                   ..style = PaintingStyle.stroke
-//                                   ..strokeWidth = 3
-//                                   ..color = Colors.white,
-//                           ),
-//                         ),
-//                         // Texto principal
-//                         Text(
-//                           "Haz que tu producto hable por ti.",
-//                           textAlign: TextAlign.center,
-//                           style: TextStyle(fontSize: (widget.screenWidth * 0.08).clamp(20.0, 50.0), fontWeight: FontWeight.bold, color: Colors.black),
-//                         ),
-//                       ],
-//                     ),
-
-//                     SizedBox(
-//                       height: 500,
-//                       child: Image.asset("assets/img/ecobag/5pro/end.webp", height: widget.isMobile ? 350 : 400, fit: BoxFit.contain),
-//                     ),
-//                     ElevatedButton(
-//                       onPressed: () {},
-//                       style: ButtonStyle(
-//                         backgroundColor: WidgetStatePropertyAll(widget.green),
-//                         foregroundColor: WidgetStatePropertyAll(Colors.white),
-//                       ),
-//                       child: Padding(
-//                         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-//                         child: Text(
-//                           "Crear mi 5PRO",
-//                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: (widget.screenWidth * 0.03).clamp(16, 26)),
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class _ParallaxIcon {
-//   final double initialTop;
-//   final double leftPercent; // 0.0 - 1.0
-//   final String asset;
-//   final double scale;
-//   final double verticalSpeed;
-//   final double horizontalShift;
-
-//   _ParallaxIcon({
-//     required this.initialTop,
-//     required this.leftPercent,
-//     required this.asset,
-//     required this.scale,
-//     required this.verticalSpeed,
-//     required this.horizontalShift,
-//   });
-
-//   Widget build(double scrollOffset, double screenWidth) {
-//     return Positioned(
-//       top: initialTop - scrollOffset * verticalSpeed,
-//       left: screenWidth * leftPercent + scrollOffset * 0.15 * (horizontalShift / 20),
-//       child: Transform.scale(scale: scale, child: Opacity(opacity: 0.75, child: Image.asset(asset, width: 50, height: 50))),
-//     );
-//   }
-// }
+  Widget build(double scrollOffset, double screenWidth) {
+    return Positioned(
+      top: initialTop - scrollOffset * verticalSpeed,
+      left: screenWidth * leftPercent + scrollOffset * 0.15 * (horizontalShift / 20),
+      child: Transform.scale(scale: scale, child: Opacity(opacity: 0.75, child: Image.asset(asset, width: 50, height: 50))),
+    );
+  }
+}

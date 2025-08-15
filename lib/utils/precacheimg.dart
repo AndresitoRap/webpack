@@ -89,5 +89,13 @@ final Map<String, List<String>> routeImagePreloads = {
     'img/ecobag/4pro/peel_y_valv.webp',
     'img/ecobag/4pro/twoBags.webp',
   ],
-  '/EcoBag/Explora-EcoBag/5PRO': ['img/ecobag/5pro/bags.webp'],
+  '/EcoBag/Explora-EcoBag/5PRO': [
+    'img/ecobag/5pro/bags.webp',
+    'img/ecobag/5pro/frames/frame0041.webp',
+    'img/ecobag/5pro/frames/frame0072.webp',
+    'img/ecobag/5pro/frames/frame0106.webp',
+    'img/ecobag/5pro/frames/frame0199.webp',
+    'img/ecobag/5pro/inicio.webp',
+    'img/ecobag/5pro/end.webp',
+  ],
 };

@@ -127,7 +127,7 @@ class IntroSliver extends StatelessWidget {
                         child: Padding(
                           padding: EdgeInsets.symmetric(vertical: r.hp(2, max: 30)),
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () => navigateWithSlide(context, route),
                             style: ButtonStyle(foregroundColor: WidgetStatePropertyAll(Colors.white), backgroundColor: WidgetStatePropertyAll(blue)),
                             child: Text("Crear mi 5PRO", style: TextStyle(fontWeight: FontWeight.bold)),
                           ),
@@ -1153,7 +1153,7 @@ class GreatSolutionsSliver extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  LottieBuilder.asset("assets/gifts/airplane.json", animate: true, height: 300),
+                  LottieBuilder.asset("gifts/airplane.json", animate: true, height: 300),
                   const SizedBox(height: 30),
                   Text(
                     "Grandes soluciones, con detalles que marcan la diferencia.",

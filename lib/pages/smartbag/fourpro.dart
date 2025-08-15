@@ -96,7 +96,7 @@ class Start4PROSliver extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(22),
                       color: const Color.fromARGB(161, 255, 255, 255),
-                      image: isMobile ? DecorationImage(image: AssetImage("img/smartbag/4Pro/prueba.webp"), fit: BoxFit.cover) : null,
+                      image: isMobile ? DecorationImage(image: AssetImage("img/smartbag/4pro/prueba.webp"), fit: BoxFit.cover) : null,
                     ),
                     child: isMobile ? _buildPhone(context) : _buildDesktop(context),
                   ),
@@ -160,11 +160,65 @@ class Start4PROSliver extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text("La\nfuncionalidad\nperfecta.", style: TextStyle(height: 0.99, fontWeight: FontWeight.bold, fontSize: r.fs(2.4, 28))),
+                    Stack(
+                      children: [
+                        // Borde blanco
+                        Text(
+                          "La\nfuncionalidad\nperfecta.",
+                          style: TextStyle(
+                            height: 0.99,
+                            fontWeight: FontWeight.bold,
+                            fontSize: r.fs(2.4, 28),
+                            foreground:
+                                Paint()
+                                  ..style = PaintingStyle.stroke
+                                  ..strokeWidth = 3
+                                  ..color = Colors.white,
+                          ),
+                        ),
+                        // Texto principal (color sólido)
+                        Text(
+                          "La\nfuncionalidad\nperfecta.",
+                          style: TextStyle(
+                            height: 0.99,
+                            fontWeight: FontWeight.bold,
+                            fontSize: r.fs(2.4, 28),
+                            color: Colors.black, // O el color que quieras
+                          ),
+                        ),
+                      ],
+                    ),
                     SizedBox(height: 16),
-                    Text(
-                      "Más que un empaque funcional, es una declaración visual. Versátil, sofisticado y técnicamente superior, cada detalle ha sido concebido para transmitir la esencia de su marca.",
-                      style: TextStyle(height: 0.99, fontSize: r.fs(1.6, 22)),
+                    Stack(
+                      children: [
+                        // Texto de borde
+                        Text(
+                          "Más que un empaque funcional, es una declaración visual. "
+                          "Versátil, sofisticado y técnicamente superior, cada detalle ha sido "
+                          "concebido para transmitir la esencia de su marca.",
+                          style: TextStyle(
+                            height: 0.99,
+                            fontSize: r.fs(1.6, 22),
+                            foreground:
+                                Paint()
+                                  ..style = PaintingStyle.stroke
+                                  ..strokeWidth =
+                                      1.5 // más fino para párrafos
+                                  ..color = Colors.white,
+                          ),
+                        ),
+                        // Texto principal
+                        Text(
+                          "Más que un empaque funcional, es una declaración visual. "
+                          "Versátil, sofisticado y técnicamente superior, cada detalle ha sido "
+                          "concebido para transmitir la esencia de su marca.",
+                          style: TextStyle(
+                            height: 0.99,
+                            fontSize: r.fs(1.6, 22),
+                            color: Colors.black, // o el color que quieras para el texto
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 14),
                     ElevatedButton(
